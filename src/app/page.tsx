@@ -69,21 +69,23 @@ export default function Dashboard() {
 
   return (
     <>
-      <HeroSection />
       <Header
         paused={paused}
         onTogglePause={() => setPaused((v) => !v)}
         showPauseToggle
       />
+      <HeroSection
+        searchSlot={
+          <SearchBox
+            query={searchQuery}
+            setQuery={setSearchQuery}
+            onSelect={setSelectedPair}
+            onResultsChange={setSearchResults}
+          />
+        }
+      />
 
       <main className="flex-1 max-w-[1400px] w-full mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 space-y-4">
-        <SearchBox
-          query={searchQuery}
-          setQuery={setSearchQuery}
-          onSelect={setSelectedPair}
-          onResultsChange={setSearchResults}
-        />
-
         {!showingSearch && <TabsRow active={tab} onChange={setTab} />}
 
         <section>
