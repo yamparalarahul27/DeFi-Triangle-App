@@ -1,65 +1,162 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useCallback, useMemo, useState } from "react";
+import { useUnifiedWalletContext } from "@jup-ag/wallet-adapter";
+import { Footer } from "@/components/layout/Footer";
+import { Header } from "@/components/layout/Header";
+import { HeroSection } from "@/components/layout/HeroSection";
+import { TabsRow, type TabKey } from "@/components/layout/TabsRow";
+import { SearchBox } from "@/components/search/SearchBox";
+import { DexCard } from "@/components/ui/DexCard";
+import { TokenModal } from "@/components/ui/TokenModal";
+import { TabGrid, TabEmpty } from "@/components/tabs/TabShell";
+import { LiveTab } from "@/components/tabs/LiveTab";
+import { MemeTab } from "@/components/tabs/MemeTab";
+import { DefiTab } from "@/components/tabs/DefiTab";
+import { SmartTab } from "@/components/tabs/SmartTab";
+import { WhaleTab } from "@/components/tabs/WhaleTab";
+import { TrendingTab } from "@/components/tabs/TrendingTab";
+import { WatchlistTab } from "@/components/tabs/WatchlistTab";
+import { useSession } from "@/components/providers/SessionContext";
+import { useWatchlist } from "@/lib/hooks/useWatchlist";
+
+export default function Dashboard() {
+  const { wallet, loaded: sessionLoaded } = useSession();
+  const { setShowModal } = useUnifiedWalletContext();
+  const authed = !!wallet;
+  const watchlist = useWatchlist(authed);
+
+  const [tab, setTab] = useState<TabKey>("trending");
+  const [paused, setPaused] = useState(false);
+  const [selectedPair, setSelectedPair] = useState<any | null>(null);
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+
+  const handleStarToggle = useCallback(
+    async (pair: any) => {
+      const addr = pair?.baseToken?.address;
+      if (!addr) return;
+      if (!authed) {
+        setShowModal(true);
+        return;
+      }
+      if (watchlist.starredSet.has(addr)) {
+        await watchlist.remove(addr);
+      } else {
+        await watchlist.add({
+          token_address: addr,
+          symbol: pair?.baseToken?.symbol,
+          name: pair?.baseToken?.name,
+          image_url: pair?.info?.imageUrl,
+        });
+      }
+    },
+    [authed, setShowModal, watchlist]
+  );
+
+  const tabProps = useMemo(
+    () => ({
+      paused,
+      onSelectPair: setSelectedPair,
+      starredSet: watchlist.starredSet,
+      onStarToggle: handleStarToggle,
+    }),
+    [paused, watchlist.starredSet, handleStarToggle]
+  );
+
+  const showingSearch = searchQuery.trim().length > 0;
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <>
+      <HeroSection />
+      <Header
+        paused={paused}
+        onTogglePause={() => setPaused((v) => !v)}
+        showPauseToggle
+      />
+
+      <main className="flex-1 max-w-[1400px] w-full mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 space-y-4">
+        <SearchBox
+          query={searchQuery}
+          setQuery={setSearchQuery}
+          onSelect={setSelectedPair}
+          onResultsChange={setSearchResults}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+
+        {!showingSearch && <TabsRow active={tab} onChange={setTab} />}
+
+        <section>
+          {showingSearch ? (
+            <SearchResultsView
+              results={searchResults}
+              onSelectPair={setSelectedPair}
+              starredSet={watchlist.starredSet}
+              onStarToggle={handleStarToggle}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+          ) : tab === "trending" ? (
+            <TrendingTab {...tabProps} />
+          ) : tab === "live" ? (
+            <LiveTab {...tabProps} />
+          ) : tab === "whale" ? (
+            <WhaleTab {...tabProps} />
+          ) : tab === "meme" ? (
+            <MemeTab {...tabProps} />
+          ) : tab === "smart" ? (
+            <SmartTab {...tabProps} />
+          ) : tab === "defi" ? (
+            <DefiTab {...tabProps} />
+          ) : (
+            <WatchlistTab
+              paused={paused}
+              authed={authed}
+              wallet={wallet}
+              items={watchlist.items}
+              loaded={sessionLoaded && watchlist.loaded}
+              onSelectPair={setSelectedPair}
+              onRemove={watchlist.remove}
+            />
+          )}
+        </section>
       </main>
-    </div>
+
+      <Footer />
+
+      {selectedPair && (
+        <TokenModal
+          pair={selectedPair}
+          onClose={() => setSelectedPair(null)}
+        />
+      )}
+    </>
+  );
+}
+
+function SearchResultsView({
+  results,
+  onSelectPair,
+  starredSet,
+  onStarToggle,
+}: {
+  results: any[];
+  onSelectPair: (pair: any) => void;
+  starredSet: Set<string>;
+  onStarToggle: (pair: any) => void;
+}) {
+  if (results.length === 0) {
+    return <TabEmpty text="No results found." />;
+  }
+  return (
+    <TabGrid>
+      {results.map((pair, i) => (
+        <DexCard
+          key={pair?.pairAddress ?? i}
+          pair={pair}
+          onClick={() => onSelectPair(pair)}
+          starred={starredSet.has(pair?.baseToken?.address)}
+          onStarToggle={() => onStarToggle(pair)}
+        />
+      ))}
+    </TabGrid>
   );
 }
