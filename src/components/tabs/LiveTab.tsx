@@ -6,12 +6,13 @@ import { TabEmpty, TabGrid, TabLoading, type TabProps } from "./TabShell";
 
 export function LiveTab({
   paused,
+  riskFormula,
   onSelectPair,
   starredSet,
   onStarToggle,
 }: TabProps) {
   const { data, loading } = useTabPairs(
-    "/api/dexscreener?type=live",
+    `/api/dexscreener?type=live&riskFormula=${riskFormula}`,
     10_000,
     paused
   );

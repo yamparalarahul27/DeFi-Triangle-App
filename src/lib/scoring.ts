@@ -31,6 +31,7 @@ export interface RiskInput {
 }
 
 export type RiskLabel = "safe" | "caution" | "danger";
+export type RiskFormula = "advanced" | "basic";
 
 export interface RiskBucketInfo {
   score: number;
@@ -93,6 +94,13 @@ const num = (v: unknown, fallback = 0): number => {
   }
   return fallback;
 };
+
+export function parseRiskFormula(value: unknown): RiskFormula {
+  if (typeof value === "string" && value.toLowerCase() === "basic") {
+    return "basic";
+  }
+  return "advanced";
+}
 
 function liquidityDepthStatus(liquidityUsd: number): string {
   if (liquidityUsd >= 500_000) return "Deep liquidity";
@@ -213,7 +221,7 @@ function buildSummary(label: RiskLabel, warnings: string[], buckets: RiskBreakdo
   return `High tradability risk due to weak market structure.`;
 }
 
-export function getRiskBreakdown(input: RiskInput): RiskBreakdown {
+function getAdvancedRiskBreakdown(input: RiskInput): RiskBreakdown {
   const now = Date.now();
 
   const liquidity = pos(input.liquidityUsd);
@@ -467,8 +475,137 @@ export function getRiskBreakdown(input: RiskInput): RiskBreakdown {
   };
 }
 
-export function calcRiskScore(input: RiskInput): number {
-  return getRiskBreakdown(input).score;
+function getBasicRiskBreakdown(input: RiskInput): RiskBreakdown {
+  let score = 100;
+
+  if (input.liquidityUsd < 10_000) score -= 40;
+  else if (input.liquidityUsd < 50_000) score -= 25;
+  else if (input.liquidityUsd < 100_000) score -= 10;
+
+  const priceChg = Math.abs(input.priceChange.h24);
+  if (priceChg > 1000) score -= 35;
+  else if (priceChg > 500) score -= 25;
+  else if (priceChg > 200) score -= 15;
+  else if (priceChg > 100) score -= 8;
+  else if (priceChg > 50) score -= 3;
+
+  const avgHourly = input.volume.h24 / 24;
+  const volSpikePct =
+    avgHourly > 0
+      ? Math.abs((input.volume.h1 / avgHourly - 1) * 100)
+      : 0;
+  if (volSpikePct > 100_000) score -= 20;
+  else if (volSpikePct > 10_000) score -= 12;
+  else if (volSpikePct > 1_000) score -= 6;
+
+  const mc = input.marketCap || input.fdv;
+  if (mc > 0 && mc < 100_000) score -= 20;
+  else if (mc < 500_000) score -= 10;
+  else if (mc < 1_000_000) score -= 5;
+
+  score = Math.max(0, Math.min(100, score));
+  const label: RiskLabel = score >= 70 ? "safe" : score >= 40 ? "caution" : "danger";
+
+  const warnings: string[] = [];
+  pushIf(warnings, input.liquidityUsd < 10_000, "Very thin liquidity");
+  pushIf(
+    warnings,
+    input.liquidityUsd >= 10_000 && input.liquidityUsd < 50_000,
+    "Low liquidity"
+  );
+  pushIf(warnings, priceChg > 200, "High 24h price volatility");
+  pushIf(warnings, volSpikePct > 1_000, "Sudden volume spike");
+  pushIf(warnings, mc > 0 && mc < 100_000, "Micro-cap fragility");
+  pushIf(warnings, mc <= 0, "Unknown valuation");
+
+  const liquidityScore =
+    input.liquidityUsd < 10_000
+      ? 0
+      : input.liquidityUsd < 50_000
+        ? 10
+        : input.liquidityUsd < 100_000
+          ? 20
+          : 30;
+  const flowScore =
+    volSpikePct > 100_000 ? 0 : volSpikePct > 10_000 ? 8 : volSpikePct > 1_000 ? 14 : 20;
+  const priceScore =
+    priceChg > 1000 ? 0 : priceChg > 500 ? 2 : priceChg > 200 ? 4 : priceChg > 100 ? 6 : priceChg > 50 ? 8 : 10;
+  const valuationScore =
+    mc > 0 && mc < 100_000 ? 0 : mc < 500_000 ? 5 : mc < 1_000_000 ? 7 : 10;
+
+  const buckets: RiskBreakdown["buckets"] = {
+    liquidity: {
+      score: liquidityScore,
+      max: 30,
+      status:
+        liquidityScore >= 20 ? "Adequate liquidity (Basic)" : "Liquidity risk (Basic)",
+    },
+    flow: {
+      score: flowScore,
+      max: 20,
+      status:
+        flowScore >= 14
+          ? "Stable volume flow (Basic)"
+          : "Volume spike risk (Basic)",
+    },
+    age: {
+      score: 8,
+      max: 15,
+      status: "Not included in Basic formula",
+    },
+    social: {
+      score: 8,
+      max: 15,
+      status: "Not included in Basic formula",
+    },
+    price: {
+      score: priceScore,
+      max: 10,
+      status:
+        priceScore >= 8
+          ? "Orderly 24h move (Basic)"
+          : "Volatile 24h move (Basic)",
+    },
+    valuation: {
+      score: valuationScore,
+      max: 10,
+      status:
+        valuationScore >= 7
+          ? "Healthy valuation (Basic)"
+          : "Valuation caution (Basic)",
+    },
+  };
+
+  const summary =
+    label === "safe"
+      ? "Basic formula shows healthier liquidity, volatility, and valuation."
+      : label === "caution"
+        ? "Basic formula shows mixed liquidity/volatility/valuation signals."
+        : "Basic formula flags elevated tradability risk.";
+
+  return {
+    score,
+    label,
+    buckets,
+    warnings,
+    summary,
+  };
+}
+
+export function getRiskBreakdown(
+  input: RiskInput,
+  formula: RiskFormula = "advanced"
+): RiskBreakdown {
+  return formula === "basic"
+    ? getBasicRiskBreakdown(input)
+    : getAdvancedRiskBreakdown(input);
+}
+
+export function calcRiskScore(
+  input: RiskInput,
+  formula: RiskFormula = "advanced"
+): number {
+  return getRiskBreakdown(input, formula).score;
 }
 
 export function riskLabel(score: number): RiskLabel {
@@ -478,8 +615,11 @@ export function riskLabel(score: number): RiskLabel {
   return "danger";
 }
 
-export function scoreWithLabel(input: RiskInput): { score: number; label: RiskLabel } {
-  const breakdown = getRiskBreakdown(input);
+export function scoreWithLabel(
+  input: RiskInput,
+  formula: RiskFormula = "advanced"
+): { score: number; label: RiskLabel } {
+  const breakdown = getRiskBreakdown(input, formula);
   return { score: breakdown.score, label: breakdown.label };
 }
 

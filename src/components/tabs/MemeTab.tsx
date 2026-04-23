@@ -21,14 +21,15 @@ const OPTIONS: { key: MemeFilter; label: string }[] = [
 
 export function MemeTab({
   paused,
+  riskFormula,
   onSelectPair,
   starredSet,
   onStarToggle,
 }: TabProps) {
   const [filter, setFilter] = useState<MemeFilter>("all");
   const url = useMemo(
-    () => `/api/dexscreener?type=meme&filter=${filter}`,
-    [filter]
+    () => `/api/dexscreener?type=meme&filter=${filter}&riskFormula=${riskFormula}`,
+    [filter, riskFormula]
   );
   const { data, loading } = useTabPairs(url, 30_000, paused);
 

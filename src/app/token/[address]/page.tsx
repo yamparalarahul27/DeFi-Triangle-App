@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
+import { PriceChart, type Candle } from "@/components/ui/PriceChart";
 import { RiskBar } from "@/components/ui/RiskBar";
 import { TokenIcon } from "@/components/ui/TokenIcon";
 import { fmtAge, fmtNum, fmtPct, fmtUsd } from "@/lib/format";
@@ -13,15 +14,6 @@ import {
   toRiskInputFromDexScreener,
   type RiskBreakdown,
 } from "@/lib/scoring";
-
-type Candle = {
-  o: number;
-  h: number;
-  l: number;
-  c: number;
-  v: number;
-  unixTime: number;
-};
 
 export default function TokenDetailPage() {
   const params = useParams<{ address: string }>();
@@ -182,7 +174,17 @@ export default function TokenDetailPage() {
         ) : (
           <>
             <DetailHeader pair={pair} />
-            <Sparkline candles={candles} />
+            <div className="bg-white rounded-sm border border-[#cbd5e1] p-4">
+              <div className="text-[10px] uppercase tracking-wider text-[#6a7282] mb-2">
+                24h price history · Birdeye
+              </div>
+              <PriceChart
+                candles={candles}
+                height={120}
+                showTooltip
+                showAxes={false}
+              />
+            </div>
             {breakdown && passes && (
               <RiskPanel breakdown={breakdown} passes={passes} />
             )}
@@ -250,60 +252,6 @@ function DetailHeader({ pair }: { pair: any }) {
           </div>
         </div>
       </div>
-    </div>
-  );
-}
-
-function Sparkline({ candles }: { candles: Candle[] }) {
-  const closes = candles.map((c) => c.c).filter((n) => Number.isFinite(n));
-  if (closes.length < 2) {
-    return (
-      <div className="bg-white rounded-sm border border-[#cbd5e1] p-4 h-32 flex items-center justify-center text-xs text-[#6a7282]">
-        No chart data
-      </div>
-    );
-  }
-  const min = Math.min(...closes);
-  const max = Math.max(...closes);
-  const range = max - min || 1;
-  const w = 600;
-  const h = 120;
-  const step = w / (closes.length - 1);
-  const points = closes
-    .map((c, i) => `${i * step},${h - ((c - min) / range) * h}`)
-    .join(" ");
-  const first = closes[0];
-  const last = closes[closes.length - 1];
-  const up = last >= first;
-  const color = up ? "#0fa87a" : "#ef4444";
-  const minIdx = closes.indexOf(min);
-  const maxIdx = closes.indexOf(max);
-
-  return (
-    <div className="bg-white rounded-sm border border-[#cbd5e1] p-4">
-      <div className="text-[10px] uppercase tracking-wider text-[#6a7282] mb-2">
-        24h price history · Birdeye
-      </div>
-      <svg
-        viewBox={`0 0 ${w} ${h}`}
-        preserveAspectRatio="none"
-        className="w-full h-[120px]"
-        aria-hidden="true"
-      >
-        <polyline points={points} fill="none" stroke={color} strokeWidth="2" />
-        <circle
-          cx={maxIdx * step}
-          cy={h - ((max - min) / range) * h}
-          r="4"
-          fill="#0fa87a"
-        />
-        <circle
-          cx={minIdx * step}
-          cy={h - ((min - min) / range) * h}
-          r="4"
-          fill="#ef4444"
-        />
-      </svg>
     </div>
   );
 }

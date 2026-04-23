@@ -19,6 +19,7 @@ import { TrendingTab } from "@/components/tabs/TrendingTab";
 import { WatchlistTab } from "@/components/tabs/WatchlistTab";
 import { useSession } from "@/components/providers/SessionContext";
 import { useWatchlist } from "@/lib/hooks/useWatchlist";
+import type { RiskFormula } from "@/lib/scoring";
 
 export default function Dashboard() {
   const { wallet, loaded: sessionLoaded } = useSession();
@@ -28,6 +29,7 @@ export default function Dashboard() {
 
   const [tab, setTab] = useState<TabKey>("trending");
   const [paused, setPaused] = useState(false);
+  const [riskFormula, setRiskFormula] = useState<RiskFormula>("advanced");
   const [selectedPair, setSelectedPair] = useState<any | null>(null);
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -58,11 +60,12 @@ export default function Dashboard() {
   const tabProps = useMemo(
     () => ({
       paused,
+      riskFormula,
       onSelectPair: setSelectedPair,
       starredSet: watchlist.starredSet,
       onStarToggle: handleStarToggle,
     }),
-    [paused, watchlist.starredSet, handleStarToggle]
+    [paused, riskFormula, watchlist.starredSet, handleStarToggle]
   );
 
   const showingSearch = searchQuery.trim().length > 0;
@@ -81,12 +84,17 @@ export default function Dashboard() {
             setQuery={setSearchQuery}
             onSelect={setSelectedPair}
             onResultsChange={setSearchResults}
+            riskFormula={riskFormula}
           />
         }
       />
 
       <main className="flex-1 max-w-[1400px] w-full mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 space-y-4">
         {!showingSearch && <TabsRow active={tab} onChange={setTab} />}
+        <RiskFormulaToggle
+          value={riskFormula}
+          onChange={setRiskFormula}
+        />
 
         <section>
           {showingSearch ? (
@@ -111,6 +119,7 @@ export default function Dashboard() {
           ) : (
             <WatchlistTab
               paused={paused}
+              riskFormula={riskFormula}
               authed={authed}
               wallet={wallet}
               items={watchlist.items}
@@ -127,10 +136,52 @@ export default function Dashboard() {
       {selectedPair && (
         <TokenModal
           pair={selectedPair}
+          riskFormula={riskFormula}
           onClose={() => setSelectedPair(null)}
         />
       )}
     </>
+  );
+}
+
+function RiskFormulaToggle({
+  value,
+  onChange,
+}: {
+  value: RiskFormula;
+  onChange: (value: RiskFormula) => void;
+}) {
+  const options: { key: RiskFormula; label: string }[] = [
+    { key: "basic", label: "Basic" },
+    { key: "advanced", label: "Advanced" },
+  ];
+
+  return (
+    <div className="flex flex-wrap items-center justify-end gap-2">
+      <span className="text-[11px] uppercase tracking-wider text-[#6a7282]">
+        Risk Formula
+      </span>
+      <div className="inline-flex rounded-sm border border-[#cbd5e1] bg-white p-0.5">
+        {options.map((option) => {
+          const active = option.key === value;
+          return (
+            <button
+              key={option.key}
+              type="button"
+              onClick={() => onChange(option.key)}
+              aria-pressed={active}
+              className={`min-h-[34px] px-3 rounded-[2px] text-xs transition-all duration-150 ${
+                active
+                  ? "bg-[#19549b] text-white shadow-[0_2px_8px_rgba(25,84,155,0.25)]"
+                  : "text-[#11274d]/65 hover:text-[#11274d]"
+              }`}
+            >
+              {option.label}
+            </button>
+          );
+        })}
+      </div>
+    </div>
   );
 }
 

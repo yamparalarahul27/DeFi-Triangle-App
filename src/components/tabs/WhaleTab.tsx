@@ -24,11 +24,11 @@ interface WhaleExtra {
   totalTxns?: number;
 }
 
-export function WhaleTab({ paused, onSelectPair }: TabProps) {
+export function WhaleTab({ paused, riskFormula, onSelectPair }: TabProps) {
   const [filter, setFilter] = useState<WhaleFilter>("all");
   const url = useMemo(
-    () => `/api/dexscreener?type=whale&filter=${filter}`,
-    [filter]
+    () => `/api/dexscreener?type=whale&filter=${filter}&riskFormula=${riskFormula}`,
+    [filter, riskFormula]
   );
   const { data, loading, extra } = useTabPairs<WhaleExtra>(url, 15_000, paused);
 

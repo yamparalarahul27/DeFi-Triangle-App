@@ -21,14 +21,15 @@ const OPTIONS: { key: DefiFilter; label: string }[] = [
 
 export function DefiTab({
   paused,
+  riskFormula,
   onSelectPair,
   starredSet,
   onStarToggle,
 }: TabProps) {
   const [filter, setFilter] = useState<DefiFilter>("all");
   const url = useMemo(
-    () => `/api/dexscreener?type=defi&filter=${filter}`,
-    [filter]
+    () => `/api/dexscreener?type=defi&filter=${filter}&riskFormula=${riskFormula}`,
+    [filter, riskFormula]
   );
   const { data, loading } = useTabPairs(url, 25_000, paused);
 

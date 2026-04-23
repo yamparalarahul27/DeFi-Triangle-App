@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
   calcRiskScore,
+  parseRiskFormula,
   riskLabel,
   toRiskInputFromDexScreener,
+  type RiskFormula,
 } from "@/lib/scoring";
 
 export const runtime = "nodejs";
@@ -16,9 +18,9 @@ function isSolanaPair(p: any): boolean {
   return (p?.chainId ?? "").toLowerCase() === "solana";
 }
 
-function scorePair(p: any): ScoredPair {
+function scorePair(p: any, formula: RiskFormula): ScoredPair {
   const input = toRiskInputFromDexScreener(p);
-  const score = calcRiskScore(input);
+  const score = calcRiskScore(input, formula);
   return { ...p, score, label: riskLabel(score) };
 }
 
@@ -120,7 +122,8 @@ function applyFilterSort(
 
 async function handleSearch(
   q: string,
-  limit: number
+  limit: number,
+  formula: RiskFormula
 ): Promise<NextResponse> {
   if (!q) {
     return NextResponse.json(
@@ -136,14 +139,17 @@ async function handleSearch(
     const filtered = pairs.filter(isSolanaPair).slice(0, limit);
     return NextResponse.json({
       success: true,
-      data: filtered.map(scorePair),
+      data: filtered.map((p) => scorePair(p, formula)),
     });
   } catch (err) {
     return errorResponse("search", err);
   }
 }
 
-async function handleBatch(addresses: string[]): Promise<NextResponse> {
+async function handleBatch(
+  addresses: string[],
+  formula: RiskFormula
+): Promise<NextResponse> {
   const unique = Array.from(new Set(addresses.filter(Boolean))).slice(0, 30);
   if (unique.length === 0) {
     return NextResponse.json({ success: true, data: {} });
@@ -153,7 +159,7 @@ async function handleBatch(addresses: string[]): Promise<NextResponse> {
     const out: Record<string, ScoredPair> = {};
     unique.forEach((addr, i) => {
       const pair = results[i];
-      if (pair) out[addr] = scorePair(pair);
+      if (pair) out[addr] = scorePair(pair, formula);
     });
     return NextResponse.json({ success: true, data: out });
   } catch (err) {
@@ -161,7 +167,10 @@ async function handleBatch(addresses: string[]): Promise<NextResponse> {
   }
 }
 
-async function handleToken(address: string): Promise<NextResponse> {
+async function handleToken(
+  address: string,
+  formula: RiskFormula
+): Promise<NextResponse> {
   if (!address) {
     return NextResponse.json(
       { success: false, error: "address required" },
@@ -172,14 +181,14 @@ async function handleToken(address: string): Promise<NextResponse> {
     const pair = await hydrateByAddress(address);
     return NextResponse.json({
       success: true,
-      data: pair ? scorePair(pair) : null,
+      data: pair ? scorePair(pair, formula) : null,
     });
   } catch (err) {
     return errorResponse("token", err);
   }
 }
 
-async function handleLive(): Promise<NextResponse> {
+async function handleLive(formula: RiskFormula): Promise<NextResponse> {
   try {
     const json = await fetchDex<any>("/token-profiles/latest/v1");
     const items: any[] = Array.isArray(json) ? json : [];
@@ -190,14 +199,14 @@ async function handleLive(): Promise<NextResponse> {
       .map((p) => p?.tokenAddress)
       .filter((a): a is string => typeof a === "string");
     const hydrated = await Promise.all(addresses.map(hydrateByAddress));
-    const scored = hydrated.filter(Boolean).map((p) => scorePair(p));
+    const scored = hydrated.filter(Boolean).map((p) => scorePair(p, formula));
     return NextResponse.json({ success: true, data: scored });
   } catch (err) {
     return errorResponse("live", err);
   }
 }
 
-async function handleSmart(): Promise<NextResponse> {
+async function handleSmart(formula: RiskFormula): Promise<NextResponse> {
   try {
     const json = await fetchDex<any>("/token-boosts/top/v1");
     const items: any[] = Array.isArray(json) ? json : [];
@@ -213,7 +222,7 @@ async function handleSmart(): Promise<NextResponse> {
     hydrated.sort((a, b) => txnsTotal(b, "h24") - txnsTotal(a, "h24"));
     return NextResponse.json({
       success: true,
-      data: hydrated.map((p) => scorePair(p)),
+      data: hydrated.map((p) => scorePair(p, formula)),
     });
   } catch (err) {
     return errorResponse("smart", err);
@@ -225,7 +234,8 @@ const WHALE_POOL = [
 ];
 
 async function handleWhale(
-  filter: "all" | "gainers" | "losers"
+  filter: "all" | "gainers" | "losers",
+  formula: RiskFormula
 ): Promise<NextResponse> {
   try {
     const queries = rotatingPool(WHALE_POOL, 20_000, 2);
@@ -247,7 +257,7 @@ async function handleWhale(
 
     return NextResponse.json({
       success: true,
-      data: sorted.map(scorePair),
+      data: sorted.map((p) => scorePair(p, formula)),
       totalVolume,
       totalTxns,
     });
@@ -257,7 +267,8 @@ async function handleWhale(
 }
 
 async function handleMeme(
-  filter: "all" | "new" | "hot"
+  filter: "all" | "new" | "hot",
+  formula: RiskFormula
 ): Promise<NextResponse> {
   try {
     const json = await fetchDex<any>(`/latest/dex/search?q=meme`);
@@ -284,7 +295,7 @@ async function handleMeme(
     }
 
     const total = filtered.length;
-    const data = filtered.slice(0, 60).map(scorePair);
+    const data = filtered.slice(0, 60).map((p) => scorePair(p, formula));
     return NextResponse.json({ success: true, data, total });
   } catch (err) {
     return errorResponse("meme", err);
@@ -294,7 +305,8 @@ async function handleMeme(
 const DEFI_POOL = ["SOL", "JUP", "RAY", "ORCA", "MSOL", "JITO", "PYTH", "WIF"];
 
 async function handleDefi(
-  filter: "all" | "gainers" | "losers"
+  filter: "all" | "gainers" | "losers",
+  formula: RiskFormula
 ): Promise<NextResponse> {
   try {
     const queries = rotatingPool(DEFI_POOL, 30_000, 4);
@@ -314,7 +326,7 @@ async function handleDefi(
     const sorted = applyFilterSort(deduped, filter).slice(0, 40);
     return NextResponse.json({
       success: true,
-      data: sorted.map(scorePair),
+      data: sorted.map((p) => scorePair(p, formula)),
     });
   } catch (err) {
     return errorResponse("defi", err);
@@ -334,7 +346,8 @@ const PERIOD_MS: Record<"m5" | "h1" | "h6" | "h24", number> = {
 
 async function handleTrendingDex(
   mode: "gainers" | "volume" | "txns" | "newest",
-  period: "m5" | "h1" | "h6" | "h24"
+  period: "m5" | "h1" | "h6" | "h24",
+  formula: RiskFormula
 ): Promise<NextResponse> {
   try {
     const queries = rotatingPool(TRENDING_DEX_POOL, 20_000, 2);
@@ -370,7 +383,7 @@ async function handleTrendingDex(
 
     return NextResponse.json({
       success: true,
-      data: pairs.slice(0, 50).map(scorePair),
+      data: pairs.slice(0, 50).map((p) => scorePair(p, formula)),
     });
   } catch (err) {
     return errorResponse("trending_dex", err);
@@ -380,48 +393,49 @@ async function handleTrendingDex(
 export async function GET(req: NextRequest) {
   const sp = req.nextUrl.searchParams;
   const type = sp.get("type") ?? "";
+  const riskFormula = parseRiskFormula(sp.get("riskFormula"));
 
   try {
     switch (type) {
       case "search": {
         const q = sp.get("q") ?? "";
         const limit = Math.min(
-          10,
-          Math.max(1, parseInt(sp.get("limit") ?? "10", 10) || 10)
+          50,
+          Math.max(1, parseInt(sp.get("limit") ?? "20", 10) || 20)
         );
-        return await handleSearch(q, limit);
+        return await handleSearch(q, limit, riskFormula);
       }
       case "batch": {
         const addresses = (sp.get("addresses") ?? "")
           .split(",")
           .map((a) => a.trim())
           .filter(Boolean);
-        return await handleBatch(addresses);
+        return await handleBatch(addresses, riskFormula);
       }
       case "token": {
-        return await handleToken(sp.get("address") ?? "");
+        return await handleToken(sp.get("address") ?? "", riskFormula);
       }
       case "live":
-        return await handleLive();
+        return await handleLive(riskFormula);
       case "smart":
-        return await handleSmart();
+        return await handleSmart(riskFormula);
       case "whale": {
         const filter = (sp.get("filter") ?? "all") as
           | "all"
           | "gainers"
           | "losers";
-        return await handleWhale(filter);
+        return await handleWhale(filter, riskFormula);
       }
       case "meme": {
         const filter = (sp.get("filter") ?? "all") as "all" | "new" | "hot";
-        return await handleMeme(filter);
+        return await handleMeme(filter, riskFormula);
       }
       case "defi": {
         const filter = (sp.get("filter") ?? "all") as
           | "all"
           | "gainers"
           | "losers";
-        return await handleDefi(filter);
+        return await handleDefi(filter, riskFormula);
       }
       case "trending_dex": {
         const mode = (sp.get("mode") ?? "gainers") as
@@ -434,7 +448,7 @@ export async function GET(req: NextRequest) {
           | "h1"
           | "h6"
           | "h24";
-        return await handleTrendingDex(mode, period);
+        return await handleTrendingDex(mode, period, riskFormula);
       }
       default:
         return NextResponse.json(

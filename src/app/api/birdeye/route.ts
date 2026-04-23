@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
   calcRiskScore,
+  parseRiskFormula,
   riskLabel,
   toRiskInputFromBirdeye,
+  type RiskFormula,
 } from "@/lib/scoring";
 
 export const runtime = "nodejs";
@@ -31,7 +33,7 @@ function errorResponse(context: string, err: unknown) {
   );
 }
 
-async function handleTrending() {
+async function handleTrending(formula: RiskFormula) {
   let headers: HeadersInit;
   try {
     headers = birdeyeHeaders();
@@ -53,7 +55,7 @@ async function handleTrending() {
 
     const scored = tokens.map((t) => {
       const input = toRiskInputFromBirdeye(t);
-      const score = calcRiskScore(input);
+      const score = calcRiskScore(input, formula);
       return { ...t, score, label: riskLabel(score) };
     });
 
@@ -105,11 +107,13 @@ async function handleOhlcv(address: string) {
 }
 
 export async function GET(req: NextRequest) {
-  const type = req.nextUrl.searchParams.get("type") ?? "trending";
-  const address = req.nextUrl.searchParams.get("address") ?? "";
+  const searchParams = req.nextUrl.searchParams;
+  const type = searchParams.get("type") ?? "trending";
+  const address = searchParams.get("address") ?? "";
+  const riskFormula = parseRiskFormula(searchParams.get("riskFormula"));
 
   if (type === "ohlcv") return handleOhlcv(address);
-  if (type === "trending" || type === "") return handleTrending();
+  if (type === "trending" || type === "") return handleTrending(riskFormula);
 
   return NextResponse.json(
     { success: false, error: "invalid type" },

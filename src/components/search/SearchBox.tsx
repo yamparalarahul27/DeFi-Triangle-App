@@ -4,12 +4,14 @@ import { useEffect, useRef, useState } from "react";
 import { useDebounce } from "@/lib/hooks/useDebounce";
 import { TokenIcon } from "@/components/ui/TokenIcon";
 import { fmtPct, fmtUsd } from "@/lib/format";
+import type { RiskFormula } from "@/lib/scoring";
 
 export interface SearchBoxProps {
   onSelect: (pair: any) => void;
   onResultsChange?: (pairs: any[]) => void;
   query: string;
   setQuery: (q: string) => void;
+  riskFormula: RiskFormula;
 }
 
 export function SearchBox({
@@ -17,6 +19,7 @@ export function SearchBox({
   onResultsChange,
   query,
   setQuery,
+  riskFormula,
 }: SearchBoxProps) {
   const debounced = useDebounce(query.trim(), 500);
   const [results, setResults] = useState<any[]>([]);
@@ -35,7 +38,7 @@ export function SearchBox({
     (async () => {
       try {
         const res = await fetch(
-          `/api/dexscreener?type=search&q=${encodeURIComponent(debounced)}&limit=10`,
+          `/api/dexscreener?type=search&q=${encodeURIComponent(debounced)}&limit=10&riskFormula=${riskFormula}`,
           { cache: "no-store" }
         );
         const json = res.ok ? await res.json() : null;
@@ -58,7 +61,7 @@ export function SearchBox({
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debounced]);
+  }, [debounced, riskFormula]);
 
   useEffect(() => {
     function onDocClick(e: MouseEvent) {

@@ -5,9 +5,9 @@ import { fmtNum, fmtUsd } from "@/lib/format";
 import { useTabPairs } from "@/lib/hooks/useTabPairs";
 import { TabEmpty, TabLoading, type TabProps } from "./TabShell";
 
-export function SmartTab({ paused, onSelectPair }: TabProps) {
+export function SmartTab({ paused, riskFormula, onSelectPair }: TabProps) {
   const { data, loading } = useTabPairs(
-    "/api/dexscreener?type=smart",
+    `/api/dexscreener?type=smart&riskFormula=${riskFormula}`,
     30_000,
     paused
   );

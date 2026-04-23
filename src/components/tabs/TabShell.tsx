@@ -1,9 +1,11 @@
 "use client";
 
 import type { ReactNode } from "react";
+import type { RiskFormula } from "@/lib/scoring";
 
 export interface TabProps {
   paused: boolean;
+  riskFormula: RiskFormula;
   onSelectPair: (pair: any) => void;
   starredSet: Set<string>;
   onStarToggle: (pair: any) => void;

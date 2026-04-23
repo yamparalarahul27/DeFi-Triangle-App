@@ -5,11 +5,13 @@ import { useUnifiedWalletContext } from "@jup-ag/wallet-adapter";
 import { DexCard } from "@/components/ui/DexCard";
 import { StatusDot } from "@/components/ui/StatusDot";
 import { useInterval } from "@/lib/hooks/useInterval";
+import type { RiskFormula } from "@/lib/scoring";
 import type { WatchlistItem } from "@/lib/hooks/useWatchlist";
 import { TabEmpty, TabGrid, TabLoading } from "./TabShell";
 
 export interface WatchlistTabProps {
   paused: boolean;
+  riskFormula: RiskFormula;
   authed: boolean;
   wallet: string | null;
   items: WatchlistItem[];
@@ -25,6 +27,7 @@ function truncate(addr: string): string {
 
 export function WatchlistTab({
   paused,
+  riskFormula,
   authed,
   wallet,
   items,
@@ -36,6 +39,7 @@ export function WatchlistTab({
   const [liveMap, setLiveMap] = useState<Record<string, any>>({});
 
   const addresses = items.map((i) => i.token_address).filter(Boolean);
+  const addressesKey = addresses.join(",");
 
   const fetchLive = useCallback(async () => {
     if (addresses.length === 0) {
@@ -44,7 +48,7 @@ export function WatchlistTab({
     }
     try {
       const res = await fetch(
-        `/api/dexscreener?type=batch&addresses=${addresses.join(",")}`,
+        `/api/dexscreener?type=batch&addresses=${addressesKey}&riskFormula=${riskFormula}`,
         { cache: "no-store" }
       );
       const json = res.ok ? await res.json() : null;
@@ -52,7 +56,7 @@ export function WatchlistTab({
     } catch {
       // ignore
     }
-  }, [addresses.join(",")]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [addressesKey, riskFormula]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     fetchLive();

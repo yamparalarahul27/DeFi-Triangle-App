@@ -46,8 +46,11 @@ const PERIODS: { key: Period; label: string }[] = [
   { key: "h24", label: "24h" },
 ];
 
+const TRENDING_RISK_SEARCH_SEEDS = ["pump", "JUP", "WIF", "RAY", "ORCA", "PYTH"] as const;
+
 export function TrendingTab({
   paused,
+  riskFormula,
   onSelectPair,
   starredSet,
   onStarToggle,
@@ -79,6 +82,7 @@ export function TrendingTab({
       {sub === "risk" ? (
         <RiskScoredView
           paused={paused}
+          riskFormula={riskFormula}
           onSelectPair={onSelectPair}
           starredSet={starredSet}
           onStarToggle={onStarToggle}
@@ -86,6 +90,7 @@ export function TrendingTab({
       ) : (
         <DiscoverView
           paused={paused}
+          riskFormula={riskFormula}
           onSelectPair={onSelectPair}
           starredSet={starredSet}
           onStarToggle={onStarToggle}
@@ -97,6 +102,7 @@ export function TrendingTab({
 
 function RiskScoredView({
   paused,
+  riskFormula,
   onSelectPair,
   starredSet,
   onStarToggle,
@@ -108,9 +114,27 @@ function RiskScoredView({
 
   const fetchData = useCallback(async () => {
     try {
-      const birdeyeRes = await fetch(`/api/birdeye?type=trending`, {
-        cache: "no-store",
-      });
+      const requests = [
+        fetch(`/api/birdeye?type=trending&riskFormula=${riskFormula}`, {
+          cache: "no-store",
+        }),
+        ...TRENDING_RISK_SEARCH_SEEDS.map((seed) =>
+          fetch(
+            `/api/dexscreener?type=search&q=${encodeURIComponent(seed)}&limit=20&riskFormula=${riskFormula}`,
+            { cache: "no-store" }
+          )
+        ),
+      ];
+      const [
+        birdeyeRes,
+        pumpRes,
+        jupRes,
+        wifRes,
+        rayRes,
+        orcaRes,
+        pythRes,
+      ] = await Promise.all(requests);
+
       const birdeyeJson = birdeyeRes.ok ? await birdeyeRes.json() : null;
       const tokens: any[] =
         birdeyeJson?.success && Array.isArray(birdeyeJson.data)
@@ -126,14 +150,14 @@ function RiskScoredView({
       }
 
       const batchRes = await fetch(
-        `/api/dexscreener?type=batch&addresses=${addresses.join(",")}`,
+        `/api/dexscreener?type=batch&addresses=${addresses.join(",")}&riskFormula=${riskFormula}`,
         { cache: "no-store" }
       );
       const batchJson = batchRes.ok ? await batchRes.json() : null;
       const byAddr: Record<string, any> =
         batchJson?.success && batchJson.data ? batchJson.data : {};
 
-      const merged = tokens
+      const enrichedBirdeye = tokens
         .map((t) => {
           const pair = byAddr[t.address];
           if (!pair) return null;
@@ -146,13 +170,46 @@ function RiskScoredView({
         })
         .filter(Boolean);
 
+      const dexSearchResponses = [pumpRes, jupRes, wifRes, rayRes, orcaRes, pythRes];
+      const dexSearchJson = await Promise.all(
+        dexSearchResponses.map(async (res) => (res.ok ? res.json() : null))
+      );
+      const allDexPairs: any[] = dexSearchJson.flatMap((json) =>
+        json?.success && Array.isArray(json.data) ? json.data : []
+      );
+
+      const bestDexByBase = new Map<string, any>();
+      for (const pair of allDexPairs) {
+        const baseAddr = pair?.baseToken?.address;
+        if (!baseAddr) continue;
+        const existing = bestDexByBase.get(baseAddr);
+        if (
+          !existing ||
+          Number(pair?.liquidity?.usd ?? 0) > Number(existing?.liquidity?.usd ?? 0)
+        ) {
+          bestDexByBase.set(baseAddr, pair);
+        }
+      }
+
+      const enrichedDex = Array.from(bestDexByBase.values())
+        .filter((pair) => Number(pair?.liquidity?.usd ?? 0) > 5_000)
+        .sort(
+          (a, b) => Number(b?.volume?.h24 ?? 0) - Number(a?.volume?.h24 ?? 0)
+        )
+        .slice(0, 40)
+        .map((pair) => ({
+          ...pair,
+          trendingRank: null,
+        }));
+
+      const merged = [...enrichedBirdeye, ...enrichedDex];
       setPairs(merged);
     } catch {
       // keep last-good
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [riskFormula]);
 
   useEffect(() => {
     setLoading(true);
@@ -264,6 +321,7 @@ function RiskScoredView({
 
 function DiscoverView({
   paused,
+  riskFormula,
   onSelectPair,
   starredSet,
   onStarToggle,
@@ -276,7 +334,7 @@ function DiscoverView({
   const fetchData = useCallback(async () => {
     try {
       const res = await fetch(
-        `/api/dexscreener?type=trending_dex&mode=${mode}&period=${period}`,
+        `/api/dexscreener?type=trending_dex&mode=${mode}&period=${period}&riskFormula=${riskFormula}`,
         { cache: "no-store" }
       );
       const json = res.ok ? await res.json() : null;
@@ -288,7 +346,7 @@ function DiscoverView({
     } finally {
       setLoading(false);
     }
-  }, [mode, period]);
+  }, [mode, period, riskFormula]);
 
   useEffect(() => {
     setLoading(true);
@@ -479,4 +537,3 @@ function StatsCard({
     </div>
   );
 }
-

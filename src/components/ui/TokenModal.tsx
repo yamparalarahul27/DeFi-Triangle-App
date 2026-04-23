@@ -3,21 +3,14 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { TokenIcon } from "./TokenIcon";
 import { RiskBar } from "./RiskBar";
+import { PriceChart, type Candle } from "./PriceChart";
 import { fmtAge, fmtNum, fmtPct, fmtUsd } from "@/lib/format";
 import {
   getRiskBreakdown,
   toRiskInputFromDexScreener,
+  type RiskFormula,
   type RiskBreakdown,
 } from "@/lib/scoring";
-
-type Candle = {
-  o: number;
-  h: number;
-  l: number;
-  c: number;
-  v: number;
-  unixTime: number;
-};
 
 const ohlcvCache = new Map<string, Candle[]>();
 
@@ -30,10 +23,15 @@ const SOCIAL_LABELS: Record<string, string> = {
 
 export interface TokenModalProps {
   pair: any;
+  riskFormula: RiskFormula;
   onClose: () => void;
 }
 
-export function TokenModal({ pair: initialPair, onClose }: TokenModalProps) {
+export function TokenModal({
+  pair: initialPair,
+  riskFormula,
+  onClose,
+}: TokenModalProps) {
   const [pair, setPair] = useState<any>(initialPair);
   const [candles, setCandles] = useState<Candle[] | null>(null);
   const [loadingChart, setLoadingChart] = useState(true);
@@ -95,7 +93,7 @@ export function TokenModal({ pair: initialPair, onClose }: TokenModalProps) {
     (async () => {
       try {
         const res = await fetch(
-          `/api/dexscreener?type=token&address=${encodeURIComponent(address)}`,
+          `/api/dexscreener?type=token&address=${encodeURIComponent(address)}&riskFormula=${riskFormula}`,
           { cache: "no-store" }
         );
         const json = res.ok ? await res.json() : null;
@@ -111,7 +109,7 @@ export function TokenModal({ pair: initialPair, onClose }: TokenModalProps) {
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address]);
+  }, [address, riskFormula]);
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -127,8 +125,8 @@ export function TokenModal({ pair: initialPair, onClose }: TokenModalProps) {
   }, [onClose]);
 
   const breakdown: RiskBreakdown = useMemo(
-    () => getRiskBreakdown(toRiskInputFromDexScreener(pair)),
-    [pair]
+    () => getRiskBreakdown(toRiskInputFromDexScreener(pair), riskFormula),
+    [pair, riskFormula]
   );
 
   const passes = useMemo(() => {
@@ -228,7 +226,12 @@ export function TokenModal({ pair: initialPair, onClose }: TokenModalProps) {
                   No chart data
                 </div>
               ) : (
-                <Sparkline candles={candles} />
+                <PriceChart
+                  candles={candles}
+                  height={80}
+                  showTooltip={false}
+                  showAxes={false}
+                />
               )}
               <div className="text-center text-[10px] text-[#6B7280] mt-1">
                 24h price history · Birdeye
@@ -404,59 +407,5 @@ function Stat({ label, value }: { label: string; value: string }) {
         {value}
       </span>
     </div>
-  );
-}
-
-function Sparkline({ candles }: { candles: Candle[] }) {
-  const closes = candles.map((c) => c.c).filter((n) => Number.isFinite(n));
-  if (closes.length < 2) {
-    return (
-      <div className="h-20 flex items-center justify-center text-xs text-[#6B7280]">
-        No chart data
-      </div>
-    );
-  }
-  const min = Math.min(...closes);
-  const max = Math.max(...closes);
-  const range = max - min || 1;
-  const w = 440;
-  const h = 80;
-  const step = closes.length > 1 ? w / (closes.length - 1) : w;
-  const points = closes
-    .map((c, i) => `${i * step},${h - ((c - min) / range) * h}`)
-    .join(" ");
-  const first = closes[0];
-  const last = closes[closes.length - 1];
-  const up = last >= first;
-  const lineColor = up ? "#0fa87a" : "#ef4444";
-  const minIdx = closes.indexOf(min);
-  const maxIdx = closes.indexOf(max);
-
-  return (
-    <svg
-      viewBox={`0 0 ${w} ${h}`}
-      preserveAspectRatio="none"
-      className="w-full h-20"
-      aria-hidden="true"
-    >
-      <polyline
-        points={points}
-        fill="none"
-        stroke={lineColor}
-        strokeWidth="1.5"
-      />
-      <circle
-        cx={maxIdx * step}
-        cy={h - ((max - min) / range) * h}
-        r="3"
-        fill="#0fa87a"
-      />
-      <circle
-        cx={minIdx * step}
-        cy={h - ((min - min) / range) * h}
-        r="3"
-        fill="#ef4444"
-      />
-    </svg>
   );
 }
