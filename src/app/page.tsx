@@ -100,6 +100,7 @@ export default function Dashboard() {
         showWatchlistButton
         watchlistActive={tab === "watchlist"}
         onOpenWatchlist={openWatchlist}
+        showSearchButton={false}
       />
       <HeroSection searchSlot={<HeroSearchButton />} />
 

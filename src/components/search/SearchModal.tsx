@@ -104,7 +104,7 @@ export function SearchModal({ open, onOpenChange }: SearchModalProps) {
             e.preventDefault();
             inputRef.current?.focus();
           }}
-          className="fixed left-1/2 top-[12vh] z-50 w-[92vw] max-w-[560px] -translate-x-1/2 bg-white rounded-sm shadow-2xl border border-[#e5e7eb] overflow-hidden"
+          className="fixed left-0 right-0 bottom-0 z-50 flex flex-col w-full max-h-[85vh] bg-white rounded-t-lg shadow-2xl border border-[#e5e7eb] overflow-hidden sm:left-1/2 sm:right-auto sm:bottom-auto sm:top-[12vh] sm:w-[92vw] sm:max-w-[560px] sm:max-h-none sm:-translate-x-1/2 sm:rounded-sm"
         >
           <Dialog.Title className="sr-only">Search tokens</Dialog.Title>
           <Dialog.Description className="sr-only">
@@ -112,7 +112,7 @@ export function SearchModal({ open, onOpenChange }: SearchModalProps) {
             navigate results and enter to open.
           </Dialog.Description>
 
-          <div className="flex items-center gap-2 px-3 h-12 border-b border-[#e5e7eb]">
+          <div className="flex items-center gap-2 px-3 h-12 border-b border-[#e5e7eb] shrink-0">
             <SearchIcon className="w-4 h-4 text-[#6a7282] shrink-0" />
             <input
               ref={inputRef}
@@ -145,7 +145,7 @@ export function SearchModal({ open, onOpenChange }: SearchModalProps) {
           <div
             role="listbox"
             aria-label="Search results"
-            className="max-h-[60vh] overflow-y-auto"
+            className="flex-1 overflow-y-auto sm:flex-initial sm:max-h-[60vh]"
           >
             {hasQuery ? (
               <QueryResults
@@ -167,7 +167,7 @@ export function SearchModal({ open, onOpenChange }: SearchModalProps) {
             )}
           </div>
 
-          <div className="flex items-center justify-between px-3 h-8 text-[10px] text-[#6a7282] border-t border-[#e5e7eb] bg-[#f8fafc]">
+          <div className="hidden sm:flex items-center justify-between px-3 h-8 text-[10px] text-[#6a7282] border-t border-[#e5e7eb] bg-[#f8fafc] shrink-0">
             <div className="flex items-center gap-3">
               <KeyHint label="↑↓" text="navigate" />
               <KeyHint label="↵" text="open" />

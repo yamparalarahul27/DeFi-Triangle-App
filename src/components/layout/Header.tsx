@@ -10,6 +10,7 @@ export interface HeaderProps {
   showWatchlistButton?: boolean;
   watchlistActive?: boolean;
   onOpenWatchlist?: () => void;
+  showSearchButton?: boolean;
   showPauseToggle?: boolean;
   paused?: boolean;
   onTogglePause?: () => void;
@@ -27,6 +28,7 @@ export function Header({
   showWatchlistButton = false,
   watchlistActive = false,
   onOpenWatchlist,
+  showSearchButton = true,
   showPauseToggle = false,
   paused = false,
   onTogglePause,
@@ -107,25 +109,27 @@ export function Header({
         </Link>
 
         <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={openSearch}
-            aria-label="Open search"
-            title="Search (⌘K)"
-            className={`h-7 px-2 rounded-sm text-xs transition-colors duration-300 inline-flex items-center gap-1.5 ${actionBtnClass}`}
-          >
-            <SearchIcon className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Search</span>
-            <kbd
-              className={`hidden sm:inline-flex items-center px-1 h-4 ml-0.5 text-[9px] rounded-sm border leading-none ${
-                scrolled
-                  ? "border-[#cbd5e1] bg-[#f1f5f9] text-[#6a7282]"
-                  : "border-white/20 bg-white/10 text-white/80"
-              }`}
+          {showSearchButton && (
+            <button
+              type="button"
+              onClick={openSearch}
+              aria-label="Open search"
+              title="Search (⌘K)"
+              className={`h-7 px-2 rounded-sm text-xs transition-colors duration-300 inline-flex items-center gap-1.5 ${actionBtnClass}`}
             >
-              ⌘K
-            </kbd>
-          </button>
+              <SearchIcon className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Search</span>
+              <kbd
+                className={`hidden sm:inline-flex items-center px-1 h-4 ml-0.5 text-[9px] rounded-sm border leading-none ${
+                  scrolled
+                    ? "border-[#cbd5e1] bg-[#f1f5f9] text-[#6a7282]"
+                    : "border-white/20 bg-white/10 text-white/80"
+                }`}
+              >
+                ⌘K
+              </kbd>
+            </button>
+          )}
           {showPauseToggle && onTogglePause && (
             <button
               type="button"

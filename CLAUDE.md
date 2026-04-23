@@ -47,6 +47,7 @@ Rules:
 
 ## Pending followups
 
+- **Brand logo SVGs missing from repo.** `src/components/layout/Header.tsx` references `/brand/defi_logo_dark.svg` and `/brand/defi_logo_white.svg`, but `public/brand/` does not exist and those SVGs have never been committed on any branch. At the start of the next local session, remind the user to commit the two brand SVGs to `public/brand/` (or to swap the refs for a text wordmark / alternative asset) and push to `stage` so the top-left logo stops 404-ing in preview/production.
 - **Search recents → wallet-scoped server-side storage.** V1 shipped with `localStorage` only (per-device) in `src/lib/hooks/useRecentSearches.ts`. When building the next iteration of the Watchlist feature, add a `search_recents` Supabase table and GET/POST/DELETE endpoints under `/api/search-recents` — same JWT / `getSessionWallet` auth pattern as `/api/watchlist`, same rate-limiting, wallet from JWT not client. On wallet connect, migrate any `localStorage` recents to server once and clear the local copy.
 
 ## Auth & API
