@@ -1,15 +1,15 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState, useEffect } from "react";
 import { useUnifiedWalletContext } from "@jup-ag/wallet-adapter";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { HeroSection } from "@/components/layout/HeroSection";
-import { SearchBox } from "@/components/search/SearchBox";
+import { HeroSearchButton } from "@/components/search/HeroSearchButton";
 import { DexCard } from "@/components/ui/DexCard";
 import { TokenModal } from "@/components/ui/TokenModal";
-import { TabGrid, TabEmpty } from "@/components/tabs/TabShell";
+import { TabEmpty } from "@/components/tabs/TabShell";
 import { SpiralLoader } from "@/components/agent-elements/spiral-loader";
 import { WatchlistTab } from "@/components/tabs/WatchlistTab";
 import { useSession } from "@/components/providers/SessionContext";
@@ -68,17 +68,7 @@ export default function Dashboard() {
   const paused = false;
   const [selectedPair, setSelectedPair] = useState<TokenPair | null>(null);
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<TokenPair[]>([]);
-  const [searchLoading, setSearchLoading] = useState(false);
-  const handleSearchResultsChange = useCallback((pairs: unknown[]) => {
-    setSearchResults(pairs as TokenPair[]);
-  }, []);
-
   const openWatchlist = useCallback(() => {
-    setSearchQuery("");
-    setSearchResults([]);
-    setSearchLoading(false);
     setTab((prev) => (prev === "watchlist" ? "home" : "watchlist"));
   }, []);
 
@@ -104,45 +94,18 @@ export default function Dashboard() {
     [authed, setShowModal, watchlist]
   );
 
-  const showingSearch = searchQuery.trim().length > 0;
-
-  useEffect(() => {
-    if (showingSearch && tab !== "home") {
-      setTab("home");
-    }
-  }, [showingSearch, tab]);
-
   return (
     <>
       <Header
         showWatchlistButton
-        watchlistActive={!showingSearch && tab === "watchlist"}
+        watchlistActive={tab === "watchlist"}
         onOpenWatchlist={openWatchlist}
       />
-      <HeroSection
-        searchSlot={
-          <SearchBox
-            query={searchQuery}
-            setQuery={setSearchQuery}
-            onResultsChange={handleSearchResultsChange}
-            onLoadingChange={setSearchLoading}
-            loading={searchLoading}
-          />
-        }
-      />
+      <HeroSection searchSlot={<HeroSearchButton />} />
 
       <main className="flex-1 max-w-[1400px] w-full mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 space-y-4">
         <section>
-          {showingSearch ? (
-            <SearchResultsView
-              query={searchQuery}
-              results={searchResults}
-              loading={searchLoading}
-              onSelectPair={setSelectedPair}
-              starredSet={watchlist.starredSet}
-              onStarToggle={handleStarToggle}
-            />
-          ) : tab === "watchlist" ? (
+          {tab === "watchlist" ? (
             <WatchlistTab
               authed={authed}
               wallet={wallet}
@@ -150,6 +113,8 @@ export default function Dashboard() {
               loaded={sessionLoaded && watchlist.loaded}
               onSelectPair={setSelectedPair}
               onRemove={watchlist.remove}
+              paused={paused}
+              riskFormula="advanced"
             />
           ) : (
             <HomeSectionsView
@@ -165,54 +130,13 @@ export default function Dashboard() {
       <Footer />
 
       {selectedPair && (
-        <TokenModal pair={selectedPair} onClose={() => setSelectedPair(null)} />
+        <TokenModal
+          pair={selectedPair}
+          onClose={() => setSelectedPair(null)}
+          riskFormula="advanced"
+        />
       )}
     </>
-  );
-}
-
-function SearchResultsView({
-  query,
-  results,
-  loading,
-  onSelectPair,
-  starredSet,
-  onStarToggle,
-}: {
-  query: string;
-  results: TokenPair[];
-  loading: boolean;
-  onSelectPair: (pair: TokenPair) => void;
-  starredSet: Set<string>;
-  onStarToggle: (pair: TokenPair) => void;
-}) {
-  const queryLen = query.trim().length;
-  if (queryLen === 1) {
-    return <TabEmpty text="Type 2 more letters and results will be here." />;
-  }
-  if (loading && results.length === 0) {
-    return (
-      <div className="py-12 flex items-center justify-center gap-2 text-sm text-[#6a7282]">
-        <SpiralLoader size={18} />
-        <span>Searching…</span>
-      </div>
-    );
-  }
-  if (results.length === 0) {
-    return <TabEmpty text="No results found." />;
-  }
-  return (
-    <TabGrid>
-      {results.map((pair, i) => (
-        <DexCard
-          key={pair?.pairAddress ?? i}
-          pair={pair}
-          onClick={() => onSelectPair(pair)}
-          starred={starredSet.has(pair?.baseToken?.address ?? "")}
-          onStarToggle={() => onStarToggle(pair)}
-        />
-      ))}
-    </TabGrid>
   );
 }
 

@@ -2,12 +2,17 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { Pause, Play, Search as SearchIcon } from "lucide-react";
 import { ConnectWalletButton } from "@/components/wallet/ConnectWalletButton";
+import { useSearchModal } from "@/components/search/SearchModalProvider";
 
 export interface HeaderProps {
   showWatchlistButton?: boolean;
   watchlistActive?: boolean;
   onOpenWatchlist?: () => void;
+  showPauseToggle?: boolean;
+  paused?: boolean;
+  onTogglePause?: () => void;
   /**
    * When true, header starts in "over-hero" style (transparent + blur + white text)
    * and transitions to "scrolled" style (white + shadow + dark text) once the user
@@ -22,9 +27,13 @@ export function Header({
   showWatchlistButton = false,
   watchlistActive = false,
   onOpenWatchlist,
+  showPauseToggle = false,
+  paused = false,
+  onTogglePause,
   hasHero = true,
 }: HeaderProps) {
   const [scrolled, setScrolled] = useState(!hasHero);
+  const { open: openSearch } = useSearchModal();
 
   useEffect(() => {
     if (!hasHero) {
@@ -98,6 +107,40 @@ export function Header({
         </Link>
 
         <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={openSearch}
+            aria-label="Open search"
+            title="Search (⌘K)"
+            className={`h-7 px-2 rounded-sm text-xs transition-colors duration-300 inline-flex items-center gap-1.5 ${actionBtnClass}`}
+          >
+            <SearchIcon className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Search</span>
+            <kbd
+              className={`hidden sm:inline-flex items-center px-1 h-4 ml-0.5 text-[9px] rounded-sm border leading-none ${
+                scrolled
+                  ? "border-[#cbd5e1] bg-[#f1f5f9] text-[#6a7282]"
+                  : "border-white/20 bg-white/10 text-white/80"
+              }`}
+            >
+              ⌘K
+            </kbd>
+          </button>
+          {showPauseToggle && onTogglePause && (
+            <button
+              type="button"
+              onClick={onTogglePause}
+              aria-label={paused ? "Resume live updates" : "Pause live updates"}
+              title={paused ? "Resume" : "Pause"}
+              className={`h-7 w-7 rounded-sm transition-colors duration-300 inline-flex items-center justify-center ${actionBtnClass}`}
+            >
+              {paused ? (
+                <Play className="w-3.5 h-3.5" />
+              ) : (
+                <Pause className="w-3.5 h-3.5" />
+              )}
+            </button>
+          )}
           {showWatchlistButton && onOpenWatchlist && (
             <button
               type="button"
