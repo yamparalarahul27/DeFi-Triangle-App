@@ -3,12 +3,11 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ConnectWalletButton } from "@/components/wallet/ConnectWalletButton";
-import { StatusDot } from "@/components/ui/StatusDot";
 
 export interface HeaderProps {
-  paused?: boolean;
-  onTogglePause?: () => void;
-  showPauseToggle?: boolean;
+  showWatchlistButton?: boolean;
+  watchlistActive?: boolean;
+  onOpenWatchlist?: () => void;
   /**
    * When true, header starts in "over-hero" style (transparent + blur + white text)
    * and transitions to "scrolled" style (white + shadow + dark text) once the user
@@ -20,9 +19,9 @@ export interface HeaderProps {
 const HEADER_HEIGHT = 48;
 
 export function Header({
-  paused = false,
-  onTogglePause,
-  showPauseToggle = true,
+  showWatchlistButton = false,
+  watchlistActive = false,
+  onOpenWatchlist,
   hasHero = true,
 }: HeaderProps) {
   const [scrolled, setScrolled] = useState(!hasHero);
@@ -69,9 +68,13 @@ export function Header({
     ? "text-[#11274d] hover:text-[#0a1a36]"
     : "text-white hover:text-white/80";
 
-  const pauseBtnClass = scrolled
+  const actionBtnClass = scrolled
     ? "bg-white border border-[#cbd5e1] text-[#11274d] hover:bg-[#e2e8f0]"
     : "bg-white/10 border border-white/15 text-white hover:bg-white/20";
+
+  const watchlistBtnClass = watchlistActive
+    ? "bg-[#19549b] text-white border border-[#19549b]"
+    : actionBtnClass;
 
   return (
     <header
@@ -80,25 +83,28 @@ export function Header({
       <div className="max-w-[1400px] mx-auto h-12 px-4 lg:px-6 flex items-center justify-between gap-3">
         <Link
           href="/"
-          className={`text-sm font-semibold tracking-tight transition-colors duration-300 ${wordmarkClass}`}
+          className={`inline-flex items-center gap-2 text-sm font-semibold tracking-tight transition-colors duration-300 ${wordmarkClass}`}
         >
+          <span aria-hidden="true" className="inline-flex">
+            <img
+              src={scrolled ? "/brand/defi_logo_dark.svg" : "/brand/defi_logo_white.svg"}
+              alt=""
+              className="h-5 w-auto shrink-0"
+              width={20}
+              height={20}
+            />
+          </span>
           DeFi Triangle
         </Link>
 
         <div className="flex items-center gap-2">
-          {showPauseToggle && onTogglePause && (
+          {showWatchlistButton && onOpenWatchlist && (
             <button
               type="button"
-              onClick={onTogglePause}
-              aria-pressed={!paused}
-              aria-label={paused ? "Resume live updates" : "Pause live updates"}
-              className={`h-7 px-2 rounded-sm text-xs transition-colors duration-300 inline-flex items-center gap-1.5 ${pauseBtnClass}`}
+              onClick={onOpenWatchlist}
+              className={`h-7 px-2 rounded-sm text-xs transition-colors duration-300 inline-flex items-center ${watchlistBtnClass}`}
             >
-              <StatusDot
-                variant={paused ? "warning" : "live"}
-                pulse={!paused}
-              />
-              <span>{paused ? "Paused" : "Live"}</span>
+              Watchlist
             </button>
           )}
           <ConnectWalletButton />
