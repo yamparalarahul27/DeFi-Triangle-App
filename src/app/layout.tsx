@@ -15,8 +15,28 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "DeFi Triangle — Token Edge",
-  description: "Institutional DeFi terminal on Solana",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"
+  ),
+  title: {
+    default: "DeFi Triangle — Solana token intelligence",
+    template: "%s · DeFi Triangle",
+  },
+  description:
+    "Trending Solana markets, variants, and risk — scored in real time. Backed by Birdeye, Jupiter, and Tokens.xyz.",
+  openGraph: {
+    title: "DeFi Triangle — Solana token intelligence",
+    description:
+      "Trending Solana markets, variants, and risk — scored in real time.",
+    type: "website",
+    siteName: "DeFi Triangle",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "DeFi Triangle — Solana token intelligence",
+    description:
+      "Trending Solana markets, variants, and risk — scored in real time.",
+  },
 };
 
 export default function RootLayout({
