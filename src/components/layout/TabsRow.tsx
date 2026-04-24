@@ -1,28 +1,13 @@
 "use client";
 
-export type TabKey =
-  | "trending"
-  | "live"
-  | "whale"
-  | "meme"
-  | "smart"
-  | "defi"
-  | "watchlist";
+export type TabKey = "trending" | "watchlist";
 
 interface TabDef {
   key: TabKey;
   label: string;
 }
 
-const TABS: TabDef[] = [
-  { key: "trending", label: "Trending" },
-  { key: "live", label: "Live feed" },
-  { key: "whale", label: "Whale" },
-  { key: "meme", label: "Meme" },
-  { key: "smart", label: "Smart" },
-  { key: "defi", label: "DeFi" },
-  { key: "watchlist", label: "☆ Watchlist" },
-];
+const TABS: TabDef[] = [{ key: "trending", label: "All" }];
 
 export function TabsRow({
   active,

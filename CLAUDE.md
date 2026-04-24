@@ -30,7 +30,25 @@ Rules for Claude Code when working in this repo. Read on every session.
 
 - Debug UI (Agentation, verbose panels) must be gated behind `process.env.NODE_ENV === "development"`.
 - Never expose stack traces or internal error details in API responses. Log internally, respond generically.
-- Dependency additions require: (a) proposal to user, (b) `npm audit` clean after install (enforced by `.claude/hooks/audit-if-deps-changed.sh`).
+- Dependency additions require: (a) proposal to user, (b) `npm audit` clean after install (enforced by `.claude/hooks/audit-if-deps-changed.sh`), except for the accepted-risk findings listed below.
+
+### Accepted upstream vulnerabilities
+
+The following `npm audit` findings are **pre-existing Solana ecosystem issues** with no patched upstream release. They arrived via the `@jup-ag/wallet-adapter` → `@solana-mobile/*` transitive chain and are accepted risk pending a Jupiter wallet-adapter major upgrade tracked as a separate task.
+
+- [GHSA-3gc7-fjrx-p6mg](https://github.com/advisories/GHSA-3gc7-fjrx-p6mg) — `bigint-buffer` buffer overflow via `toBigIntLE()` (CVSS 7.5)
+  - Transitive via `@solana/buffer-layout-utils` → `@solana/spl-token`
+  - Surfaces as 3 high-severity audit entries: `bigint-buffer`, `@solana/buffer-layout-utils`, `@solana/spl-token`
+
+Rules:
+- Do **not** add new high or critical vulnerabilities beyond the above.
+- Do **not** remove this section without first upgrading `@jup-ag/wallet-adapter` and verifying the audit no longer reports these advisories.
+- The audit hook will fire on these — that is expected and documented. Verify the reported vulns match this list before proceeding.
+
+## Pending followups
+
+- **Brand logo SVGs missing from repo.** `src/components/layout/Header.tsx` references `/brand/defi_logo_dark.svg` and `/brand/defi_logo_white.svg`, but `public/brand/` does not exist and those SVGs have never been committed on any branch. At the start of the next local session, remind the user to commit the two brand SVGs to `public/brand/` (or to swap the refs for a text wordmark / alternative asset) and push to `stage` so the top-left logo stops 404-ing in preview/production.
+- **Search recents → wallet-scoped server-side storage.** V1 shipped with `localStorage` only (per-device) in `src/lib/hooks/useRecentSearches.ts`. When building the next iteration of the Watchlist feature, add a `search_recents` Supabase table and GET/POST/DELETE endpoints under `/api/search-recents` — same JWT / `getSessionWallet` auth pattern as `/api/watchlist`, same rate-limiting, wallet from JWT not client. On wallet connect, migrate any `localStorage` recents to server once and clear the local copy.
 
 ## Auth & API
 

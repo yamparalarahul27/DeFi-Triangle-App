@@ -1,25 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
 import { TokenIcon } from "./TokenIcon";
-import { RiskBar } from "./RiskBar";
+import { TokenModalChart } from "./TokenModalChart";
 import { fmtAge, fmtNum, fmtPct, fmtUsd } from "@/lib/format";
-import {
-  getRiskBreakdown,
-  toRiskInputFromDexScreener,
-  type RiskBreakdown,
-} from "@/lib/scoring";
-
-type Candle = {
-  o: number;
-  h: number;
-  l: number;
-  c: number;
-  v: number;
-  unixTime: number;
-};
-
-const ohlcvCache = new Map<string, Candle[]>();
+import { useTokenChart } from "@/lib/hooks/useTokenChart";
+import { useTokenSecurity } from "@/lib/hooks/useTokenSecurity";
 
 const SOCIAL_LABELS: Record<string, string> = {
   twitter: "X",
@@ -28,15 +15,32 @@ const SOCIAL_LABELS: Record<string, string> = {
   discord: "Discord",
 };
 
+type TokenPair = {
+  baseToken?: { address?: string; symbol?: string; name?: string };
+  info?: {
+    imageUrl?: string;
+    socials?: { type: string; url: string }[];
+    websites?: { url: string }[];
+  };
+  priceUsd?: number | string;
+  priceChange?: { h24?: number | string };
+  liquidity?: { usd?: number | string };
+  volume?: { h24?: number | string };
+  marketCap?: number | string;
+  fdv?: number | string;
+  pairCreatedAt?: number | string;
+  dexId?: string;
+  txns?: { h24?: { buys?: number | string; sells?: number | string } };
+  [key: string]: unknown;
+};
+
 export interface TokenModalProps {
-  pair: any;
+  pair: TokenPair;
   onClose: () => void;
 }
 
 export function TokenModal({ pair: initialPair, onClose }: TokenModalProps) {
-  const [pair, setPair] = useState<any>(initialPair);
-  const [candles, setCandles] = useState<Candle[] | null>(null);
-  const [loadingChart, setLoadingChart] = useState(true);
+  const [pair, setPair] = useState<TokenPair>(initialPair);
   const [copied, setCopied] = useState(false);
 
   const address: string = pair?.baseToken?.address ?? "";
@@ -46,62 +50,28 @@ export function TokenModal({ pair: initialPair, onClose }: TokenModalProps) {
   const priceUsd = Number(pair?.priceUsd ?? 0);
   const priceChange24 = Number(pair?.priceChange?.h24 ?? 0);
   const priceUp = priceChange24 >= 0;
+  const trendIconSrc = priceUp ? "/app/Up.svg" : "/app/Down.svg";
 
-  useEffect(() => {
-    if (!address) {
-      setCandles([]);
-      setLoadingChart(false);
-      return;
-    }
-    if (ohlcvCache.has(address)) {
-      setCandles(ohlcvCache.get(address) ?? []);
-      setLoadingChart(false);
-      return;
-    }
-    let cancelled = false;
-    setLoadingChart(true);
-    (async () => {
-      try {
-        const res = await fetch(
-          `/api/birdeye?type=ohlcv&address=${encodeURIComponent(address)}`,
-          { cache: "no-store" }
-        );
-        const json = res.ok ? await res.json() : null;
-        const data: Candle[] =
-          json?.success && Array.isArray(json.data) ? json.data : [];
-        if (!cancelled) {
-          ohlcvCache.set(address, data);
-          setCandles(data);
-        }
-      } catch {
-        if (!cancelled) setCandles([]);
-      } finally {
-        if (!cancelled) setLoadingChart(false);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [address]);
+  const { candles, loading: loadingChart } = useTokenChart(address);
+  const {
+    signals: securitySignals,
+    loading: loadingSecurity,
+    error: securityError,
+  } = useTokenSecurity(address);
 
   useEffect(() => {
     if (!address) return;
-    const hasMeta =
-      pair?.liquidity?.usd != null &&
-      pair?.volume?.h24 != null &&
-      pair?.pairCreatedAt != null;
-    if (hasMeta) return;
     let cancelled = false;
     (async () => {
       try {
         const res = await fetch(
-          `/api/dexscreener?type=token&address=${encodeURIComponent(address)}`,
+          `/api/birdeye?type=token&address=${encodeURIComponent(address)}`,
           { cache: "no-store" }
         );
         const json = res.ok ? await res.json() : null;
         const hydrated = json?.data;
         if (!cancelled && hydrated) {
-          setPair((prev: any) => ({ ...prev, ...hydrated }));
+          setPair((prev) => ({ ...prev, ...(hydrated as TokenPair) }));
         }
       } catch {
         // ignore
@@ -110,7 +80,6 @@ export function TokenModal({ pair: initialPair, onClose }: TokenModalProps) {
     return () => {
       cancelled = true;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address]);
 
   useEffect(() => {
@@ -125,23 +94,6 @@ export function TokenModal({ pair: initialPair, onClose }: TokenModalProps) {
       document.body.style.overflow = prevOverflow;
     };
   }, [onClose]);
-
-  const breakdown: RiskBreakdown = useMemo(
-    () => getRiskBreakdown(toRiskInputFromDexScreener(pair)),
-    [pair]
-  );
-
-  const passes = useMemo(() => {
-    const overheated = breakdown.warnings.some(
-      (w) => w === "Overheated turnover" || w === "Sudden volume spike"
-    );
-    return {
-      liquidity: breakdown.buckets.liquidity.score >= 20,
-      price: breakdown.buckets.price.score >= 7,
-      volume: !overheated,
-      marketCap: breakdown.buckets.valuation.score >= 6,
-    };
-  }, [breakdown]);
 
   const copyAddress = useCallback(async () => {
     if (!address) return;
@@ -197,7 +149,7 @@ export function TokenModal({ pair: initialPair, onClose }: TokenModalProps) {
         </div>
 
         <div className="p-4 space-y-4">
-          <section>
+          <div>
             <div className="flex items-baseline justify-between">
               <div>
                 <div className="text-[10px] uppercase tracking-wider text-[#6B7280]">
@@ -212,7 +164,13 @@ export function TokenModal({ pair: initialPair, onClose }: TokenModalProps) {
                   priceUp ? "text-[#0fa87a]" : "text-[#ef4444]"
                 }`}
               >
-                <span>{priceUp ? "▲" : "▼"}</span>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={trendIconSrc}
+                  alt=""
+                  aria-hidden="true"
+                  className="h-3 w-3 shrink-0"
+                />
                 <span className="font-mono">
                   {fmtPct(Math.abs(priceChange24))}
                 </span>
@@ -228,49 +186,12 @@ export function TokenModal({ pair: initialPair, onClose }: TokenModalProps) {
                   No chart data
                 </div>
               ) : (
-                <Sparkline candles={candles} />
+                <TokenModalChart candles={candles} height={80} />
               )}
-              <div className="text-center text-[10px] text-[#6B7280] mt-1">
-                24h price history · Birdeye
-              </div>
             </div>
-          </section>
+          </div>
 
-          <section>
-            <div className="text-[10px] uppercase tracking-wider text-[#6B7280] mb-2">
-              Risk score
-            </div>
-            <RiskBar score={breakdown.score} label={breakdown.label} />
-            <div className="text-xs text-[#6B7280] mt-2">
-              {breakdown.summary}
-            </div>
-          </section>
-
-          <section>
-            <div className="text-[10px] uppercase tracking-wider text-[#6B7280] mb-2">
-              Risk breakdown
-            </div>
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              <CheckRow pass={passes.liquidity} label="Liquidity" />
-              <CheckRow pass={passes.price} label="Price action" />
-              <CheckRow pass={passes.volume} label="Volume spike" />
-              <CheckRow pass={passes.marketCap} label="Market cap" />
-            </div>
-            {breakdown.warnings.length > 0 && (
-              <div className="mt-3 space-y-1">
-                {breakdown.warnings.slice(0, 4).map((w, i) => (
-                  <div
-                    key={i}
-                    className="text-[11px] text-[#b45309] bg-[#fffbeb] border border-[#fde68a] rounded-sm px-2 py-1"
-                  >
-                    {w}
-                  </div>
-                ))}
-              </div>
-            )}
-          </section>
-
-          <section>
+          <div>
             <div className="text-[10px] uppercase tracking-wider text-[#6B7280] mb-2">
               Token data
             </div>
@@ -289,20 +210,19 @@ export function TokenModal({ pair: initialPair, onClose }: TokenModalProps) {
               />
               <Stat
                 label="Mcap"
-                value={fmtUsd(
-                  Number(pair?.marketCap ?? pair?.fdv ?? 0),
-                  { compact: true }
-                )}
+                value={fmtUsd(Number(pair?.marketCap ?? pair?.fdv ?? 0), {
+                  compact: true,
+                })}
               />
               <Stat
                 label="FDV"
                 value={fmtUsd(Number(pair?.fdv ?? 0), { compact: true })}
               />
               <Stat
-                label="Created"
+                label="Last trade"
                 value={`${fmtAge(Number(pair?.pairCreatedAt ?? 0))} ago`}
               />
-              <Stat label="DEX" value={pair?.dexId ?? "—"} />
+              <Stat label="Source" value={pair?.dexId ?? "birdeye"} />
               <Stat
                 label="Buys 24h"
                 value={fmtNum(Number(pair?.txns?.h24?.buys ?? 0))}
@@ -312,10 +232,29 @@ export function TokenModal({ pair: initialPair, onClose }: TokenModalProps) {
                 value={fmtNum(Number(pair?.txns?.h24?.sells ?? 0))}
               />
             </div>
-          </section>
+          </div>
+
+          <div>
+            <div className="text-[10px] uppercase tracking-wider text-[#6B7280] mb-2">
+              Security
+            </div>
+            {loadingSecurity ? (
+              <div className="text-xs text-[#6B7280]">Loading security…</div>
+            ) : securitySignals.length > 0 ? (
+              <div className="grid grid-cols-2 gap-y-1 gap-x-3 text-xs">
+                {securitySignals.map((item) => (
+                  <Stat key={item.label} label={item.label} value={item.value} />
+                ))}
+              </div>
+            ) : (
+              <div className="text-xs text-[#6B7280]">
+                {securityError ?? "Security data unavailable for this token."}
+              </div>
+            )}
+          </div>
 
           {(socials.length > 0 || websites.length > 0) && (
-            <section>
+            <div>
               <div className="text-[10px] uppercase tracking-wider text-[#6B7280] mb-2">
                 Socials
               </div>
@@ -343,10 +282,10 @@ export function TokenModal({ pair: initialPair, onClose }: TokenModalProps) {
                   </a>
                 ))}
               </div>
-            </section>
+            </div>
           )}
 
-          <section>
+          <div>
             <div className="text-[10px] uppercase tracking-wider text-[#6B7280] mb-2">
               Contract address
             </div>
@@ -363,35 +302,20 @@ export function TokenModal({ pair: initialPair, onClose }: TokenModalProps) {
                 {copied ? "Copied" : "Copy"}
               </button>
             </div>
-          </section>
+          </div>
 
           {address && (
-            <a
-              href={`https://birdeye.so/token/${address}?chain=solana`}
+            <Link
+              href={`/token/${address}`}
               target="_blank"
               rel="noopener noreferrer"
               className="block w-full text-center text-sm text-white bg-[#19549b] hover:bg-[#143f78] py-3 rounded-sm transition-colors"
             >
-              View on Birdeye ↗
-            </a>
+              View token details
+            </Link>
           )}
         </div>
       </div>
-    </div>
-  );
-}
-
-function CheckRow({ pass, label }: { pass: boolean; label: string }) {
-  return (
-    <div className="flex items-center gap-2">
-      <span
-        className={`text-sm leading-none ${
-          pass ? "text-[#0fa87a]" : "text-[#ef4444]"
-        }`}
-      >
-        {pass ? "✓" : "✗"}
-      </span>
-      <span className="text-[#111827]">{label}</span>
     </div>
   );
 }
@@ -404,59 +328,5 @@ function Stat({ label, value }: { label: string; value: string }) {
         {value}
       </span>
     </div>
-  );
-}
-
-function Sparkline({ candles }: { candles: Candle[] }) {
-  const closes = candles.map((c) => c.c).filter((n) => Number.isFinite(n));
-  if (closes.length < 2) {
-    return (
-      <div className="h-20 flex items-center justify-center text-xs text-[#6B7280]">
-        No chart data
-      </div>
-    );
-  }
-  const min = Math.min(...closes);
-  const max = Math.max(...closes);
-  const range = max - min || 1;
-  const w = 440;
-  const h = 80;
-  const step = closes.length > 1 ? w / (closes.length - 1) : w;
-  const points = closes
-    .map((c, i) => `${i * step},${h - ((c - min) / range) * h}`)
-    .join(" ");
-  const first = closes[0];
-  const last = closes[closes.length - 1];
-  const up = last >= first;
-  const lineColor = up ? "#0fa87a" : "#ef4444";
-  const minIdx = closes.indexOf(min);
-  const maxIdx = closes.indexOf(max);
-
-  return (
-    <svg
-      viewBox={`0 0 ${w} ${h}`}
-      preserveAspectRatio="none"
-      className="w-full h-20"
-      aria-hidden="true"
-    >
-      <polyline
-        points={points}
-        fill="none"
-        stroke={lineColor}
-        strokeWidth="1.5"
-      />
-      <circle
-        cx={maxIdx * step}
-        cy={h - ((max - min) / range) * h}
-        r="3"
-        fill="#0fa87a"
-      />
-      <circle
-        cx={minIdx * step}
-        cy={h - ((min - min) / range) * h}
-        r="3"
-        fill="#ef4444"
-      />
-    </svg>
   );
 }

@@ -11,7 +11,7 @@ export function LiveTab({
   onStarToggle,
 }: TabProps) {
   const { data, loading } = useTabPairs(
-    "/api/dexscreener?type=live",
+    "/api/birdeye?type=trending&limit=20",
     10_000,
     paused
   );

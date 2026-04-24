@@ -26,22 +26,37 @@ export function DefiTab({
   onStarToggle,
 }: TabProps) {
   const [filter, setFilter] = useState<DefiFilter>("all");
-  const url = useMemo(
-    () => `/api/dexscreener?type=defi&filter=${filter}`,
-    [filter]
+  const { data, loading } = useTabPairs(
+    "/api/birdeye?type=trending&limit=20",
+    25_000,
+    paused
   );
-  const { data, loading } = useTabPairs(url, 25_000, paused);
+
+  const filtered = useMemo(() => {
+    const base = data.filter((p) => Number(p?.liquidity?.usd ?? 0) >= 25_000);
+    if (filter === "gainers") {
+      return base
+        .filter((p) => Number(p?.priceChange?.h24 ?? 0) >= 0)
+        .sort((a, b) => Number(b?.priceChange?.h24 ?? 0) - Number(a?.priceChange?.h24 ?? 0));
+    }
+    if (filter === "losers") {
+      return base
+        .filter((p) => Number(p?.priceChange?.h24 ?? 0) < 0)
+        .sort((a, b) => Number(a?.priceChange?.h24 ?? 0) - Number(b?.priceChange?.h24 ?? 0));
+    }
+    return base;
+  }, [data, filter]);
 
   return (
     <div className="space-y-3">
       <FilterChips options={OPTIONS} value={filter} onChange={setFilter} />
-      {loading && data.length === 0 ? (
+      {loading && filtered.length === 0 ? (
         <TabLoading />
-      ) : data.length === 0 ? (
+      ) : filtered.length === 0 ? (
         <TabEmpty />
       ) : (
         <TabGrid>
-          {data.map((pair, i) => (
+          {filtered.map((pair, i) => (
             <DexCard
               key={pair?.pairAddress ?? i}
               pair={pair}

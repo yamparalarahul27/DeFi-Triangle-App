@@ -10,15 +10,11 @@ export interface TabProps {
 }
 
 export function TabLoading({ text = "Loading…" }: { text?: string }) {
-  return (
-    <div className="py-12 text-center text-sm text-[#6a7282]">{text}</div>
-  );
+  return <div className="py-12 text-center text-sm text-[#6a7282]">{text}</div>;
 }
 
 export function TabEmpty({ text = "No data available." }: { text?: string }) {
-  return (
-    <div className="py-12 text-center text-sm text-[#6a7282]">{text}</div>
-  );
+  return <div className="py-12 text-center text-sm text-[#6a7282]">{text}</div>;
 }
 
 export function TabGrid({

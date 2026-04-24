@@ -5,156 +5,175 @@ import { useParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
-import { RiskBar } from "@/components/ui/RiskBar";
-import { TokenIcon } from "@/components/ui/TokenIcon";
-import { fmtAge, fmtNum, fmtPct, fmtUsd } from "@/lib/format";
+import type { Candle } from "@/components/ui/PriceChart";
+import { useInterval } from "@/lib/hooks/useInterval";
+import type { AssetCore, AssetResponse } from "@/lib/tokens-xyz-types";
 import {
-  getRiskBreakdown,
-  toRiskInputFromDexScreener,
-  type RiskBreakdown,
-} from "@/lib/scoring";
+  CHART_RANGES,
+  extractAsset,
+  flattenVariantsByKind,
+  normalizeChartCandles,
+  primaryFromAsset,
+  type ChartRange,
+} from "@/app/_archive/solana/_utils";
+import { AboutSection } from "@/app/_archive/solana/_components/AboutSection";
+import { IdentityStrip } from "@/app/_archive/solana/_components/IdentityStrip";
+import { MarketsSection } from "@/app/_archive/solana/_components/MarketsSection";
+import { PriceChartSection } from "@/app/_archive/solana/_components/PriceChartSection";
+import { RiskPanel } from "@/app/_archive/solana/_components/RiskPanel";
+import { StatsGrid } from "@/app/_archive/solana/_components/StatsGrid";
+import { VariantsSection } from "@/app/_archive/solana/_components/VariantsSection";
 
-type Candle = {
-  o: number;
-  h: number;
-  l: number;
-  c: number;
-  v: number;
-  unixTime: number;
+const TOKEN_REFRESH_MS = 15_000;
+
+type BirdeyePair = {
+  baseToken?: { address?: string; symbol?: string; name?: string };
+  info?: { imageUrl?: string };
+  priceUsd?: number | string;
+  priceChange?: { h24?: number | string; h1?: number | string };
+  liquidity?: { usd?: number | string };
+  volume?: { h24?: number | string };
+  marketCap?: number | string;
+  fdv?: number | string;
+  dexId?: string;
 };
 
 export default function TokenDetailPage() {
   const params = useParams<{ address: string }>();
-  const address = params?.address ?? "";
+  const address = useMemo(() => (params?.address ?? "").trim(), [params?.address]);
 
-  const [pair, setPair] = useState<any | null>(null);
-  const [candles, setCandles] = useState<Candle[]>([]);
+  const [pair, setPair] = useState<BirdeyePair | null>(null);
+  const [response, setResponse] = useState<AssetResponse | null>(null);
+  const [chartCandles, setChartCandles] = useState<Candle[]>([]);
+  const [chartRange, setChartRange] = useState("1W");
   const [loading, setLoading] = useState(true);
-  const [copied, setCopied] = useState<"addr" | "link" | null>(null);
+  const [chartLoading, setChartLoading] = useState(true);
+
+  const fetchTokenData = useCallback(async () => {
+    if (!address) return;
+
+    try {
+      const [birdeyeRes, tokensXyzRes] = await Promise.all([
+        fetch(`/api/birdeye?type=token&address=${encodeURIComponent(address)}`, {
+          cache: "no-store",
+        }),
+        fetch(`/api/tokens-xyz?type=asset&assetId=${encodeURIComponent(address)}`, {
+          cache: "no-store",
+        }),
+      ]);
+
+      const birdeyeJson = birdeyeRes.ok ? await birdeyeRes.json() : null;
+      const tokensXyzJson = tokensXyzRes.ok ? await tokensXyzRes.json() : null;
+
+      setPair(birdeyeJson?.success ? (birdeyeJson.data as BirdeyePair) : null);
+      setResponse(
+        tokensXyzJson?.success && tokensXyzJson?.data
+          ? extractAsset(tokensXyzJson.data)
+          : null
+      );
+    } catch {
+      // keep previous state on transient failures
+    }
+  }, [address]);
 
   useEffect(() => {
     if (!address) return;
+
     let cancelled = false;
     (async () => {
       setLoading(true);
-      try {
-        const [beRes, ohlcvRes] = await Promise.all([
-          fetch(`/api/birdeye?type=trending`, { cache: "no-store" }),
-          fetch(
-            `/api/birdeye?type=ohlcv&address=${encodeURIComponent(address)}`,
-            { cache: "no-store" }
-          ),
-        ]);
-        const beJson = beRes.ok ? await beRes.json() : null;
-        const ohJson = ohlcvRes.ok ? await ohlcvRes.json() : null;
-
-        const trending: any[] =
-          beJson?.success && Array.isArray(beJson.data) ? beJson.data : [];
-        let basePair: any | null = null;
-
-        const beMatch = trending.find((t) => t?.address === address);
-
-        // Hydrate via DexScreener in parallel for full card data.
-        const dexRes = await fetch(
-          `/api/dexscreener?type=token&address=${encodeURIComponent(address)}`,
-          { cache: "no-store" }
-        );
-        const dexJson = dexRes.ok ? await dexRes.json() : null;
-        const dexPair = dexJson?.success ? dexJson.data : null;
-
-        if (dexPair) {
-          basePair = {
-            ...dexPair,
-            score:
-              typeof beMatch?.score === "number"
-                ? beMatch.score
-                : dexPair.score,
-            label: beMatch?.label ?? dexPair.label,
-            trendingRank: beMatch?.rank,
-          };
-        } else if (beMatch) {
-          basePair = {
-            baseToken: {
-              address: beMatch.address,
-              symbol: beMatch.symbol,
-              name: beMatch.name,
-            },
-            info: { imageUrl: beMatch.logoURI },
-            priceUsd: beMatch.price,
-            priceChange: { h24: beMatch.price24hChangePercent ?? 0 },
-            liquidity: { usd: beMatch.liquidity ?? 0 },
-            fdv: beMatch.fdv,
-            marketCap: beMatch.marketcap ?? beMatch.marketCap ?? beMatch.fdv,
-            volume: { h24: beMatch.volume24hUSD ?? 0 },
-            txns: {},
-            dexId: "",
-            score: beMatch.score,
-            label: beMatch.label,
-            trendingRank: beMatch.rank,
-          };
-        }
-
-        if (cancelled) return;
-        setPair(basePair);
-        setCandles(
-          ohJson?.success && Array.isArray(ohJson.data) ? ohJson.data : []
-        );
-      } catch {
-        // keep null
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
+      await fetchTokenData();
+      if (!cancelled) setLoading(false);
     })();
+
     return () => {
       cancelled = true;
     };
-  }, [address]);
+  }, [address, fetchTokenData]);
 
-  const breakdown: RiskBreakdown | null = useMemo(
-    () => (pair ? getRiskBreakdown(toRiskInputFromDexScreener(pair)) : null),
-    [pair]
+  useInterval(fetchTokenData, address ? TOKEN_REFRESH_MS : null);
+
+  useEffect(() => {
+    if (!address) return;
+
+    const range = CHART_RANGES.find((r) => r.label === chartRange) ?? CHART_RANGES[1];
+
+    let cancelled = false;
+    (async () => {
+      setChartLoading(true);
+      try {
+        const candles = await fetchTokenChartCandles(address, range);
+        if (!cancelled) {
+          setChartCandles(candles);
+        }
+      } finally {
+        if (!cancelled) setChartLoading(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [address, chartRange]);
+
+  const fallbackAsset = useMemo(
+    () => buildAssetFromPair(pair, address),
+    [pair, address]
   );
 
-  const copyAddress = useCallback(async () => {
-    if (!address) return;
-    try {
-      await navigator.clipboard.writeText(address);
-      setCopied("addr");
-      setTimeout(() => setCopied(null), 1500);
-    } catch {
-      // ignore
-    }
-  }, [address]);
+  const asset = useMemo(
+    () => mergeAssetWithFallback(response?.asset ?? null, fallbackAsset, address),
+    [response?.asset, fallbackAsset, address]
+  );
 
-  const copyShare = useCallback(async () => {
-    if (!address) return;
-    const base = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "") ?? "";
-    try {
-      await navigator.clipboard.writeText(`${base}/token/${address}`);
-      setCopied("link");
-      setTimeout(() => setCopied(null), 1500);
-    } catch {
-      // ignore
-    }
-  }, [address]);
+  const primary = useMemo(() => (asset ? primaryFromAsset(asset) : null), [asset]);
+  const variantsByKind = useMemo(
+    () => (asset ? flattenVariantsByKind(asset) : {}),
+    [asset]
+  );
 
-  const passes = useMemo(() => {
-    if (!breakdown) return null;
-    const overheated = breakdown.warnings.some(
-      (w) => w === "Overheated turnover" || w === "Sudden volume spike"
+  const profile = response?.includes?.profile?.data;
+  const risk = response?.includes?.risk?.data;
+  const markets = response?.includes?.markets?.data?.markets ?? [];
+
+  if (loading && !asset) {
+    return (
+      <>
+        <Header hasHero={false} />
+        <main className="flex-1 max-w-[1100px] w-full mx-auto px-4 py-8">
+          <div className="py-16 text-center text-sm text-[#6a7282]">
+            Loading token…
+          </div>
+        </main>
+        <Footer />
+      </>
     );
-    return {
-      liquidity: breakdown.buckets.liquidity.score >= 20,
-      price: breakdown.buckets.price.score >= 7,
-      volume: !overheated,
-      marketCap: breakdown.buckets.valuation.score >= 6,
-    };
-  }, [breakdown]);
+  }
+
+  if (!asset) {
+    return (
+      <>
+        <Header hasHero={false} />
+        <main className="flex-1 max-w-[1100px] w-full mx-auto px-4 py-8 text-center">
+          <div className="py-16 text-sm text-[#6a7282] mb-3">
+            Unable to load token right now.
+          </div>
+          <Link
+            href="/"
+            className="text-xs text-[#19549b] hover:text-[#143f78]"
+          >
+            ← Back to dashboard
+          </Link>
+        </main>
+        <Footer />
+      </>
+    );
+  }
 
   return (
     <>
-      <Header showPauseToggle={false} />
-      <main className="flex-1 max-w-[900px] w-full mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 space-y-4">
+      <Header hasHero={false} />
+      <main className="flex-1 max-w-[1100px] w-full mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 space-y-4">
         <Link
           href="/"
           className="inline-flex items-center gap-1 text-xs text-[#6a7282] hover:text-[#11274d] transition-colors"
@@ -162,305 +181,396 @@ export default function TokenDetailPage() {
           ← Back
         </Link>
 
-        {loading ? (
-          <div className="py-16 text-center text-sm text-[#6a7282]">
-            Loading…
-          </div>
-        ) : !pair ? (
-          <div className="py-16 text-center space-y-3">
-            <div className="text-sm text-[#6a7282]">
-              Token not found in current trending list or DexScreener
-              database.
-            </div>
-            <Link
-              href="/"
-              className="inline-block text-xs text-[#19549b] hover:text-[#143f78]"
-            >
-              ← Back to dashboard
-            </Link>
-          </div>
-        ) : (
-          <>
-            <DetailHeader pair={pair} />
-            <Sparkline candles={candles} />
-            {breakdown && passes && (
-              <RiskPanel breakdown={breakdown} passes={passes} />
-            )}
-            <MetricsGrid pair={pair} />
-            <ContractPanel
-              address={address}
-              onCopy={copyAddress}
-              onShare={copyShare}
-              copied={copied}
-            />
-          </>
-        )}
+        <IdentityStrip
+          asset={asset}
+          primary={primary}
+          profile={profile}
+          risk={risk}
+        />
+
+        <PriceChartSection
+          rangeLabel={chartRange}
+          onRangeChange={setChartRange}
+          candles={chartCandles}
+          loading={chartLoading}
+        />
+
+        <StatsGrid
+          asset={asset}
+          primary={primary}
+          profile={profile}
+          risk={risk}
+        />
+
+        {risk && <RiskPanel risk={risk} />}
+
+        {profile && <AboutSection profile={profile} />}
+
+        <VariantsSection variants={variantsByKind} />
+
+        {markets.length > 0 && <MarketsSection markets={markets} />}
+
+        <TokenLinksSection address={address} />
       </main>
       <Footer />
     </>
   );
 }
 
-function DetailHeader({ pair }: { pair: any }) {
-  const base = pair?.baseToken ?? {};
-  const info = pair?.info ?? {};
-  const priceUsd = Number(pair?.priceUsd ?? 0);
-  const change24 = Number(pair?.priceChange?.h24 ?? 0);
-  const up = change24 >= 0;
-  const label = pair?.label;
-  const labelColor =
-    label === "safe"
-      ? "text-[#0fa87a] bg-[#e5f7f2] border-[#0fa87a]/30"
-      : label === "caution"
-        ? "text-[#b45309] bg-[#fffbeb] border-[#f59e0b]/40"
-        : label === "danger"
-          ? "text-[#b91c1c] bg-[#fef2f2] border-[#ef4444]/40"
-          : "text-[#6a7282] bg-[#f1f5f9] border-[#cbd5e1]";
+function TokenLinksSection({ address }: { address: string }) {
+  if (!address) return null;
 
   return (
-    <div className="bg-white rounded-sm border border-[#cbd5e1] p-4 sm:p-6">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-        <TokenIcon src={info.imageUrl} symbol={base.symbol} size="lg" />
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 flex-wrap">
-            <h1 className="text-xl font-bold text-[#11274d]">
-              {base.symbol ?? "???"}
-            </h1>
-            {label && (
-              <span
-                className={`text-[10px] uppercase tracking-wider font-semibold px-1.5 py-0.5 rounded-sm border ${labelColor}`}
-              >
-                {label}
-              </span>
-            )}
-          </div>
-          <div className="text-sm text-[#6a7282] truncate">
-            {base.name ?? ""}
-          </div>
-        </div>
-        <div className="sm:text-right">
-          <div className="font-mono text-2xl text-[#11274d]">
-            {fmtUsd(priceUsd)}
-          </div>
-          <div
-            className={`text-sm flex items-center gap-1 ${up ? "text-[#0fa87a]" : "text-[#ef4444]"} sm:justify-end`}
-          >
-            <span>{up ? "▲" : "▼"}</span>
-            <span className="font-mono">{fmtPct(Math.abs(change24))}</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function Sparkline({ candles }: { candles: Candle[] }) {
-  const closes = candles.map((c) => c.c).filter((n) => Number.isFinite(n));
-  if (closes.length < 2) {
-    return (
-      <div className="bg-white rounded-sm border border-[#cbd5e1] p-4 h-32 flex items-center justify-center text-xs text-[#6a7282]">
-        No chart data
-      </div>
-    );
-  }
-  const min = Math.min(...closes);
-  const max = Math.max(...closes);
-  const range = max - min || 1;
-  const w = 600;
-  const h = 120;
-  const step = w / (closes.length - 1);
-  const points = closes
-    .map((c, i) => `${i * step},${h - ((c - min) / range) * h}`)
-    .join(" ");
-  const first = closes[0];
-  const last = closes[closes.length - 1];
-  const up = last >= first;
-  const color = up ? "#0fa87a" : "#ef4444";
-  const minIdx = closes.indexOf(min);
-  const maxIdx = closes.indexOf(max);
-
-  return (
-    <div className="bg-white rounded-sm border border-[#cbd5e1] p-4">
-      <div className="text-[10px] uppercase tracking-wider text-[#6a7282] mb-2">
-        24h price history · Birdeye
-      </div>
-      <svg
-        viewBox={`0 0 ${w} ${h}`}
-        preserveAspectRatio="none"
-        className="w-full h-[120px]"
-        aria-hidden="true"
-      >
-        <polyline points={points} fill="none" stroke={color} strokeWidth="2" />
-        <circle
-          cx={maxIdx * step}
-          cy={h - ((max - min) / range) * h}
-          r="4"
-          fill="#0fa87a"
-        />
-        <circle
-          cx={minIdx * step}
-          cy={h - ((min - min) / range) * h}
-          r="4"
-          fill="#ef4444"
-        />
-      </svg>
-    </div>
-  );
-}
-
-function RiskPanel({
-  breakdown,
-  passes,
-}: {
-  breakdown: RiskBreakdown;
-  passes: { liquidity: boolean; price: boolean; volume: boolean; marketCap: boolean };
-}) {
-  return (
-    <div className="bg-white rounded-sm border border-[#cbd5e1] p-4 sm:p-6 space-y-4">
-      <div>
-        <div className="text-[10px] uppercase tracking-wider text-[#6a7282] mb-2">
-          Risk score
-        </div>
-        <RiskBar score={breakdown.score} label={breakdown.label} />
-        <div className="text-xs text-[#6a7282] mt-2">{breakdown.summary}</div>
-      </div>
-
-      <div>
-        <div className="text-[10px] uppercase tracking-wider text-[#6a7282] mb-2">
-          Risk breakdown
-        </div>
-        <div className="grid grid-cols-2 gap-2 text-xs">
-          <Check pass={passes.liquidity} label="Liquidity" />
-          <Check pass={passes.price} label="Price action" />
-          <Check pass={passes.volume} label="Volume spike" />
-          <Check pass={passes.marketCap} label="Market cap" />
-        </div>
-      </div>
-
-      {breakdown.warnings.length > 0 && (
-        <div className="space-y-1">
-          {breakdown.warnings.slice(0, 6).map((w, i) => (
-            <div
-              key={i}
-              className="text-[11px] text-[#b45309] bg-[#fffbeb] border border-[#fde68a] rounded-sm px-2 py-1"
-            >
-              {w}
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-function MetricsGrid({ pair }: { pair: any }) {
-  const rows: [string, string][] = [
-    ["Liquidity", fmtUsd(Number(pair?.liquidity?.usd ?? 0), { compact: true })],
-    ["Volume 24h", fmtUsd(Number(pair?.volume?.h24 ?? 0), { compact: true })],
-    [
-      "Market cap",
-      fmtUsd(Number(pair?.marketCap ?? pair?.fdv ?? 0), { compact: true }),
-    ],
-    ["FDV", fmtUsd(Number(pair?.fdv ?? 0), { compact: true })],
-    ["Buys 24h", fmtNum(Number(pair?.txns?.h24?.buys ?? 0))],
-    ["Sells 24h", fmtNum(Number(pair?.txns?.h24?.sells ?? 0))],
-    ["Created", `${fmtAge(Number(pair?.pairCreatedAt ?? 0))} ago`],
-    ["DEX", pair?.dexId ?? "—"],
-    ["Trending rank", pair?.trendingRank ? `#${pair.trendingRank}` : "—"],
-  ];
-
-  return (
-    <div className="bg-white rounded-sm border border-[#cbd5e1] p-4 sm:p-6">
+    <section className="bg-white rounded-sm border border-[#cbd5e1] p-4 sm:p-6">
       <div className="text-[10px] uppercase tracking-wider text-[#6a7282] mb-3">
-        Token data
+        Token links
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-1.5 gap-x-4 text-xs">
-        {rows.map(([label, value]) => (
-          <div
-            key={label}
-            className="flex items-center justify-between border-b border-[#f1f5f9] pb-1"
-          >
-            <span className="text-[#6a7282]">{label}</span>
-            <span className="font-mono text-[#11274d]">{value}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function ContractPanel({
-  address,
-  onCopy,
-  onShare,
-  copied,
-}: {
-  address: string;
-  onCopy: () => void;
-  onShare: () => void;
-  copied: "addr" | "link" | null;
-}) {
-  return (
-    <div className="bg-white rounded-sm border border-[#cbd5e1] p-4 sm:p-6 space-y-3">
-      <div>
-        <div className="text-[10px] uppercase tracking-wider text-[#6a7282] mb-2">
-          Contract address
-        </div>
-        <code className="block font-mono text-[11px] text-[#11274d] break-all bg-[#f1f5f9] p-2 rounded-sm">
-          {address || "—"}
-        </code>
-      </div>
-      <div className="grid grid-cols-2 gap-2">
-        <button
-          type="button"
-          onClick={onCopy}
-          disabled={!address}
-          className="h-9 rounded-sm bg-white border border-[#cbd5e1] text-xs text-[#11274d] hover:bg-[#f1f5f9] transition-colors disabled:opacity-40"
-        >
-          {copied === "addr" ? "Copied ✓" : "Copy address"}
-        </button>
-        <button
-          type="button"
-          onClick={onShare}
-          disabled={!address}
-          className="h-9 rounded-sm bg-white border border-[#cbd5e1] text-xs text-[#11274d] hover:bg-[#f1f5f9] transition-colors disabled:opacity-40"
-        >
-          {copied === "link" ? "Copied ✓" : "Share link"}
-        </button>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
         <a
-          href={address ? `https://solscan.io/token/${address}` : "#"}
+          href={`https://solscan.io/token/${address}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="h-9 rounded-sm bg-white border border-[#cbd5e1] text-xs text-[#11274d] hover:bg-[#f1f5f9] transition-colors inline-flex items-center justify-center"
+          className="h-9 rounded-sm bg-white border border-[#cbd5e1] text-[#11274d] hover:bg-[#f1f5f9] transition-colors inline-flex items-center justify-center"
         >
           Solscan ↗
         </a>
         <a
-          href={
-            address
-              ? `https://birdeye.so/token/${address}?chain=solana`
-              : "#"
-          }
+          href={`https://birdeye.so/token/${address}?chain=solana`}
           target="_blank"
           rel="noopener noreferrer"
-          className="h-9 rounded-sm bg-[#19549b] text-white text-xs hover:bg-[#143f78] transition-colors inline-flex items-center justify-center"
+          className="h-9 rounded-sm bg-[#19549b] text-white hover:bg-[#143f78] transition-colors inline-flex items-center justify-center"
         >
           Birdeye ↗
         </a>
       </div>
-    </div>
+    </section>
   );
 }
 
-function Check({ pass, label }: { pass: boolean; label: string }) {
-  return (
-    <div className="flex items-center gap-2">
-      <span
-        className={`text-sm leading-none ${pass ? "text-[#0fa87a]" : "text-[#ef4444]"}`}
-      >
-        {pass ? "✓" : "✗"}
-      </span>
-      <span className="text-[#11274d]">{label}</span>
-    </div>
-  );
+function buildAssetFromPair(pair: BirdeyePair | null, address: string): AssetCore | null {
+  if (!address && !pair) return null;
+
+  const symbol =
+    str(pair?.baseToken?.symbol) ||
+    shortAddress(address);
+  const name = str(pair?.baseToken?.name) || symbol;
+  const price = num(pair?.priceUsd);
+  const liquidity = num(pair?.liquidity?.usd);
+  const volume24 = num(pair?.volume?.h24);
+  const marketCap = num(pair?.marketCap || pair?.fdv);
+  const change24 = num(pair?.priceChange?.h24);
+  const change1h = num(pair?.priceChange?.h1);
+
+  return {
+    assetId: address ? `solana-${address}` : `solana-${symbol.toLowerCase()}`,
+    name,
+    symbol,
+    imageUrl: str(pair?.info?.imageUrl) || undefined,
+    stats: {
+      price,
+      liquidity,
+      volume24hUSD: volume24,
+      marketCap,
+      priceChange24hPercent: change24,
+      priceChange1hPercent: change1h,
+    },
+    canonicalMarket: {
+      source: str(pair?.dexId) || "birdeye",
+      price,
+      marketCap,
+      volume24hUSD: volume24,
+      priceChange24hPercent: change24,
+    },
+    variantGroups: {},
+  };
+}
+
+function mergeAssetWithFallback(
+  primary: AssetCore | null,
+  fallback: AssetCore | null,
+  address: string
+): AssetCore | null {
+  if (!primary && !fallback) return null;
+
+  const p = (primary ?? {}) as Record<string, unknown>;
+  const f = (fallback ?? {}) as Record<string, unknown>;
+  const pStats = asRecord(p.stats);
+  const fStats = asRecord(f.stats);
+  const pCanonical = asRecord(p.canonicalMarket);
+  const fCanonical = asRecord(f.canonicalMarket);
+
+  const assetId =
+    bestString(p.assetId) ||
+    bestString(f.assetId) ||
+    (address ? `solana-${address}` : "solana-unknown");
+
+  const symbol = bestString(p.symbol) || bestString(f.symbol) || shortAddress(address);
+  const name = bestString(p.name) || bestString(f.name) || symbol;
+  const imageUrl = bestString(p.imageUrl) || bestString(f.imageUrl) || undefined;
+
+  const stats = {
+    price: pickPositiveNumber(pStats.price, fStats.price),
+    liquidity: pickPositiveNumber(pStats.liquidity, fStats.liquidity),
+    volume24hUSD: pickPositiveNumber(pStats.volume24hUSD, fStats.volume24hUSD),
+    marketCap: pickPositiveNumber(pStats.marketCap, fStats.marketCap),
+    priceChange24hPercent: pickAnyFiniteNumber(
+      pStats.priceChange24hPercent,
+      fStats.priceChange24hPercent
+    ),
+    priceChange1hPercent: pickAnyFiniteNumber(
+      pStats.priceChange1hPercent,
+      fStats.priceChange1hPercent
+    ),
+  };
+
+  const canonicalSource =
+    bestString(pCanonical.source) ||
+    bestString(fCanonical.source) ||
+    "composite";
+
+  const merged: AssetCore = {
+    assetId,
+    name,
+    symbol,
+    category: bestString(p.category) || bestString(f.category) || undefined,
+    aliases: pickStringArray(p.aliases) ?? pickStringArray(f.aliases),
+    symbols: pickStringArray(p.symbols) ?? pickStringArray(f.symbols),
+    imageUrl,
+    stats,
+    canonicalMarket: {
+      source: canonicalSource,
+      coinId: bestString(pCanonical.coinId) || bestString(fCanonical.coinId) || undefined,
+      price: pickPositiveNumber(pCanonical.price, fCanonical.price, stats.price),
+      marketCap: pickPositiveNumber(
+        pCanonical.marketCap,
+        fCanonical.marketCap,
+        stats.marketCap
+      ),
+      volume24hUSD: pickPositiveNumber(
+        pCanonical.volume24hUSD,
+        fCanonical.volume24hUSD,
+        stats.volume24hUSD
+      ),
+      priceChange24hPercent: pickAnyFiniteNumber(
+        pCanonical.priceChange24hPercent,
+        fCanonical.priceChange24hPercent,
+        stats.priceChange24hPercent
+      ),
+      lastFetchedAt: pickPositiveNumber(
+        pCanonical.lastFetchedAt,
+        fCanonical.lastFetchedAt,
+        undefined
+      ),
+      providerLastUpdatedAt: pickPositiveNumber(
+        pCanonical.providerLastUpdatedAt,
+        fCanonical.providerLastUpdatedAt,
+        undefined
+      ),
+    },
+    variantGroups: hasUsableVariantGroups(p.variantGroups)
+      ? ((p.variantGroups as AssetCore["variantGroups"]) ?? {})
+      : ((f.variantGroups as AssetCore["variantGroups"]) ?? {}),
+  };
+
+  return merged;
+}
+
+function asRecord(value: unknown): Record<string, unknown> {
+  return value && typeof value === "object" && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : {};
+}
+
+function bestString(value: unknown): string {
+  if (typeof value !== "string") return "";
+  const out = value.trim();
+  return out.length > 0 ? out : "";
+}
+
+function toFiniteNumber(value: unknown): number | null {
+  if (typeof value === "number" && Number.isFinite(value)) return value;
+  if (typeof value === "string") {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+  return null;
+}
+
+function pickPositiveNumber(
+  primary: unknown,
+  fallback: unknown,
+  finalFallback = 0 as number | undefined
+): number {
+  const p = toFiniteNumber(primary);
+  if (p !== null && p > 0) return p;
+  const f = toFiniteNumber(fallback);
+  if (f !== null && f > 0) return f;
+  if (p !== null) return p;
+  if (f !== null) return f;
+  return finalFallback ?? 0;
+}
+
+function pickAnyFiniteNumber(
+  primary: unknown,
+  fallback: unknown,
+  finalFallback = 0
+): number {
+  const p = toFiniteNumber(primary);
+  if (p !== null) return p;
+  const f = toFiniteNumber(fallback);
+  if (f !== null) return f;
+  return finalFallback;
+}
+
+function pickStringArray(value: unknown): string[] | undefined {
+  if (!Array.isArray(value)) return undefined;
+  const out = value
+    .map((item) => (typeof item === "string" ? item.trim() : ""))
+    .filter(Boolean);
+  return out.length > 0 ? out : undefined;
+}
+
+function hasUsableVariantGroups(value: unknown): boolean {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return false;
+  for (const variants of Object.values(value as Record<string, unknown>)) {
+    if (!Array.isArray(variants) || variants.length === 0) continue;
+    const hasUsable = variants.some((variant) => {
+      if (!variant || typeof variant !== "object" || Array.isArray(variant)) {
+        return false;
+      }
+      const item = variant as Record<string, unknown>;
+      return (
+        bestString(item.symbol).length > 0 ||
+        bestString(item.name).length > 0 ||
+        (!!item.market && typeof item.market === "object")
+      );
+    });
+    if (hasUsable) return true;
+  }
+  return false;
+}
+
+async function fetchTokenChartCandles(
+  address: string,
+  range: ChartRange
+): Promise<Candle[]> {
+  const now = Math.floor(Date.now() / 1000);
+  const from = now - range.lookbackSeconds;
+
+  // 1) Tokens.xyz
+  try {
+    const res = await fetch(
+      `/api/tokens-xyz?type=price-chart&assetId=${encodeURIComponent(
+        address
+      )}&interval=${range.interval}&from=${from}&to=${now}`,
+      { cache: "no-store" }
+    );
+    const json = res.ok ? await res.json() : null;
+    if (json?.success) {
+      const candles = normalizeChartCandles(json.data);
+      if (candles.length >= 2) return candles;
+    }
+  } catch {
+    // continue fallback
+  }
+
+  // 2) Birdeye
+  try {
+    const res = await fetch(
+      `/api/birdeye?type=ohlcv&address=${encodeURIComponent(address)}`,
+      { cache: "no-store" }
+    );
+    const json = res.ok ? await res.json() : null;
+    if (json?.success) {
+      const candles = normalizeChartCandles(json.data);
+      if (candles.length >= 2) return candles;
+    }
+  } catch {
+    // continue fallback
+  }
+
+  // 3) Jupiter (derived)
+  return fetchJupiterDerivedCandles(address, from, now);
+}
+
+async function fetchJupiterDerivedCandles(
+  address: string,
+  from: number,
+  now: number
+): Promise<Candle[]> {
+  try {
+    const res = await fetch(
+      `/api/jupiter?type=search&q=${encodeURIComponent(address)}&limit=3`,
+      { cache: "no-store" }
+    );
+    const json = res.ok ? await res.json() : null;
+    const rows = Array.isArray(json?.data) ? (json.data as unknown[]) : [];
+    if (rows.length === 0) return [];
+
+    const exact =
+      rows.find((item) => {
+        if (!item || typeof item !== "object" || Array.isArray(item)) return false;
+        const record = item as Record<string, unknown>;
+        const base = record.baseToken as Record<string, unknown> | undefined;
+        return str(base?.address).toLowerCase() === address.toLowerCase();
+      }) ?? rows[0];
+
+    if (!exact || typeof exact !== "object" || Array.isArray(exact)) return [];
+
+    const record = exact as Record<string, unknown>;
+    const priceUsd = num(record.priceUsd);
+    const priceChange24 = num(
+      (record.priceChange as Record<string, unknown> | undefined)?.h24
+    );
+    const volume24 = num((record.volume as Record<string, unknown> | undefined)?.h24);
+
+    if (!Number.isFinite(priceUsd) || priceUsd <= 0) return [];
+
+    const denominator = 1 + priceChange24 / 100;
+    const prevPrice = denominator > 0 ? priceUsd / denominator : priceUsd;
+    const high = Math.max(prevPrice, priceUsd);
+    const low = Math.min(prevPrice, priceUsd);
+
+    return [
+      {
+        o: prevPrice,
+        h: high,
+        l: low,
+        c: prevPrice,
+        v: Math.max(0, volume24 / 2),
+        unixTime: from,
+      },
+      {
+        o: prevPrice,
+        h: high,
+        l: low,
+        c: priceUsd,
+        v: Math.max(0, volume24),
+        unixTime: now,
+      },
+    ];
+  } catch {
+    return [];
+  }
+}
+
+function num(value: unknown): number {
+  if (typeof value === "number" && Number.isFinite(value)) return value;
+  if (typeof value === "string") {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : 0;
+  }
+  return 0;
+}
+
+function str(value: unknown): string {
+  if (typeof value === "string") return value.trim();
+  if (typeof value === "number" && Number.isFinite(value)) return String(value);
+  return "";
+}
+
+function shortAddress(address: string): string {
+  if (!address) return "TOKEN";
+  if (address.length <= 10) return address;
+  return `${address.slice(0, 4)}…${address.slice(-4)}`;
 }

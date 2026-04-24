@@ -1,8 +1,19 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "GeistPixelSquare";
+  src: url("/fonts/GeistPixelSquare.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+}
+
 :root {
   --background: #f1f5f9;
   --foreground: #212121;
+  --wallet-backdrop-rgb: 5 10 20;
+  --wallet-backdrop-opacity: 0.5;
+  --wallet-backdrop-blur: 8px;
 }
 
 @theme inline {
@@ -58,4 +69,22 @@ body {
 }
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+/* Jupiter Unified Wallet modal backdrop controls */
+dialog[aria-modal="true"] {
+  background-color: rgb(
+    var(--wallet-backdrop-rgb) / var(--wallet-backdrop-opacity)
+  ) !important;
+  --tw-backdrop-blur: blur(var(--wallet-backdrop-blur)) !important;
+  backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness)
+    var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale)
+    var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert)
+    var(--tw-backdrop-opacity) var(--tw-backdrop-saturate)
+    var(--tw-backdrop-sepia) !important;
+  -webkit-backdrop-filter: var(--tw-backdrop-blur)
+    var(--tw-backdrop-brightness) var(--tw-backdrop-contrast)
+    var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate)
+    var(--tw-backdrop-invert) var(--tw-backdrop-opacity)
+    var(--tw-backdrop-saturate) var(--tw-backdrop-sepia) !important;
 }
