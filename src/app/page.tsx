@@ -114,8 +114,6 @@ export default function Dashboard() {
               loaded={sessionLoaded && watchlist.loaded}
               onSelectPair={setSelectedPair}
               onRemove={watchlist.remove}
-              paused={paused}
-              riskFormula="advanced"
             />
           ) : (
             <HomeSectionsView
@@ -134,7 +132,6 @@ export default function Dashboard() {
         <TokenModal
           pair={selectedPair}
           onClose={() => setSelectedPair(null)}
-          riskFormula="advanced"
         />
       )}
     </>
