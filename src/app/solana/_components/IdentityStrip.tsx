@@ -24,13 +24,13 @@ export function IdentityStrip({
     profile?.price ??
     asset.canonicalMarket?.price ??
     asset.stats?.price ??
-    primary?.market.price ??
+    primary?.market?.price ??
     0;
   const change =
     profile?.priceChange24h ??
     asset.canonicalMarket?.priceChange24hPercent ??
     asset.stats?.priceChange24hPercent ??
-    primary?.market.priceChange24hPercent ??
+    primary?.market?.priceChange24hPercent ??
     0;
   const up = change >= 0;
   const ath = profile?.allTimeHigh;
@@ -48,7 +48,7 @@ export function IdentityStrip({
         : "text-[#b91c1c] bg-[#fef2f2] border-[#ef4444]/40";
 
   const logoUrl =
-    asset.imageUrl || primary?.market.logoURI || undefined;
+    asset.imageUrl || primary?.market?.logoURI || undefined;
   const primaryTier = primary?.trustTier;
 
   return (
@@ -94,7 +94,12 @@ export function IdentityStrip({
               up ? "text-[#0fa87a]" : "text-[#ef4444]"
             } sm:justify-end`}
           >
-            <span>{up ? "▲" : "▼"}</span>
+            <img
+              src={up ? "/app/Up.svg" : "/app/Down.svg"}
+              alt=""
+              aria-hidden="true"
+              className="h-3 w-3 shrink-0"
+            />
             <span className="font-mono">{fmtPct(Math.abs(change))}</span>
           </div>
           {ath != null && athDeltaPct != null && (

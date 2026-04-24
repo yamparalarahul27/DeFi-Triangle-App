@@ -37,7 +37,7 @@ export function useTokenSearch(query: string): UseTokenSearchState {
     (async () => {
       try {
         const res = await fetch(
-          `/api/dexscreener?type=search&q=${encodeURIComponent(debounced)}&limit=10`,
+          `/api/jupiter?type=search&q=${encodeURIComponent(debounced)}&limit=10`,
           { cache: "no-store" }
         );
         const json = res.ok ? await res.json() : null;

@@ -70,7 +70,8 @@ export function VariantsSection({
 }
 
 function VariantCard({ variant }: { variant: Variant }) {
-  const change = variant.market.priceChange24hPercent;
+  const market = variant?.market ?? null;
+  const change = market?.priceChange24hPercent ?? 0;
   const up = change >= 0;
   const tier =
     variant.trustTier === "tier1"
@@ -83,7 +84,7 @@ function VariantCard({ variant }: { variant: Variant }) {
     <div className="bg-white border border-[#11274d]/10 rounded-sm p-3 hover:border-[#11274d]/20 transition-colors">
       <div className="flex items-start gap-2 mb-2">
         <TokenIcon
-          src={variant.market.logoURI}
+          src={market?.logoURI}
           symbol={variant.symbol}
           size="md"
         />
@@ -102,14 +103,22 @@ function VariantCard({ variant }: { variant: Variant }) {
         </span>
       </div>
       <div className="font-mono text-xs text-[#11274d]">
-        {fmtUsd(variant.market.price)}
+        {fmtUsd(market?.price ?? 0)}
       </div>
       <div
         className={`font-mono text-[10px] ${
           up ? "text-[#0fa87a]" : "text-[#ef4444]"
         }`}
       >
-        {up ? "▲" : "▼"} {Math.abs(change).toFixed(2)}%
+        <span className="inline-flex items-center gap-1">
+          <img
+            src={up ? "/app/Up.svg" : "/app/Down.svg"}
+            alt=""
+            aria-hidden="true"
+            className="h-3 w-3 shrink-0"
+          />
+          <span>{Math.abs(change).toFixed(2)}%</span>
+        </span>
       </div>
     </div>
   );

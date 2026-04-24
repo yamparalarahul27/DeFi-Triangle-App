@@ -20,22 +20,18 @@ export function HeroSection({ searchSlot }: HeroSectionProps) {
             animation: "fade-up 400ms ease-out backwards",
           }}
         >
-          <div className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-white/60 mb-3">
-            Solana · Institutional · Risk-scored
-          </div>
           <h1
             className="text-white font-bold leading-tight tracking-tight"
             style={{
               fontFamily:
-                "var(--font-geist-mono), 'IBM Plex Mono', ui-monospace, monospace",
+                "'GeistPixelSquare', var(--font-geist-mono), 'IBM Plex Mono', ui-monospace, monospace",
               fontSize: "clamp(1.75rem, 4vw, 3rem)",
             }}
           >
             Token Edge
           </h1>
           <p className="text-white/70 text-sm sm:text-base mt-3 max-w-xl mx-auto">
-            Live Solana markets — trending, whales, memes, and DeFi pulse,
-            scored for tradability risk in real time.
+            Discover tokens and gain an edge with planned safety and risk.
           </p>
           {searchSlot && (
             <div className="mt-6 max-w-2xl mx-auto">{searchSlot}</div>

@@ -6,13 +6,12 @@ import { TabEmpty, TabGrid, TabLoading, type TabProps } from "./TabShell";
 
 export function LiveTab({
   paused,
-  riskFormula,
   onSelectPair,
   starredSet,
   onStarToggle,
 }: TabProps) {
   const { data, loading } = useTabPairs(
-    `/api/dexscreener?type=live&riskFormula=${riskFormula}`,
+    "/api/birdeye?type=trending&limit=20",
     10_000,
     paused
   );

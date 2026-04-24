@@ -20,7 +20,7 @@ export function StatsGrid({
   risk?: RiskData;
 }) {
   const primaryLiquidity =
-    primary?.market.liquidity ?? asset.stats?.liquidity ?? 0;
+    primary?.market?.liquidity ?? asset.stats?.liquidity ?? 0;
   const vol7d = risk?.marketScoreInput?.volume7dUsd;
   const marketCap = profile?.marketCap ?? asset.stats?.marketCap;
   const volume24 = profile?.volume24h ?? asset.stats?.volume24hUSD;

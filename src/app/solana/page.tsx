@@ -30,7 +30,7 @@ export default function SolanaPage() {
   const [chartRange, setChartRange] = useState("1W");
   const [loading, setLoading] = useState(true);
   const [chartLoading, setChartLoading] = useState(true);
-  const [paused, setPaused] = useState(false);
+  const paused = false;
 
   const fetchAsset = useCallback(async () => {
     try {
@@ -99,7 +99,7 @@ export default function SolanaPage() {
   if (loading && !asset) {
     return (
       <>
-        <Header showPauseToggle={false} hasHero={false} />
+        <Header hasHero={false} />
         <main className="flex-1 max-w-[1100px] w-full mx-auto px-4 py-8">
           <div className="py-16 text-center text-sm text-[#6a7282]">
             Loading Solana…
@@ -113,7 +113,7 @@ export default function SolanaPage() {
   if (!asset) {
     return (
       <>
-        <Header showPauseToggle={false} hasHero={false} />
+        <Header hasHero={false} />
         <main className="flex-1 max-w-[1100px] w-full mx-auto px-4 py-8 text-center">
           <div className="py-16 text-sm text-[#6a7282] mb-3">
             Unable to load Solana right now.
@@ -136,12 +136,7 @@ export default function SolanaPage() {
 
   return (
     <>
-      <Header
-        showPauseToggle
-        paused={paused}
-        onTogglePause={() => setPaused((v) => !v)}
-        hasHero={false}
-      />
+      <Header hasHero={false} />
       <main className="flex-1 max-w-[1100px] w-full mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 space-y-4">
         <Link
           href="/"

@@ -1,17 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
 import { useUnifiedWalletContext } from "@jup-ag/wallet-adapter";
 import { DexCard } from "@/components/ui/DexCard";
-import { StatusDot } from "@/components/ui/StatusDot";
-import { useInterval } from "@/lib/hooks/useInterval";
-import type { RiskFormula } from "@/lib/scoring";
 import type { WatchlistItem } from "@/lib/hooks/useWatchlist";
 import { TabEmpty, TabGrid, TabLoading } from "./TabShell";
 
 export interface WatchlistTabProps {
-  paused: boolean;
-  riskFormula: RiskFormula;
   authed: boolean;
   wallet: string | null;
   items: WatchlistItem[];
@@ -26,8 +20,6 @@ function truncate(addr: string): string {
 }
 
 export function WatchlistTab({
-  paused,
-  riskFormula,
   authed,
   wallet,
   items,
@@ -36,33 +28,6 @@ export function WatchlistTab({
   onRemove,
 }: WatchlistTabProps) {
   const { setShowModal } = useUnifiedWalletContext();
-  const [liveMap, setLiveMap] = useState<Record<string, any>>({});
-
-  const addresses = items.map((i) => i.token_address).filter(Boolean);
-  const addressesKey = addresses.join(",");
-
-  const fetchLive = useCallback(async () => {
-    if (addresses.length === 0) {
-      setLiveMap({});
-      return;
-    }
-    try {
-      const res = await fetch(
-        `/api/dexscreener?type=batch&addresses=${addressesKey}&riskFormula=${riskFormula}`,
-        { cache: "no-store" }
-      );
-      const json = res.ok ? await res.json() : null;
-      if (json?.success && json.data) setLiveMap(json.data);
-    } catch {
-      // ignore
-    }
-  }, [addressesKey, riskFormula]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    fetchLive();
-  }, [fetchLive]);
-
-  useInterval(fetchLive, paused || !authed ? null : 30_000);
 
   if (!authed) {
     return (
@@ -96,24 +61,28 @@ export function WatchlistTab({
 
   return (
     <div className="space-y-3">
-      <WatchlistHeader count={items.length} wallet={wallet} live />
+      <WatchlistHeader count={items.length} wallet={wallet} />
       <TabGrid>
         {items.map((item) => {
-          const pair =
-            liveMap[item.token_address] ??
-            ({
-              baseToken: {
-                address: item.token_address,
-                symbol: item.symbol,
-                name: item.name,
-              },
-              quoteToken: {},
-              info: { imageUrl: item.image_url },
-              priceChange: {},
-              volume: {},
-              txns: {},
-              liquidity: {},
-            } as any);
+          const pair = {
+            pairAddress: item.token_address,
+            baseToken: {
+              address: item.token_address,
+              symbol: item.symbol,
+              name: item.name,
+            },
+            quoteToken: { symbol: "USD" },
+            info: { imageUrl: item.image_url, socials: [], websites: [] },
+            priceChange: { h24: 0 },
+            volume: { h24: 0 },
+            txns: { h24: { buys: 0, sells: 0 } },
+            liquidity: { usd: 0 },
+            fdv: 0,
+            marketCap: 0,
+            pairCreatedAt: 0,
+            dexId: "birdeye",
+          } as any;
+
           return (
             <div key={item.token_address} className="flex flex-col gap-2">
               <DexCard
@@ -140,25 +109,17 @@ export function WatchlistTab({
 function WatchlistHeader({
   count,
   wallet,
-  live = false,
 }: {
   count: number;
   wallet: string | null;
-  live?: boolean;
 }) {
   return (
     <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
       <div className="text-[#11274d] font-semibold">
         Your Watchlist <span className="text-[#6a7282]">({count})</span>
       </div>
-      <div className="flex items-center gap-3 text-[#6a7282]">
+      <div className="text-[#6a7282]">
         <span className="font-mono">{truncate(wallet ?? "")}</span>
-        {live && (
-          <span className="flex items-center gap-1.5">
-            <StatusDot variant="live" pulse />
-            <span className="hidden sm:inline">Live prices</span>
-          </span>
-        )}
       </div>
     </div>
   );
