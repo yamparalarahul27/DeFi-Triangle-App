@@ -15,14 +15,14 @@ import {
   normalizeChartCandles,
   primaryFromAsset,
   type ChartRange,
-} from "@/app/solana/_utils";
-import { AboutSection } from "@/app/solana/_components/AboutSection";
-import { IdentityStrip } from "@/app/solana/_components/IdentityStrip";
-import { MarketsSection } from "@/app/solana/_components/MarketsSection";
-import { PriceChartSection } from "@/app/solana/_components/PriceChartSection";
-import { RiskPanel } from "@/app/solana/_components/RiskPanel";
-import { StatsGrid } from "@/app/solana/_components/StatsGrid";
-import { VariantsSection } from "@/app/solana/_components/VariantsSection";
+} from "@/app/_archive/solana/_utils";
+import { AboutSection } from "@/app/_archive/solana/_components/AboutSection";
+import { IdentityStrip } from "@/app/_archive/solana/_components/IdentityStrip";
+import { MarketsSection } from "@/app/_archive/solana/_components/MarketsSection";
+import { PriceChartSection } from "@/app/_archive/solana/_components/PriceChartSection";
+import { RiskPanel } from "@/app/_archive/solana/_components/RiskPanel";
+import { StatsGrid } from "@/app/_archive/solana/_components/StatsGrid";
+import { VariantsSection } from "@/app/_archive/solana/_components/VariantsSection";
 
 const TOKEN_REFRESH_MS = 15_000;
 

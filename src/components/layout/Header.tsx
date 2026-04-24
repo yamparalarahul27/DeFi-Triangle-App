@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Pause, Play, Search as SearchIcon } from "lucide-react";
 import { ConnectWalletButton } from "@/components/wallet/ConnectWalletButton";
 import { useSearchModal } from "@/components/search/SearchModalProvider";
+import { FEATURES } from "@/lib/featureFlags";
 
 export interface HeaderProps {
   showWatchlistButton?: boolean;
@@ -36,6 +37,15 @@ export function Header({
 }: HeaderProps) {
   const [scrolled, setScrolled] = useState(!hasHero);
   const { open: openSearch } = useSearchModal();
+
+  const watchlistEnabled = FEATURES.WATCHLIST && showWatchlistButton;
+  const walletEnabled = FEATURES.WALLET_CONNECT;
+
+  const hasRightContent =
+    showSearchButton ||
+    (showPauseToggle && !!onTogglePause) ||
+    (watchlistEnabled && !!onOpenWatchlist) ||
+    walletEnabled;
 
   useEffect(() => {
     if (!hasHero) {
@@ -91,10 +101,19 @@ export function Header({
     <header
       className={`sticky top-0 z-20 transition-colors duration-300 ease-in-out ${shellClass}`}
     >
-      <div className="max-w-[1400px] mx-auto h-12 px-4 lg:px-6 flex items-center justify-between gap-3">
+      <div
+        className={`max-w-[1400px] mx-auto h-12 px-4 lg:px-6 items-center gap-3 ${
+          hasRightContent
+            ? "flex justify-between"
+            : "grid grid-cols-[1fr_auto_1fr]"
+        }`}
+      >
+        {!hasRightContent && <div aria-hidden="true" />}
         <Link
           href="/"
-          className={`inline-flex items-center gap-2 text-sm font-semibold tracking-tight transition-colors duration-300 ${wordmarkClass}`}
+          className={`${
+            hasRightContent ? "" : "justify-self-center"
+          } inline-flex items-center gap-2 text-sm font-semibold tracking-tight transition-colors duration-300 ${wordmarkClass}`}
         >
           <span aria-hidden="true" className="inline-flex">
             <img
@@ -107,8 +126,11 @@ export function Header({
           </span>
           DeFi Triangle
         </Link>
-
-        <div className="flex items-center gap-2">
+        <div
+          className={`${
+            hasRightContent ? "" : "justify-self-end"
+          } flex items-center gap-2`}
+        >
           {showSearchButton && (
             <button
               type="button"
@@ -145,7 +167,7 @@ export function Header({
               )}
             </button>
           )}
-          {showWatchlistButton && onOpenWatchlist && (
+          {watchlistEnabled && onOpenWatchlist && (
             <button
               type="button"
               onClick={onOpenWatchlist}
@@ -154,7 +176,7 @@ export function Header({
               Watchlist
             </button>
           )}
-          <ConnectWalletButton />
+          {walletEnabled && <ConnectWalletButton />}
         </div>
       </div>
     </header>

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionWallet, UnauthorizedError } from "@/lib/auth";
+import { enforceRateLimit } from "@/lib/rateLimit";
 import { supabase } from "@/lib/supabase";
 import { PublicKey } from "@solana/web3.js";
 
@@ -40,6 +41,9 @@ export async function GET(req: NextRequest) {
     return serverError("get-auth", err);
   }
 
+  const limited = await enforceRateLimit(req, "wallet-write", wallet);
+  if (limited) return limited;
+
   const { data, error } = await supabase
     .from("watchlist")
     .select("id, token_address, symbol, name, image_url, added_at")
@@ -59,6 +63,9 @@ export async function POST(req: NextRequest) {
     if (err instanceof UnauthorizedError) return unauthorizedResponse();
     return serverError("post-auth", err);
   }
+
+  const limited = await enforceRateLimit(req, "wallet-write", wallet);
+  if (limited) return limited;
 
   let body: any;
   try {
@@ -107,6 +114,9 @@ export async function DELETE(req: NextRequest) {
     if (err instanceof UnauthorizedError) return unauthorizedResponse();
     return serverError("delete-auth", err);
   }
+
+  const limited = await enforceRateLimit(req, "wallet-write", wallet);
+  if (limited) return limited;
 
   const tokenAddress =
     req.nextUrl.searchParams.get("token")?.trim() ?? "";

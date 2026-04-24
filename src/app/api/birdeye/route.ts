@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { enforceRateLimit } from "@/lib/rateLimit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -35,7 +36,7 @@ function errorResponse(context: string, err: unknown, status = 500) {
   const message = err instanceof Error ? err.message : String(err);
   console.error(`[birdeye/${context}] ${message}`);
   return NextResponse.json(
-    { success: false, error: "upstream error", context, message },
+    { success: false, error: "upstream error" },
     { status }
   );
 }
@@ -529,6 +530,9 @@ async function handleOhlcv(address: string) {
 }
 
 export async function GET(req: NextRequest) {
+  const limited = await enforceRateLimit(req, "public-read");
+  if (limited) return limited;
+
   const searchParams = req.nextUrl.searchParams;
   const type = searchParams.get("type") ?? "list_v3";
 

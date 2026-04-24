@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { enforceRateLimit } from "@/lib/rateLimit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -90,6 +91,9 @@ async function handlePriceChart(
 }
 
 export async function GET(req: NextRequest) {
+  const limited = await enforceRateLimit(req, "public-read");
+  if (limited) return limited;
+
   const sp = req.nextUrl.searchParams;
   const type = sp.get("type") ?? "asset";
   const assetId = sp.get("assetId") ?? "";

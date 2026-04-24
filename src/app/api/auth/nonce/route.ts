@@ -5,12 +5,17 @@ import {
   isValidSolanaAddress,
   NONCE_TTL_MS,
 } from "@/lib/auth";
+import { enforceRateLimit } from "@/lib/rateLimit";
 import { supabase } from "@/lib/supabase";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
+  const limited = await enforceRateLimit(req, "auth-flow");
+  if (limited) return limited;
+
+
   let wallet = "";
   try {
     const body = await req.json();
