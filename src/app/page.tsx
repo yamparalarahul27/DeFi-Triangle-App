@@ -1,14 +1,19 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useUnifiedWalletContext } from "@jup-ag/wallet-adapter";
 import { Footer } from "@/components/layout/Footer";
+import { GreetingRow } from "@/components/layout/GreetingRow";
 import { Header } from "@/components/layout/Header";
 import { HeroSection } from "@/components/layout/HeroSection";
 import { HeroSearchButton } from "@/components/search/HeroSearchButton";
 import { HomeSectionsView } from "@/components/home/HomeSectionsView";
 import { TokenModal } from "@/components/ui/TokenModal";
 import { WatchlistTab } from "@/components/tabs/WatchlistTab";
+import {
+  CreateWatchlistModal,
+  type CreateWatchlistDraft,
+} from "@/components/watchlist/CreateWatchlistModal";
 import { useSession } from "@/components/providers/SessionContext";
 import { useWatchlist } from "@/lib/hooks/useWatchlist";
 import { FEATURES } from "@/lib/featureFlags";
@@ -24,10 +29,26 @@ export default function Dashboard() {
 
   const [tab, setTab] = useState<HomeTab>("home");
   const [selectedPair, setSelectedPair] = useState<TokenPair | null>(null);
+  const [createModalOpen, setCreateModalOpen] = useState(false);
 
   const openWatchlist = useCallback(() => {
-    setTab((prev) => (prev === "watchlist" ? "home" : "watchlist"));
+    setTab("watchlist");
   }, []);
+
+  const openTokenEdge = useCallback(() => {
+    setTab("home");
+  }, []);
+
+  const openCreateModal = useCallback(() => setCreateModalOpen(true), []);
+  const closeCreateModal = useCallback(() => setCreateModalOpen(false), []);
+  const handleCreateWatchlist = useCallback(
+    (draft: CreateWatchlistDraft) => {
+      // TODO: persist via watchlist meta API (name + color) once available.
+      void draft;
+      setCreateModalOpen(false);
+    },
+    []
+  );
 
   const handleStarToggle = useCallback(
     async (pair: TokenPair) => {
@@ -53,20 +74,45 @@ export default function Dashboard() {
 
   const watchlistEnabled = FEATURES.WATCHLIST;
   const effectiveTab = watchlistEnabled ? tab : "home";
+  const onWatchlistTab = watchlistEnabled && effectiveTab === "watchlist";
+
+  // ⇧+N opens the create modal — active only on the watchlist tab.
+  useEffect(() => {
+    if (!onWatchlistTab) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (createModalOpen) return;
+      const target = e.target as HTMLElement | null;
+      const tag = target?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || target?.isContentEditable) {
+        return;
+      }
+      if (e.shiftKey && (e.key === "N" || e.key === "n")) {
+        e.preventDefault();
+        setCreateModalOpen(true);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onWatchlistTab, createModalOpen]);
 
   return (
     <>
       <Header
+        showTokenEdgeButton
+        tokenEdgeActive={effectiveTab === "home"}
+        onOpenTokenEdge={openTokenEdge}
         showWatchlistButton={watchlistEnabled}
         watchlistActive={watchlistEnabled && tab === "watchlist"}
         onOpenWatchlist={watchlistEnabled ? openWatchlist : undefined}
-        showSearchButton={false}
+        showSearchButton
+        hasHero={!onWatchlistTab}
       />
-      <HeroSection searchSlot={HERO_SEARCH_SLOT} />
+      {!onWatchlistTab && <HeroSection searchSlot={HERO_SEARCH_SLOT} />}
 
       <main className="flex-1 max-w-[1400px] w-full mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 space-y-4">
+        {onWatchlistTab && <GreetingRow wallet={wallet} />}
         <section>
-          {watchlistEnabled && effectiveTab === "watchlist" ? (
+          {onWatchlistTab ? (
             <WatchlistTab
               authed={authed}
               wallet={wallet}
@@ -74,6 +120,7 @@ export default function Dashboard() {
               loaded={sessionLoaded && watchlist.loaded}
               onSelectPair={setSelectedPair}
               onRemove={watchlist.remove}
+              onOpenCreateModal={openCreateModal}
             />
           ) : (
             <HomeSectionsView
@@ -92,6 +139,13 @@ export default function Dashboard() {
         <TokenModal
           pair={selectedPair}
           onClose={() => setSelectedPair(null)}
+        />
+      )}
+
+      {createModalOpen && (
+        <CreateWatchlistModal
+          onCancel={closeCreateModal}
+          onCreate={handleCreateWatchlist}
         />
       )}
     </>

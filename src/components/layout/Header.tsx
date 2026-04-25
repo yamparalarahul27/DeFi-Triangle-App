@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Pause, Play, Search as SearchIcon } from "lucide-react";
+import { Command as CommandIcon, Pause, Play, Search as SearchIcon } from "lucide-react";
 import { ConnectWalletButton } from "@/components/wallet/ConnectWalletButton";
 import { useSearchModal } from "@/components/search/SearchModalProvider";
 import { FEATURES } from "@/lib/featureFlags";
@@ -11,6 +11,9 @@ export interface HeaderProps {
   showWatchlistButton?: boolean;
   watchlistActive?: boolean;
   onOpenWatchlist?: () => void;
+  showTokenEdgeButton?: boolean;
+  tokenEdgeActive?: boolean;
+  onOpenTokenEdge?: () => void;
   showSearchButton?: boolean;
   showPauseToggle?: boolean;
   paused?: boolean;
@@ -29,6 +32,9 @@ export function Header({
   showWatchlistButton = false,
   watchlistActive = false,
   onOpenWatchlist,
+  showTokenEdgeButton = false,
+  tokenEdgeActive = false,
+  onOpenTokenEdge,
   showSearchButton = true,
   showPauseToggle = false,
   paused = false,
@@ -39,11 +45,13 @@ export function Header({
   const { open: openSearch } = useSearchModal();
 
   const watchlistEnabled = FEATURES.WATCHLIST && showWatchlistButton;
+  const tokenEdgeEnabled = showTokenEdgeButton;
   const walletEnabled = FEATURES.WALLET_CONNECT;
 
   const hasRightContent =
     showSearchButton ||
     (showPauseToggle && !!onTogglePause) ||
+    (tokenEdgeEnabled && !!onOpenTokenEdge) ||
     (watchlistEnabled && !!onOpenWatchlist) ||
     walletEnabled;
 
@@ -97,6 +105,10 @@ export function Header({
     ? "bg-[#19549b] text-white border border-[#19549b]"
     : actionBtnClass;
 
+  const tokenEdgeBtnClass = tokenEdgeActive
+    ? "bg-[#19549b] text-white border border-[#19549b]"
+    : actionBtnClass;
+
   return (
     <header
       className={`sticky top-0 z-20 transition-colors duration-300 ease-in-out ${shellClass}`}
@@ -142,13 +154,13 @@ export function Header({
               <SearchIcon className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Search</span>
               <kbd
-                className={`hidden sm:inline-flex items-center px-1 h-4 ml-0.5 text-[9px] rounded-sm border leading-none ${
+                className={`hidden sm:inline-flex items-center gap-0.5 px-1 h-4 ml-0.5 text-[9px] rounded-sm border leading-none ${
                   scrolled
                     ? "border-[#cbd5e1] bg-[#f1f5f9] text-[#6a7282]"
                     : "border-white/20 bg-white/10 text-white/80"
                 }`}
               >
-                ⌘K
+                <CommandIcon className="w-2.5 h-2.5" />K
               </kbd>
             </button>
           )}
@@ -165,6 +177,15 @@ export function Header({
               ) : (
                 <Pause className="w-3.5 h-3.5" />
               )}
+            </button>
+          )}
+          {tokenEdgeEnabled && onOpenTokenEdge && (
+            <button
+              type="button"
+              onClick={onOpenTokenEdge}
+              className={`h-7 px-2 rounded-sm text-xs transition-colors duration-300 inline-flex items-center ${tokenEdgeBtnClass}`}
+            >
+              Token Edge
             </button>
           )}
           {watchlistEnabled && onOpenWatchlist && (
