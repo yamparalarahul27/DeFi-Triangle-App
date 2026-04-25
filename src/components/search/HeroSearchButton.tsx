@@ -1,6 +1,6 @@
 "use client";
 
-import { Search as SearchIcon } from "lucide-react";
+import { Command as CommandIcon, Search as SearchIcon } from "lucide-react";
 import { useSearchModal } from "./SearchModalProvider";
 
 export function HeroSearchButton() {
@@ -17,8 +17,8 @@ export function HeroSearchButton() {
       <span className="flex-1 text-sm text-[#6a7282] truncate">
         Search tokens, pairs, or paste an address…
       </span>
-      <kbd className="hidden sm:inline-flex items-center px-1.5 h-5 text-[10px] rounded-sm border border-[#cbd5e1] bg-[#f1f5f9] text-[#6a7282] leading-none">
-        ⌘K
+      <kbd className="hidden sm:inline-flex items-center gap-0.5 px-1.5 h-5 text-[10px] rounded-sm border border-[#cbd5e1] bg-[#f1f5f9] text-[#6a7282] leading-none">
+        <CommandIcon className="w-3 h-3" />K
       </kbd>
     </button>
   );

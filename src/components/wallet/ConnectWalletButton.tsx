@@ -5,6 +5,7 @@ import {
   useUnifiedWalletContext,
 } from "@jup-ag/wallet-adapter";
 import bs58 from "bs58";
+import { ChevronDown } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSession } from "@/components/providers/SessionContext";
 
@@ -127,11 +128,9 @@ export function ConnectWalletButton() {
         >
           <span className="w-1.5 h-1.5 rounded-full bg-[#0fa87a]" />
           <span>{truncate(authedWallet)}</span>
-          <span
-            className={`text-[10px] transition-transform ${menuOpen ? "rotate-180" : ""}`}
-          >
-            ▾
-          </span>
+          <ChevronDown
+            className={`w-3 h-3 transition-transform ${menuOpen ? "rotate-180" : ""}`}
+          />
         </button>
         {menuOpen && (
           <div className="absolute right-0 top-8 z-30 bg-white border border-[#cbd5e1] rounded-sm min-w-[240px] py-1 shadow-md">
