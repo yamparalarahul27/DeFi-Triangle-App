@@ -10,11 +10,11 @@ export const FEATURES = {
    * Wallet-authenticated watchlist (connect + star + remove + persist).
    * v0.01: disabled until the watchlist UX is ready.
    */
-  WATCHLIST: false,
+  WATCHLIST: true,
 
   /**
    * Header Connect Wallet button. Currently only used by the watchlist
    * flow, so defaults to the same value as WATCHLIST.
    */
-  WALLET_CONNECT: false,
+  WALLET_CONNECT: true,
 } as const;
