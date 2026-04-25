@@ -18,7 +18,6 @@ const {
   JUPITER_API_KEY,
   BIRDEYE_API_KEY,
   TOKENS_XYZ_API_KEY,
-  SOLSCAN_API_KEY,
   HELIUS_API_KEY,
 } = process.env;
 
@@ -85,31 +84,19 @@ async function jupiter() {
 async function birdeye() {
   if (!BIRDEYE_API_KEY) return log("birdeye (skipped, no key)", "skip");
   const headers = { "X-API-KEY": BIRDEYE_API_KEY, "x-chain": "solana" };
-  await hit("birdeye-token_overview", {
-    url: `https://public-api.birdeye.so/defi/token_overview?address=${MINT}`,
-    headers,
-  });
-  await hit("birdeye-token_security", {
-    url: `https://public-api.birdeye.so/defi/token_security?address=${MINT}`,
-    headers,
-  });
   const now = Math.floor(Date.now() / 1000);
-  await hit("birdeye-ohlcv_1h_24h", {
-    url: `https://public-api.birdeye.so/defi/ohlcv?address=${MINT}&type=1H&time_from=${now - 86400}&time_to=${now}`,
-    headers,
-  });
-  await hit("birdeye-token_creation", {
-    url: `https://public-api.birdeye.so/defi/token_creation_info?address=${MINT}`,
-    headers,
-  });
-  await hit("birdeye-token_trade_data", {
-    url: `https://public-api.birdeye.so/defi/v3/token/trade-data/single?address=${MINT}`,
-    headers,
-  });
-  await hit("birdeye-token_holder", {
-    url: `https://public-api.birdeye.so/defi/v3/token/holder?address=${MINT}&limit=10`,
-    headers,
-  });
+  const calls = [
+    ["birdeye-token_overview", `https://public-api.birdeye.so/defi/token_overview?address=${MINT}`],
+    ["birdeye-token_security", `https://public-api.birdeye.so/defi/token_security?address=${MINT}`],
+    ["birdeye-ohlcv_1h_24h", `https://public-api.birdeye.so/defi/ohlcv?address=${MINT}&type=1H&time_from=${now - 86400}&time_to=${now}`],
+    ["birdeye-token_creation", `https://public-api.birdeye.so/defi/token_creation_info?address=${MINT}`],
+    ["birdeye-token_trade_data", `https://public-api.birdeye.so/defi/v3/token/trade-data/single?address=${MINT}`],
+    ["birdeye-token_holder", `https://public-api.birdeye.so/defi/v3/token/holder?address=${MINT}&limit=10`],
+  ];
+  for (const [name, url] of calls) {
+    await hit(name, { url, headers });
+    await sleep(1100); // free tier ≈ 1 rps
+  }
 }
 
 // ─── TOKENS.XYZ ─────────────────────────────────────────────────────────────
@@ -125,26 +112,6 @@ async function tokensXyz() {
     url: `https://api.tokens.xyz/v1/assets/${MINT}/price-chart?interval=1H&from=${to - 86400}&to=${to}`,
     headers,
   });
-}
-
-// ─── SOLSCAN PRO (Free L1) ──────────────────────────────────────────────────
-async function solscan() {
-  if (!SOLSCAN_API_KEY) return log("solscan (skipped, no key)", "skip");
-  const headers = { token: SOLSCAN_API_KEY };
-  const base = "https://pro-api.solscan.io/v2.0";
-  // pace @ 1 req/sec to respect free-tier throttle
-  const endpoints = [
-    ["solscan-token_meta", `${base}/token/meta?address=${MINT}`],
-    ["solscan-token_price", `${base}/token/price?address=${MINT}`],
-    ["solscan-token_holders", `${base}/token/holders?address=${MINT}&page=1&page_size=10`],
-    ["solscan-token_markets", `${base}/token/markets?token[]=${MINT}&page=1&page_size=5`],
-    ["solscan-token_transfer", `${base}/token/transfer?address=${MINT}&page=1&page_size=10`],
-    ["solscan-token_defi_activities", `${base}/token/defi/activities?address=${MINT}&page=1&page_size=10`],
-  ];
-  for (const [name, url] of endpoints) {
-    await hit(name, { url, headers });
-    await sleep(1100);
-  }
 }
 
 // ─── HELIUS ─────────────────────────────────────────────────────────────────
@@ -184,7 +151,6 @@ console.log(`▸ Output: ${OUT_DIR}\n`);
 await jupiter();
 await birdeye();
 await tokensXyz();
-await solscan();
 await helius();
 
 const ok = results.filter((r) => r.status === "ok").length;
