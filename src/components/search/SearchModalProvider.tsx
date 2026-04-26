@@ -36,8 +36,15 @@ export function SearchModalProvider({ children }: { children: React.ReactNode })
       e.preventDefault();
       setIsOpen((v) => !v);
     }
+    function onPaletteOpen() {
+      setIsOpen(true);
+    }
     window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
+    window.addEventListener("palette:open", onPaletteOpen);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("palette:open", onPaletteOpen);
+    };
   }, []);
 
   const value = useMemo(

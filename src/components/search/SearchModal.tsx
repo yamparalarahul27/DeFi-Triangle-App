@@ -46,8 +46,31 @@ export function SearchModal({ open, onOpenChange }: SearchModalProps) {
     [recommended]
   );
 
+  const matchedRecentRows = useMemo<SearchRowData[]>(() => {
+    if (!hasQuery) return [];
+    const tokens = trimmed.toLowerCase().split(/\s+/).filter(Boolean);
+    if (tokens.length === 0) return [];
+    return recents
+      .filter((r) => {
+        const haystack = `${r.symbol} ${r.name} ${r.address}`.toLowerCase();
+        return tokens.every((t) => haystack.includes(t));
+      })
+      .map((r) => ({
+        address: r.address,
+        symbol: r.symbol,
+        name: r.name,
+        imageUrl: r.imageUrl,
+      }));
+  }, [hasQuery, recents, trimmed]);
+
+  const dedupedResultRows = useMemo<SearchRowData[]>(() => {
+    if (matchedRecentRows.length === 0) return resultRows;
+    const seen = new Set(matchedRecentRows.map((r) => r.address));
+    return resultRows.filter((r) => !seen.has(r.address));
+  }, [matchedRecentRows, resultRows]);
+
   const navigableRows = hasQuery
-    ? resultRows
+    ? [...matchedRecentRows, ...dedupedResultRows]
     : [...recentRows, ...recommendedRows];
 
   useEffect(() => {
@@ -104,7 +127,7 @@ export function SearchModal({ open, onOpenChange }: SearchModalProps) {
             e.preventDefault();
             inputRef.current?.focus();
           }}
-          className="fixed left-0 right-0 bottom-0 z-50 flex flex-col w-full max-h-[85vh] bg-white rounded-t-lg shadow-2xl border border-[#e5e7eb] overflow-hidden sm:left-1/2 sm:right-auto sm:bottom-auto sm:top-[12vh] sm:w-[92vw] sm:max-w-[560px] sm:max-h-none sm:-translate-x-1/2 sm:rounded-sm"
+          className="fixed left-1/2 -translate-x-1/2 top-20 z-50 flex flex-col w-[calc(100%-1rem)] max-w-[640px] max-h-[80vh] bg-white rounded-sm shadow-2xl border border-[#e5e7eb] overflow-hidden"
         >
           <Dialog.Title className="sr-only">Search tokens</Dialog.Title>
           <Dialog.Description className="sr-only">
@@ -145,12 +168,13 @@ export function SearchModal({ open, onOpenChange }: SearchModalProps) {
           <div
             role="listbox"
             aria-label="Search results"
-            className="flex-1 overflow-y-auto sm:flex-initial sm:max-h-[60vh]"
+            className="flex-1 overflow-y-auto"
           >
             {hasQuery ? (
               <QueryResults
                 loading={loading}
-                rows={resultRows}
+                matchedRecents={matchedRecentRows}
+                rows={dedupedResultRows}
                 activeIndex={activeIndex}
                 onHover={setActiveIndex}
                 onSelect={selectRow}
@@ -183,42 +207,71 @@ export function SearchModal({ open, onOpenChange }: SearchModalProps) {
 
 function QueryResults({
   loading,
+  matchedRecents,
   rows,
   activeIndex,
   onHover,
   onSelect,
 }: {
   loading: boolean;
+  matchedRecents: SearchRowData[];
   rows: SearchRowData[];
   activeIndex: number;
   onHover: (i: number) => void;
   onSelect: (row: SearchRowData) => void;
 }) {
-  if (loading && rows.length === 0) {
+  if (loading && rows.length === 0 && matchedRecents.length === 0) {
     return (
       <div className="px-3 py-8 text-xs text-[#6a7282] text-center">
         Searching…
       </div>
     );
   }
-  if (rows.length === 0) {
+  if (rows.length === 0 && matchedRecents.length === 0) {
     return (
       <div className="px-3 py-8 text-xs text-[#6a7282] text-center">
         No tokens matched that query.
       </div>
     );
   }
+  let cursor = 0;
   return (
     <div className="py-1">
-      {rows.map((row, i) => (
-        <SearchRow
-          key={row.address}
-          row={row}
-          active={i === activeIndex}
-          onSelect={() => onSelect(row)}
-          onHover={() => onHover(i)}
-        />
-      ))}
+      {matchedRecents.length > 0 && (
+        <Section title="Recent" count={matchedRecents.length}>
+          {matchedRecents.map((row) => {
+            const idx = cursor++;
+            return (
+              <SearchRow
+                key={`q-recent-${row.address}`}
+                row={row}
+                active={idx === activeIndex}
+                onSelect={() => onSelect(row)}
+                onHover={() => onHover(idx)}
+              />
+            );
+          })}
+        </Section>
+      )}
+      {rows.length > 0 && (
+        <Section
+          title={matchedRecents.length > 0 ? "Tokens" : undefined}
+          count={matchedRecents.length > 0 ? rows.length : undefined}
+        >
+          {rows.map((row) => {
+            const idx = cursor++;
+            return (
+              <SearchRow
+                key={row.address}
+                row={row}
+                active={idx === activeIndex}
+                onSelect={() => onSelect(row)}
+                onHover={() => onHover(idx)}
+              />
+            );
+          })}
+        </Section>
+      )}
     </div>
   );
 }
@@ -251,6 +304,7 @@ function EmptyStateLists({
       {recents.length > 0 && (
         <Section
           title="Recent"
+          count={recents.length}
           action={
             <button
               type="button"
@@ -276,7 +330,7 @@ function EmptyStateLists({
         </Section>
       )}
       {recommended.length > 0 && (
-        <Section title="Recommended">
+        <Section title="Recommended" count={recommended.length}>
           {recommended.map((row) => {
             const idx = cursor++;
             return (
@@ -297,21 +351,29 @@ function EmptyStateLists({
 
 function Section({
   title,
+  count,
   action,
   children,
 }: {
-  title: string;
+  title?: string;
+  count?: number;
   action?: React.ReactNode;
   children: React.ReactNode;
 }) {
+  const showHeader = title !== undefined;
   return (
     <div>
-      <div className="flex items-center justify-between px-3 py-1.5">
-        <div className="text-[10px] uppercase tracking-wider text-[#6a7282]">
-          {title}
+      {showHeader && (
+        <div className="sticky top-0 z-10 flex items-center justify-between px-3 py-1.5 bg-white/95 backdrop-blur-sm border-b border-[#f1f5f9]">
+          <div className="text-[10px] uppercase tracking-wider text-[#6a7282]">
+            {title}
+            {typeof count === "number" && (
+              <span className="ml-1.5 text-[#9aa3b2]">· {count}</span>
+            )}
+          </div>
+          {action}
         </div>
-        {action}
-      </div>
+      )}
       {children}
     </div>
   );
