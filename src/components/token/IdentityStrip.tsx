@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import NumberFlow, { type Format } from "@number-flow/react";
 import { TokenIcon } from "@/components/ui/TokenIcon";
-import { fmtAge, fmtPct, fmtUsd } from "@/lib/format";
+import { fmtAge, fmtUsd } from "@/lib/format";
 import { useTokenPriceTicker } from "@/lib/hooks/useTokenPriceTicker";
 import type {
   AssetCore,
@@ -48,8 +48,6 @@ export function IdentityStrip({
   const grade = risk?.marketScore?.grade;
   const riskLabel = risk?.marketScore?.label;
   const tone = risk?.marketScore?.tone;
-
-  const flash = usePriceFlash(ticker.price);
 
   const toneClass =
     tone === "safe"
@@ -97,12 +95,8 @@ export function IdentityStrip({
           </div>
         </div>
         <div className="sm:text-right">
-          <div
-            className={`font-mono text-3xl text-[#11274d] leading-none transition-opacity duration-150 ${
-              flash ? "opacity-60" : "opacity-100"
-            }`}
-          >
-            {fmtUsd(price)}
+          <div className="font-mono text-3xl text-[#11274d] leading-none">
+            <NumberFlow value={price} format={priceFormat(price)} prefix="$" />
           </div>
           <div
             className={`text-sm flex items-center gap-1 mt-1 ${
@@ -115,7 +109,13 @@ export function IdentityStrip({
               aria-hidden="true"
               className="h-3 w-3 shrink-0"
             />
-            <span className="font-mono">{fmtPct(Math.abs(change))}</span>
+            <span className="font-mono">
+              <NumberFlow
+                value={Math.abs(change)}
+                format={PCT_FORMAT}
+                suffix="%"
+              />
+            </span>
           </div>
           {ath != null && athDeltaPct != null && (
             <div className="text-[11px] text-[#6a7282] mt-2 sm:text-right">
@@ -129,7 +129,11 @@ export function IdentityStrip({
                 }
               >
                 {athDeltaPct < 0 ? "down" : "up"}{" "}
-                {Math.abs(athDeltaPct).toFixed(1)}%
+                <NumberFlow
+                  value={Math.abs(athDeltaPct)}
+                  format={ATH_PCT_FORMAT}
+                  suffix="%"
+                />
               </span>
             </div>
           )}
@@ -139,20 +143,19 @@ export function IdentityStrip({
   );
 }
 
-function usePriceFlash(price: number | null): boolean {
-  const [flash, setFlash] = useState(false);
-  const prevRef = useRef<number | null>(null);
+const PCT_FORMAT: Format = {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+};
 
-  useEffect(() => {
-    if (price === null) return;
-    const prev = prevRef.current;
-    prevRef.current = price;
-    if (prev !== null && price !== prev) {
-      setFlash(true);
-      const t = setTimeout(() => setFlash(false), 150);
-      return () => clearTimeout(t);
-    }
-  }, [price]);
+const ATH_PCT_FORMAT: Format = {
+  minimumFractionDigits: 1,
+  maximumFractionDigits: 1,
+};
 
-  return flash;
+function priceFormat(value: number): Format {
+  if (value >= 1) return { minimumFractionDigits: 2, maximumFractionDigits: 2 };
+  if (value >= 0.01)
+    return { minimumFractionDigits: 4, maximumFractionDigits: 4 };
+  return { minimumSignificantDigits: 3, maximumSignificantDigits: 3 };
 }

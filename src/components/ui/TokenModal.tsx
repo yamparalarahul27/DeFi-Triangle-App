@@ -1,11 +1,13 @@
 "use client";
 
+import NumberFlow, { type Format } from "@number-flow/react";
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { TokenIcon } from "./TokenIcon";
 import { TokenModalChart } from "./TokenModalChart";
-import { fmtAge, fmtNum, fmtPct, fmtUsd } from "@/lib/format";
+import { fmtAge, fmtNum, fmtUsd } from "@/lib/format";
 import { useTokenChart } from "@/lib/hooks/useTokenChart";
+import { useTokenPriceTicker } from "@/lib/hooks/useTokenPriceTicker";
 import { useTokenSecurity } from "@/lib/hooks/useTokenSecurity";
 
 const SOCIAL_LABELS: Record<string, string> = {
@@ -47,8 +49,11 @@ export function TokenModal({ pair: initialPair, onClose }: TokenModalProps) {
   const symbol: string = pair?.baseToken?.symbol ?? "???";
   const name: string = pair?.baseToken?.name ?? "";
   const imageUrl: string | undefined = pair?.info?.imageUrl;
-  const priceUsd = Number(pair?.priceUsd ?? 0);
-  const priceChange24 = Number(pair?.priceChange?.h24 ?? 0);
+
+  const ticker = useTokenPriceTicker(address);
+  const priceUsd = ticker.price ?? Number(pair?.priceUsd ?? 0);
+  const priceChange24 =
+    ticker.priceChange24h ?? Number(pair?.priceChange?.h24 ?? 0);
   const priceUp = priceChange24 >= 0;
   const trendIconSrc = priceUp ? "/app/Up.svg" : "/app/Down.svg";
 
@@ -156,7 +161,11 @@ export function TokenModal({ pair: initialPair, onClose }: TokenModalProps) {
                   Current price
                 </div>
                 <div className="font-mono text-xl text-[#111827] mt-1">
-                  {fmtUsd(priceUsd)}
+                  <NumberFlow
+                    value={priceUsd}
+                    format={modalPriceFormat(priceUsd)}
+                    prefix="$"
+                  />
                 </div>
               </div>
               <div
@@ -172,7 +181,11 @@ export function TokenModal({ pair: initialPair, onClose }: TokenModalProps) {
                   className="h-3 w-3 shrink-0"
                 />
                 <span className="font-mono">
-                  {fmtPct(Math.abs(priceChange24))}
+                  <NumberFlow
+                    value={Math.abs(priceChange24)}
+                    format={MODAL_PCT_FORMAT}
+                    suffix="%"
+                  />
                 </span>
               </div>
             </div>
@@ -329,4 +342,16 @@ function Stat({ label, value }: { label: string; value: string }) {
       </span>
     </div>
   );
+}
+
+const MODAL_PCT_FORMAT: Format = {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+};
+
+function modalPriceFormat(value: number): Format {
+  if (value >= 1) return { minimumFractionDigits: 2, maximumFractionDigits: 2 };
+  if (value >= 0.01)
+    return { minimumFractionDigits: 4, maximumFractionDigits: 4 };
+  return { minimumSignificantDigits: 3, maximumSignificantDigits: 3 };
 }
