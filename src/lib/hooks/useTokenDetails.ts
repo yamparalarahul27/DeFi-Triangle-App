@@ -11,9 +11,7 @@ import {
   flattenVariantsByKind,
   mergeAssetWithFallback,
   normalizeChartCandles,
-  num,
   primaryFromAsset,
-  str,
   type BirdeyePair,
   type ChartRange,
   type VariantsByKind,
@@ -153,7 +151,20 @@ async function fetchTokenChartCandles(
   const now = Math.floor(Date.now() / 1000);
   const from = now - range.lookbackSeconds;
 
-  // 1) Tokens.xyz
+  // 1) Birdeye
+  try {
+    const res = await fetch(
+      `/api/birdeye?type=ohlcv&address=${encodeURIComponent(address)}`,
+      { cache: "no-store" }
+    );
+    const json = res.ok ? await res.json() : null;
+    if (json?.success) {
+      const candles = normalizeChartCandles(json.data);
+      if (candles.length >= 2) return candles;
+    }
+  } catch {}
+
+  // 2) Tokens.xyz
   try {
     const res = await fetch(
       `/api/tokens-xyz?type=price-chart&assetId=${encodeURIComponent(
@@ -168,80 +179,5 @@ async function fetchTokenChartCandles(
     }
   } catch {}
 
-  // 2) Birdeye
-  try {
-    const res = await fetch(
-      `/api/birdeye?type=ohlcv&address=${encodeURIComponent(address)}`,
-      { cache: "no-store" }
-    );
-    const json = res.ok ? await res.json() : null;
-    if (json?.success) {
-      const candles = normalizeChartCandles(json.data);
-      if (candles.length >= 2) return candles;
-    }
-  } catch {}
-
-  // 3) Jupiter (derived)
-  return fetchJupiterDerivedCandles(address, from, now);
-}
-
-async function fetchJupiterDerivedCandles(
-  address: string,
-  from: number,
-  now: number
-): Promise<Candle[]> {
-  try {
-    const res = await fetch(
-      `/api/jupiter?type=search&q=${encodeURIComponent(address)}&limit=3`,
-      { cache: "no-store" }
-    );
-    const json = res.ok ? await res.json() : null;
-    const rows = Array.isArray(json?.data) ? (json.data as unknown[]) : [];
-    if (rows.length === 0) return [];
-
-    const exact =
-      rows.find((item) => {
-        if (!item || typeof item !== "object" || Array.isArray(item)) return false;
-        const record = item as Record<string, unknown>;
-        const base = record.baseToken as Record<string, unknown> | undefined;
-        return str(base?.address).toLowerCase() === address.toLowerCase();
-      }) ?? rows[0];
-
-    if (!exact || typeof exact !== "object" || Array.isArray(exact)) return [];
-
-    const record = exact as Record<string, unknown>;
-    const priceUsd = num(record.priceUsd);
-    const priceChange24 = num(
-      (record.priceChange as Record<string, unknown> | undefined)?.h24
-    );
-    const volume24 = num((record.volume as Record<string, unknown> | undefined)?.h24);
-
-    if (!Number.isFinite(priceUsd) || priceUsd <= 0) return [];
-
-    const denominator = 1 + priceChange24 / 100;
-    const prevPrice = denominator > 0 ? priceUsd / denominator : priceUsd;
-    const high = Math.max(prevPrice, priceUsd);
-    const low = Math.min(prevPrice, priceUsd);
-
-    return [
-      {
-        o: prevPrice,
-        h: high,
-        l: low,
-        c: prevPrice,
-        v: Math.max(0, volume24 / 2),
-        unixTime: from,
-      },
-      {
-        o: prevPrice,
-        h: high,
-        l: low,
-        c: priceUsd,
-        v: Math.max(0, volume24),
-        unixTime: now,
-      },
-    ];
-  } catch {
-    return [];
-  }
+  return [];
 }

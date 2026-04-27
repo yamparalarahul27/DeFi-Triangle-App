@@ -283,7 +283,7 @@ export function mergeAssetWithFallback(
   return merged;
 }
 
-export function num(value: unknown): number {
+function num(value: unknown): number {
   if (typeof value === "number" && Number.isFinite(value)) return value;
   if (typeof value === "string") {
     const parsed = Number(value);
@@ -292,7 +292,7 @@ export function num(value: unknown): number {
   return 0;
 }
 
-export function str(value: unknown): string {
+function str(value: unknown): string {
   if (typeof value === "string") return value.trim();
   if (typeof value === "number" && Number.isFinite(value)) return String(value);
   return "";
