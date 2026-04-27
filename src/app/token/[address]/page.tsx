@@ -78,6 +78,7 @@ export default function TokenDetailPage() {
         </Link>
 
         <IdentityStrip
+          address={address}
           asset={asset}
           primary={primary}
           profile={profile}

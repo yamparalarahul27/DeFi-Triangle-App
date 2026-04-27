@@ -1,7 +1,9 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { TokenIcon } from "@/components/ui/TokenIcon";
 import { fmtAge, fmtPct, fmtUsd } from "@/lib/format";
+import { useTokenPriceTicker } from "@/lib/hooks/useTokenPriceTicker";
 import type {
   AssetCore,
   AssetProfile,
@@ -10,28 +12,35 @@ import type {
 } from "@/lib/tokens-xyz-types";
 
 export function IdentityStrip({
+  address,
   asset,
   primary,
   profile,
   risk,
 }: {
+  address: string;
   asset: AssetCore;
   primary: Variant | null;
   profile?: AssetProfile;
   risk?: RiskData;
 }) {
-  const price =
+  const ticker = useTokenPriceTicker(address);
+
+  const fallbackPrice =
     profile?.price ??
     asset.canonicalMarket?.price ??
     asset.stats?.price ??
     primary?.market?.price ??
     0;
-  const change =
+  const fallbackChange =
     profile?.priceChange24h ??
     asset.canonicalMarket?.priceChange24hPercent ??
     asset.stats?.priceChange24hPercent ??
     primary?.market?.priceChange24hPercent ??
     0;
+
+  const price = ticker.price ?? fallbackPrice;
+  const change = ticker.priceChange24h ?? fallbackChange;
   const up = change >= 0;
   const ath = profile?.allTimeHigh;
   const athDate = profile?.allTimeHighDate;
@@ -39,6 +48,8 @@ export function IdentityStrip({
   const grade = risk?.marketScore?.grade;
   const riskLabel = risk?.marketScore?.label;
   const tone = risk?.marketScore?.tone;
+
+  const flash = usePriceFlash(ticker.price);
 
   const toneClass =
     tone === "safe"
@@ -86,7 +97,11 @@ export function IdentityStrip({
           </div>
         </div>
         <div className="sm:text-right">
-          <div className="font-mono text-3xl text-[#11274d] leading-none">
+          <div
+            className={`font-mono text-3xl text-[#11274d] leading-none transition-opacity duration-150 ${
+              flash ? "opacity-60" : "opacity-100"
+            }`}
+          >
             {fmtUsd(price)}
           </div>
           <div
@@ -122,4 +137,22 @@ export function IdentityStrip({
       </div>
     </section>
   );
+}
+
+function usePriceFlash(price: number | null): boolean {
+  const [flash, setFlash] = useState(false);
+  const prevRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (price === null) return;
+    const prev = prevRef.current;
+    prevRef.current = price;
+    if (prev !== null && price !== prev) {
+      setFlash(true);
+      const t = setTimeout(() => setFlash(false), 150);
+      return () => clearTimeout(t);
+    }
+  }, [price]);
+
+  return flash;
 }
