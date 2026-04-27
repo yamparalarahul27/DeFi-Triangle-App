@@ -26,14 +26,14 @@ Build the **best token information experience on Solana** — a token-details pa
 
 ```
 Phase A — Foundation        [ ✅ A1  ✅ A2  ✅ A3 ]
-Phase B — Spec compliance   [ ✅ B1  ⏸ B2  ⏸ B3 ]
+Phase B — Spec compliance   [ ✅ B1  ✅ B2  ⏸ B2.5  ⏸ B3 ]
 Phase C — Net-new sections  [ ⏸ C1  ⏸ C2  ⏸ C3  ⏸ C4  ⏸ C5 ]
 Phase D — Differentiators   [ ⏸ D1  ⏸ D2  ⏸ D3  ⏸ D4  ⏸ D5 ]
 ```
 
 Legend: ⏸ pending · 🔄 in progress · ✅ shipped
 
-**Next ship:** **B2** (Jupiter Lite Price realtime ticker — depends on A3).
+**Next ship:** **B2.5** (chart library swap to evilcharts + triangle background) OR **B3** (Jupiter-first lookup) — both independent of each other.
 
 > When a step ships, update its status icon AND tick it off in the table below. Keep this snapshot in sync with the per-step sections — that's the canonical "where are we" indicator for the next session.
 
@@ -48,6 +48,7 @@ Legend: ⏸ pending · 🔄 in progress · ✅ shipped
 | A3 | Extract `useTokenDetails` hook | Foundation | no | A1 |
 | B1 | Swap chart fallback to Birdeye-primary | Compliance | yes (charts) | A3 |
 | B2 | Jupiter Lite Price realtime ticker | Compliance | yes (live price) | A3 |
+| B2.5 | Chart library swap to evilcharts + triangle background | Compliance | yes (charts) | A3 |
 | B3 | Jupiter-first lookup with Helius fallback | Compliance | yes (404 state) | A2, A3 |
 | C1 | On-chain truth panel (Helius) | Sections | yes | A2 |
 | C2 | Token meta strip (Token Program ID, organicScore, tags, first-pool age, market count) | Sections | yes | — |
@@ -210,6 +211,42 @@ Adds useTokenPriceTicker hook polling https://lite-api.jup.ag/price/v3
 every 1.5s, wired into IdentityStrip. Free, no-auth, designed for
 high-frequency polling. Bigger refresh tier (token_overview, etc.)
 remains on its existing 15s cadence.
+```
+
+---
+
+### B2.5 — Chart library swap to evilcharts + triangle background
+
+**Goal:** replace the hand-rolled SVG `src/components/ui/PriceChart.tsx` with [evilcharts](https://evilcharts.com/docs/line-chart/static), and add an upward-triangle pattern background (matching the project logo) using [evilcharts background components](https://evilcharts.com/docs/ui/background).
+
+**Open questions to resolve before starting:**
+- Is evilcharts an npm package or a copy-paste shadcn-style component? Install steps need to be captured.
+- Does it support OHLCV / candlestick rendering, or line-only? If line-only, downstream Phase C work (TradingActivityPanel candle views) needs a separate solution.
+- What's the data shape for the line chart props? Our current `Candle[]` has `{o, h, l, c, v, unixTime}` — needs adapter to whatever evilcharts expects.
+- Triangle background: are the triangles a built-in evilcharts background variant, or does it need a custom SVG pattern matching `/brand/defi_logo_*.svg`?
+
+**What to do (once questions answered):**
+- Install evilcharts per docs (likely shadcn-style: copy components into `src/components/ui/charts/`).
+- Add adapter in `src/lib/token/utils.ts` (or new file) to map `Candle[]` → evilcharts data shape.
+- Replace `PriceChart` usage in [`src/components/token/PriceChartSection.tsx`](../src/components/token/PriceChartSection.tsx). Token Modal's `useTokenChart` consumer (`src/components/ui/TokenModalChart.tsx`) is out of scope — separate task.
+- Wrap chart in evilcharts background component (or custom triangle SVG pattern) — upward triangles, brand-toned (cta-color `#3B7DDD` or frost-400 `#19549b` per [DESIGN.md](../DESIGN.md)). Subtle opacity so it doesn't fight the line.
+- Verify mobile layout still works (charts are full-width on `<sm`).
+
+**Verify:**
+- SOL chart renders via evilcharts with triangle background visible behind it.
+- 1D / 1W / 1M / 3M / 1Y range switching still works.
+- Empty state (B1's behavior) still fires for sources that return no data.
+- `npm run build` clean.
+- No new high/critical `npm audit` findings beyond the documented Solana ecosystem ones in CLAUDE.md.
+
+**Commit msg:**
+```
+feat(token): swap chart to evilcharts with triangle background
+
+Replaces hand-rolled SVG PriceChart with evilcharts line chart, wrapped
+in an upward-triangle pattern background that matches the brand logo.
+Adapter maps Candle[] to evilcharts data shape. Token Modal chart is a
+follow-up.
 ```
 
 ---
