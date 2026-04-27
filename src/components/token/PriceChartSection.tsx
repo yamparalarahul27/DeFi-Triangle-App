@@ -1,8 +1,8 @@
 "use client";
 
 import type { Candle } from "@/components/ui/PriceChart";
-import { CHART_RANGES } from "../_utils";
-import { RechartsPriceChart } from "./RechartsPriceChart";
+import { CHART_RANGES } from "@/lib/token/utils";
+import { RechartsPriceChart } from "@/components/token/RechartsPriceChart";
 
 export function PriceChartSection({
   rangeLabel,
