@@ -4,7 +4,7 @@ import { useState } from "react";
 import { TokenIcon } from "@/components/ui/TokenIcon";
 import { fmtUsd } from "@/lib/format";
 import type { Variant, VariantKind } from "@/lib/tokens-xyz-types";
-import { KIND_LABELS, type VariantsByKind } from "../_utils";
+import { KIND_LABELS, type VariantsByKind } from "@/lib/token/utils";
 
 export function VariantsSection({
   variants,
