@@ -56,22 +56,13 @@ Ran [scripts/token-recon.mjs](../scripts/token-recon.mjs) against SOL (mint `So1
 - Leaked Helius URL files (`tmp/recon/sol/helius-*.json`) deleted from disk. `tmp/` is gitignored so never reached remote.
 - Going forward: store only the bare API key (UUID/token) in env vars — never a full URL.
 
-## Where to resume
+## Where to resume — superseded
 
-When user returns:
+This planning doc is preserved as a record of the recon spike. The actionable plan has moved on:
 
-1. **Confirm blockers cleared** — Helius key format fixed, Solscan tier status known, Birdeye tier status known.
-2. **Re-run recon** — `node scripts/token-recon.mjs` will top up tmp/recon/sol/ with any newly-working endpoints.
-3. **Build MATRIX.md** — field × API coverage table based on actual response shapes. Three dimensions:
-   - Coverage per field (✅ / ❌ / ⚠️ partial)
-   - Unique contributions per API (where does each win)
-   - Gaps — data NO API gives us (these become the "differentiator ideas" — synthesized signals, on-chain derivations, etc.)
-4. **Scope v1 of the token details page** — once the matrix is in hand, pick the sections that (a) are feasible with our data and (b) outshine existing tools.
-5. **Design architecture** — route structure (`/token/[mint]`), API routes (`/api/token/[mint]/*`), caching strategy given rate limits.
+- **Locked decisions** → [token-details-source-of-truth.md](./token-details-source-of-truth.md)
+- **Step-by-step implementation roadmap** → [token-details-roadmap.md](./token-details-roadmap.md)
 
-## Open product questions (carried forward)
+All blockers from the recon were resolved (2026-04-25 session): Solscan dropped, Helius key format fixed and integration verified, Birdeye unblocked on a fresh account with 1.1s pacing. Recon confirmed 11/13 endpoints viable on free-tier; full capability matrix in `tmp/recon/sol/MATRIX.md` (gitignored — re-run `scripts/token-recon.mjs` to regenerate).
 
-- v1 scope: minimal (hero + stats + chart + holders) vs full (+ activities + transfers)?
-- Holders depth: top 10, 20, or paginated?
-- Transfers vs DeFi activities — activities is richer (swap USD amounts, DEX); do we need both or skip transfers for v1?
-- Polling interval for live sections — 30s / 60s / on-demand refresh only?
+**To resume work, start with [token-details-roadmap.md](./token-details-roadmap.md)** — it has the current Status snapshot, Phase A–D ladder, and per-step instructions.
