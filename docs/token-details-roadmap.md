@@ -25,7 +25,7 @@ Build the **best token information experience on Solana** — a token-details pa
 ## Status snapshot
 
 ```
-Phase A — Foundation        [ ⏸ A1  ⏸ A2  ⏸ A3 ]
+Phase A — Foundation        [ ✅ A1  ✅ A2  ⏸ A3 ]
 Phase B — Spec compliance   [ ⏸ B1  ⏸ B2  ⏸ B3 ]
 Phase C — Net-new sections  [ ⏸ C1  ⏸ C2  ⏸ C3  ⏸ C4  ⏸ C5 ]
 Phase D — Differentiators   [ ⏸ D1  ⏸ D2  ⏸ D3  ⏸ D4  ⏸ D5 ]
@@ -33,7 +33,7 @@ Phase D — Differentiators   [ ⏸ D1  ⏸ D2  ⏸ D3  ⏸ D4  ⏸ D5 ]
 
 Legend: ⏸ pending · 🔄 in progress · ✅ shipped
 
-**Next ship:** **A1** (or A2 in parallel — they're independent).
+**Next ship:** **A3** (extract `useTokenDetails` hook — depends on A1).
 
 > When a step ships, update its status icon AND tick it off in the table below. Keep this snapshot in sync with the per-step sections — that's the canonical "where are we" indicator for the next session.
 
