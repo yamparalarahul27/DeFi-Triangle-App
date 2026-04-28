@@ -87,7 +87,6 @@ export function PriceChartSection({
           chartConfig={CHART_CONFIG}
           curveType="monotone"
           strokeVariant="solid"
-          dotVariant="default"
           activeDotVariant="default"
           hideLegend
           backgroundVariant="upward-triangles"
@@ -95,6 +94,7 @@ export function PriceChartSection({
             tickFormatter: (value) => formatTickTime(Number(value), rangeLabel),
           }}
           yAxisProps={{
+            domain: ["auto", "auto"],
             tickFormatter: (value) => fmtUsd(Number(value)),
           }}
           className="h-full w-full"

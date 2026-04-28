@@ -179,7 +179,9 @@ async function fetchTokenChartCandles(
   // 1) Birdeye
   try {
     const res = await fetch(
-      `/api/birdeye?type=ohlcv&address=${encodeURIComponent(address)}`,
+      `/api/birdeye?type=ohlcv&address=${encodeURIComponent(
+        address
+      )}&interval=${range.interval}&time_from=${from}&time_to=${now}`,
       { cache: "no-store" }
     );
     const json = res.ok ? await res.json() : null;

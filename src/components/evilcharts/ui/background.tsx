@@ -105,13 +105,13 @@ const FallingTrianglesPattern = ({ id }: PatternProps) => (
 );
 
 const UpwardTrianglesPattern = ({ id }: PatternProps) => (
-  <pattern id={id} x="0" y="0" width="18" height="36" patternUnits="userSpaceOnUse">
+  <pattern id={id} x="0" y="0" width="32" height="56" patternUnits="userSpaceOnUse">
     <path
       className="text-border dark:text-border"
-      d="M2 18h12L8 6 2 18zm18 36h12l-6-12-6 12z"
-      transform="scale(0.5)"
+      d="M4 16h8L8 6 4 16zm20 32h8l-4-10-4 10z"
+      transform="scale(0.55)"
       fill="currentColor"
-      fillOpacity="0.4"
+      fillOpacity="0.18"
     />
   </pattern>
 );

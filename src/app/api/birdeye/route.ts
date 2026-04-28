@@ -485,7 +485,29 @@ async function handleSecurity(address: string) {
   }
 }
 
-async function handleOhlcv(address: string) {
+const ALLOWED_OHLCV_INTERVALS = new Set([
+  "1m",
+  "5m",
+  "15m",
+  "30m",
+  "1H",
+  "2H",
+  "4H",
+  "6H",
+  "8H",
+  "12H",
+  "1D",
+  "3D",
+  "1W",
+  "1M",
+]);
+
+async function handleOhlcv(
+  address: string,
+  interval: string,
+  timeFrom: number,
+  timeTo: number
+) {
   if (!address) {
     return NextResponse.json(
       { success: false, error: "address required" },
@@ -500,10 +522,9 @@ async function handleOhlcv(address: string) {
     return errorResponse("ohlcv-config", err);
   }
 
-  const nowSec = Math.floor(Date.now() / 1000);
   const url = `${BIRDEYE_BASE}/defi/ohlcv?address=${encodeURIComponent(
     address
-  )}&type=1H&time_from=${nowSec - 86400}&time_to=${nowSec}`;
+  )}&type=${interval}&time_from=${timeFrom}&time_to=${timeTo}`;
 
   try {
     const upstream = await fetch(url, { headers, cache: "no-store" });
@@ -537,7 +558,19 @@ export async function GET(req: NextRequest) {
   const type = searchParams.get("type") ?? "list_v3";
 
   if (type === "ohlcv") {
-    return handleOhlcv(searchParams.get("address") ?? "");
+    const nowSec = Math.floor(Date.now() / 1000);
+    const requestedInterval = searchParams.get("interval") ?? "1H";
+    const interval = ALLOWED_OHLCV_INTERVALS.has(requestedInterval)
+      ? requestedInterval
+      : "1H";
+    const timeFrom = Number(searchParams.get("time_from")) || nowSec - 86400;
+    const timeTo = Number(searchParams.get("time_to")) || nowSec;
+    return handleOhlcv(
+      searchParams.get("address") ?? "",
+      interval,
+      timeFrom,
+      timeTo
+    );
   }
 
   if (type === "search") {
