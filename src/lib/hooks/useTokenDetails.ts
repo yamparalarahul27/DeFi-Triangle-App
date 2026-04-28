@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useInterval } from "@/lib/hooks/useInterval";
 import type { Candle } from "@/components/ui/PriceChart";
 import type { OnChainData } from "@/components/token/OnChainPanel";
+import type { JupiterTokenInfo, MetaStripData } from "@/components/token/MetaStrip";
 import type { AssetCore, AssetResponse, Variant } from "@/lib/tokens-xyz-types";
 import { lookupToken } from "@/lib/token/lookup";
 import {
@@ -58,6 +59,7 @@ export interface UseTokenDetailsResult {
   risk: RiskData | undefined;
   markets: Markets;
   onChain: OnChainData | null;
+  meta: MetaStripData | null;
   chartCandles: Candle[];
   chartRange: string;
   setChartRange: (label: string) => void;
@@ -83,6 +85,10 @@ export function useTokenDetails(address: string): UseTokenDetailsResult {
     address: string;
     data: OnChainData | null;
   } | null>(null);
+  const [jupiterInfo, setJupiterInfo] = useState<{
+    address: string;
+    data: JupiterTokenInfo | null;
+  } | null>(null);
 
   useEffect(() => {
     if (!address || !addressValid) return;
@@ -104,6 +110,30 @@ export function useTokenDetails(address: string): UseTokenDetailsResult {
       const data = await fetchOnChainData(address);
       if (cancelled) return;
       setOnChain({ address, data });
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [address, addressValid]);
+
+  useEffect(() => {
+    if (!address || !addressValid) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(
+          `/api/jupiter?type=tokenInfo&address=${encodeURIComponent(address)}`,
+          { cache: "no-store" }
+        );
+        const json = res.ok ? await res.json() : null;
+        if (cancelled) return;
+        setJupiterInfo({
+          address,
+          data: json?.success ? (json.data as JupiterTokenInfo | null) : null,
+        });
+      } catch {
+        if (!cancelled) setJupiterInfo({ address, data: null });
+      }
     })();
     return () => {
       cancelled = true;
@@ -211,6 +241,18 @@ export function useTokenDetails(address: string): UseTokenDetailsResult {
     addressValid && onChain?.address === address ? onChain.data : null;
   const renderableAsset = addressValid && realData ? asset : null;
 
+  const meta = useMemo<MetaStripData | null>(() => {
+    if (!renderableAsset) return null;
+    const jupiter =
+      jupiterInfo?.address === address ? jupiterInfo.data : null;
+    const numberMarkets =
+      typeof pair?.numberMarkets === "number" && pair.numberMarkets > 0
+        ? pair.numberMarkets
+        : null;
+    if (!jupiter && numberMarkets == null) return null;
+    return { jupiter, numberMarkets };
+  }, [renderableAsset, jupiterInfo, address, pair?.numberMarkets]);
+
   return {
     asset: renderableAsset,
     primary: renderableAsset ? primary : null,
@@ -219,6 +261,7 @@ export function useTokenDetails(address: string): UseTokenDetailsResult {
     risk: renderableAsset ? response?.includes?.risk?.data : undefined,
     markets: renderableAsset ? response?.includes?.markets?.data?.markets ?? [] : [],
     onChain: onChainForAddress,
+    meta,
     chartCandles,
     chartRange,
     setChartRange,
