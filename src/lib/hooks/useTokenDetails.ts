@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useInterval } from "@/lib/hooks/useInterval";
 import type { Candle } from "@/components/ui/PriceChart";
 import type { AssetCore, AssetResponse, Variant } from "@/lib/tokens-xyz-types";
+import { lookupToken } from "@/lib/token/lookup";
 import {
   CHART_RANGES,
   buildAssetFromPair,
@@ -36,6 +37,7 @@ export interface UseTokenDetailsResult {
   setChartRange: (label: string) => void;
   loading: boolean;
   chartLoading: boolean;
+  notIndexed: boolean;
 }
 
 export function useTokenDetails(address: string): UseTokenDetailsResult {
@@ -45,6 +47,26 @@ export function useTokenDetails(address: string): UseTokenDetailsResult {
   const [chartRange, setChartRange] = useState("1W");
   const [loading, setLoading] = useState(true);
   const [chartLoading, setChartLoading] = useState(true);
+  const [lookup, setLookup] = useState<{
+    address: string;
+    found: boolean;
+  } | null>(null);
+
+  useEffect(() => {
+    if (!address) return;
+    let cancelled = false;
+    (async () => {
+      const result = await lookupToken(address);
+      if (cancelled) return;
+      setLookup({ address, found: result.found });
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [address]);
+
+  const lookupComplete = lookup?.address === address;
+  const lookupFound = lookupComplete && lookup.found;
 
   const fetchTokenData = useCallback(async () => {
     if (!address) return;
@@ -129,6 +151,8 @@ export function useTokenDetails(address: string): UseTokenDetailsResult {
     [asset]
   );
 
+  const notIndexed = lookupComplete && !lookupFound && !asset;
+
   return {
     asset,
     primary,
@@ -141,6 +165,7 @@ export function useTokenDetails(address: string): UseTokenDetailsResult {
     setChartRange,
     loading,
     chartLoading,
+    notIndexed,
   };
 }
 

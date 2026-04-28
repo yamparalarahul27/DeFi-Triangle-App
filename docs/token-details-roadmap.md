@@ -29,11 +29,12 @@ Phase A — Foundation        [ ✅ A1  ✅ A2  ✅ A3 ]
 Phase B — Spec compliance   [ ✅ B1  ✅ B2  ⏸ B2.5  ⏸ B3 ]
 Phase C — Net-new sections  [ ⏸ C1  ⏸ C2  ⏸ C3  ⏸ C4  ⏸ C5 ]
 Phase D — Differentiators   [ ⏸ D1  ⏸ D2  ⏸ D3  ⏸ D4  ⏸ D5 ]
+Polish (cross-cutting)      [ ⏸ P1  ⏸ P2 ]
 ```
 
 Legend: ⏸ pending · 🔄 in progress · ✅ shipped
 
-**Next ship:** **B2.5** (chart library swap to evilcharts + triangle background) OR **B3** (Jupiter-first lookup) — both independent of each other.
+**Next ship:** **B3** (Jupiter-first lookup with Helius fallback). Polish items P1/P2 captured below — not blocking, can be picked off any time.
 
 > When a step ships, update its status icon AND tick it off in the table below. Keep this snapshot in sync with the per-step sections — that's the canonical "where are we" indicator for the next session.
 
@@ -60,6 +61,8 @@ Legend: ⏸ pending · 🔄 in progress · ✅ shipped
 | D3 | DEX vs CEX spread | Differentiators | yes | — |
 | D4 | Real-human activity score | Differentiators | yes | C4 |
 | D5 | Slippage at size ($1k/$10k/$100k) | Differentiators | yes | — |
+| P1 | Chart range-switch smoothness (no loading flash) | Polish | yes | A3 |
+| P2 | Reload / address-change smoothness (stale-while-revalidate) | Polish | yes | A3 |
 
 ---
 
@@ -584,3 +587,42 @@ Each step is self-contained — fresh Claude doesn't need conversation history b
 - Retest Tokens.xyz `/price-chart` on a memecoin (JUP / BONK) to confirm it actually returns candles; if it never does, simplify B1 to "Birdeye-only chart, hide section if it fails."
 - Confirm Birdeye free-tier exact rate-limit (current pacing of 1.1s works empirically).
 - Future-feature track: own API/data layer with multi-key rotation, response caching, normalized schema. Defer until pages start hammering the same endpoints.
+
+---
+
+## P1 — Chart range-switch smoothness
+
+**User-reported friction (PR #4 testing):** clicking a different range button (1D / 1W / 1M / 3M / 1Y) shows a "Loading chart…" state for ~500–1500 ms before the new chart renders. Feels laggy.
+
+**Root cause:** `useTokenDetails` sets `chartLoading: true` immediately on range change; `PriceChartSection` then renders the loading state instead of the previous candles.
+
+**Fix options (pick one when implementing):**
+- **(a) Optimistic keep:** don't render the loading overlay if we already have candles for the previous range. Only show "Loading chart…" on first load. Cheapest. Visual: the old chart stays until the new one lands (~ms), then swaps.
+- **(b) Per-range cache:** cache candles per `(address, range)` in a `Map`; on range switch, render cached candles instantly if present, refetch in background to refresh. Tighter feel; ~30 LOC of cache logic.
+- **(c) Pre-fetch all ranges:** after initial load, background-fetch the other 4 ranges. Best feel but biggest API cost.
+
+**Recommendation:** start with (a). If still laggy, layer (b).
+
+**Verify:**
+- Click each range button. Old chart stays visible until new data lands; no "Loading chart…" flash.
+- Initial page load still shows loading state once.
+
+---
+
+## P2 — Reload / address-change smoothness
+
+**User-reported friction (PR #4 testing):** opening a new token (or refreshing) shows a "Loading token…" full-page state for the full first-fetch duration. App feels less smooth than competitors.
+
+**Root cause:** `useTokenDetails` returns `loading: true` while the initial Birdeye + Tokens.xyz fetches resolve; page short-circuits to the loading screen.
+
+**Fix options:**
+- **(a) Stale-while-revalidate via cache:** session-level `Map<address, lastResult>` keyed by address. When the user opens a token they've seen this session, render cached values immediately; fetch in background and replace silently. Same pattern dashboard uses for token modals (`useTokenChart` already has `ohlcvCache`).
+- **(b) Skeleton instead of "Loading token…":** render the page shell (Identity strip, chart frame, stats grid placeholders) with shimmer instead of a centered spinner. No data dependency for the layout.
+- **(c) Both** — cache for known tokens, skeleton for unknown.
+
+**Recommendation:** (c). Cache covers repeat visits (most common); skeleton covers cold visits + provides better LCP signal.
+
+**Verify:**
+- Visit SOL → open another token → return to SOL: SOL renders instantly from cache, refreshed silently.
+- First visit to a new token: skeleton appears instead of full-page "Loading token…", real data swaps in when it lands.
+- Range buttons + price ticker continue to work after data swap.
