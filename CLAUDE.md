@@ -11,6 +11,21 @@ Rules for Claude Code when working in this repo. Read on every session.
 - Give 2–3 options with a recommendation — not a single pre-decided path.
 - When in doubt, ask.
 
+## Testing & merge policy
+
+Applies to any merge into `main` **or** `stage` (and any PR targeting either branch).
+
+Before merging, Claude must:
+
+1. **Stop and propose test cases.** List the scenarios the change should cover — golden path, edge cases, regressions, security-relevant paths. Do not write tests yet.
+2. **Wait for explicit user approval** of the proposed test list. The user may add, remove, or reword cases. No "I'll just write them and you can review" — approval comes first.
+3. **Implement the approved tests** and run them. All must pass.
+4. **Show the user the results** (test names + pass/fail) and wait for confirmation that they've verified the outcome.
+5. **Only then** prepare the merge / PR.
+
+Triggers: `git merge` into `main`/`stage`, `git push` to `main`/`stage`, opening a PR with `main` or `stage` as the base, and `gh pr merge` / equivalent MCP calls. Does not apply to merges into feature branches unless the user asks.
+
+If tests are genuinely not applicable (docs-only change, asset commit, comment tweak), say so explicitly and ask the user to waive the requirement for that change. Never self-waive.
 ## Behavioral guidelines
 
 Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-specific instructions as needed.
