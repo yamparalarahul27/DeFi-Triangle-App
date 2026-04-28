@@ -1,9 +1,12 @@
 "use client";
 
 import NumberFlow, { type Format } from "@number-flow/react";
+import { useMemo } from "react";
+import { PriceDivergenceChip } from "@/components/token/PriceDivergenceChip";
 import { TokenIcon } from "@/components/ui/TokenIcon";
 import { fmtAge, fmtUsd } from "@/lib/format";
 import { useTokenPriceTicker } from "@/lib/hooks/useTokenPriceTicker";
+import { computeDivergence } from "@/lib/token/priceDivergence";
 import type {
   AssetCore,
   AssetProfile,
@@ -17,14 +20,36 @@ export function IdentityStrip({
   primary,
   profile,
   risk,
+  birdeyePrice,
+  dasPrice,
 }: {
   address: string;
   asset: AssetCore;
   primary: Variant | null;
   profile?: AssetProfile;
   risk?: RiskData;
+  birdeyePrice?: number | null;
+  dasPrice?: number | null;
 }) {
   const ticker = useTokenPriceTicker(address);
+
+  const divergence = useMemo(
+    () =>
+      computeDivergence([
+        { name: "Jupiter (live)", price: ticker.price },
+        { name: "Birdeye", price: birdeyePrice ?? null },
+        { name: "Tokens.xyz", price: asset.stats?.price ?? null },
+        { name: "CoinGecko", price: asset.canonicalMarket?.price ?? null },
+        { name: "Helius DAS", price: dasPrice ?? null },
+      ]),
+    [
+      ticker.price,
+      birdeyePrice,
+      asset.stats?.price,
+      asset.canonicalMarket?.price,
+      dasPrice,
+    ]
+  );
 
   const fallbackPrice =
     profile?.price ??
@@ -117,6 +142,11 @@ export function IdentityStrip({
               />
             </span>
           </div>
+          {divergence && (
+            <div className="mt-1.5 sm:flex sm:justify-end">
+              <PriceDivergenceChip result={divergence} />
+            </div>
+          )}
           {ath != null && athDeltaPct != null && (
             <div className="text-[11px] text-[#6a7282] mt-2 sm:text-right">
               ATH {fmtUsd(ath)}
