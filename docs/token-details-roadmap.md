@@ -29,12 +29,12 @@ Phase A — Foundation        [ ✅ A1  ✅ A2  ✅ A3 ]
 Phase B — Spec compliance   [ ✅ B1  ✅ B2  ✅ B2.5  ✅ B3 ]
 Phase C — Net-new sections  [ ⏸ C1  ⏸ C2  ⏸ C3  ⏸ C4  ⏸ C5 ]
 Phase D — Differentiators   [ ⏸ D1  ⏸ D2  ⏸ D3  ⏸ D4  ⏸ D5 ]
-Polish (cross-cutting)      [ ✅ P1  ⏸ P2 ]
+Polish (cross-cutting)      [ ✅ P1  ⏸ P2  ⏸ P3  ⏸ P4 ]
 ```
 
 Legend: ⏸ pending · 🔄 in progress · ✅ shipped
 
-**Next ship:** **C2** (token meta strip) or **P2** (reload smoothness).
+**Next ship:** **C2** (token meta strip) or **C1** (on-chain truth panel — sets up D1).
 
 > When a step ships, update its status icon AND tick it off in the table below. Keep this snapshot in sync with the per-step sections — that's the canonical "where are we" indicator for the next session.
 
@@ -63,6 +63,8 @@ Legend: ⏸ pending · 🔄 in progress · ✅ shipped
 | D5 | Slippage at size ($1k/$10k/$100k) | Differentiators | yes | — |
 | P1 | Chart range-switch smoothness (no loading flash) | Polish | yes | A3 |
 | P2 | Reload / address-change smoothness (stale-while-revalidate) | Polish | yes | A3 |
+| P3 | Chart visual polish (match app UI) | Polish | yes | B2.5 |
+| P4 | Evilcharts loading state polish | Polish | yes | B2.5 |
 
 ---
 
@@ -626,3 +628,29 @@ Each step is self-contained — fresh Claude doesn't need conversation history b
 - Visit SOL → open another token → return to SOL: SOL renders instantly from cache, refreshed silently.
 - First visit to a new token: skeleton appears instead of full-page "Loading token…", real data swaps in when it lands.
 - Range buttons + price ticker continue to work after data swap.
+
+---
+
+## P3 — Chart visual polish (match app UI)
+
+**User-reported (PR #8 testing):** the new evilcharts price chart works correctly but its UI doesn't fully match the app's visual language — line stroke, axis typography, tooltip styling, gridlines, etc.
+
+**To investigate when picking up:**
+- Compare against [DESIGN.md](../DESIGN.md): colour tokens (Frost / Hela / Loki), typography (Geist Mono for body, Geist Pixel Square for financial numbers), spacing (8px base), border radii (rounded-sm 2px).
+- Audit: line color (currently `#19549b` light / `#3B7DDD` dark — confirm match against DESIGN.md primary), axis label font (does it inherit Geist Mono via the wrapping `<section>`?), tooltip card (current shadcn-default rounded-lg vs. our app's rounded-sm), gridline color/opacity.
+- Check whether evilcharts' `tooltipVariant="frosted-glass"` or a custom override gives a better fit.
+
+**Out of scope (revisit only if we change libraries):** swapping evilcharts for a different chart lib.
+
+---
+
+## P4 — Evilcharts loading state polish
+
+**User-reported (PR #8 testing):** the built-in `isLoading` shimmer skeleton from `EvilLineChart` doesn't feel as polished as the rest of the app.
+
+**Options to consider:**
+- **(a) Replace with our SpiralLoader** — pass `isLoading={false}` always; render the existing `SpiralLoader` (already used on home + briefly on the chart in P1) inside the chart container instead of evilcharts' shimmer. Simplest, matches the rest of the app.
+- **(b) Customize evilcharts shimmer** — `chart.tsx` exports `LoadingIndicator` and `getLoadingData`. Override the shimmer's color / animation curve to match brand.
+- **(c) Skeleton-shaped placeholder** — render a flat ghost line + grid silhouette in brand muted tones during loading. Closest to high-end fintech apps.
+
+**Recommendation when implementing:** start with (a) — least change, immediate parity with rest of app. If "looks too plain", layer (c).
