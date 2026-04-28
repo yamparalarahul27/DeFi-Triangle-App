@@ -79,9 +79,9 @@ export function EdgeScorePanel({ result }: { result: EdgeScoreResult | null }) {
 function BreakdownRow({ entry }: { entry: BreakdownEntry }) {
   if (!entry.hasData) {
     return (
-      <div className="grid grid-cols-[1fr_auto_auto_60px] items-center gap-2 text-xs">
+      <div className="grid grid-cols-[minmax(0,1fr)_auto_auto_60px] items-center gap-2 text-xs">
         <div className="flex items-center gap-2 min-w-0">
-          <span className="text-[#11274d] truncate">{entry.name}</span>
+          <span className="flex-1 min-w-0 text-[#11274d] truncate">{entry.name}</span>
           <SourceChip source={entry.source} />
         </div>
         <span className="text-[10px] text-[#6a7282]">No data</span>
@@ -102,9 +102,9 @@ function BreakdownRow({ entry }: { entry: BreakdownEntry }) {
         : "bg-[#ef4444]";
 
   return (
-    <div className="grid grid-cols-[1fr_auto_auto_60px] items-center gap-2 text-xs">
+    <div className="grid grid-cols-[minmax(0,1fr)_auto_auto_60px] items-center gap-2 text-xs">
       <div className="flex items-center gap-2 min-w-0">
-        <span className="text-[#11274d] truncate">{entry.name}</span>
+        <span className="flex-1 min-w-0 text-[#11274d] truncate">{entry.name}</span>
         <SourceChip source={entry.source} />
       </div>
       <span className="font-mono text-[10px] text-[#11274d] text-right tabular-nums">

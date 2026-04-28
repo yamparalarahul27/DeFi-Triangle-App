@@ -41,7 +41,7 @@ export function DexCexSpread({
         : "text-[#b91c1c]";
 
   return (
-    <Tooltip content={TOOLTIP} side="bottom">
+    <Tooltip content={TOOLTIP} side="bottom" title="DEX vs CEX spread">
       <span
         className={`inline-flex items-center gap-1.5 text-[11px] ${text} cursor-help`}
       >
