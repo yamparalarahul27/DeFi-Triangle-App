@@ -26,15 +26,15 @@ Build the **best token information experience on Solana** — a token-details pa
 
 ```
 Phase A — Foundation        [ ✅ A1  ✅ A2  ✅ A3 ]
-Phase B — Spec compliance   [ ✅ B1  ✅ B2  ✅ B2.5  ✅ B3 ]
-Phase C — Net-new sections  [ ⏸ C1  ⏸ C2  ⏸ C3  ⏸ C4  ⏸ C5 ]
+Phase B — Spec compliance   [ ✅ B1  ✅ B2  ✅ B2.5  ✅ B3  ⏸ B4 ]
+Phase C — Net-new sections  [ ✅ C1  ⏸ C2  ⏸ C3  ⏸ C4  ⏸ C5 ]
 Phase D — Differentiators   [ ⏸ D1  ⏸ D2  ⏸ D3  ⏸ D4  ⏸ D5 ]
 Polish (cross-cutting)      [ ✅ P1  ⏸ P2  ⏸ P3  ⏸ P4 ]
 ```
 
 Legend: ⏸ pending · 🔄 in progress · ✅ shipped
 
-**Next ship:** **C2** (token meta strip) or **C1** (on-chain truth panel — sets up D1).
+**Next ship:** **B4** (invalid-mint hardening — small) or **C2** (token meta strip).
 
 > When a step ships, update its status icon AND tick it off in the table below. Keep this snapshot in sync with the per-step sections — that's the canonical "where are we" indicator for the next session.
 
@@ -51,6 +51,7 @@ Legend: ⏸ pending · 🔄 in progress · ✅ shipped
 | B2 | Jupiter Lite Price realtime ticker | Compliance | yes (live price) | A3 |
 | B2.5 | Chart library swap to evilcharts + triangle background | Compliance | yes (charts) | A3 |
 | B3 | Jupiter-first lookup with Helius fallback | Compliance | yes (404 state) | A2, A3 |
+| B4 | Invalid-mint hardening (format check + empty-data → not-found) | Compliance | yes (error states) | B3 |
 | C1 | On-chain truth panel (Helius) | Sections | yes | A2 |
 | C2 | Token meta strip (Token Program ID, organicScore, tags, first-pool age, market count) | Sections | yes | — |
 | C3 | Top Holders ranked list | Sections | yes | — |
@@ -256,7 +257,7 @@ follow-up.
 
 ---
 
-### B3 — Jupiter-first lookup with Helius DAS fallback
+### B3 — Jupiter-first lookup with Helius DAS fallback ✅
 
 **Goal:** match the lookup contract in [source-of-truth §lookup-contract](./token-details-source-of-truth.md#lookup-contract).
 
@@ -284,7 +285,38 @@ Replaces the prior "Birdeye returns nothing → generic error" path.
 
 ---
 
-### C1 — On-chain truth panel
+### B4 — Invalid-mint hardening
+
+**Goal:** when the URL has a malformed or unindexed mint, fail clearly rather than rendering an empty page shell with `$0` placeholders.
+
+**Context:** B3 ships the lookup contract and adds a "Token not indexed yet" copy. But on a structurally-bogus address like `1111…1111`, the page still synthesizes a stub asset from the URL via `buildAssetFromPair` and renders the full layout with empty stats. Users see a misleading "alive" page.
+
+**What to do:**
+- In `src/app/token/[address]/page.tsx` (or in `useTokenDetails`), add an upfront address-format check using `new PublicKey(address)`. If invalid → render a clean "Invalid mint address" state, **no API calls fired**.
+- Treat "all-zero" payloads as not-found: if Birdeye + Tokens.xyz + lookup all return empty/zero data, fall through to the existing "Token not indexed yet" state instead of rendering shell UI. (Heuristic: check `asset.symbol` is non-empty and `stats.price > 0` OR `stats.liquidity > 0`.)
+- Both error states should reuse the existing `notIndexed` styling (centered message + "Back to dashboard" link).
+- Keep `OnChainPanel` and other section-level hide rules unchanged — those work correctly for partial-data tokens.
+
+**Verify:**
+- `/token/1111111111111111111111111111111111111111111` (43 chars, may or may not be a valid `PublicKey`) → "Invalid mint address" state OR "not indexed" depending on which path triggers; **no shell UI with $0 stats**
+- `/token/notARealAddressAtAll` → "Invalid mint address"
+- `/token/<valid-mint-but-unindexed>` → "Token not indexed yet" (existing B3 behavior)
+- `/token/So11…112` (SOL) → renders normally, unchanged
+
+**Commit msg:**
+```
+feat(token): invalid-mint hardening
+
+Validates the URL address as a Solana PublicKey upfront — invalid
+addresses render a clean "Invalid mint address" state with no API
+calls. Treats all-zero data payloads as not-found instead of letting
+buildAssetFromPair synthesize an empty page shell. Closes the gap left
+open by B3 where bogus mints rendered $0-everywhere placeholder pages.
+```
+
+---
+
+### C1 — On-chain truth panel ✅
 
 **Goal:** new section showing chain-truth security data per [source-of-truth §G](./token-details-source-of-truth.md#g-security--risk).
 

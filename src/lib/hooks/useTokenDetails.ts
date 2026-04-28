@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useInterval } from "@/lib/hooks/useInterval";
 import type { Candle } from "@/components/ui/PriceChart";
+import type { OnChainData } from "@/components/token/OnChainPanel";
 import type { AssetCore, AssetResponse, Variant } from "@/lib/tokens-xyz-types";
 import { lookupToken } from "@/lib/token/lookup";
 import {
@@ -17,6 +18,7 @@ import {
   type ChartRange,
   type VariantsByKind,
 } from "@/lib/token/utils";
+import { fetchOnChainData } from "@/lib/token/onChain";
 
 const TOKEN_REFRESH_MS = 15_000;
 
@@ -32,6 +34,7 @@ export interface UseTokenDetailsResult {
   profile: ProfileData | undefined;
   risk: RiskData | undefined;
   markets: Markets;
+  onChain: OnChainData | null;
   chartCandles: Candle[];
   chartRange: string;
   setChartRange: (label: string) => void;
@@ -51,6 +54,10 @@ export function useTokenDetails(address: string): UseTokenDetailsResult {
     address: string;
     found: boolean;
   } | null>(null);
+  const [onChain, setOnChain] = useState<{
+    address: string;
+    data: OnChainData | null;
+  } | null>(null);
 
   useEffect(() => {
     if (!address) return;
@@ -59,6 +66,19 @@ export function useTokenDetails(address: string): UseTokenDetailsResult {
       const result = await lookupToken(address);
       if (cancelled) return;
       setLookup({ address, found: result.found });
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [address]);
+
+  useEffect(() => {
+    if (!address) return;
+    let cancelled = false;
+    (async () => {
+      const data = await fetchOnChainData(address);
+      if (cancelled) return;
+      setOnChain({ address, data });
     })();
     return () => {
       cancelled = true;
@@ -152,6 +172,7 @@ export function useTokenDetails(address: string): UseTokenDetailsResult {
   );
 
   const notIndexed = lookupComplete && !lookupFound && !asset;
+  const onChainForAddress = onChain?.address === address ? onChain.data : null;
 
   return {
     asset,
@@ -160,6 +181,7 @@ export function useTokenDetails(address: string): UseTokenDetailsResult {
     profile: response?.includes?.profile?.data,
     risk: response?.includes?.risk?.data,
     markets: response?.includes?.markets?.data?.markets ?? [],
+    onChain: onChainForAddress,
     chartCandles,
     chartRange,
     setChartRange,

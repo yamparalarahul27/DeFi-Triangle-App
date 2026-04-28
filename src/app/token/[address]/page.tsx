@@ -9,6 +9,7 @@ import { useTokenDetails } from "@/lib/hooks/useTokenDetails";
 import { AboutSection } from "@/components/token/AboutSection";
 import { IdentityStrip } from "@/components/token/IdentityStrip";
 import { MarketsSection } from "@/components/token/MarketsSection";
+import { OnChainPanel } from "@/components/token/OnChainPanel";
 import { PriceChartSection } from "@/components/token/PriceChartSection";
 import { RiskPanel } from "@/components/token/RiskPanel";
 import { StatsGrid } from "@/components/token/StatsGrid";
@@ -25,6 +26,7 @@ export default function TokenDetailPage() {
     profile,
     risk,
     markets,
+    onChain,
     chartCandles,
     chartRange,
     setChartRange,
@@ -101,6 +103,8 @@ export default function TokenDetailPage() {
           profile={profile}
           risk={risk}
         />
+
+        <OnChainPanel data={onChain} />
 
         {risk && <RiskPanel risk={risk} />}
 
