@@ -22,6 +22,7 @@ export type BirdeyePair = {
   marketCap?: number | string;
   fdv?: number | string;
   dexId?: string;
+  numberMarkets?: number;
 };
 
 export const CHART_RANGES: ChartRange[] = [

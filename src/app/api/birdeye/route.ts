@@ -313,6 +313,7 @@ function mapBirdeyeTokenToPair(token: JsonRecord) {
     dexId: token?.source ?? "birdeye",
     trendingRank: Number.isFinite(token?.rank) ? Number(token.rank) : null,
     holder: num(token?.holder),
+    numberMarkets: num(token?.numberMarkets),
   };
 }
 
