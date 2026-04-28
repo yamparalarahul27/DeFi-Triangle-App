@@ -317,6 +317,17 @@ created in A2. Section hides cleanly if both sources fail.
 
 ### C2 — Token meta strip
 
+> **⚠️ Open decision before starting C2 (raised by user 2026-04-28):**
+> Most users won't know what `organicScore` or the `tags` mean without context. Confirm with user before implementation:
+> - **(A)** Bundle info tooltips (`?` icon → hover/tap → 1–2 sentence definition) for organicScore + tags as part of C2. ~30 min added; uses shadcn `Tooltip`. Recommended default.
+> - **(B)** Ship C2 without tooltips; retrofit later as a separate polish step.
+>
+> Placement decision (locked): MetaStrip sits **directly below `IdentityStrip`**, above `PriceChartSection`.
+>
+> Definitions for the tooltips (so we don't waste time researching at impl-time):
+> - **organicScore** — Jupiter's 0–100 estimate of how much trading volume is real-human (vs. bots / wash). Higher = healthier. Reported alongside `organicScoreLabel` ("high" / "medium" / "low") which we'll use to color-tint the badge (green/amber/red).
+> - **tags** — Jupiter's categorical labels: `verified`, `lst`, `community`, `meme`, `stablecoin`, `bridged`, `wrapped`, etc. Rendered as small pills.
+
 **Goal:** surface trust signals from [source-of-truth §G](./token-details-source-of-truth.md#g-security--risk) and [§J](./token-details-source-of-truth.md#j-dex-pools).
 
 **What to do:**
