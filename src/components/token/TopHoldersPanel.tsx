@@ -109,11 +109,11 @@ function CopyAddress({ address }: { address: string }) {
         {truncate(address)}
       </button>
       <a
-        href={`https://solscan.io/account/${address}`}
+        href={`https://birdeye.so/solana/wallet-analyzer/${address}?tab=portfolio`}
         target="_blank"
         rel="noopener noreferrer"
         className="text-[10px] text-[#6a7282] hover:text-[#19549b] transition-colors shrink-0"
-        title="Open in Solscan"
+        title="Open in Birdeye"
       >
         ↗
       </a>
