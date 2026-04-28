@@ -79,16 +79,20 @@ export function EdgeScorePanel({ result }: { result: EdgeScoreResult | null }) {
 function BreakdownRow({ entry }: { entry: BreakdownEntry }) {
   if (!entry.hasData) {
     return (
-      <div className="grid grid-cols-[minmax(0,1fr)_auto_auto_60px] items-center gap-2 text-xs">
+      <div className="text-xs">
         <div className="flex items-center gap-2 min-w-0">
-          <span className="flex-1 min-w-0 text-[#11274d] truncate">{entry.name}</span>
+          <span className="flex-1 min-w-0 text-[#11274d]">{entry.name}</span>
           <SourceChip source={entry.source} />
         </div>
-        <span className="text-[10px] text-[#6a7282]">No data</span>
-        <div className="flex-1 h-1 rounded-full bg-[#f1f5f9]" />
-        <span className="font-mono text-[10px] text-[#6a7282] text-right">
-          —
-        </span>
+        <div className="mt-1 flex items-center gap-2">
+          <span className="flex-1 min-w-0 text-[10px] text-[#6a7282]">
+            No data
+          </span>
+          <div className="w-20 h-1 rounded-full bg-[#f1f5f9] shrink-0" />
+          <span className="font-mono text-[10px] text-[#6a7282] text-right tabular-nums shrink-0 w-[60px]">
+            —
+          </span>
+        </div>
       </div>
     );
   }
@@ -102,23 +106,25 @@ function BreakdownRow({ entry }: { entry: BreakdownEntry }) {
         : "bg-[#ef4444]";
 
   return (
-    <div className="grid grid-cols-[minmax(0,1fr)_auto_auto_60px] items-center gap-2 text-xs">
+    <div className="text-xs">
       <div className="flex items-center gap-2 min-w-0">
-        <span className="flex-1 min-w-0 text-[#11274d] truncate">{entry.name}</span>
+        <span className="flex-1 min-w-0 text-[#11274d]">{entry.name}</span>
         <SourceChip source={entry.source} />
       </div>
-      <span className="font-mono text-[10px] text-[#11274d] text-right tabular-nums">
-        {entry.value}
-      </span>
-      <div className="w-20 h-1 rounded-full bg-[#f1f5f9] overflow-hidden">
-        <div
-          className={`h-full ${fillColor}`}
-          style={{ width: `${Math.max(0, Math.min(100, ratio * 100))}%` }}
-        />
+      <div className="mt-1 flex items-center gap-2">
+        <span className="flex-1 min-w-0 font-mono text-[10px] text-[#11274d] tabular-nums truncate">
+          {entry.value}
+        </span>
+        <div className="w-20 h-1 rounded-full bg-[#f1f5f9] overflow-hidden shrink-0">
+          <div
+            className={`h-full ${fillColor}`}
+            style={{ width: `${Math.max(0, Math.min(100, ratio * 100))}%` }}
+          />
+        </div>
+        <span className="font-mono text-[10px] text-[#6a7282] text-right tabular-nums shrink-0 w-[60px]">
+          +{entry.contribution.toFixed(0)} / {entry.weight}
+        </span>
       </div>
-      <span className="font-mono text-[10px] text-[#6a7282] text-right tabular-nums">
-        +{entry.contribution.toFixed(0)} / {entry.weight}
-      </span>
     </div>
   );
 }

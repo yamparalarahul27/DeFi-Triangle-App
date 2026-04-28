@@ -4,29 +4,36 @@ import { Dialog as RadixDialog, Tooltip as RadixTooltip } from "radix-ui";
 import { useSyncExternalStore, type ReactNode } from "react";
 
 const COARSE_POINTER_QUERY = "(pointer: coarse)";
+const HOVER_NONE_QUERY = "(hover: none)";
 
-function subscribeCoarsePointer(callback: () => void): () => void {
+function subscribeTouch(callback: () => void): () => void {
   if (typeof window === "undefined") return () => {};
-  const mql = window.matchMedia(COARSE_POINTER_QUERY);
-  mql.addEventListener("change", callback);
-  return () => mql.removeEventListener("change", callback);
+  const a = window.matchMedia(COARSE_POINTER_QUERY);
+  const b = window.matchMedia(HOVER_NONE_QUERY);
+  a.addEventListener("change", callback);
+  b.addEventListener("change", callback);
+  return () => {
+    a.removeEventListener("change", callback);
+    b.removeEventListener("change", callback);
+  };
 }
 
-function readCoarsePointer(): boolean {
+function readTouch(): boolean {
   if (typeof window === "undefined") return false;
-  return window.matchMedia(COARSE_POINTER_QUERY).matches;
-}
-
-function readCoarsePointerServer(): boolean {
+  // Touch coverage on iOS Safari can be flaky on (pointer: coarse) alone —
+  // layer in (hover: none) and ontouchstart for robust detection.
+  if (window.matchMedia(COARSE_POINTER_QUERY).matches) return true;
+  if (window.matchMedia(HOVER_NONE_QUERY).matches) return true;
+  if ("ontouchstart" in window) return true;
   return false;
 }
 
-function useCoarsePointer(): boolean {
-  return useSyncExternalStore(
-    subscribeCoarsePointer,
-    readCoarsePointer,
-    readCoarsePointerServer
-  );
+function readTouchServer(): boolean {
+  return false;
+}
+
+function useIsTouchDevice(): boolean {
+  return useSyncExternalStore(subscribeTouch, readTouch, readTouchServer);
 }
 
 export function Tooltip({
@@ -40,7 +47,7 @@ export function Tooltip({
   side?: "top" | "right" | "bottom" | "left";
   title?: string;
 }) {
-  const isTouch = useCoarsePointer();
+  const isTouch = useIsTouchDevice();
 
   if (isTouch) {
     return (
