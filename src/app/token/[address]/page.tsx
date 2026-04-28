@@ -30,6 +30,7 @@ export default function TokenDetailPage() {
     setChartRange,
     loading,
     chartLoading,
+    notIndexed,
   } = useTokenDetails(address);
 
   if (loading && !asset) {
@@ -52,7 +53,9 @@ export default function TokenDetailPage() {
         <Header hasHero={false} />
         <main className="flex-1 max-w-[1100px] w-full mx-auto px-4 py-8 text-center">
           <div className="py-16 text-sm text-[#6a7282] mb-3">
-            Unable to load token right now.
+            {notIndexed
+              ? "Token not indexed yet — try a different address."
+              : "Unable to load token right now."}
           </div>
           <Link
             href="/"
