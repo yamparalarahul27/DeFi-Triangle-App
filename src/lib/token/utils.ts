@@ -12,6 +12,31 @@ export interface ChartRange {
   lookbackSeconds: number;
 }
 
+export type BirdeyeWindowKey =
+  | "1m"
+  | "5m"
+  | "30m"
+  | "1h"
+  | "2h"
+  | "4h"
+  | "8h"
+  | "24h";
+
+export interface BirdeyeWindowMetrics {
+  volumeUsd?: number;
+  buyVolumeUsd?: number;
+  sellVolumeUsd?: number;
+  buys?: number;
+  sells?: number;
+  trades?: number;
+  uniqueWallets?: number;
+  priceChangePct?: number;
+}
+
+export type BirdeyeWindowsByKey = Partial<
+  Record<BirdeyeWindowKey, BirdeyeWindowMetrics>
+>;
+
 export type BirdeyePair = {
   baseToken?: { address?: string; symbol?: string; name?: string };
   info?: { imageUrl?: string };
@@ -23,6 +48,7 @@ export type BirdeyePair = {
   fdv?: number | string;
   dexId?: string;
   numberMarkets?: number;
+  windows?: BirdeyeWindowsByKey;
 };
 
 export const CHART_RANGES: ChartRange[] = [

@@ -11,6 +11,10 @@ import type { AssetCore, AssetResponse, Variant } from "@/lib/tokens-xyz-types";
 import { lookupToken } from "@/lib/token/lookup";
 import { computeEdgeScore, type EdgeScoreResult } from "@/lib/token/edgeScore";
 import {
+  buildMultiWindowData,
+  type MultiWindowData,
+} from "@/lib/token/tradingActivity";
+import {
   CHART_RANGES,
   buildAssetFromPair,
   extractAsset,
@@ -65,6 +69,7 @@ export interface UseTokenDetailsResult {
   edgeScore: EdgeScoreResult | null;
   birdeyePrice: number | null;
   topHolders: HolderRow[] | null;
+  tradingActivity: MultiWindowData | null;
   chartCandles: Candle[];
   chartRange: string;
   setChartRange: (label: string) => void;
@@ -365,6 +370,14 @@ export function useTokenDetails(address: string): UseTokenDetailsResult {
           : null,
     topHolders:
       addressValid && holders?.address === address ? holders.rows : null,
+    tradingActivity: renderableAsset
+      ? buildMultiWindowData(
+          pair?.windows,
+          jupiterInfo?.address === address
+            ? jupiterInfo.data?.windows ?? null
+            : null
+        )
+      : null,
     chartCandles,
     chartRange,
     setChartRange,

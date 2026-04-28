@@ -15,6 +15,7 @@ import { OnChainPanel } from "@/components/token/OnChainPanel";
 import { PriceChartSection } from "@/components/token/PriceChartSection";
 import { StatsGrid } from "@/components/token/StatsGrid";
 import { TopHoldersPanel } from "@/components/token/TopHoldersPanel";
+import { TradingActivityPanel } from "@/components/token/TradingActivityPanel";
 import { VariantsSection } from "@/components/token/VariantsSection";
 
 export default function TokenDetailPage() {
@@ -33,6 +34,7 @@ export default function TokenDetailPage() {
     edgeScore,
     birdeyePrice,
     topHolders,
+    tradingActivity,
     chartCandles,
     chartRange,
     setChartRange,
@@ -131,6 +133,8 @@ export default function TokenDetailPage() {
           }
           symbol={asset.symbol ?? null}
         />
+
+        <TradingActivityPanel data={tradingActivity} />
 
         {profile && <AboutSection profile={profile} />}
 

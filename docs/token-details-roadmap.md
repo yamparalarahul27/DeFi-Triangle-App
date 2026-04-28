@@ -27,14 +27,14 @@ Build the **best token information experience on Solana** — a token-details pa
 ```
 Phase A — Foundation        [ ✅ A1  ✅ A2  ✅ A3 ]
 Phase B — Spec compliance   [ ✅ B1  ✅ B2  ✅ B2.5  ✅ B3  ✅ B4 ]
-Phase C — Net-new sections  [ ✅ C1  ✅ C2  ✅ C3  ⏸ C4  ⏸ C5 ]
+Phase C — Net-new sections  [ ✅ C1  ✅ C2  ✅ C3  ✅ C4  ⏸ C5 ]
 Phase D — Differentiators   [ ✅ D1  ✅ D2  ✅ D3  ⏸ D4  ⏸ D5 ]
-Polish (cross-cutting)      [ ✅ P1  ⏸ P2  ⏸ P3  ⏸ P4 ]
+Polish (cross-cutting)      [ ✅ P1  ⏸ P2  ⏸ P3  ⏸ P4  ⏸ P5  ⏸ P6 ]
 ```
 
 Legend: ⏸ pending · 🔄 in progress · ✅ shipped
 
-**Next ship:** **C4** (Multi-window trading panel — unblocks D4) or **D5** (Slippage at size — small differentiator).
+**Next ship:** **D4** (Real-human activity score — now unblocked by C4 data) or **D5** (Slippage at size — small differentiator).
 
 > When a step ships, update its status icon AND tick it off in the table below. Keep this snapshot in sync with the per-step sections — that's the canonical "where are we" indicator for the next session.
 
@@ -66,6 +66,8 @@ Legend: ⏸ pending · 🔄 in progress · ✅ shipped
 | P2 | Reload / address-change smoothness (stale-while-revalidate) | Polish | yes | A3 |
 | P3 | Chart visual polish (match app UI) | Polish | yes | B2.5 |
 | P4 | Evilcharts loading state polish | Polish | yes | B2.5 |
+| P5 | NumberFlow coverage on mutating numerics | Polish | yes | — |
+| P6 | Persistent caching + progressive page hydration | Polish | yes (perceived speed) | P2 |
 
 ---
 
@@ -419,7 +421,7 @@ Adds /api/birdeye?type=holders handler + TopHoldersPanel component.
 
 ---
 
-### C4 — Multi-window trading panel
+### C4 — Multi-window trading panel ✅
 
 **Goal:** the 9-window merged trading panel per [source-of-truth §D](./token-details-source-of-truth.md#d-trading-activity-multi-window).
 
@@ -697,6 +699,89 @@ Each step is self-contained — fresh Claude doesn't need conversation history b
 - **(c) Skeleton-shaped placeholder** — render a flat ghost line + grid silhouette in brand muted tones during loading. Closest to high-end fintech apps.
 
 **Recommendation when implementing:** start with (a) — least change, immediate parity with rest of app. If "looks too plain", layer (c).
+
+---
+
+## P5 — NumberFlow coverage on mutating numerics
+
+**Surfaced during:** number-flow audit, 2026-04-28.
+
+`@number-flow/react ^0.6.0` is installed and wired into [IdentityStrip](../src/components/token/IdentityStrip.tsx) (price + 24h % + ATH delta on the **1.5s** Jupiter ticker) and [TokenModal](../src/components/ui/TokenModal.tsx). Every other shipped surface with mutating numerics still renders pre-formatted strings — they jump on each poll instead of animating, which feels inconsistent next to the live ticker.
+
+**Polling cadences feeding mutating numerics:**
+- `useTokenDetails` (15s) → StatsGrid, EdgeScore inputs, DexCexSpread, PriceDivergenceChip, MetaStrip markets, TopHolders
+- `useHomeJupiterPairs` (120s) → DexCard (home rails)
+
+**Coverage gap:**
+
+| Component | Mutating fields | Cadence |
+|---|---|---|
+| [StatsGrid](../src/components/token/StatsGrid.tsx) | Market cap, 24h vol, FDV, 7d vol, circ supply, total supply, primary liq., ATH | 15s |
+| [EdgeScorePanel](../src/components/token/EdgeScorePanel.tsx) | Score `/100`, per-signal contribution | 15s |
+| [DexCexSpread](../src/components/token/DexCexSpread.tsx) | Spread % | 15s |
+| [PriceDivergenceChip](../src/components/token/PriceDivergenceChip.tsx) | Spread % + per-source prices in tooltip | 15s |
+| [MetaStrip](../src/components/token/MetaStrip.tsx) | Markets count, organicScore | 15s |
+| [TopHoldersPanel](../src/components/token/TopHoldersPanel.tsx) | Holder amounts, % of supply | 15s |
+| [DexCard](../src/components/ui/DexCard.tsx) (home rails) | Price, 24h %, liquidity, FDV, vol 24h, buys/sells | 120s |
+
+**Friction:** format helpers `fmtUsd / fmtPct / fmtNum` return pre-formatted strings. NumberFlow takes a raw number + `Format` object. Each call site needs the swap, e.g. `fmtUsd(x, { compact: true })` → `<NumberFlow value={x} format={{ notation: 'compact', style: 'currency', currency: 'USD' }} />`.
+
+**Tiered options (pick one when implementing):**
+- **(a) Tier 1 — token detail page only.** StatsGrid + EdgeScore score + DexCexSpread + PriceDivergenceChip body. All 15s cadence, all sit next to the already-animated price. ~1h, ~80 LOC across 4 files. **Recommended first ship.**
+- **(b) Tier 1 + DexCard (home rails).** Adds first-impression surface. 120s cadence is slow but every user lands here first. ~1.5h.
+- **(c) Full sweep — also TopHolders amounts + MetaStrip markets/organicScore.** Diminishing returns: TopHolders rarely shifts within a session, MetaStrip markets is buried. ~2.5h.
+
+**Recommendation:** ship (a) as a single PR. Re-audit after; (b) if home-rail jumpiness is still noticeable, (c) only if symmetry-OCD demands it.
+
+**Verify:**
+- Open `/token/So11…112`. Watch StatsGrid for ~30s — values animate (not jump) on 15s polls.
+- EdgeScore "X / 100" digits roll when underlying inputs shift.
+- DexCexSpread + PriceDivergenceChip percentages animate on poll.
+- No layout shift; `tabular-nums` still in effect.
+- Existing IdentityStrip price ticker continues to animate at 1.5s — no regression.
+
+---
+
+## P6 — Persistent caching + progressive page hydration
+
+**Surfaced during:** roadmap planning, 2026-04-28.
+
+Today every token-page load waits for `useTokenDetails` to resolve **all** upstream calls (Birdeye + Tokens.xyz + Helius + Jupiter) before rendering anything beyond a "Loading token…" state. P2 plans an in-memory session cache + skeleton; P6 layers **durable persistence** on top so:
+- A repeat visit (same browser, days later) renders instantly from cached static fields.
+- Volatile fields (price, vol, liq) refetch in background, per-section.
+- Page sections light up **independently** as their data arrives, instead of one big spinner gating the whole page.
+
+**Field classification (define exact list at impl time):**
+
+| Tier | Refresh policy | Fields (examples) |
+|---|---|---|
+| **Static** (cache days) | One-shot, refresh weekly | name, symbol, decimals, logo, token program ID, first-pool date, ATH date |
+| **Semi-static** (cache hours) | Refresh daily / on-demand | tags, isVerified, organicScore, mint/freeze authority state, audit booleans |
+| **Volatile** (cache <30s) | Refresh per poll | price, 24h change/volume, liquidity, market cap, FDV, holder counts, trading window stats |
+
+**Storage options:**
+- **(a) HTTP `Cache-Control` on API routes + Vercel CDN.** Cheapest. Set `s-maxage=N, stale-while-revalidate=M` per route by tier (e.g. Helius `getAsset` → 1h SWR; Birdeye `token_overview` → 10s SWR). Browser + edge handle the rest. Zero schema work. Limit: only helps GETs keyed purely on URL; no cross-device warming.
+- **(b) IndexedDB (browser-only).** Per-device durable cache. Static + semi-static fields persist across refreshes / tab closes. Zero server cost. Limit: no cross-device, no popular-token pre-warming.
+- **(c) Supabase `token_cache` table.** Cross-device, sharable. Popular tokens get warmed by other users' visits. Cost: extra DB read on first hit; need `tier`, `fetched_at`, `ttl` columns + a prune cron. Fits existing Supabase pattern.
+- **(d) Hybrid — IndexedDB + Supabase + API.** IDB first (instant), Supabase fallback (warm from others), upstream last (truly fresh). Most complex. Best UX.
+
+**Progressive hydration (independent of storage choice):**
+Split `useTokenDetails` into per-section hooks (`useTokenIdentity`, `useTokenStats`, `useTokenHolders`, `useTokenEdgeScore`, …). Each section renders the moment its data lands rather than waiting on the same `Promise.all`. Cached values render immediately; spinner only on truly cold sections.
+
+**Recommendation:** ship **(a) HTTP Cache-Control + section-split hooks** first. Lowest effort, biggest perceived-speed win, no schema work, works alongside P2. If first-cold-visit still feels slow, layer **(b) IndexedDB** for static + semi-static fields. Hold off on **(c) Supabase** until usage data justifies the schema + prune work.
+
+**Open questions before implementation:**
+- Lock the static / semi-static / volatile field list per source. Some fields look static but mutate (Jupiter `tags`, audit flags after authority change).
+- Cache invalidation when a token's mint/freeze authority changes mid-session — is per-tier TTL enough, or does this need a webhook (ties into the F2/F3 QuickNode work)?
+- Per-section loading-state contract — today components consume `loading` / `chartLoading` booleans; with section-split hooks each section owns its own state. Migration path?
+- Order of operations vs. P2: P2 ships in-memory session cache + skeleton. P6 assumes P2's cache layer exists and extends it. Decide whether to ship P2 standalone first or bundle the in-memory + section-split work together.
+
+**Verify (when implementing):**
+- Cold visit to `/token/<unseen mint>`: identity + meta strip render within 200ms; stats + holders + edge score fill in as they arrive.
+- Repeat visit to same mint within minutes: full page renders from cache instantly; price ticker continues at 1.5s.
+- Hard refresh after 1 day on the same mint: static fields render from durable cache immediately; volatile fields refetch in background.
+- Network tab: per-tier `Cache-Control` headers visible on `/api/*` responses (Tier (a) only).
+- No regression in P2's session-cache or skeleton behavior.
 
 ---
 

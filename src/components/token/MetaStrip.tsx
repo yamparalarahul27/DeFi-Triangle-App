@@ -4,6 +4,24 @@ import { useState } from "react";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { fmtAge } from "@/lib/format";
 
+export type JupiterWindowKey = "5m" | "1h" | "6h" | "24h";
+
+export interface JupiterWindowMetrics {
+  numBuys?: number;
+  numSells?: number;
+  buyVolumeUsd?: number;
+  sellVolumeUsd?: number;
+  numNetBuyers?: number;
+  numOrganicBuyers?: number;
+  buyOrganicVolumeUsd?: number;
+  sellOrganicVolumeUsd?: number;
+  priceChangePct?: number;
+}
+
+export type JupiterWindowsByKey = Partial<
+  Record<JupiterWindowKey, JupiterWindowMetrics>
+>;
+
 export interface JupiterTokenInfo {
   address: string;
   tokenProgram: string | null;
@@ -16,6 +34,7 @@ export interface JupiterTokenInfo {
     mintAuthorityDisabled: boolean | null;
     freezeAuthorityDisabled: boolean | null;
   } | null;
+  windows: JupiterWindowsByKey | null;
 }
 
 export interface MetaStripData {

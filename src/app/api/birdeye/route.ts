@@ -314,7 +314,48 @@ function mapBirdeyeTokenToPair(token: JsonRecord) {
     trendingRank: Number.isFinite(token?.rank) ? Number(token.rank) : null,
     holder: num(token?.holder),
     numberMarkets: num(token?.numberMarkets),
+    windows: extractBirdeyeWindows(token),
   };
+}
+
+const BIRDEYE_WINDOW_SUFFIXES = [
+  "1m",
+  "5m",
+  "30m",
+  "1h",
+  "2h",
+  "4h",
+  "8h",
+  "24h",
+] as const;
+
+function extractBirdeyeWindows(token: JsonRecord) {
+  const out: Record<string, JsonRecord> = {};
+  for (const k of BIRDEYE_WINDOW_SUFFIXES) {
+    const window: Record<string, number> = {};
+    const vUsd = num(token?.[`v${k}USD`]);
+    if (vUsd > 0) window.volumeUsd = vUsd;
+    const vBuyUsd = num(token?.[`vBuy${k}USD`]);
+    if (vBuyUsd > 0) window.buyVolumeUsd = vBuyUsd;
+    const vSellUsd = num(token?.[`vSell${k}USD`]);
+    if (vSellUsd > 0) window.sellVolumeUsd = vSellUsd;
+    const buys = num(token?.[`buy${k}`]);
+    if (buys > 0) window.buys = buys;
+    const sells = num(token?.[`sell${k}`]);
+    if (sells > 0) window.sells = sells;
+    const trades = num(token?.[`trade${k}`]);
+    if (trades > 0) window.trades = trades;
+    const unique = num(token?.[`uniqueWallet${k}`]);
+    if (unique > 0) window.uniqueWallets = unique;
+    const pcRaw = token?.[`priceChange${k}Percent`];
+    if (typeof pcRaw === "number" && Number.isFinite(pcRaw)) {
+      window.priceChangePct = pcRaw;
+    }
+    if (Object.keys(window).length > 0) {
+      out[k] = window;
+    }
+  }
+  return Object.keys(out).length > 0 ? out : undefined;
 }
 
 async function fetchBirdeye(path: string): Promise<Response> {
