@@ -451,6 +451,36 @@ async function handleToken(address: string) {
   }
 }
 
+async function handleHolders(address: string, limit: number) {
+  if (!address) {
+    return NextResponse.json(
+      { success: false, error: "address required" },
+      { status: 400 }
+    );
+  }
+  try {
+    const cappedLimit = Math.max(1, Math.min(100, limit));
+    const upstream = await fetchBirdeye(
+      `/defi/v3/token/holder?address=${encodeURIComponent(address)}&limit=${cappedLimit}`
+    );
+    const json = await upstream.json().catch(() => ({}));
+    if (!upstream.ok) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: json?.message ?? json?.error ?? `upstream ${upstream.status}`,
+          status: upstream.status,
+        },
+        { status: 200 }
+      );
+    }
+    const items = asArray<JsonRecord>(json?.data?.items);
+    return NextResponse.json({ success: true, data: items });
+  } catch (err) {
+    return errorResponse("holders-fetch", err);
+  }
+}
+
 async function handleSecurity(address: string) {
   if (!address) {
     return NextResponse.json(
@@ -586,6 +616,14 @@ export async function GET(req: NextRequest) {
 
   if (type === "security") {
     return handleSecurity(searchParams.get("address") ?? "");
+  }
+
+  if (type === "holders") {
+    const limit = Number(searchParams.get("limit") ?? 10);
+    return handleHolders(
+      searchParams.get("address") ?? "",
+      Number.isFinite(limit) ? limit : 10
+    );
   }
 
   if (type === "list_v3") {

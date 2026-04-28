@@ -2,6 +2,7 @@
 
 import NumberFlow, { type Format } from "@number-flow/react";
 import { useMemo } from "react";
+import { DexCexSpread } from "@/components/token/DexCexSpread";
 import { PriceDivergenceChip } from "@/components/token/PriceDivergenceChip";
 import { TokenIcon } from "@/components/ui/TokenIcon";
 import { fmtAge, fmtUsd } from "@/lib/format";
@@ -143,8 +144,12 @@ export function IdentityStrip({
             </span>
           </div>
           {divergence && (
-            <div className="mt-1.5 sm:flex sm:justify-end">
+            <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 sm:justify-end">
               <PriceDivergenceChip result={divergence} />
+              <DexCexSpread
+                dexPrice={birdeyePrice ?? null}
+                cexPrice={asset.canonicalMarket?.price ?? null}
+              />
             </div>
           )}
           {ath != null && athDeltaPct != null && (
