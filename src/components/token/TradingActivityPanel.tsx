@@ -1,6 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import {
+  computeHumanActivityScore,
+  type HumanActivityResult,
+} from "@/lib/token/humanActivityScore";
 import type { MultiWindowData, WindowMetrics } from "@/lib/token/tradingActivity";
 
 const DEFAULT_WINDOW = "24h";
@@ -23,6 +27,12 @@ export function TradingActivityPanel({
   const active =
     data.windows.find((w) => w.key === effectiveKey) ?? data.windows[0];
 
+  const humanActivity = computeHumanActivityScore({
+    uniqueWallets: active.uniqueWallets,
+    jupiterNumBuys: active.jupiterNumBuys,
+    numOrganicBuyers: active.numOrganicBuyers,
+  });
+
   return (
     <section className="bg-white rounded-sm border border-[#cbd5e1] p-4 sm:p-6 space-y-4">
       <div className="flex items-baseline justify-between gap-2">
@@ -30,6 +40,10 @@ export function TradingActivityPanel({
           Trading activity · Birdeye + Jupiter
         </div>
       </div>
+
+      {humanActivity && (
+        <HumanActivityHeader result={humanActivity} window={active.label} />
+      )}
 
       <div className="flex flex-wrap gap-1">
         {data.windows.map((w) => {
@@ -53,6 +67,99 @@ export function TradingActivityPanel({
 
       <Cells metrics={active} />
     </section>
+  );
+}
+
+function HumanActivityHeader({
+  result,
+  window,
+}: {
+  result: HumanActivityResult;
+  window: string;
+}) {
+  const tone = result.tone;
+  const fillBar =
+    tone === "safe"
+      ? "bg-[#0fa87a]"
+      : tone === "caution"
+        ? "bg-[#f59e0b]"
+        : "bg-[#ef4444]";
+  const gradeChip =
+    tone === "safe"
+      ? "bg-[#ecfdf5] text-[#0fa87a] border-[#a7f3d0]"
+      : tone === "caution"
+        ? "bg-[#fffbeb] text-[#b45309] border-[#fde68a]"
+        : "bg-[#fef2f2] text-[#b91c1c] border-[#fecaca]";
+
+  return (
+    <div className="rounded-sm border border-[#cbd5e1] bg-[#f8fafc] p-3 space-y-2">
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <div className="text-[10px] uppercase tracking-wider text-[#6a7282]">
+          Real-human activity · {window}
+        </div>
+        <div className="flex items-baseline gap-2 text-xs">
+          <span
+            className={`inline-flex items-center font-semibold text-[11px] px-2 py-0.5 rounded-sm border ${gradeChip}`}
+          >
+            Grade {result.grade}
+          </span>
+          <span className="font-mono text-[#11274d] text-base">
+            {result.score} / 100
+          </span>
+          <span className="text-[#6a7282]">{result.label}</span>
+        </div>
+      </div>
+      <div className="h-1.5 rounded-full bg-[#e2e8f0] overflow-hidden">
+        <div
+          className={`h-full ${fillBar} transition-[width] duration-300`}
+          style={{
+            width: `${Math.max(0, Math.min(100, result.score))}%`,
+          }}
+        />
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5 text-[11px]">
+        {result.hasUnique && (
+          <SubBar
+            label="Unique wallets"
+            value={fmtCount(result.uniqueWallets)}
+            ratio={result.uniqueNorm}
+          />
+        )}
+        {result.hasOrganic && (
+          <SubBar
+            label="Organic %"
+            value={`${(result.organicPct! * 100).toFixed(2)}%`}
+            ratio={result.organicNorm}
+          />
+        )}
+      </div>
+    </div>
+  );
+}
+
+function SubBar({
+  label,
+  value,
+  ratio,
+}: {
+  label: string;
+  value: string;
+  ratio: number;
+}) {
+  const pct = Math.max(0, Math.min(100, ratio * 100));
+  return (
+    <div>
+      <div className="flex items-baseline justify-between mb-1">
+        <span className="text-[#6a7282]">{label}</span>
+        <span className="font-mono text-[#11274d]">{value}</span>
+      </div>
+      <div className="h-1 rounded-full bg-[#e2e8f0] overflow-hidden">
+        <div
+          className="h-full bg-[#19549b] transition-[width] duration-300"
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+    </div>
   );
 }
 

@@ -55,6 +55,7 @@ export interface WindowMetrics {
   uniqueWallets: number | null;
   pctChange: number | null;
   // Jupiter-sourced
+  jupiterNumBuys: number | null; // Jupiter's own buy count (paired with numOrganicBuyers for ratio)
   numNetBuyers: number | null;
   numOrganicBuyers: number | null;
   organicVolumeUsd: number | null;
@@ -94,6 +95,7 @@ export function buildMultiWindowData(
       trades: b?.trades ?? null,
       uniqueWallets: b?.uniqueWallets ?? null,
       pctChange: b?.priceChangePct ?? j?.priceChangePct ?? null,
+      jupiterNumBuys: j?.numBuys ?? null,
       numNetBuyers: j?.numNetBuyers ?? null,
       numOrganicBuyers: j?.numOrganicBuyers ?? null,
       organicVolumeUsd,
