@@ -24,7 +24,11 @@ export function PriceDivergenceChip({
         : "text-[#b91c1c]";
 
   return (
-    <Tooltip content={<TooltipBody result={result} />} side="bottom">
+    <Tooltip
+      content={<TooltipBody result={result} />}
+      side="bottom"
+      title="Price sources"
+    >
       <span
         className={`inline-flex items-center gap-1.5 text-[11px] ${text} cursor-help`}
       >

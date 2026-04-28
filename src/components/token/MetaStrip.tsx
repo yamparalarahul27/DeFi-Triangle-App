@@ -177,7 +177,7 @@ function Cell({
   return (
     <div className="min-w-0">
       {labelTooltip ? (
-        <Tooltip content={labelTooltip}>{labelEl}</Tooltip>
+        <Tooltip content={labelTooltip} title={label}>{labelEl}</Tooltip>
       ) : (
         labelEl
       )}
