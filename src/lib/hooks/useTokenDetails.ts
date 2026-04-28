@@ -15,6 +15,10 @@ import {
   type MultiWindowData,
 } from "@/lib/token/tradingActivity";
 import {
+  fetchSlippageAtSizes,
+  type SlippageResult,
+} from "@/lib/token/slippage";
+import {
   CHART_RANGES,
   buildAssetFromPair,
   extractAsset,
@@ -70,6 +74,7 @@ export interface UseTokenDetailsResult {
   birdeyePrice: number | null;
   topHolders: HolderRow[] | null;
   tradingActivity: MultiWindowData | null;
+  slippage: SlippageResult | null;
   chartCandles: Candle[];
   chartRange: string;
   setChartRange: (label: string) => void;
@@ -102,6 +107,10 @@ export function useTokenDetails(address: string): UseTokenDetailsResult {
   const [holders, setHolders] = useState<{
     address: string;
     rows: HolderRow[] | null;
+  } | null>(null);
+  const [slippage, setSlippage] = useState<{
+    address: string;
+    data: SlippageResult | null;
   } | null>(null);
 
   useEffect(() => {
@@ -153,6 +162,41 @@ export function useTokenDetails(address: string): UseTokenDetailsResult {
       cancelled = true;
     };
   }, [address, addressValid]);
+
+  useEffect(() => {
+    if (!address || !addressValid) return;
+    const decimals = jupiterInfo?.data?.decimals;
+    if (jupiterInfo?.address !== address) return;
+    if (decimals == null) {
+      setSlippage({ address, data: null });
+      return;
+    }
+    const priceCandidate =
+      typeof pair?.priceUsd === "number" && pair.priceUsd > 0
+        ? pair.priceUsd
+        : typeof pair?.priceUsd === "string" && pair.priceUsd
+          ? Number(pair.priceUsd)
+          : response?.asset?.stats?.price ?? 0;
+    if (!Number.isFinite(priceCandidate) || priceCandidate <= 0) {
+      setSlippage({ address, data: null });
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      const result = await fetchSlippageAtSizes(address, priceCandidate, decimals);
+      if (cancelled) return;
+      setSlippage({ address, data: result });
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    address,
+    addressValid,
+    jupiterInfo,
+    pair?.priceUsd,
+    response?.asset?.stats?.price,
+  ]);
 
   useEffect(() => {
     if (!address || !addressValid) return;
@@ -378,6 +422,8 @@ export function useTokenDetails(address: string): UseTokenDetailsResult {
             : null
         )
       : null,
+    slippage:
+      addressValid && slippage?.address === address ? slippage.data : null,
     chartCandles,
     chartRange,
     setChartRange,

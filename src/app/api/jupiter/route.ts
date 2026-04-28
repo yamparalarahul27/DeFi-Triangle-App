@@ -56,6 +56,7 @@ function extractTokenInfo(row: JsonRecord) {
   }
   return {
     address: str(row.id),
+    decimals: typeof row.decimals === "number" ? row.decimals : null,
     tokenProgram: str(row.tokenProgram) || null,
     organicScore: typeof row.organicScore === "number" ? row.organicScore : null,
     organicScoreLabel: str(row.organicScoreLabel) || null,
@@ -92,7 +93,8 @@ export async function GET(req: NextRequest) {
     type !== "tokens" &&
     type !== "list" &&
     type !== "search" &&
-    type !== "tokenInfo"
+    type !== "tokenInfo" &&
+    type !== "quote"
   ) {
     return NextResponse.json(
       { success: false, error: "invalid type" },
@@ -114,6 +116,61 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({
         success: true,
         data: match ? extractTokenInfo(match) : null,
+      });
+    }
+
+    if (type === "quote") {
+      const inputMint = str(sp.get("inputMint"));
+      const outputMint = str(sp.get("outputMint"));
+      const amountRaw = str(sp.get("amount"));
+      if (!inputMint || !outputMint || !amountRaw) {
+        return NextResponse.json(
+          { success: false, error: "inputMint, outputMint, amount required" },
+          { status: 400 }
+        );
+      }
+      // amount is in base units (raw, no decimals applied). Validate it's a
+      // positive integer-ish string to keep the upstream URL clean.
+      if (!/^[0-9]+$/.test(amountRaw)) {
+        return NextResponse.json(
+          { success: false, error: "amount must be a positive integer string" },
+          { status: 400 }
+        );
+      }
+      const slippageBps = clamp(num(sp.get("slippageBps"), 300), 1, 10_000);
+      const url =
+        `https://lite-api.jup.ag/swap/v1/quote?inputMint=${encodeURIComponent(inputMint)}` +
+        `&outputMint=${encodeURIComponent(outputMint)}` +
+        `&amount=${amountRaw}` +
+        `&slippageBps=${slippageBps}` +
+        `&swapMode=ExactIn`;
+      const upstream = await fetch(url, { cache: "no-store" });
+      if (!upstream.ok) {
+        return NextResponse.json(
+          { success: false, error: `upstream ${upstream.status}` },
+          { status: 200 }
+        );
+      }
+      const json = (await upstream.json()) as JsonRecord;
+      const outAmount = str(json.outAmount);
+      const priceImpactPct =
+        typeof json.priceImpactPct === "number"
+          ? json.priceImpactPct
+          : typeof json.priceImpactPct === "string"
+            ? Number(json.priceImpactPct)
+            : null;
+      return NextResponse.json({
+        success: true,
+        data: {
+          inputMint,
+          outputMint,
+          inAmount: amountRaw,
+          outAmount: outAmount || null,
+          priceImpactPct: Number.isFinite(priceImpactPct ?? NaN)
+            ? priceImpactPct
+            : null,
+          slippageBps,
+        },
       });
     }
 

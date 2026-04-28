@@ -28,13 +28,13 @@ Build the **best token information experience on Solana** — a token-details pa
 Phase A — Foundation        [ ✅ A1  ✅ A2  ✅ A3 ]
 Phase B — Spec compliance   [ ✅ B1  ✅ B2  ✅ B2.5  ✅ B3  ✅ B4 ]
 Phase C — Net-new sections  [ ✅ C1  ✅ C2  ✅ C3  ✅ C4  ⏸ C5 ]
-Phase D — Differentiators   [ ✅ D1  ✅ D2  ✅ D3  ✅ D4  ⏸ D5 ]
+Phase D — Differentiators   [ ✅ D1  ✅ D2  ✅ D3  ✅ D4  ✅ D5 ]
 Polish (cross-cutting)      [ ✅ P1  ⏸ P2  ⏸ P3  ⏸ P4  ⏸ P5  ⏸ P6  ⏸ P7 ]
 ```
 
 Legend: ⏸ pending · 🔄 in progress · ✅ shipped
 
-**Next ship:** **D5** (Slippage at size via Jupiter Quote API — finishes Phase D) or **C5** (All Pools polish — finishes Phase C).
+**Next ship:** **C5** (All Pools polish — last core ship, finishes Phase C). After C5, only Polish and Backlog remain.
 
 > When a step ships, update its status icon AND tick it off in the table below. Keep this snapshot in sync with the per-step sections — that's the canonical "where are we" indicator for the next session.
 
@@ -585,7 +585,7 @@ as a header on the multi-window trading panel.
 
 ---
 
-### D5 — Slippage at size
+### D5 — Slippage at size ✅
 
 **Goal:** [source-of-truth §K-5](./token-details-source-of-truth.md#5-slippage-at-size).
 
