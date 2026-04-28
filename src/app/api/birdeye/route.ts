@@ -313,7 +313,49 @@ function mapBirdeyeTokenToPair(token: JsonRecord) {
     dexId: token?.source ?? "birdeye",
     trendingRank: Number.isFinite(token?.rank) ? Number(token.rank) : null,
     holder: num(token?.holder),
+    numberMarkets: num(token?.numberMarkets),
+    windows: extractBirdeyeWindows(token),
   };
+}
+
+const BIRDEYE_WINDOW_SUFFIXES = [
+  "1m",
+  "5m",
+  "30m",
+  "1h",
+  "2h",
+  "4h",
+  "8h",
+  "24h",
+] as const;
+
+function extractBirdeyeWindows(token: JsonRecord) {
+  const out: Record<string, JsonRecord> = {};
+  for (const k of BIRDEYE_WINDOW_SUFFIXES) {
+    const window: Record<string, number> = {};
+    const vUsd = num(token?.[`v${k}USD`]);
+    if (vUsd > 0) window.volumeUsd = vUsd;
+    const vBuyUsd = num(token?.[`vBuy${k}USD`]);
+    if (vBuyUsd > 0) window.buyVolumeUsd = vBuyUsd;
+    const vSellUsd = num(token?.[`vSell${k}USD`]);
+    if (vSellUsd > 0) window.sellVolumeUsd = vSellUsd;
+    const buys = num(token?.[`buy${k}`]);
+    if (buys > 0) window.buys = buys;
+    const sells = num(token?.[`sell${k}`]);
+    if (sells > 0) window.sells = sells;
+    const trades = num(token?.[`trade${k}`]);
+    if (trades > 0) window.trades = trades;
+    const unique = num(token?.[`uniqueWallet${k}`]);
+    if (unique > 0) window.uniqueWallets = unique;
+    const pcRaw = token?.[`priceChange${k}Percent`];
+    if (typeof pcRaw === "number" && Number.isFinite(pcRaw)) {
+      window.priceChangePct = pcRaw;
+    }
+    if (Object.keys(window).length > 0) {
+      out[k] = window;
+    }
+  }
+  return Object.keys(out).length > 0 ? out : undefined;
 }
 
 async function fetchBirdeye(path: string): Promise<Response> {
@@ -450,6 +492,36 @@ async function handleToken(address: string) {
   }
 }
 
+async function handleHolders(address: string, limit: number) {
+  if (!address) {
+    return NextResponse.json(
+      { success: false, error: "address required" },
+      { status: 400 }
+    );
+  }
+  try {
+    const cappedLimit = Math.max(1, Math.min(100, limit));
+    const upstream = await fetchBirdeye(
+      `/defi/v3/token/holder?address=${encodeURIComponent(address)}&limit=${cappedLimit}`
+    );
+    const json = await upstream.json().catch(() => ({}));
+    if (!upstream.ok) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: json?.message ?? json?.error ?? `upstream ${upstream.status}`,
+          status: upstream.status,
+        },
+        { status: 200 }
+      );
+    }
+    const items = asArray<JsonRecord>(json?.data?.items);
+    return NextResponse.json({ success: true, data: items });
+  } catch (err) {
+    return errorResponse("holders-fetch", err);
+  }
+}
+
 async function handleSecurity(address: string) {
   if (!address) {
     return NextResponse.json(
@@ -485,7 +557,29 @@ async function handleSecurity(address: string) {
   }
 }
 
-async function handleOhlcv(address: string) {
+const ALLOWED_OHLCV_INTERVALS = new Set([
+  "1m",
+  "5m",
+  "15m",
+  "30m",
+  "1H",
+  "2H",
+  "4H",
+  "6H",
+  "8H",
+  "12H",
+  "1D",
+  "3D",
+  "1W",
+  "1M",
+]);
+
+async function handleOhlcv(
+  address: string,
+  interval: string,
+  timeFrom: number,
+  timeTo: number
+) {
   if (!address) {
     return NextResponse.json(
       { success: false, error: "address required" },
@@ -500,10 +594,9 @@ async function handleOhlcv(address: string) {
     return errorResponse("ohlcv-config", err);
   }
 
-  const nowSec = Math.floor(Date.now() / 1000);
   const url = `${BIRDEYE_BASE}/defi/ohlcv?address=${encodeURIComponent(
     address
-  )}&type=1H&time_from=${nowSec - 86400}&time_to=${nowSec}`;
+  )}&type=${interval}&time_from=${timeFrom}&time_to=${timeTo}`;
 
   try {
     const upstream = await fetch(url, { headers, cache: "no-store" });
@@ -537,7 +630,19 @@ export async function GET(req: NextRequest) {
   const type = searchParams.get("type") ?? "list_v3";
 
   if (type === "ohlcv") {
-    return handleOhlcv(searchParams.get("address") ?? "");
+    const nowSec = Math.floor(Date.now() / 1000);
+    const requestedInterval = searchParams.get("interval") ?? "1H";
+    const interval = ALLOWED_OHLCV_INTERVALS.has(requestedInterval)
+      ? requestedInterval
+      : "1H";
+    const timeFrom = Number(searchParams.get("time_from")) || nowSec - 86400;
+    const timeTo = Number(searchParams.get("time_to")) || nowSec;
+    return handleOhlcv(
+      searchParams.get("address") ?? "",
+      interval,
+      timeFrom,
+      timeTo
+    );
   }
 
   if (type === "search") {
@@ -552,6 +657,14 @@ export async function GET(req: NextRequest) {
 
   if (type === "security") {
     return handleSecurity(searchParams.get("address") ?? "");
+  }
+
+  if (type === "holders") {
+    const limit = Number(searchParams.get("limit") ?? 10);
+    return handleHolders(
+      searchParams.get("address") ?? "",
+      Number.isFinite(limit) ? limit : 10
+    );
   }
 
   if (type === "list_v3") {
