@@ -6,6 +6,7 @@ import { useInterval } from "@/lib/hooks/useInterval";
 import type { Candle } from "@/components/ui/PriceChart";
 import type { OnChainData } from "@/components/token/OnChainPanel";
 import type { JupiterTokenInfo, MetaStripData } from "@/components/token/MetaStrip";
+import type { HolderRow } from "@/components/token/TopHoldersPanel";
 import type { AssetCore, AssetResponse, Variant } from "@/lib/tokens-xyz-types";
 import { lookupToken } from "@/lib/token/lookup";
 import { computeEdgeScore, type EdgeScoreResult } from "@/lib/token/edgeScore";
@@ -63,6 +64,7 @@ export interface UseTokenDetailsResult {
   meta: MetaStripData | null;
   edgeScore: EdgeScoreResult | null;
   birdeyePrice: number | null;
+  topHolders: HolderRow[] | null;
   chartCandles: Candle[];
   chartRange: string;
   setChartRange: (label: string) => void;
@@ -91,6 +93,10 @@ export function useTokenDetails(address: string): UseTokenDetailsResult {
   const [jupiterInfo, setJupiterInfo] = useState<{
     address: string;
     data: JupiterTokenInfo | null;
+  } | null>(null);
+  const [holders, setHolders] = useState<{
+    address: string;
+    rows: HolderRow[] | null;
   } | null>(null);
 
   useEffect(() => {
@@ -136,6 +142,48 @@ export function useTokenDetails(address: string): UseTokenDetailsResult {
         });
       } catch {
         if (!cancelled) setJupiterInfo({ address, data: null });
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [address, addressValid]);
+
+  useEffect(() => {
+    if (!address || !addressValid) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(
+          `/api/birdeye?type=holders&address=${encodeURIComponent(
+            address
+          )}&limit=10`,
+          { cache: "no-store" }
+        );
+        const json = res.ok ? await res.json() : null;
+        if (cancelled) return;
+        const rawRows = json?.success && Array.isArray(json.data)
+          ? (json.data as Array<Record<string, unknown>>)
+          : null;
+        const rows: HolderRow[] | null = rawRows
+          ? rawRows
+              .filter((r): r is Record<string, unknown> => !!r)
+              .map((r) => ({
+                owner: typeof r.owner === "string" ? r.owner : "",
+                amount: typeof r.amount === "string" ? r.amount : String(r.amount ?? ""),
+                decimals: typeof r.decimals === "number" ? r.decimals : 0,
+                uiAmount:
+                  typeof r.ui_amount === "number"
+                    ? r.ui_amount
+                    : typeof r.uiAmount === "number"
+                      ? r.uiAmount
+                      : 0,
+              }))
+              .filter((r) => r.owner.length > 0)
+          : null;
+        setHolders({ address, rows });
+      } catch {
+        if (!cancelled) setHolders({ address, rows: null });
       }
     })();
     return () => {
@@ -315,6 +363,8 @@ export function useTokenDetails(address: string): UseTokenDetailsResult {
         : typeof pair?.priceUsd === "string"
           ? Number(pair.priceUsd) || null
           : null,
+    topHolders:
+      addressValid && holders?.address === address ? holders.rows : null,
     chartCandles,
     chartRange,
     setChartRange,

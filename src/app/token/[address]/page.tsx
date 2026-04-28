@@ -14,6 +14,7 @@ import { MetaStrip } from "@/components/token/MetaStrip";
 import { OnChainPanel } from "@/components/token/OnChainPanel";
 import { PriceChartSection } from "@/components/token/PriceChartSection";
 import { StatsGrid } from "@/components/token/StatsGrid";
+import { TopHoldersPanel } from "@/components/token/TopHoldersPanel";
 import { VariantsSection } from "@/components/token/VariantsSection";
 
 export default function TokenDetailPage() {
@@ -31,6 +32,7 @@ export default function TokenDetailPage() {
     meta,
     edgeScore,
     birdeyePrice,
+    topHolders,
     chartCandles,
     chartRange,
     setChartRange,
@@ -118,6 +120,17 @@ export default function TokenDetailPage() {
         <OnChainPanel data={onChain} />
 
         <EdgeScorePanel result={edgeScore} />
+
+        <TopHoldersPanel
+          holders={topHolders}
+          circulatingSupply={
+            typeof profile?.circulatingSupply === "number" &&
+            profile.circulatingSupply > 0
+              ? profile.circulatingSupply
+              : null
+          }
+          symbol={asset.symbol ?? null}
+        />
 
         {profile && <AboutSection profile={profile} />}
 
