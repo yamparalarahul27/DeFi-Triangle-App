@@ -28,13 +28,13 @@ Build the **best token information experience on Solana** — a token-details pa
 Phase A — Foundation        [ ✅ A1  ✅ A2  ✅ A3 ]
 Phase B — Spec compliance   [ ✅ B1  ✅ B2  ✅ B2.5  ✅ B3  ✅ B4 ]
 Phase C — Net-new sections  [ ✅ C1  ✅ C2  ⏸ C3  ⏸ C4  ⏸ C5 ]
-Phase D — Differentiators   [ ✅ D1  ✅ D2  ⏸ D3  ⏸ D4  ⏸ D5 ]
+Phase D — Differentiators   [ ✅ D1  ✅ D2  ✅ D3  ⏸ D4  ⏸ D5 ]
 Polish (cross-cutting)      [ ✅ P1  ⏸ P2  ⏸ P3  ⏸ P4 ]
 ```
 
 Legend: ⏸ pending · 🔄 in progress · ✅ shipped
 
-**Next ship:** **D3** (DEX vs CEX spread — tiny, on data already in the page) or **C3** (Top Holders ranked list).
+**Next ship:** **C3** (Top Holders ranked list — meaty content section) or **D5** (Slippage at size — small differentiator using Jupiter Quote API).
 
 > When a step ships, update its status icon AND tick it off in the table below. Keep this snapshot in sync with the per-step sections — that's the canonical "where are we" indicator for the next session.
 
@@ -532,7 +532,7 @@ in the identity strip. Click for per-source breakdown.
 
 ---
 
-### D3 — DEX vs CEX spread
+### D3 — DEX vs CEX spread ✅
 
 **Goal:** [source-of-truth §K-2](./token-details-source-of-truth.md#2-dex-vs-cex-spread).
 
@@ -721,3 +721,62 @@ Stablecoins have different "interesting" data than volatile tokens. The current 
 - Replace existing chart vs. add as a second panel above?
 - Where does reserves data come from (manual map keyed by mint? a third-party feed?)
 - Same treatment for "wrapped" tokens (wSOL, wBTC) or is that different again?
+
+---
+
+### F2 — Live token pulse (real-time activity panel) ⭐
+**Surfaced during:** QuickNode capability review, 2026-04-28.
+
+Today every panel is a polling snapshot. A real-time activity stream on the token page would be the highest-visible differentiator of any item in this backlog — Birdeye charges for it, DexScreener Pro paywalls it, no free competitor surfaces it inline on a token detail page.
+
+**What to show:**
+- Rolling 60s buys vs sells (live counter, no refresh).
+- Biggest single trade in the last 5 min ("$42.1k buy via Raydium 38s ago").
+- "12 buys / 4 sells last min" pulse indicator.
+- Optional: tape-style stream of last 10 swaps with size + side.
+
+**Data source:** QuickNode **Yellowstone Geyser gRPC** — subscribe to the mint's top 1–3 pools (Raydium / Orca / Meteora program-account filters). Server-side stream worker → SSE/WS → client.
+
+**Why QuickNode (not Helius):** Helius has webhooks but not Geyser gRPC at our tier. Geyser gives filtered, low-latency account/tx streaming.
+
+**Open questions before implementation:**
+- Server architecture: long-lived Node process (separate from Next.js) vs. edge-friendly approach? Vercel doesn't host long-lived gRPC clients — likely needs a separate worker on Railway / Fly / Render.
+- Per-token vs. global subscription model? (Subscribing per token-page-visit doesn't scale; better to subscribe to top-N hot pools globally and filter client-side.)
+- Fallback when stream drops or QuickNode quota exhausted: revert to polling Birdeye, hide the live indicator.
+- Cost ceiling — gRPC streams charge by bandwidth; need to cap to known pools.
+
+---
+
+### F3 — Fresh launches rail (home page)
+**Surfaced during:** QuickNode capability review, 2026-04-28.
+
+A 4th horizontal rail on the home page surfacing newly-created pools (< 1h old) with our **Edge Score** already attached. Photon and GMGN have this; no free Solana research tool does — and our scoring is the moat.
+
+**What to show:**
+- Token thumbnail, symbol, mint age ("23m ago"), starting liquidity, Edge Score grade (A–F).
+- Sorted by Edge Score desc within the time window — surfaces "safest fresh launches first" rather than the firehose.
+
+**Data source:** QuickNode **Webhooks / Streams** — filter for Raydium / Pump / Meteora pool-init instructions. Persist to a new Supabase `fresh_pools` table with `(mint, pool_program, created_at, initial_liquidity_usd)`. Run Edge Score scoring on insert.
+
+**Why QuickNode:** Streams + filtered webhooks are first-class; Helius webhooks work too but QuickNode's Streams product is more flexible for the multi-program filter.
+
+**Open questions before implementation:**
+- Webhook ingestion endpoint (`/api/webhooks/quicknode/pool-init`) — auth model? HMAC signature verification?
+- Retention: keep fresh pools 24h then prune, or grow indefinitely?
+- Edge Score on a 30-second-old token has very thin signal (no holders distribution, no volume) — may need a "Fresh-launch Edge Score" variant with different weights.
+- How to handle pump.fun bonding-curve graduations vs. brand-new mints — same rail or separate?
+
+---
+
+### F4 — Whale watch (top-holder activity)
+**Surfaced during:** QuickNode capability review, 2026-04-28.
+
+Pairs with C3 (Top Holders ranked list). Once we render the top-10 holders, layer real-time movement: "Holder #3 sold 2% of supply 14m ago." Turns a static list into an actionable signal.
+
+**Data source:** QuickNode **Yellowstone Geyser gRPC** — once C3 has the top-10 wallet list, subscribe to those 10 accounts for the active token. Diff balance changes against last-known to derive sells/buys.
+
+**Open questions before implementation:**
+- Subscriptions per token-page-visit again — same scale issue as F2; likely share the F2 worker.
+- Top-10 list shifts as people buy/sell — re-subscribe on every change, or pin to the list at page-load?
+- Privacy / norms: doxxing wallet behavior in real time is an aggressive UX choice. Consider whether to launder the source ("Whale activity detected" vs. "Wallet 7xK...3pQ sold").
+- Depends on C3 shipping first.
