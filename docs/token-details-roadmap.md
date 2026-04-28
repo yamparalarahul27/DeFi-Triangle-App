@@ -29,12 +29,12 @@ Phase A — Foundation        [ ✅ A1  ✅ A2  ✅ A3 ]
 Phase B — Spec compliance   [ ✅ B1  ✅ B2  ⏸ B2.5  ✅ B3 ]
 Phase C — Net-new sections  [ ⏸ C1  ⏸ C2  ⏸ C3  ⏸ C4  ⏸ C5 ]
 Phase D — Differentiators   [ ⏸ D1  ⏸ D2  ⏸ D3  ⏸ D4  ⏸ D5 ]
-Polish (cross-cutting)      [ ⏸ P1  ⏸ P2 ]
+Polish (cross-cutting)      [ ✅ P1  ⏸ P2 ]
 ```
 
 Legend: ⏸ pending · 🔄 in progress · ✅ shipped
 
-**Next ship:** **C2** (token meta strip — quick + visible) or **P1** (chart range smoothness — direct user-reported fix). B2.5 still blocked on evilcharts docs paste.
+**Next ship:** **C2** (token meta strip) or **P2** (reload smoothness). B2.5 still blocked on evilcharts docs paste.
 
 > When a step ships, update its status icon AND tick it off in the table below. Keep this snapshot in sync with the per-step sections — that's the canonical "where are we" indicator for the next session.
 
