@@ -26,6 +26,12 @@ interface AssetPayload {
     target?: string | null;
     basis_points?: number;
   } | null;
+  token_info?: {
+    price_info?: {
+      price_per_token?: number;
+      currency?: string;
+    } | null;
+  } | null;
 }
 
 async function getJson<T>(url: string): Promise<T | null> {
@@ -70,7 +76,11 @@ export async function fetchOnChainData(address: string): Promise<OnChainData | n
       }
     : null;
 
-  if (!accountSection && !assetSection) return null;
+  const rawDasPrice = asset?.token_info?.price_info?.price_per_token;
+  const dasPrice =
+    typeof rawDasPrice === "number" && rawDasPrice > 0 ? rawDasPrice : null;
 
-  return { accountInfo: accountSection, asset: assetSection };
+  if (!accountSection && !assetSection && dasPrice == null) return null;
+
+  return { accountInfo: accountSection, asset: assetSection, dasPrice };
 }

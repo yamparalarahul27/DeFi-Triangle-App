@@ -30,6 +30,7 @@ export default function TokenDetailPage() {
     onChain,
     meta,
     edgeScore,
+    birdeyePrice,
     chartCandles,
     chartRange,
     setChartRange,
@@ -94,6 +95,8 @@ export default function TokenDetailPage() {
           primary={primary}
           profile={profile}
           risk={risk}
+          birdeyePrice={birdeyePrice}
+          dasPrice={onChain?.dasPrice ?? null}
         />
 
         <MetaStrip data={meta} />

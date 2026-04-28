@@ -28,13 +28,13 @@ Build the **best token information experience on Solana** — a token-details pa
 Phase A — Foundation        [ ✅ A1  ✅ A2  ✅ A3 ]
 Phase B — Spec compliance   [ ✅ B1  ✅ B2  ✅ B2.5  ✅ B3  ✅ B4 ]
 Phase C — Net-new sections  [ ✅ C1  ✅ C2  ⏸ C3  ⏸ C4  ⏸ C5 ]
-Phase D — Differentiators   [ ✅ D1  ⏸ D2  ⏸ D3  ⏸ D4  ⏸ D5 ]
+Phase D — Differentiators   [ ✅ D1  ✅ D2  ⏸ D3  ⏸ D4  ⏸ D5 ]
 Polish (cross-cutting)      [ ✅ P1  ⏸ P2  ⏸ P3  ⏸ P4 ]
 ```
 
 Legend: ⏸ pending · 🔄 in progress · ✅ shipped
 
-**Next ship:** **D2** (price-source divergence flag — quick wins on data we already pull) or **C3** (Top Holders ranked list).
+**Next ship:** **D3** (DEX vs CEX spread — tiny, on data already in the page) or **C3** (Top Holders ranked list).
 
 > When a step ships, update its status icon AND tick it off in the table below. Keep this snapshot in sync with the per-step sections — that's the canonical "where are we" indicator for the next session.
 
@@ -508,7 +508,7 @@ for every input. Replaces RiskPanel as the primary safety signal.
 
 ---
 
-### D2 — Price-source divergence flag
+### D2 — Price-source divergence flag ✅
 
 **Goal:** [source-of-truth §K-1](./token-details-source-of-truth.md#1-price-source-divergence-flag).
 
@@ -697,3 +697,27 @@ Each step is self-contained — fresh Claude doesn't need conversation history b
 - **(c) Skeleton-shaped placeholder** — render a flat ghost line + grid silhouette in brand muted tones during loading. Closest to high-end fintech apps.
 
 **Recommendation when implementing:** start with (a) — least change, immediate parity with rest of app. If "looks too plain", layer (c).
+
+---
+
+## Backlog / future ideas
+
+Not sized or scheduled. Captured here so they don't get lost as we ship Phase A–D + polish.
+
+### F1 — Stablecoin-specific section
+**Surfaced during:** D2 visual check, 2026-04-28.
+
+Stablecoins have different "interesting" data than volatile tokens. The current page treats them generically (price, volume, liquidity, etc.), but for a stablecoin most users care about:
+
+- **Peg deviation** — `(price - 1.00) / 1.00` with a tight (basis-points) chart. Big alert when off-peg.
+- **Reserves backing** — issuer attestations (Circle for USDC, Tether for USDT, etc.). Probably manual / curated initially.
+- **Issuer info** — who, jurisdiction, last-attestation date.
+- **De-peg history** — recent extremes from the OHLCV data we already pull.
+- **Mint / burn flow** — net issuance over recent windows (if exposed by Helius enhanced tx or Birdeye trade data).
+
+**Trigger:** Jupiter `tags` array includes `"stablecoin"` (already in our `meta.jupiter.tags`). When that tag is present, swap the price chart and stats section for stablecoin-specific equivalents (or render an extra panel above them).
+
+**Open questions before implementation:**
+- Replace existing chart vs. add as a second panel above?
+- Where does reserves data come from (manual map keyed by mint? a third-party feed?)
+- Same treatment for "wrapped" tokens (wSOL, wBTC) or is that different again?

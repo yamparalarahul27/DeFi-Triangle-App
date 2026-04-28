@@ -62,6 +62,7 @@ export interface UseTokenDetailsResult {
   onChain: OnChainData | null;
   meta: MetaStripData | null;
   edgeScore: EdgeScoreResult | null;
+  birdeyePrice: number | null;
   chartCandles: Candle[];
   chartRange: string;
   setChartRange: (label: string) => void;
@@ -308,6 +309,12 @@ export function useTokenDetails(address: string): UseTokenDetailsResult {
     onChain: onChainForAddress,
     meta,
     edgeScore,
+    birdeyePrice:
+      typeof pair?.priceUsd === "number" && pair.priceUsd > 0
+        ? pair.priceUsd
+        : typeof pair?.priceUsd === "string"
+          ? Number(pair.priceUsd) || null
+          : null,
     chartCandles,
     chartRange,
     setChartRange,
