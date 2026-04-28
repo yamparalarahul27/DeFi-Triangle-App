@@ -7,12 +7,12 @@ import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { useTokenDetails } from "@/lib/hooks/useTokenDetails";
 import { AboutSection } from "@/components/token/AboutSection";
+import { EdgeScorePanel } from "@/components/token/EdgeScorePanel";
 import { IdentityStrip } from "@/components/token/IdentityStrip";
 import { MarketsSection } from "@/components/token/MarketsSection";
 import { MetaStrip } from "@/components/token/MetaStrip";
 import { OnChainPanel } from "@/components/token/OnChainPanel";
 import { PriceChartSection } from "@/components/token/PriceChartSection";
-import { RiskPanel } from "@/components/token/RiskPanel";
 import { StatsGrid } from "@/components/token/StatsGrid";
 import { VariantsSection } from "@/components/token/VariantsSection";
 
@@ -29,6 +29,7 @@ export default function TokenDetailPage() {
     markets,
     onChain,
     meta,
+    edgeScore,
     chartCandles,
     chartRange,
     setChartRange,
@@ -113,7 +114,7 @@ export default function TokenDetailPage() {
 
         <OnChainPanel data={onChain} />
 
-        {risk && <RiskPanel risk={risk} />}
+        <EdgeScorePanel result={edgeScore} />
 
         {profile && <AboutSection profile={profile} />}
 

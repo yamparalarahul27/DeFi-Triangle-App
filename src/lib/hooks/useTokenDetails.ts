@@ -8,6 +8,7 @@ import type { OnChainData } from "@/components/token/OnChainPanel";
 import type { JupiterTokenInfo, MetaStripData } from "@/components/token/MetaStrip";
 import type { AssetCore, AssetResponse, Variant } from "@/lib/tokens-xyz-types";
 import { lookupToken } from "@/lib/token/lookup";
+import { computeEdgeScore, type EdgeScoreResult } from "@/lib/token/edgeScore";
 import {
   CHART_RANGES,
   buildAssetFromPair,
@@ -60,6 +61,7 @@ export interface UseTokenDetailsResult {
   markets: Markets;
   onChain: OnChainData | null;
   meta: MetaStripData | null;
+  edgeScore: EdgeScoreResult | null;
   chartCandles: Candle[];
   chartRange: string;
   setChartRange: (label: string) => void;
@@ -253,6 +255,49 @@ export function useTokenDetails(address: string): UseTokenDetailsResult {
     return { jupiter, numberMarkets };
   }, [renderableAsset, jupiterInfo, address, pair?.numberMarkets]);
 
+  const edgeScore = useMemo<EdgeScoreResult | null>(() => {
+    if (!renderableAsset) return null;
+    const chainTruth = onChainForAddress
+      ? {
+          mintAuthorityRenounced:
+            onChainForAddress.accountInfo
+              ? onChainForAddress.accountInfo.mintAuthority === null
+              : null,
+          freezeAuthorityRenounced:
+            onChainForAddress.accountInfo
+              ? onChainForAddress.accountInfo.freezeAuthority === null
+              : null,
+          mutable:
+            onChainForAddress.asset
+              ? onChainForAddress.asset.mutable
+              : null,
+          burnt:
+            onChainForAddress.asset
+              ? onChainForAddress.asset.burnt
+              : null,
+        }
+      : null;
+    const jupAudit =
+      meta?.jupiter?.audit ?? null;
+    const audit = jupAudit
+      ? {
+          mintAuthorityDisabled: jupAudit.mintAuthorityDisabled,
+          freezeAuthorityDisabled: jupAudit.freezeAuthorityDisabled,
+        }
+      : null;
+    const riskInput = response?.includes?.risk?.data?.marketScoreInput ?? null;
+    const riskInputs = riskInput
+      ? {
+          liquidityUsd: riskInput.liquidityUsd ?? null,
+          marketCapUsd: riskInput.marketCapUsd ?? null,
+          volume24hUsd: riskInput.volume24hUsd ?? null,
+          volume7dUsd: riskInput.volume7dUsd ?? null,
+          tokenMintTimeMs: riskInput.tokenMintTime ?? null,
+        }
+      : null;
+    return computeEdgeScore({ chainTruth, audit, riskInputs });
+  }, [renderableAsset, onChainForAddress, meta, response]);
+
   return {
     asset: renderableAsset,
     primary: renderableAsset ? primary : null,
@@ -262,6 +307,7 @@ export function useTokenDetails(address: string): UseTokenDetailsResult {
     markets: renderableAsset ? response?.includes?.markets?.data?.markets ?? [] : [],
     onChain: onChainForAddress,
     meta,
+    edgeScore,
     chartCandles,
     chartRange,
     setChartRange,
