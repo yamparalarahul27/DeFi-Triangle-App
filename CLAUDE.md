@@ -164,3 +164,5 @@ Rules:
 
 - For UI/frontend changes: after edit, start the dev server and exercise the feature in a browser before reporting done.
 - If browser testing isn't possible in this session, say so explicitly — do not claim success based on a passing type-check alone.
+- **No regressions.** Every ship must preserve existing feature behavior. When testing a new feature, also exercise the surrounding flows (home → search → modal → token detail) and confirm nothing broke. If a regression surfaces, stop and surface it before continuing.
+- **End-user experience is the priority.** When a UX issue surfaces outside the current ship's scope (broken layouts, confusing copy, edge-case failures, slow interactions), **note it as a follow-up — don't fix it in-flight.** Capture it in the roadmap, the commit message, or PR body. Scope creep dilutes ships.

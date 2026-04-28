@@ -26,7 +26,7 @@ Build the **best token information experience on Solana** — a token-details pa
 
 ```
 Phase A — Foundation        [ ✅ A1  ✅ A2  ✅ A3 ]
-Phase B — Spec compliance   [ ✅ B1  ✅ B2  ✅ B2.5  ✅ B3  ⏸ B4 ]
+Phase B — Spec compliance   [ ✅ B1  ✅ B2  ✅ B2.5  ✅ B3  ✅ B4 ]
 Phase C — Net-new sections  [ ✅ C1  ⏸ C2  ⏸ C3  ⏸ C4  ⏸ C5 ]
 Phase D — Differentiators   [ ⏸ D1  ⏸ D2  ⏸ D3  ⏸ D4  ⏸ D5 ]
 Polish (cross-cutting)      [ ✅ P1  ⏸ P2  ⏸ P3  ⏸ P4 ]
@@ -34,7 +34,7 @@ Polish (cross-cutting)      [ ✅ P1  ⏸ P2  ⏸ P3  ⏸ P4 ]
 
 Legend: ⏸ pending · 🔄 in progress · ✅ shipped
 
-**Next ship:** **B4** (invalid-mint hardening — small) or **C2** (token meta strip).
+**Next ship:** **C2** (token meta strip — has open tooltip decision) or **D1** (Edge Score, headline differentiator — needs C1+C2 inputs).
 
 > When a step ships, update its status icon AND tick it off in the table below. Keep this snapshot in sync with the per-step sections — that's the canonical "where are we" indicator for the next session.
 
@@ -285,7 +285,7 @@ Replaces the prior "Birdeye returns nothing → generic error" path.
 
 ---
 
-### B4 — Invalid-mint hardening
+### B4 — Invalid-mint hardening ✅
 
 **Goal:** when the URL has a malformed or unindexed mint, fail clearly rather than rendering an empty page shell with `$0` placeholders.
 

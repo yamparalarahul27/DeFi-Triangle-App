@@ -33,9 +33,10 @@ export default function TokenDetailPage() {
     loading,
     chartLoading,
     notIndexed,
+    invalidAddress,
   } = useTokenDetails(address);
 
-  if (loading && !asset) {
+  if (loading && !asset && !invalidAddress) {
     return (
       <>
         <Header hasHero={false} />
@@ -50,15 +51,17 @@ export default function TokenDetailPage() {
   }
 
   if (!asset) {
+    const message = invalidAddress
+      ? "Invalid mint address."
+      : notIndexed
+        ? "Token not indexed yet — try a different address."
+        : "Unable to load token right now.";
+
     return (
       <>
         <Header hasHero={false} />
         <main className="flex-1 max-w-[1100px] w-full mx-auto px-4 py-8 text-center">
-          <div className="py-16 text-sm text-[#6a7282] mb-3">
-            {notIndexed
-              ? "Token not indexed yet — try a different address."
-              : "Unable to load token right now."}
-          </div>
+          <div className="py-16 text-sm text-[#6a7282] mb-3">{message}</div>
           <Link
             href="/"
             className="text-xs text-[#19549b] hover:text-[#143f78]"

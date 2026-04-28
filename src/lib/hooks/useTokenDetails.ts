@@ -1,5 +1,6 @@
 "use client";
 
+import { PublicKey } from "@solana/web3.js";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useInterval } from "@/lib/hooks/useInterval";
 import type { Candle } from "@/components/ui/PriceChart";
@@ -19,6 +20,28 @@ import {
   type VariantsByKind,
 } from "@/lib/token/utils";
 import { fetchOnChainData } from "@/lib/token/onChain";
+
+function isValidSolanaAddress(addr: string): boolean {
+  if (!addr) return false;
+  try {
+    new PublicKey(addr);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function hasRealMarketData(asset: AssetCore | null): boolean {
+  if (!asset) return false;
+  const s = asset.stats;
+  if (!s) return false;
+  return (
+    (s.price ?? 0) > 0 ||
+    (s.liquidity ?? 0) > 0 ||
+    (s.marketCap ?? 0) > 0 ||
+    (s.volume24hUSD ?? 0) > 0
+  );
+}
 
 const TOKEN_REFRESH_MS = 15_000;
 
@@ -41,9 +64,11 @@ export interface UseTokenDetailsResult {
   loading: boolean;
   chartLoading: boolean;
   notIndexed: boolean;
+  invalidAddress: boolean;
 }
 
 export function useTokenDetails(address: string): UseTokenDetailsResult {
+  const addressValid = useMemo(() => isValidSolanaAddress(address), [address]);
   const [pair, setPair] = useState<BirdeyePair | null>(null);
   const [response, setResponse] = useState<AssetResponse | null>(null);
   const [chartCandles, setChartCandles] = useState<Candle[]>([]);
@@ -60,7 +85,7 @@ export function useTokenDetails(address: string): UseTokenDetailsResult {
   } | null>(null);
 
   useEffect(() => {
-    if (!address) return;
+    if (!address || !addressValid) return;
     let cancelled = false;
     (async () => {
       const result = await lookupToken(address);
@@ -70,10 +95,10 @@ export function useTokenDetails(address: string): UseTokenDetailsResult {
     return () => {
       cancelled = true;
     };
-  }, [address]);
+  }, [address, addressValid]);
 
   useEffect(() => {
-    if (!address) return;
+    if (!address || !addressValid) return;
     let cancelled = false;
     (async () => {
       const data = await fetchOnChainData(address);
@@ -83,13 +108,13 @@ export function useTokenDetails(address: string): UseTokenDetailsResult {
     return () => {
       cancelled = true;
     };
-  }, [address]);
+  }, [address, addressValid]);
 
   const lookupComplete = lookup?.address === address;
   const lookupFound = lookupComplete && lookup.found;
 
   const fetchTokenData = useCallback(async () => {
-    if (!address) return;
+    if (!address || !addressValid) return;
 
     try {
       const [birdeyeRes, tokensXyzRes] = await Promise.all([
@@ -113,10 +138,14 @@ export function useTokenDetails(address: string): UseTokenDetailsResult {
     } catch {
       // keep previous state on transient failures
     }
-  }, [address]);
+  }, [address, addressValid]);
 
   useEffect(() => {
     if (!address) return;
+    if (!addressValid) {
+      setLoading(false);
+      return;
+    }
 
     let cancelled = false;
     (async () => {
@@ -128,12 +157,16 @@ export function useTokenDetails(address: string): UseTokenDetailsResult {
     return () => {
       cancelled = true;
     };
-  }, [address, fetchTokenData]);
+  }, [address, addressValid, fetchTokenData]);
 
-  useInterval(fetchTokenData, address ? TOKEN_REFRESH_MS : null);
+  useInterval(fetchTokenData, address && addressValid ? TOKEN_REFRESH_MS : null);
 
   useEffect(() => {
     if (!address) return;
+    if (!addressValid) {
+      setChartLoading(false);
+      return;
+    }
 
     const range = CHART_RANGES.find((r) => r.label === chartRange) ?? CHART_RANGES[1];
 
@@ -153,7 +186,7 @@ export function useTokenDetails(address: string): UseTokenDetailsResult {
     return () => {
       cancelled = true;
     };
-  }, [address, chartRange]);
+  }, [address, addressValid, chartRange]);
 
   const fallbackAsset = useMemo(
     () => buildAssetFromPair(pair, address),
@@ -171,16 +204,20 @@ export function useTokenDetails(address: string): UseTokenDetailsResult {
     [asset]
   );
 
-  const notIndexed = lookupComplete && !lookupFound && !asset;
-  const onChainForAddress = onChain?.address === address ? onChain.data : null;
+  const realData = useMemo(() => hasRealMarketData(asset), [asset]);
+  const notIndexed =
+    addressValid && lookupComplete && !lookupFound && !realData;
+  const onChainForAddress =
+    addressValid && onChain?.address === address ? onChain.data : null;
+  const renderableAsset = addressValid && realData ? asset : null;
 
   return {
-    asset,
-    primary,
-    variantsByKind,
-    profile: response?.includes?.profile?.data,
-    risk: response?.includes?.risk?.data,
-    markets: response?.includes?.markets?.data?.markets ?? [],
+    asset: renderableAsset,
+    primary: renderableAsset ? primary : null,
+    variantsByKind: renderableAsset ? variantsByKind : {},
+    profile: renderableAsset ? response?.includes?.profile?.data : undefined,
+    risk: renderableAsset ? response?.includes?.risk?.data : undefined,
+    markets: renderableAsset ? response?.includes?.markets?.data?.markets ?? [] : [],
     onChain: onChainForAddress,
     chartCandles,
     chartRange,
@@ -188,6 +225,7 @@ export function useTokenDetails(address: string): UseTokenDetailsResult {
     loading,
     chartLoading,
     notIndexed,
+    invalidAddress: !addressValid,
   };
 }
 
