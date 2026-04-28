@@ -27,14 +27,14 @@ Build the **best token information experience on Solana** — a token-details pa
 ```
 Phase A — Foundation        [ ✅ A1  ✅ A2  ✅ A3 ]
 Phase B — Spec compliance   [ ✅ B1  ✅ B2  ✅ B2.5  ✅ B3  ✅ B4 ]
-Phase C — Net-new sections  [ ✅ C1  ✅ C2  ✅ C3  ✅ C4  ⏸ C5 ]
+Phase C — Net-new sections  [ ✅ C1  ✅ C2  ✅ C3  ✅ C4  ✅ C5 ]
 Phase D — Differentiators   [ ✅ D1  ✅ D2  ✅ D3  ✅ D4  ✅ D5 ]
 Polish (cross-cutting)      [ ✅ P1  ⏸ P2  ⏸ P3  ⏸ P4  ⏸ P5  ⏸ P6  ⏸ P7 ]
 ```
 
 Legend: ⏸ pending · 🔄 in progress · ✅ shipped
 
-**Next ship:** **C5** (All Pools polish — last core ship, finishes Phase C). After C5, only Polish and Backlog remain.
+**Next ship:** Phases A–D all ✅. Remaining tracks: **Polish (P2–P7)** and **Backlog (F1–F3)**. No core ships left.
 
 > When a step ships, update its status icon AND tick it off in the table below. Keep this snapshot in sync with the per-step sections — that's the canonical "where are we" indicator for the next session.
 
@@ -450,7 +450,7 @@ rules.
 
 ---
 
-### C5 — All Pools polish
+### C5 — All Pools polish ✅
 
 **Goal:** verify [`MarketsSection`](../src/app/_archive/solana/_components/MarketsSection.tsx) (post-A1: `src/components/token/MarketsSection.tsx`) shows every pool from Tokens.xyz `markets` array, sorted by liquidity, with name + DEX + liquidity USD.
 
