@@ -14,6 +14,7 @@ import { MetaStrip } from "@/components/token/MetaStrip";
 import { OnChainPanel } from "@/components/token/OnChainPanel";
 import { PriceChartSection } from "@/components/token/PriceChartSection";
 import { StatsGrid } from "@/components/token/StatsGrid";
+import { SlippagePanel } from "@/components/token/SlippagePanel";
 import { TopHoldersPanel } from "@/components/token/TopHoldersPanel";
 import { TradingActivityPanel } from "@/components/token/TradingActivityPanel";
 import { VariantsSection } from "@/components/token/VariantsSection";
@@ -35,6 +36,7 @@ export default function TokenDetailPage() {
     birdeyePrice,
     topHolders,
     tradingActivity,
+    slippage,
     chartCandles,
     chartRange,
     setChartRange,
@@ -135,6 +137,8 @@ export default function TokenDetailPage() {
         />
 
         <TradingActivityPanel data={tradingActivity} />
+
+        <SlippagePanel data={slippage} symbol={asset.symbol ?? null} />
 
         {profile && <AboutSection profile={profile} />}
 

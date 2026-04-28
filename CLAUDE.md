@@ -83,6 +83,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 - **700 LOC cap for files under `src/`.** Excludes generated files, tests, lockfiles, and `*.d.ts`.
 - Split by responsibility before a file hits the cap: extract hooks, components, utilities, types into their own files.
 - Prefer colocation over deep nesting — types near usage, helpers near callers.
+- **Vendored third-party code is exempt** from the cap. Specifically `src/components/evilcharts/**` (vendored from [legions-developer/evilcharts](https://github.com/legions-developer/evilcharts) in B2.5 because the shadcn registry is unreachable from the cloud sandbox). Splitting these would break internal coupling and make upstream sync painful. Treat as third-party — don't refactor.
 
 ## Secrets & environment
 

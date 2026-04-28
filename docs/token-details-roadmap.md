@@ -28,13 +28,13 @@ Build the **best token information experience on Solana** — a token-details pa
 Phase A — Foundation        [ ✅ A1  ✅ A2  ✅ A3 ]
 Phase B — Spec compliance   [ ✅ B1  ✅ B2  ✅ B2.5  ✅ B3  ✅ B4 ]
 Phase C — Net-new sections  [ ✅ C1  ✅ C2  ✅ C3  ✅ C4  ⏸ C5 ]
-Phase D — Differentiators   [ ✅ D1  ✅ D2  ✅ D3  ✅ D4  ⏸ D5 ]
-Polish (cross-cutting)      [ ✅ P1  ⏸ P2  ⏸ P3  ⏸ P4  ⏸ P5  ⏸ P6 ]
+Phase D — Differentiators   [ ✅ D1  ✅ D2  ✅ D3  ✅ D4  ✅ D5 ]
+Polish (cross-cutting)      [ ✅ P1  ⏸ P2  ⏸ P3  ⏸ P4  ⏸ P5  ⏸ P6  ⏸ P7 ]
 ```
 
 Legend: ⏸ pending · 🔄 in progress · ✅ shipped
 
-**Next ship:** **D5** (Slippage at size via Jupiter Quote API — finishes Phase D) or **C5** (All Pools polish — finishes Phase C).
+**Next ship:** **C5** (All Pools polish — last core ship, finishes Phase C). After C5, only Polish and Backlog remain.
 
 > When a step ships, update its status icon AND tick it off in the table below. Keep this snapshot in sync with the per-step sections — that's the canonical "where are we" indicator for the next session.
 
@@ -68,6 +68,7 @@ Legend: ⏸ pending · 🔄 in progress · ✅ shipped
 | P4 | Evilcharts loading state polish | Polish | yes | B2.5 |
 | P5 | NumberFlow coverage on mutating numerics | Polish | yes | — |
 | P6 | Persistent caching + progressive page hydration | Polish | yes (perceived speed) | P2 |
+| P7 | Split `src/app/api/birdeye/route.ts` (currently 690 LOC, near cap) | Polish | no | — |
 
 ---
 
@@ -584,7 +585,7 @@ as a header on the multi-window trading panel.
 
 ---
 
-### D5 — Slippage at size
+### D5 — Slippage at size ✅
 
 **Goal:** [source-of-truth §K-5](./token-details-source-of-truth.md#5-slippage-at-size).
 
@@ -769,6 +770,27 @@ Today every token-page load waits for `useTokenDetails` to resolve **all** upstr
 Split `useTokenDetails` into per-section hooks (`useTokenIdentity`, `useTokenStats`, `useTokenHolders`, `useTokenEdgeScore`, …). Each section renders the moment its data lands rather than waiting on the same `Promise.all`. Cached values render immediately; spinner only on truly cold sections.
 
 **Recommendation:** ship **(a) HTTP Cache-Control + section-split hooks** first. Lowest effort, biggest perceived-speed win, no schema work, works alongside P2. If first-cold-visit still feels slow, layer **(b) IndexedDB** for static + semi-static fields. Hold off on **(c) Supabase** until usage data justifies the schema + prune work.
+
+---
+
+## P7 — Split `src/app/api/birdeye/route.ts`
+
+**Surfaced during:** D5 prep, 2026-04-29. The file is at **690 LOC** as of the C4 ship — under the 700 cap but with no margin for the next handler.
+
+**What:** the route is a single `GET` that switches on a `type=` query param across 7 handlers (`trending`, `list_v3`, `search`, `token`, `security`, `holders`, `ohlcv`) plus shared adapter logic (`mapBirdeyeTokenToPair`, `extractBirdeyeWindows`) and filter logic (`parseListFilters`, `passesFilters`).
+
+**Proposed split:**
+- `src/app/api/birdeye/route.ts` — thin dispatcher (just the GET + the type switch), ~50 LOC
+- `src/lib/birdeye/handlers.ts` — the handler functions
+- `src/lib/birdeye/adapter.ts` — `mapBirdeyeTokenToPair` + `extractBirdeyeWindows`
+- `src/lib/birdeye/filters.ts` — `parseListFilters` + `passesFilters` + `defaultFilters`
+- `src/lib/birdeye/client.ts` — `birdeyeHeaders` + `fetchBirdeye` + `BIRDEYE_BASE`
+
+Each file ~100–250 LOC, single concern. Imports stay tidy.
+
+**Trigger condition:** any future ship that adds another Birdeye handler or grows `mapBirdeyeTokenToPair` should do P7 first rather than push the route over 700.
+
+**Verify:** after split, `npm run build` clean, all existing route types still respond identically (smoke-test `?type=trending`, `?type=token`, `?type=ohlcv`, `?type=holders`, `?type=list_v3`, `?type=search`, `?type=security`).
 
 **Open questions before implementation:**
 - Lock the static / semi-static / volatile field list per source. Some fields look static but mutate (Jupiter `tags`, audit flags after authority change).
