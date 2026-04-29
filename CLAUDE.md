@@ -11,6 +11,94 @@ Rules for Claude Code when working in this repo. Read on every session.
 - Give 2–3 options with a recommendation — not a single pre-decided path.
 - When in doubt, ask.
 
+## Session start protocol
+
+**Ask the user which environment they're on at the start of every new session**, after their first non-trivial request.
+
+The user works from two environments and the right process is different in each:
+
+- **(a) Local desktop** — has `localhost`, can run dev server + tests + browser DevTools.
+- **(b) Cloud / mobile** — Claude Code on web/mobile, no `localhost`, no terminal beyond what the sandbox provides, browser is mobile Safari/Chrome.
+
+Once answered, **do not re-ask within the same session.** Tailor everything that follows.
+
+### Per-env behaviour
+
+**Local desktop:**
+- After edits: run `npm run lint`, `npx tsc --noEmit`, and `npm run dev` as needed. Tell the user what to test on `localhost:3000`.
+- Before opening a PR: encourage browser-test on localhost.
+- After CI green on the PR, the user can self-merge (they trust-tested locally).
+- Preferred for: complex logic, multi-step debugging, anything needing fast iterate-on-localhost loops.
+
+**Cloud / mobile:**
+- Do NOT suggest "test on localhost" — the user can't.
+- Lean on `npx tsc --noEmit` + `npm run lint` for in-sandbox verification.
+- After opening a PR, **always remind the user to test on the PR's Vercel preview URL** (Vercel posts the URL automatically as a bot comment on the PR) BEFORE merging — never merge-to-test.
+- Preferred for: small UI tweaks, polish iterations, anything where mobile feedback shapes the design.
+- Avoid for: complex logic that needs multi-state debugging — defer to a local session.
+
+If the user opens the conversation already on a feature branch / mid-flow, infer the env from context (e.g., "I can't run npm" → cloud) and confirm with one line before continuing.
+
+## Workflow & release flow
+
+This repo uses a **stage-then-main** flow. Every session and every PR follows it.
+
+### Branch model
+
+| Branch | Means | Who sees it |
+|---|---|---|
+| `main` | Production. Polished, user-facing. | Everyone on the prod URL. |
+| `stage` | Pre-release integration. All work merges here first. | Whoever has the stage preview URL. |
+| `claude/<topic>-<id>` or `<topic>` | Per-Claude-session feature branch. | Only via PR preview. |
+
+### Per-session flow
+
+1. New Claude session → new branch (auto-named or topic-named).
+2. Work, commit.
+3. PR → `stage`.
+4. **Test on the PR's Vercel preview URL** — Vercel auto-posts the link as a bot comment.
+5. Merge to `stage` only after verifying on preview.
+6. Periodic `stage → main` release (see cadence below).
+
+### Release cadence (stage → main)
+
+- Cut a `stage → main` release PR **weekly**, OR after ~5 stage merges, OR when a major feature lands — whichever comes first.
+- One last polish pass on the stage preview before merging.
+- Merge → users see the new release on prod.
+- Don't let stage drift > 2 weeks from main; large divergence = larger merge conflicts.
+
+### Feature flags for not-yet-polished code
+
+`src/lib/featureFlags.ts` reads `NEXT_PUBLIC_FF_*` env vars at build time.
+
+Pattern for code that's technically ready but UX is still rough:
+
+```tsx
+{FEATURES.NEW_THING && <NewThing />}
+```
+
+Vercel env vars hold the actual on/off state per environment:
+- **stage:** `NEXT_PUBLIC_FF_NEW_THING=1` → visible on stage preview for testing
+- **prod:** `NEXT_PUBLIC_FF_NEW_THING=0` → hidden from users on main
+
+Stage → main promotion happens normally. Users don't see the gated feature until the prod env var flips. **Delete the flag + conditional once the feature is stable on prod for a few days** — accumulating flags is technical debt.
+
+### Hotfixes
+
+If something is genuinely broken on `main`:
+
+1. Branch off `main` → fix → PR to `main` → merge.
+2. Cherry-pick the fix commit to `stage` so the hotfix doesn't get lost on the next stage→main release.
+
+Reserved for genuine emergencies (broken prod, security). Day-to-day fixes always go through `stage` first.
+
+### Pitfalls to avoid
+
+- **Don't merge to stage without checking the PR preview.** Once stage breaks, it pollutes everything built on top.
+- **Don't promote stage → main in the middle of a multi-PR feature.** Wait until the feature is coherent.
+- **Don't add new feature flags without a "delete the flag" follow-up note.** Otherwise the codebase fills with conditionals nobody owns.
+- **Don't cherry-pick stage commits to main as a substitute for the release cadence.** Cherry-picks are for hotfixes only.
+
 ## Testing & merge policy
 
 Applies to any merge into `main` **or** `stage` (and any PR targeting either branch).
