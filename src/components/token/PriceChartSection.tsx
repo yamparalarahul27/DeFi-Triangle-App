@@ -56,7 +56,7 @@ export function PriceChartSection({
     <section className="bg-white rounded-sm border border-[#cbd5e1] p-4 sm:p-6">
       <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
         <div className="text-[10px] uppercase tracking-wider text-[#6a7282]">
-          Price chart · Tokens.xyz
+          Price chart
         </div>
         <div className="flex items-center gap-1">
           {CHART_RANGES.map((r) => {

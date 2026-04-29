@@ -9,8 +9,20 @@ type ChartSource =
   | "Jupiter (derived)"
   | "Birdeye + Tokens.xyz + Jupiter";
 type ChartFetchResult = { candles: Candle[]; source: ChartSource };
+type CachedEntry = { result: ChartFetchResult; cachedAt: number };
 
-const ohlcvCache = new Map<string, ChartFetchResult>();
+const CACHE_TTL_MS = 30_000;
+const ohlcvCache = new Map<string, CachedEntry>();
+
+function readCached(address: string): ChartFetchResult | null {
+  const entry = ohlcvCache.get(address);
+  if (!entry) return null;
+  if (Date.now() - entry.cachedAt > CACHE_TTL_MS) {
+    ohlcvCache.delete(address);
+    return null;
+  }
+  return entry.result;
+}
 
 export function useTokenChart(address: string): {
   candles: Candle[] | null;
@@ -28,7 +40,7 @@ export function useTokenChart(address: string): {
 
     let cancelled = false;
 
-    const cached = ohlcvCache.get(address);
+    const cached = readCached(address);
     if (cached) {
       setCandles(cached.candles);
       setLoading(false);
@@ -42,7 +54,7 @@ export function useTokenChart(address: string): {
       try {
         const result = await fetchChartWithFallback(address);
         if (!cancelled) {
-          ohlcvCache.set(address, result);
+          ohlcvCache.set(address, { result, cachedAt: Date.now() });
           setCandles(result.candles);
         }
       } catch {
