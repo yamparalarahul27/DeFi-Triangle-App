@@ -11,11 +11,182 @@ Rules for Claude Code when working in this repo. Read on every session.
 - Give 2–3 options with a recommendation — not a single pre-decided path.
 - When in doubt, ask.
 
+## Session start protocol
+
+**Ask the user which environment they're on at the start of every new session**, after their first non-trivial request.
+
+The user works from two environments and the right process is different in each:
+
+- **(a) Local desktop** — has `localhost`, can run dev server + tests + browser DevTools.
+- **(b) Cloud / mobile** — Claude Code on web/mobile, no `localhost`, no terminal beyond what the sandbox provides, browser is mobile Safari/Chrome.
+
+Once answered, **do not re-ask within the same session.** Tailor everything that follows.
+
+### Per-env behaviour
+
+**Local desktop:**
+- After edits: run `npm run lint`, `npx tsc --noEmit`, and `npm run dev` as needed. Tell the user what to test on `localhost:3000`.
+- Before opening a PR: encourage browser-test on localhost.
+- After CI green on the PR, the user can self-merge (they trust-tested locally).
+- Preferred for: complex logic, multi-step debugging, anything needing fast iterate-on-localhost loops.
+
+**Cloud / mobile:**
+- Do NOT suggest "test on localhost" — the user can't.
+- Lean on `npx tsc --noEmit` + `npm run lint` for in-sandbox verification.
+- After opening a PR, **always remind the user to test on the PR's Vercel preview URL** (Vercel posts the URL automatically as a bot comment on the PR) BEFORE merging — never merge-to-test.
+- Preferred for: small UI tweaks, polish iterations, anything where mobile feedback shapes the design.
+- Avoid for: complex logic that needs multi-state debugging — defer to a local session.
+
+If the user opens the conversation already on a feature branch / mid-flow, infer the env from context (e.g., "I can't run npm" → cloud) and confirm with one line before continuing.
+
+## Workflow & release flow
+
+This repo uses a **stage-then-main** flow. Every session and every PR follows it.
+
+### Branch model
+
+| Branch | Means | Who sees it |
+|---|---|---|
+| `main` | Production. Polished, user-facing. | Everyone on the prod URL. |
+| `stage` | Pre-release integration. All work merges here first. | Whoever has the stage preview URL. |
+| `claude/<topic>-<id>` or `<topic>` | Per-Claude-session feature branch. | Only via PR preview. |
+
+### Per-session flow
+
+1. New Claude session → new branch (auto-named or topic-named).
+2. Work, commit.
+3. PR → `stage`.
+4. **Test on the PR's Vercel preview URL** — Vercel auto-posts the link as a bot comment.
+5. Merge to `stage` only after verifying on preview.
+6. Periodic `stage → main` release (see cadence below).
+
+### Release cadence (stage → main)
+
+- Cut a `stage → main` release PR **weekly**, OR after ~5 stage merges, OR when a major feature lands — whichever comes first.
+- One last polish pass on the stage preview before merging.
+- Merge → users see the new release on prod.
+- Don't let stage drift > 2 weeks from main; large divergence = larger merge conflicts.
+
+### Feature flags for not-yet-polished code
+
+`src/lib/featureFlags.ts` reads `NEXT_PUBLIC_FF_*` env vars at build time.
+
+Pattern for code that's technically ready but UX is still rough:
+
+```tsx
+{FEATURES.NEW_THING && <NewThing />}
+```
+
+Vercel env vars hold the actual on/off state per environment:
+- **stage:** `NEXT_PUBLIC_FF_NEW_THING=1` → visible on stage preview for testing
+- **prod:** `NEXT_PUBLIC_FF_NEW_THING=0` → hidden from users on main
+
+Stage → main promotion happens normally. Users don't see the gated feature until the prod env var flips. **Delete the flag + conditional once the feature is stable on prod for a few days** — accumulating flags is technical debt.
+
+### Hotfixes
+
+If something is genuinely broken on `main`:
+
+1. Branch off `main` → fix → PR to `main` → merge.
+2. Cherry-pick the fix commit to `stage` so the hotfix doesn't get lost on the next stage→main release.
+
+Reserved for genuine emergencies (broken prod, security). Day-to-day fixes always go through `stage` first.
+
+### Pitfalls to avoid
+
+- **Don't merge to stage without checking the PR preview.** Once stage breaks, it pollutes everything built on top.
+- **Don't promote stage → main in the middle of a multi-PR feature.** Wait until the feature is coherent.
+- **Don't add new feature flags without a "delete the flag" follow-up note.** Otherwise the codebase fills with conditionals nobody owns.
+- **Don't cherry-pick stage commits to main as a substitute for the release cadence.** Cherry-picks are for hotfixes only.
+
+## Testing & merge policy
+
+Applies to any merge into `main` **or** `stage` (and any PR targeting either branch).
+
+Before merging, Claude must:
+
+1. **Stop and propose test cases.** List the scenarios the change should cover — golden path, edge cases, regressions, security-relevant paths. Do not write tests yet.
+2. **Wait for explicit user approval** of the proposed test list. The user may add, remove, or reword cases. No "I'll just write them and you can review" — approval comes first.
+3. **Implement the approved tests** and run them. All must pass.
+4. **Show the user the results** (test names + pass/fail) and wait for confirmation that they've verified the outcome.
+5. **Only then** prepare the merge / PR.
+
+Triggers: `git merge` into `main`/`stage`, `git push` to `main`/`stage`, opening a PR with `main` or `stage` as the base, and `gh pr merge` / equivalent MCP calls. Does not apply to merges into feature branches unless the user asks.
+
+If tests are genuinely not applicable (docs-only change, asset commit, comment tweak), say so explicitly and ask the user to waive the requirement for that change. Never self-waive.
+## Behavioral guidelines
+
+Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-specific instructions as needed.
+
+**Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.
+
+### 1. Think Before Coding
+
+**Don't assume. Don't hide confusion. Surface tradeoffs.**
+
+Before implementing:
+- State your assumptions explicitly. If uncertain, ask.
+- If multiple interpretations exist, present them - don't pick silently.
+- If a simpler approach exists, say so. Push back when warranted.
+- If something is unclear, stop. Name what's confusing. Ask.
+
+### 2. Simplicity First
+
+**Minimum code that solves the problem. Nothing speculative.**
+
+- No features beyond what was asked.
+- No abstractions for single-use code.
+- No "flexibility" or "configurability" that wasn't requested.
+- No error handling for impossible scenarios.
+- If you write 200 lines and it could be 50, rewrite it.
+
+Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
+
+### 3. Surgical Changes
+
+**Touch only what you must. Clean up only your own mess.**
+
+When editing existing code:
+- Don't "improve" adjacent code, comments, or formatting.
+- Don't refactor things that aren't broken.
+- Match existing style, even if you'd do it differently.
+- If you notice unrelated dead code, mention it - don't delete it.
+
+When your changes create orphans:
+- Remove imports/variables/functions that YOUR changes made unused.
+- Don't remove pre-existing dead code unless asked.
+
+The test: Every changed line should trace directly to the user's request.
+
+### 4. Goal-Driven Execution
+
+**Define success criteria. Loop until verified.**
+
+Transform tasks into verifiable goals:
+- "Add validation" → "Write tests for invalid inputs, then make them pass"
+- "Fix the bug" → "Write a test that reproduces it, then make it pass"
+- "Refactor X" → "Ensure tests pass before and after"
+
+For multi-step tasks, state a brief plan:
+
+```
+1. [Step] → verify: [check]
+2. [Step] → verify: [check]
+3. [Step] → verify: [check]
+```
+
+Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
+
+---
+
+**These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
+
 ## File size
 
 - **700 LOC cap for files under `src/`.** Excludes generated files, tests, lockfiles, and `*.d.ts`.
 - Split by responsibility before a file hits the cap: extract hooks, components, utilities, types into their own files.
 - Prefer colocation over deep nesting — types near usage, helpers near callers.
+- **Vendored third-party code is exempt** from the cap. Specifically `src/components/evilcharts/**` (vendored from [legions-developer/evilcharts](https://github.com/legions-developer/evilcharts) in B2.5 because the shadcn registry is unreachable from the cloud sandbox). Splitting these would break internal coupling and make upstream sync painful. Treat as third-party — don't refactor.
 
 ## Secrets & environment
 
@@ -97,3 +268,5 @@ Rules:
 
 - For UI/frontend changes: after edit, start the dev server and exercise the feature in a browser before reporting done.
 - If browser testing isn't possible in this session, say so explicitly — do not claim success based on a passing type-check alone.
+- **No regressions.** Every ship must preserve existing feature behavior. When testing a new feature, also exercise the surrounding flows (home → search → modal → token detail) and confirm nothing broke. If a regression surfaces, stop and surface it before continuing.
+- **End-user experience is the priority.** When a UX issue surfaces outside the current ship's scope (broken layouts, confusing copy, edge-case failures, slow interactions), **note it as a follow-up — don't fix it in-flight.** Capture it in the roadmap, the commit message, or PR body. Scope creep dilutes ships.
