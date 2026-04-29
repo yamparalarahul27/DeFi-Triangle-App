@@ -29,12 +29,14 @@ Phase A — Foundation        [ ✅ A1  ✅ A2  ✅ A3 ]
 Phase B — Spec compliance   [ ✅ B1  ✅ B2  ✅ B2.5  ✅ B3  ✅ B4 ]
 Phase C — Net-new sections  [ ✅ C1  ✅ C2  ✅ C3  ✅ C4  ✅ C5 ]
 Phase D — Differentiators   [ ✅ D1  ✅ D2  ✅ D3  ✅ D4  ✅ D5 ]
-Polish (cross-cutting)      [ ✅ P1  ⏸ P2  ⏸ P3  ⏸ P4  ⏸ P5  ⏸ P6  ⏸ P7 ]
+Polish (cross-cutting)      [ ✅ P1  ⏸ P2  ✗ P3  ⏸ P4  ⏸ P5  ⏸ P6  ⏸ P7 ]
+Tier 1 quick wins           [ ✅ 1.1  ✅ 1.2  ✅ 1.3  ✅ 1.4 ]
+Backlog                     [ F1  F2  ✗ F3 ]
 ```
 
-Legend: ⏸ pending · 🔄 in progress · ✅ shipped
+Legend: ⏸ pending · 🔄 in progress · ✅ shipped · ✗ scrapped (no longer needed)
 
-**Next ship:** Phases A–D all ✅. Remaining tracks: **Polish (P2–P7)** and **Backlog (F1–F3)**. No core ships left.
+**Next ship:** Phases A–D, Tier 1, P1 all ✅. Remaining tracks: **Polish (P2 + P4–P7)** and **Backlog (F1, F2)**. P3 and F3 scrapped. No core ships left — focus is now on perceived speed (P6 / P2) or shipping `stage → main` for users.
 
 > When a step ships, update its status icon AND tick it off in the table below. Keep this snapshot in sync with the per-step sections — that's the canonical "where are we" indicator for the next session.
 
@@ -64,11 +66,15 @@ Legend: ⏸ pending · 🔄 in progress · ✅ shipped
 | D5 | Slippage at size ($1k/$10k/$100k) | Differentiators | yes | — |
 | P1 | Chart range-switch smoothness (no loading flash) | Polish | yes | A3 |
 | P2 | Reload / address-change smoothness (stale-while-revalidate) | Polish | yes | A3 |
-| P3 | Chart visual polish (match app UI) | Polish | yes | B2.5 |
+| ~~P3~~ | ~~Chart visual polish (match app UI)~~ — **scrapped** | Polish | — | — |
 | P4 | Evilcharts loading state polish | Polish | yes | B2.5 |
 | P5 | NumberFlow coverage on mutating numerics | Polish | yes | — |
 | P6 | Persistent caching + progressive page hydration | Polish | yes (perceived speed) | P2 |
 | P7 | Split `src/app/api/birdeye/route.ts` (currently 690 LOC, near cap) | Polish | no | — |
+| 1.1 | Brand kit at `/brand` + downloadable SVGs | Tier 1 | yes | — |
+| 1.2 | TokenModal chart parity (swap to `EvilLineChart`) | Tier 1 | yes | B2.5 |
+| 1.3 | `PriceChartSection` header copy (drop "· Tokens.xyz") | Tier 1 | yes | B1 |
+| 1.4 | `useTokenChart` cache TTL (30s) | Tier 1 | maybe | — |
 
 ---
 

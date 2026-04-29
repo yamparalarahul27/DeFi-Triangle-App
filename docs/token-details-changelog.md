@@ -1,27 +1,70 @@
 # Token Details — Session Changelog
 
-**Branches active across sessions:** `claude/review-and-plan-YroJH` (cloud session 1) → `imp-token-details` (local session 2). Both merge into `stage` via PR.
+**Branches active across sessions:** `claude/review-and-plan-YroJH` (cloud session 1 + 3) → `imp-token-details` (local session 2). Both merge into `stage` via PR.
 
 This file records **what shipped** and **what's next**. The roadmap is the plan; this is the audit trail + strategic context.
 
 ---
 
-## Session-end state (2026-04-28 IST close)
+## Session-end state (2026-04-29 IST close)
 
 ```
 Phase A — Foundation        [ ✅ A1  ✅ A2  ✅ A3 ]
 Phase B — Spec compliance   [ ✅ B1  ✅ B2  ✅ B2.5  ✅ B3  ✅ B4 ]
 Phase C — Net-new sections  [ ✅ C1  ✅ C2  ✅ C3  ✅ C4  ✅ C5 ]
 Phase D — Differentiators   [ ✅ D1  ✅ D2  ✅ D3  ✅ D4  ✅ D5 ]
-Polish (cross-cutting)      [ ✅ P1  ⏸ P2  ⏸ P3  ⏸ P4  ⏸ P5  ⏸ P6  ⏸ P7 ]
-Backlog                     [ F1  F2  F3 ]
+Polish (cross-cutting)      [ ✅ P1  ⏸ P2  ✗ P3  ⏸ P4  ⏸ P5  ⏸ P6  ⏸ P7 ]
+Tier 1 quick wins           [ ✅ 1.1  ✅ 1.2  ✅ 1.3  ✅ 1.4 ]
+Backlog                     [ F1  F2  ✗ F3 ]
 ```
 
-**Original Phase A–D scope is fully complete (19 of 19 ships).** The token-details page now renders 11 distinct sections fused from 4 independent data sources, including 5 differentiator signals no other Solana tool surfaces.
+Legend: ⏸ pending · ✅ shipped · ✗ scrapped (no longer needed)
 
-- **Last PR open at session close:** #20 (C5 polish — All Markets sort + count). Awaiting merge.
-- **PRs #11–#19 already merged into `stage`** during this session.
+**Original Phase A–D + Tier 1 polish all complete on `stage`.** The token-details page renders 11 distinct sections + brand kit page. Process docs (CLAUDE.md, Workflow & Release flow, Session-start protocol) consistent on both `stage` and `main`.
+
 - **`stage` → `main` promotion has not been done** — staged work is preview-deployed only.
+- **`CLAUDE.md` is now identical on `main` and `stage`** (PRs #27 + #28).
+
+---
+
+## Session 3 — cloud work, 2026-04-28 → 2026-04-29 IST
+
+8 PRs (#21–#28). Polish + UX fixes from real-device testing, Tier 1 quick wins, plus formalising the workflow into docs that travel across sessions.
+
+### Ships landed (in order)
+
+| PR | Commit | Ship | What it added |
+|---|---|---|---|
+| #21 | merged | **(local imp-token-details ship)** | Brought into stage via merge — context lost on cloud side. |
+| #22 | `a8ac41f` | **Edge Score row + mobile tooltip v1** | Fixed `JUPITYes` overlap on Edge Score breakdown rows (`minmax(0,1fr)` + `flex-1 min-w-0`). Tooltip primitive now renders as Radix Dialog bottom sheet on `(pointer: coarse)` devices; desktop keeps hover. Added `title` prop; `PriceDivergenceChip` / `DexCexSpread` / `MetaStrip Field` pass meaningful titles. |
+| #23 | `a77c0b5` | **Edge Score 2-line + bulletproof touch detection** | Real-device feedback: original tooltip detection didn't fire on iOS Safari, and Edge Score rows still squeezed. Restructured rows to **always 2 lines** (name + chip on row 1; value + bar + score on row 2). Touch detection now layers `(pointer: coarse)` ∪ `(hover: none)` ∪ `'ontouchstart' in window` via `useSyncExternalStore`. |
+| #24 | `76abb25` | **Top Holders → Birdeye** | Per-row arrow on `TopHoldersPanel` was opening Solscan; switched to `https://birdeye.so/solana/wallet-analyzer/<addr>?tab=portfolio` for richer portfolio-first view. |
+| #25 | `b37b492` | **Tier 1 chart-area batch (1.2 + 1.3 + 1.4)** | (1.3) `PriceChartSection` header dropped "· Tokens.xyz" — outdated since B1. (1.4) Added 30s TTL to `useTokenChart`'s `ohlcvCache` (modal re-opens were showing session-old candles). (1.2) Replaced `TokenModalChart`'s hand-rolled recharts `AreaChart` with `EvilLineChart` for visual parity with detail page. |
+| #26 | `00b399f` | **Tier 1.1 Brand kit at `/brand`** | New route shipping 3 logo cards (dark stroke / light stroke / filled) with native `<a download>` Download buttons. Logos pulled from already-committed `public/brand/` (CLAUDE.md "Pending followup" was outdated — SVGs were there). |
+| #27 | `7128791` | **CLAUDE.md: session-start + workflow** | Added "Session start protocol" (Claude asks "local or cloud?" at start, tailors verification advice). Added "Workflow & release flow" — branch model, per-session flow, weekly stage→main release cadence, feature flag pattern, hotfix protocol, pitfalls. |
+| #28 | merged to `main` | **CLAUDE.md sync to main** | Direct branch off `main` → ported all 5 missing CLAUDE.md commits from `stage` → PR'd straight to `main`. Process docs now identical on both branches. |
+
+### Roadmap deltas
+
+- **Tier 1 quick wins** added as a new track and fully shipped. Brand kit, modal chart parity, header copy, cache TTL.
+- **P3 — chart visual polish** marked **scrapped** per user feedback ("current chart looks fine; not needed").
+- **F3 — fresh launches rail** marked **scrapped** per user feedback ("not needed now").
+- **Workflow nuances captured for future sessions:**
+  - User has 2 environments: local desktop (can run localhost) and cloud mobile (only PR-preview / stage-preview testing).
+  - Per-session branches are auto-named by Claude Code; PR → stage; weekly stage → main release; feature flags for any unpolished section.
+  - Process docs live in CLAUDE.md so any session reads the same playbook regardless of branch.
+
+### Locked-in decisions added this session
+
+- **Tooltip primitive on touch:** Radix Dialog rendered as bottom-anchored sheet (slide-up animation, grab indicator, close `×`, max-h 80vh). Touch detection layers 3 media queries to be Safari-proof. `Tooltip` accepts optional `title` prop for the sheet header.
+- **EdgeScorePanel row layout:** always 2-line stack (no more grid-cols squeeze). Name + chip top, value + bar + score bottom.
+- **Top Holders external link:** Birdeye wallet analyzer (`?tab=portfolio`), not Solscan.
+- **Modal chart:** uses `EvilLineChart` with `hideLegend` + `hideCartesianGrid` + `hideCursorLine` + `hideTooltip` + axes hidden. Brand line color (`#19549b` / `#3B7DDD`).
+- **`useTokenChart` cache:** 30s TTL via `cachedAt` timestamp; expired entries pruned on read.
+- **Brand kit:** lives at `/brand`, no nav link (URL-only). Will surface in Footer once kit grows beyond logos. Downloads use HTML `<a download>` with humanised filenames (`defi_logo_dark.svg` → `defi-triangle-logo-dark.svg`).
+- **CLAUDE.md identical on `main` and `stage`** — sync via direct-to-main PR for any future docs change is acceptable per the new workflow.
+
+---
 
 ---
 
