@@ -1,6 +1,8 @@
 "use client";
 
+import NumberFlow, { type Format } from "@number-flow/react";
 import { Tooltip } from "@/components/ui/Tooltip";
+import { PCT_2DP } from "@/lib/numberFormats";
 import type { DivergenceResult } from "@/lib/token/priceDivergence";
 
 export function PriceDivergenceChip({
@@ -48,19 +50,44 @@ function TooltipBody({ result }: { result: DivergenceResult }) {
       {result.sources.map((s) => (
         <div key={s.name} className="flex items-center justify-between gap-4">
           <span className="opacity-90">{s.name}</span>
-          <span className="font-mono">{formatPrice(s.price)}</span>
+          <span className="font-mono tabular-nums">
+            <NumberFlow value={s.price} format={priceFormat(s.price)} />
+          </span>
         </div>
       ))}
       <div className="border-t border-white/15 mt-1 pt-1 flex items-center justify-between">
         <span className="opacity-70">Spread</span>
-        <span className="font-mono">{result.spreadPct.toFixed(2)}%</span>
+        <span className="font-mono tabular-nums">
+          <NumberFlow
+            value={result.spreadPct}
+            format={PCT_2DP}
+            suffix="%"
+          />
+        </span>
       </div>
     </div>
   );
 }
 
-function formatPrice(value: number): string {
-  if (value >= 1) return `$${value.toFixed(2)}`;
-  if (value >= 0.01) return `$${value.toFixed(4)}`;
-  return `$${value.toPrecision(3)}`;
+function priceFormat(value: number): Format {
+  if (value >= 1)
+    return {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    };
+  if (value >= 0.01)
+    return {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 4,
+      maximumFractionDigits: 4,
+    };
+  return {
+    style: "currency",
+    currency: "USD",
+    minimumSignificantDigits: 3,
+    maximumSignificantDigits: 3,
+  };
 }

@@ -1,6 +1,8 @@
 "use client";
 
+import NumberFlow from "@number-flow/react";
 import { Tooltip } from "@/components/ui/Tooltip";
+import { PCT_2DP } from "@/lib/numberFormats";
 
 const HEALTHY_PCT = 0.5;
 const CAUTION_PCT = 2;
@@ -46,9 +48,9 @@ export function DexCexSpread({
         className={`inline-flex items-center gap-1.5 text-[11px] ${text} cursor-help`}
       >
         <span className="opacity-70">DEX</span>
-        <span className="font-mono">
+        <span className="font-mono tabular-nums">
           {sign}
-          {abs.toFixed(2)}%
+          <NumberFlow value={abs} format={PCT_2DP} suffix="%" />
         </span>
         <span className="opacity-70">vs CEX</span>
       </span>

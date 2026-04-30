@@ -1,6 +1,7 @@
 "use client";
 
-import { fmtNum, fmtUsd } from "@/lib/format";
+import NumberFlow from "@number-flow/react";
+import { COMPACT_NUM, COMPACT_USD, USD } from "@/lib/numberFormats";
 import type {
   AssetCore,
   AssetProfile,
@@ -20,36 +21,24 @@ export function StatsGrid({
   risk?: RiskData;
 }) {
   const primaryLiquidity =
-    primary?.market?.liquidity ?? asset.stats?.liquidity ?? 0;
-  const vol7d = risk?.marketScoreInput?.volume7dUsd;
-  const marketCap = profile?.marketCap ?? asset.stats?.marketCap;
-  const volume24 = profile?.volume24h ?? asset.stats?.volume24hUSD;
+    primary?.market?.liquidity ?? asset.stats?.liquidity ?? null;
+  const vol7d = risk?.marketScoreInput?.volume7dUsd ?? null;
+  const marketCap = profile?.marketCap ?? asset.stats?.marketCap ?? null;
+  const volume24 = profile?.volume24h ?? asset.stats?.volume24hUSD ?? null;
+  const fdv = profile?.fdv ?? null;
+  const circ = profile?.circulatingSupply ?? null;
+  const total = profile?.totalSupply ?? null;
+  const ath = profile?.allTimeHigh ?? null;
 
-  const stats: [string, string][] = [
-    ["Market cap", fmtUsd(marketCap, { compact: true })],
-    ["24h volume", fmtUsd(volume24, { compact: true })],
-    ["FDV", fmtUsd(profile?.fdv, { compact: true })],
-    [
-      "7d volume",
-      vol7d != null ? fmtUsd(vol7d, { compact: true }) : "—",
-    ],
-    [
-      "Circ supply",
-      profile?.circulatingSupply
-        ? fmtNum(profile.circulatingSupply, { compact: true })
-        : "—",
-    ],
-    [
-      "Total supply",
-      profile?.totalSupply
-        ? fmtNum(profile.totalSupply, { compact: true })
-        : "—",
-    ],
-    ["Primary pair liq.", fmtUsd(primaryLiquidity, { compact: true })],
-    [
-      "All-time high",
-      profile?.allTimeHigh ? fmtUsd(profile.allTimeHigh) : "—",
-    ],
+  const stats: [string, React.ReactNode][] = [
+    ["Market cap", money(marketCap, COMPACT_USD)],
+    ["24h volume", money(volume24, COMPACT_USD)],
+    ["FDV", money(fdv, COMPACT_USD)],
+    ["7d volume", money(vol7d, COMPACT_USD)],
+    ["Circ supply", count(circ)],
+    ["Total supply", count(total)],
+    ["Primary pair liq.", money(primaryLiquidity, COMPACT_USD)],
+    ["All-time high", money(ath, USD)],
   ];
 
   return (
@@ -63,7 +52,7 @@ export function StatsGrid({
             <div className="text-[10px] uppercase tracking-wider text-[#6a7282]">
               {label}
             </div>
-            <div className="font-mono text-sm text-[#11274d] mt-0.5">
+            <div className="font-mono text-sm text-[#11274d] mt-0.5 tabular-nums">
               {value}
             </div>
           </div>
@@ -71,4 +60,17 @@ export function StatsGrid({
       </div>
     </section>
   );
+}
+
+function money(
+  value: number | null | undefined,
+  format: typeof COMPACT_USD
+): React.ReactNode {
+  if (value == null || !Number.isFinite(value) || value <= 0) return "—";
+  return <NumberFlow value={value} format={format} />;
+}
+
+function count(value: number | null | undefined): React.ReactNode {
+  if (value == null || !Number.isFinite(value) || value <= 0) return "—";
+  return <NumberFlow value={value} format={COMPACT_NUM} />;
 }
