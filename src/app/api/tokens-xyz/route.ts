@@ -1,5 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { enforceRateLimit } from "@/lib/rateLimit";
+import { CACHE, cachedJson, type CachePolicy } from "@/lib/cacheControl";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -18,16 +19,18 @@ function buildHeaders(): HeadersInit {
 function errorResponse(context: string, err: unknown) {
   const message = err instanceof Error ? err.message : String(err);
   console.error(`[tokens-xyz/${context}] ${message}`);
-  return NextResponse.json(
+  return cachedJson(
     { success: false, error: "upstream error" },
+    CACHE.NO_CACHE,
     { status: 500 }
   );
 }
 
-async function handleAsset(assetId: string) {
+async function handleAsset(assetId: string, policy: CachePolicy) {
   if (!assetId) {
-    return NextResponse.json(
+    return cachedJson(
       { success: false, error: "assetId required" },
+      CACHE.NO_CACHE,
       { status: 400 }
     );
   }
@@ -46,7 +49,7 @@ async function handleAsset(assetId: string) {
       return errorResponse("asset", `upstream ${upstream.status}`);
     }
     const json = await upstream.json();
-    return NextResponse.json({ success: true, data: json });
+    return cachedJson({ success: true, data: json }, policy);
   } catch (err) {
     return errorResponse("asset-fetch", err);
   }
@@ -56,11 +59,13 @@ async function handlePriceChart(
   assetId: string,
   interval: string,
   from: string,
-  to: string
+  to: string,
+  policy: CachePolicy
 ) {
   if (!assetId) {
-    return NextResponse.json(
+    return cachedJson(
       { success: false, error: "assetId required" },
+      CACHE.NO_CACHE,
       { status: 400 }
     );
   }
@@ -84,7 +89,7 @@ async function handlePriceChart(
       return errorResponse("chart", `upstream ${upstream.status}`);
     }
     const json = await upstream.json();
-    return NextResponse.json({ success: true, data: json });
+    return cachedJson({ success: true, data: json }, policy);
   } catch (err) {
     return errorResponse("chart-fetch", err);
   }
@@ -103,15 +108,17 @@ export async function GET(req: NextRequest) {
       assetId,
       sp.get("interval") ?? "1H",
       sp.get("from") ?? "",
-      sp.get("to") ?? ""
+      sp.get("to") ?? "",
+      CACHE.SEMI_STATIC
     );
   }
   if (type === "asset" || type === "") {
-    return handleAsset(assetId);
+    return handleAsset(assetId, CACHE.SEMI_STATIC);
   }
 
-  return NextResponse.json(
+  return cachedJson(
     { success: false, error: "invalid type" },
+    CACHE.NO_CACHE,
     { status: 400 }
   );
 }

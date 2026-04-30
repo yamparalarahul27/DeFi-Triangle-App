@@ -1,5 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { enforceRateLimit } from "@/lib/rateLimit";
+import { CACHE, cachedJson, type CachePolicy } from "@/lib/cacheControl";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -35,8 +36,9 @@ function birdeyeHeaders(): HeadersInit {
 function errorResponse(context: string, err: unknown, status = 500) {
   const message = err instanceof Error ? err.message : String(err);
   console.error(`[birdeye/${context}] ${message}`);
-  return NextResponse.json(
+  return cachedJson(
     { success: false, error: "upstream error" },
+    CACHE.NO_CACHE,
     { status }
   );
 }
@@ -313,7 +315,49 @@ function mapBirdeyeTokenToPair(token: JsonRecord) {
     dexId: token?.source ?? "birdeye",
     trendingRank: Number.isFinite(token?.rank) ? Number(token.rank) : null,
     holder: num(token?.holder),
+    numberMarkets: num(token?.numberMarkets),
+    windows: extractBirdeyeWindows(token),
   };
+}
+
+const BIRDEYE_WINDOW_SUFFIXES = [
+  "1m",
+  "5m",
+  "30m",
+  "1h",
+  "2h",
+  "4h",
+  "8h",
+  "24h",
+] as const;
+
+function extractBirdeyeWindows(token: JsonRecord) {
+  const out: Record<string, JsonRecord> = {};
+  for (const k of BIRDEYE_WINDOW_SUFFIXES) {
+    const window: Record<string, number> = {};
+    const vUsd = num(token?.[`v${k}USD`]);
+    if (vUsd > 0) window.volumeUsd = vUsd;
+    const vBuyUsd = num(token?.[`vBuy${k}USD`]);
+    if (vBuyUsd > 0) window.buyVolumeUsd = vBuyUsd;
+    const vSellUsd = num(token?.[`vSell${k}USD`]);
+    if (vSellUsd > 0) window.sellVolumeUsd = vSellUsd;
+    const buys = num(token?.[`buy${k}`]);
+    if (buys > 0) window.buys = buys;
+    const sells = num(token?.[`sell${k}`]);
+    if (sells > 0) window.sells = sells;
+    const trades = num(token?.[`trade${k}`]);
+    if (trades > 0) window.trades = trades;
+    const unique = num(token?.[`uniqueWallet${k}`]);
+    if (unique > 0) window.uniqueWallets = unique;
+    const pcRaw = token?.[`priceChange${k}Percent`];
+    if (typeof pcRaw === "number" && Number.isFinite(pcRaw)) {
+      window.priceChangePct = pcRaw;
+    }
+    if (Object.keys(window).length > 0) {
+      out[k] = window;
+    }
+  }
+  return Object.keys(out).length > 0 ? out : undefined;
 }
 
 async function fetchBirdeye(path: string): Promise<Response> {
@@ -321,7 +365,7 @@ async function fetchBirdeye(path: string): Promise<Response> {
   return fetch(`${BIRDEYE_BASE}${path}`, { headers, cache: "no-store" });
 }
 
-async function handleTrending(limit: number) {
+async function handleTrending(limit: number, policy: CachePolicy) {
   try {
     const cappedLimit = Math.max(1, Math.min(20, limit));
     const upstream = await fetchBirdeye(`/defi/token_trending?limit=${cappedLimit}`);
@@ -334,20 +378,28 @@ async function handleTrending(limit: number) {
     const itemList = asArray<JsonRecord>(json?.data?.items);
     const tokens: JsonRecord[] = tokenList.length > 0 ? tokenList : itemList;
 
-    return NextResponse.json({
-      success: true,
-      data: tokens.map(mapBirdeyeTokenToPair),
-      paging: {
-        limit: cappedLimit,
-        count: tokens.length,
+    return cachedJson(
+      {
+        success: true,
+        data: tokens.map(mapBirdeyeTokenToPair),
+        paging: {
+          limit: cappedLimit,
+          count: tokens.length,
+        },
       },
-    });
+      policy
+    );
   } catch (err) {
     return errorResponse("trending-fetch", err);
   }
 }
 
-async function handleListV3(limit: number, offset: number, filters: ListFilters) {
+async function handleListV3(
+  limit: number,
+  offset: number,
+  filters: ListFilters,
+  policy: CachePolicy
+) {
   try {
     const cappedLimit = Math.max(1, Math.min(100, limit));
     const cappedOffset = Math.max(0, Math.min(9_900, offset));
@@ -368,27 +420,31 @@ async function handleListV3(limit: number, offset: number, filters: ListFilters)
     const mapped = items.map(mapBirdeyeTokenToPair);
     const filtered = mapped.filter((pair) => passesFilters(pair, filters));
 
-    return NextResponse.json({
-      success: true,
-      data: filtered,
-      paging: {
-        offset: cappedOffset,
-        limit: cappedLimit,
-        count: filtered.length,
-        sourceCount: items.length,
-        hasNext,
+    return cachedJson(
+      {
+        success: true,
+        data: filtered,
+        paging: {
+          offset: cappedOffset,
+          limit: cappedLimit,
+          count: filtered.length,
+          sourceCount: items.length,
+          hasNext,
+        },
+        filters,
       },
-      filters,
-    });
+      policy
+    );
   } catch (err) {
     return errorResponse("list-v3-fetch", err);
   }
 }
 
-async function handleSearch(q: string, limit: number) {
+async function handleSearch(q: string, limit: number, policy: CachePolicy) {
   if (!q) {
-    return NextResponse.json(
+    return cachedJson(
       { success: false, error: "q required" },
+      CACHE.NO_CACHE,
       { status: 400 }
     );
   }
@@ -412,19 +468,23 @@ async function handleSearch(q: string, limit: number) {
       (t) => String(t?.network ?? "").toLowerCase() === "solana"
     );
 
-    return NextResponse.json({
-      success: true,
-      data: solana.slice(0, cappedLimit).map(mapBirdeyeTokenToPair),
-    });
+    return cachedJson(
+      {
+        success: true,
+        data: solana.slice(0, cappedLimit).map(mapBirdeyeTokenToPair),
+      },
+      policy
+    );
   } catch (err) {
     return errorResponse("search-fetch", err);
   }
 }
 
-async function handleToken(address: string) {
+async function handleToken(address: string, policy: CachePolicy) {
   if (!address) {
-    return NextResponse.json(
+    return cachedJson(
       { success: false, error: "address required" },
+      CACHE.NO_CACHE,
       { status: 400 }
     );
   }
@@ -441,19 +501,59 @@ async function handleToken(address: string) {
     const json = await upstream.json();
     const token = (json?.data ?? null) as JsonRecord | null;
 
-    return NextResponse.json({
-      success: true,
-      data: token ? mapBirdeyeTokenToPair(token) : null,
-    });
+    return cachedJson(
+      {
+        success: true,
+        data: token ? mapBirdeyeTokenToPair(token) : null,
+      },
+      policy
+    );
   } catch (err) {
     return errorResponse("token-fetch", err);
   }
 }
 
-async function handleSecurity(address: string) {
+async function handleHolders(
+  address: string,
+  limit: number,
+  policy: CachePolicy
+) {
   if (!address) {
-    return NextResponse.json(
+    return cachedJson(
       { success: false, error: "address required" },
+      CACHE.NO_CACHE,
+      { status: 400 }
+    );
+  }
+  try {
+    const cappedLimit = Math.max(1, Math.min(100, limit));
+    const upstream = await fetchBirdeye(
+      `/defi/v3/token/holder?address=${encodeURIComponent(address)}&limit=${cappedLimit}`
+    );
+    const json = await upstream.json().catch(() => ({}));
+    if (!upstream.ok) {
+      return cachedJson(
+        {
+          success: false,
+          error: json?.message ?? json?.error ?? `upstream ${upstream.status}`,
+          status: upstream.status,
+        },
+        CACHE.NO_CACHE,
+        { status: 200 }
+      );
+    }
+    const items = asArray<JsonRecord>(json?.data?.items);
+    return cachedJson({ success: true, data: items }, policy);
+  } catch (err) {
+    return errorResponse("holders-fetch", err);
+  }
+}
+
+async function handleSecurity(address: string, policy: CachePolicy) {
+  if (!address) {
+    return cachedJson(
+      { success: false, error: "address required" },
+      CACHE.NO_CACHE,
       { status: 400 }
     );
   }
@@ -466,7 +566,7 @@ async function handleSecurity(address: string) {
     const json = await upstream.json().catch(() => ({}));
 
     if (!upstream.ok) {
-      return NextResponse.json(
+      return cachedJson(
         {
           success: false,
           error:
@@ -475,20 +575,45 @@ async function handleSecurity(address: string) {
             `upstream ${upstream.status}`,
           status: upstream.status,
         },
+        CACHE.NO_CACHE,
         { status: 200 }
       );
     }
 
-    return NextResponse.json({ success: true, data: json?.data ?? null });
+    return cachedJson({ success: true, data: json?.data ?? null }, policy);
   } catch (err) {
     return errorResponse("security-fetch", err);
   }
 }
 
-async function handleOhlcv(address: string) {
+const ALLOWED_OHLCV_INTERVALS = new Set([
+  "1m",
+  "5m",
+  "15m",
+  "30m",
+  "1H",
+  "2H",
+  "4H",
+  "6H",
+  "8H",
+  "12H",
+  "1D",
+  "3D",
+  "1W",
+  "1M",
+]);
+
+async function handleOhlcv(
+  address: string,
+  interval: string,
+  timeFrom: number,
+  timeTo: number,
+  policy: CachePolicy
+) {
   if (!address) {
-    return NextResponse.json(
+    return cachedJson(
       { success: false, error: "address required" },
+      CACHE.NO_CACHE,
       { status: 400 }
     );
   }
@@ -500,10 +625,9 @@ async function handleOhlcv(address: string) {
     return errorResponse("ohlcv-config", err);
   }
 
-  const nowSec = Math.floor(Date.now() / 1000);
   const url = `${BIRDEYE_BASE}/defi/ohlcv?address=${encodeURIComponent(
     address
-  )}&type=1H&time_from=${nowSec - 86400}&time_to=${nowSec}`;
+  )}&type=${interval}&time_from=${timeFrom}&time_to=${timeTo}`;
 
   try {
     const upstream = await fetch(url, { headers, cache: "no-store" });
@@ -523,7 +647,7 @@ async function handleOhlcv(address: string) {
         unixTime: Number(c?.unixTime ?? 0),
       };
     });
-    return NextResponse.json({ success: true, data: candles });
+    return cachedJson({ success: true, data: candles }, policy);
   } catch (err) {
     return errorResponse("ohlcv-fetch", err);
   }
@@ -537,21 +661,43 @@ export async function GET(req: NextRequest) {
   const type = searchParams.get("type") ?? "list_v3";
 
   if (type === "ohlcv") {
-    return handleOhlcv(searchParams.get("address") ?? "");
+    const nowSec = Math.floor(Date.now() / 1000);
+    const requestedInterval = searchParams.get("interval") ?? "1H";
+    const interval = ALLOWED_OHLCV_INTERVALS.has(requestedInterval)
+      ? requestedInterval
+      : "1H";
+    const timeFrom = Number(searchParams.get("time_from")) || nowSec - 86400;
+    const timeTo = Number(searchParams.get("time_to")) || nowSec;
+    return handleOhlcv(
+      searchParams.get("address") ?? "",
+      interval,
+      timeFrom,
+      timeTo,
+      CACHE.SEMI_STATIC
+    );
   }
 
   if (type === "search") {
     const q = searchParams.get("q")?.trim() ?? "";
     const limit = Number(searchParams.get("limit") ?? 10);
-    return handleSearch(q, Number.isFinite(limit) ? limit : 10);
+    return handleSearch(q, Number.isFinite(limit) ? limit : 10, CACHE.SEMI_STATIC);
   }
 
   if (type === "token") {
-    return handleToken(searchParams.get("address") ?? "");
+    return handleToken(searchParams.get("address") ?? "", CACHE.VOLATILE);
   }
 
   if (type === "security") {
-    return handleSecurity(searchParams.get("address") ?? "");
+    return handleSecurity(searchParams.get("address") ?? "", CACHE.STATIC_MED);
+  }
+
+  if (type === "holders") {
+    const limit = Number(searchParams.get("limit") ?? 10);
+    return handleHolders(
+      searchParams.get("address") ?? "",
+      Number.isFinite(limit) ? limit : 10,
+      CACHE.STATIC_MED
+    );
   }
 
   if (type === "list_v3") {
@@ -561,17 +707,19 @@ export async function GET(req: NextRequest) {
     return handleListV3(
       Number.isFinite(limit) ? limit : 100,
       Number.isFinite(offset) ? offset : 0,
-      filters
+      filters,
+      CACHE.VOLATILE
     );
   }
 
   if (type === "trending" || type === "") {
     const limit = Number(searchParams.get("limit") ?? 20);
-    return handleTrending(Number.isFinite(limit) ? limit : 20);
+    return handleTrending(Number.isFinite(limit) ? limit : 20, CACHE.VOLATILE);
   }
 
-  return NextResponse.json(
+  return cachedJson(
     { success: false, error: "invalid type" },
+    CACHE.NO_CACHE,
     { status: 400 }
   );
 }

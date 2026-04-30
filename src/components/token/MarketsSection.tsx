@@ -1,14 +1,31 @@
 "use client";
 
+import { useMemo } from "react";
 import { TokenIcon } from "@/components/ui/TokenIcon";
 import { fmtUsd } from "@/lib/format";
 import type { MarketVenue } from "@/lib/tokens-xyz-types";
 
 export function MarketsSection({ markets }: { markets: MarketVenue[] }) {
+  const sortedMarkets = useMemo(
+    () =>
+      [...markets].sort(
+        (a, b) =>
+          (Number.isFinite(b.liquidity) ? b.liquidity : 0) -
+          (Number.isFinite(a.liquidity) ? a.liquidity : 0)
+      ),
+    [markets]
+  );
+  const count = sortedMarkets.length;
+
   return (
     <section className="bg-white rounded-sm border border-[#cbd5e1] overflow-hidden">
-      <div className="px-4 sm:px-6 pt-4 text-[10px] uppercase tracking-wider text-[#6a7282]">
-        Top markets
+      <div className="px-4 sm:px-6 pt-4 flex flex-wrap items-baseline justify-between gap-2">
+        <div className="text-[10px] uppercase tracking-wider text-[#6a7282]">
+          All markets · Tokens.xyz
+        </div>
+        <div className="text-[10px] text-[#6a7282]">
+          {count} {count === 1 ? "pool" : "pools"} · sorted by liquidity
+        </div>
       </div>
       <div className="overflow-x-auto mt-3">
         <table className="w-full text-xs min-w-[720px]">
@@ -35,7 +52,7 @@ export function MarketsSection({ markets }: { markets: MarketVenue[] }) {
             </tr>
           </thead>
           <tbody className="divide-y divide-[#E5E7EB]">
-            {markets.map((m) => {
+            {sortedMarkets.map((m) => {
               const changePct = Number.isFinite(m.trade24hChangePercent)
                 ? m.trade24hChangePercent
                 : 0;
