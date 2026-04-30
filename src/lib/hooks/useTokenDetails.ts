@@ -20,6 +20,7 @@ import {
 } from "@/lib/token/slippage";
 import {
   CHART_RANGES,
+  buildAssetFromJupiter,
   buildAssetFromPair,
   extractAsset,
   flattenVariantsByKind,
@@ -82,6 +83,14 @@ export interface UseTokenDetailsResult {
   chartLoading: boolean;
   notIndexed: boolean;
   invalidAddress: boolean;
+  // Per-section loading flags (true while initial fetch is in flight)
+  statsLoading: boolean;
+  onChainLoading: boolean;
+  holdersLoading: boolean;
+  edgeScoreLoading: boolean;
+  tradingActivityLoading: boolean;
+  slippageLoading: boolean;
+  identityLoading: boolean;
 }
 
 export function useTokenDetails(address: string): UseTokenDetailsResult {
@@ -323,10 +332,26 @@ export function useTokenDetails(address: string): UseTokenDetailsResult {
     [pair, address]
   );
 
-  const asset = useMemo(
+  const realAsset = useMemo(
     () => mergeAssetWithFallback(response?.asset ?? null, fallbackAsset, address),
     [response?.asset, fallbackAsset, address]
   );
+
+  const jupiterDataForAddress =
+    jupiterInfo?.address === address ? jupiterInfo.data : null;
+
+  const earlyAsset = useMemo(
+    () => buildAssetFromJupiter(jupiterDataForAddress, address),
+    [jupiterDataForAddress, address]
+  );
+
+  const realData = useMemo(() => hasRealMarketData(realAsset), [realAsset]);
+  const asset = useMemo<AssetCore | null>(() => {
+    if (!addressValid) return null;
+    if (realData) return realAsset;
+    return earlyAsset;
+  }, [addressValid, realData, realAsset, earlyAsset]);
+  const renderableAsset = asset;
 
   const primary = useMemo(() => (asset ? primaryFromAsset(asset) : null), [asset]);
   const variantsByKind = useMemo(
@@ -334,24 +359,27 @@ export function useTokenDetails(address: string): UseTokenDetailsResult {
     [asset]
   );
 
-  const realData = useMemo(() => hasRealMarketData(asset), [asset]);
+  // notIndexed: confirmed not in any source (Jupiter lookup says no, no real
+  // Birdeye/Tokens.xyz data, no Jupiter tokenInfo identity either)
   const notIndexed =
-    addressValid && lookupComplete && !lookupFound && !realData;
+    addressValid &&
+    lookupComplete &&
+    !lookupFound &&
+    !realData &&
+    !earlyAsset;
   const onChainForAddress =
     addressValid && onChain?.address === address ? onChain.data : null;
-  const renderableAsset = addressValid && realData ? asset : null;
 
   const meta = useMemo<MetaStripData | null>(() => {
     if (!renderableAsset) return null;
-    const jupiter =
-      jupiterInfo?.address === address ? jupiterInfo.data : null;
+    const jupiter = jupiterDataForAddress;
     const numberMarkets =
       typeof pair?.numberMarkets === "number" && pair.numberMarkets > 0
         ? pair.numberMarkets
         : null;
     if (!jupiter && numberMarkets == null) return null;
     return { jupiter, numberMarkets };
-  }, [renderableAsset, jupiterInfo, address, pair?.numberMarkets]);
+  }, [renderableAsset, jupiterDataForAddress, pair?.numberMarkets]);
 
   const edgeScore = useMemo<EdgeScoreResult | null>(() => {
     if (!renderableAsset) return null;
@@ -396,13 +424,32 @@ export function useTokenDetails(address: string): UseTokenDetailsResult {
     return computeEdgeScore({ chainTruth, audit, riskInputs });
   }, [renderableAsset, onChainForAddress, meta, response]);
 
+  // Per-section loading flags — true while initial fetch is in flight (no data
+  // for the current address has arrived yet). These let cards distinguish
+  // "still loading, show skeleton" from "loaded but empty, hide".
+  const statsLoading = addressValid && loading && !realData;
+  const onChainLoading =
+    addressValid && (onChain == null || onChain.address !== address);
+  const holdersLoading =
+    addressValid && (holders == null || holders.address !== address);
+  const slippageLoading =
+    addressValid && (slippage == null || slippage.address !== address);
+  const identityLoading =
+    addressValid &&
+    (jupiterInfo == null || jupiterInfo.address !== address) &&
+    !realData;
+  const tradingActivityLoading = statsLoading;
+  // Edge score depends on multiple inputs; only "ready" when all have arrived.
+  const edgeScoreLoading =
+    addressValid && (statsLoading || onChainLoading || identityLoading);
+
   return {
-    asset: renderableAsset,
-    primary: renderableAsset ? primary : null,
-    variantsByKind: renderableAsset ? variantsByKind : {},
-    profile: renderableAsset ? response?.includes?.profile?.data : undefined,
-    risk: renderableAsset ? response?.includes?.risk?.data : undefined,
-    markets: renderableAsset ? response?.includes?.markets?.data?.markets ?? [] : [],
+    asset,
+    primary,
+    variantsByKind,
+    profile: response?.includes?.profile?.data,
+    risk: response?.includes?.risk?.data,
+    markets: response?.includes?.markets?.data?.markets ?? [],
     onChain: onChainForAddress,
     meta,
     edgeScore,
@@ -414,12 +461,10 @@ export function useTokenDetails(address: string): UseTokenDetailsResult {
           : null,
     topHolders:
       addressValid && holders?.address === address ? holders.rows : null,
-    tradingActivity: renderableAsset
+    tradingActivity: realData
       ? buildMultiWindowData(
           pair?.windows,
-          jupiterInfo?.address === address
-            ? jupiterInfo.data?.windows ?? null
-            : null
+          jupiterDataForAddress?.windows ?? null
         )
       : null,
     slippage:
@@ -431,6 +476,13 @@ export function useTokenDetails(address: string): UseTokenDetailsResult {
     chartLoading,
     notIndexed,
     invalidAddress: !addressValid,
+    statsLoading,
+    onChainLoading,
+    holdersLoading,
+    edgeScoreLoading,
+    tradingActivityLoading,
+    slippageLoading,
+    identityLoading,
   };
 }
 

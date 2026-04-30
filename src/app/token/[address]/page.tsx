@@ -18,6 +18,7 @@ import { SlippagePanel } from "@/components/token/SlippagePanel";
 import { TopHoldersPanel } from "@/components/token/TopHoldersPanel";
 import { TradingActivityPanel } from "@/components/token/TradingActivityPanel";
 import { VariantsSection } from "@/components/token/VariantsSection";
+import { SectionSkeleton } from "@/components/ui/Skeleton";
 
 export default function TokenDetailPage() {
   const params = useParams<{ address: string }>();
@@ -40,47 +41,27 @@ export default function TokenDetailPage() {
     chartCandles,
     chartRange,
     setChartRange,
-    loading,
     chartLoading,
     notIndexed,
     invalidAddress,
+    statsLoading,
+    onChainLoading,
+    holdersLoading,
+    edgeScoreLoading,
+    tradingActivityLoading,
+    slippageLoading,
+    identityLoading,
   } = useTokenDetails(address);
 
-  if (loading && !asset && !invalidAddress) {
+  if (invalidAddress) {
     return (
-      <>
-        <Header hasHero={false} />
-        <main className="flex-1 max-w-[1100px] w-full mx-auto px-4 py-8">
-          <div className="py-16 text-center text-sm text-[#6a7282]">
-            Loading token…
-          </div>
-        </main>
-        <Footer />
-      </>
+      <ErrorState message="Invalid mint address." />
     );
   }
 
-  if (!asset) {
-    const message = invalidAddress
-      ? "Invalid mint address."
-      : notIndexed
-        ? "Token not indexed yet — try a different address."
-        : "Unable to load token right now.";
-
+  if (notIndexed) {
     return (
-      <>
-        <Header hasHero={false} />
-        <main className="flex-1 max-w-[1100px] w-full mx-auto px-4 py-8 text-center">
-          <div className="py-16 text-sm text-[#6a7282] mb-3">{message}</div>
-          <Link
-            href="/"
-            className="text-xs text-[#19549b] hover:text-[#143f78]"
-          >
-            ← Back to dashboard
-          </Link>
-        </main>
-        <Footer />
-      </>
+      <ErrorState message="Token not indexed yet — try a different address." />
     );
   }
 
@@ -95,17 +76,25 @@ export default function TokenDetailPage() {
           ← Back
         </Link>
 
-        <IdentityStrip
-          address={address}
-          asset={asset}
-          primary={primary}
-          profile={profile}
-          risk={risk}
-          birdeyePrice={birdeyePrice}
-          dasPrice={onChain?.dasPrice ?? null}
-        />
+        {asset ? (
+          <IdentityStrip
+            address={address}
+            asset={asset}
+            primary={primary}
+            profile={profile}
+            risk={risk}
+            birdeyePrice={birdeyePrice}
+            dasPrice={onChain?.dasPrice ?? null}
+          />
+        ) : (
+          <SectionSkeleton height={96} label="Identity" />
+        )}
 
-        <MetaStrip data={meta} />
+        {meta ? (
+          <MetaStrip data={meta} />
+        ) : identityLoading ? (
+          <SectionSkeleton height={96} label="Token meta" />
+        ) : null}
 
         <PriceChartSection
           rangeLabel={chartRange}
@@ -114,31 +103,55 @@ export default function TokenDetailPage() {
           loading={chartLoading}
         />
 
-        <StatsGrid
-          asset={asset}
-          primary={primary}
-          profile={profile}
-          risk={risk}
-        />
+        {asset && !statsLoading ? (
+          <StatsGrid
+            asset={asset}
+            primary={primary}
+            profile={profile}
+            risk={risk}
+          />
+        ) : (
+          <SectionSkeleton height={210} label="Stats" />
+        )}
 
-        <OnChainPanel data={onChain} />
+        {onChain ? (
+          <OnChainPanel data={onChain} />
+        ) : onChainLoading ? (
+          <SectionSkeleton height={180} label="On-chain truth" />
+        ) : null}
 
-        <EdgeScorePanel result={edgeScore} />
+        {edgeScore ? (
+          <EdgeScorePanel result={edgeScore} />
+        ) : edgeScoreLoading ? (
+          <SectionSkeleton height={220} label="Edge Score" />
+        ) : null}
 
-        <TopHoldersPanel
-          holders={topHolders}
-          circulatingSupply={
-            typeof profile?.circulatingSupply === "number" &&
-            profile.circulatingSupply > 0
-              ? profile.circulatingSupply
-              : null
-          }
-          symbol={asset.symbol ?? null}
-        />
+        {topHolders ? (
+          <TopHoldersPanel
+            holders={topHolders}
+            circulatingSupply={
+              typeof profile?.circulatingSupply === "number" &&
+              profile.circulatingSupply > 0
+                ? profile.circulatingSupply
+                : null
+            }
+            symbol={asset?.symbol ?? null}
+          />
+        ) : holdersLoading ? (
+          <SectionSkeleton height={420} label="Top holders" />
+        ) : null}
 
-        <TradingActivityPanel data={tradingActivity} />
+        {tradingActivity ? (
+          <TradingActivityPanel data={tradingActivity} />
+        ) : tradingActivityLoading ? (
+          <SectionSkeleton height={260} label="Trading activity" />
+        ) : null}
 
-        <SlippagePanel data={slippage} symbol={asset.symbol ?? null} />
+        {slippage ? (
+          <SlippagePanel data={slippage} symbol={asset?.symbol ?? null} />
+        ) : slippageLoading ? (
+          <SectionSkeleton height={180} label="Slippage at size" />
+        ) : null}
 
         {profile && <AboutSection profile={profile} />}
 
@@ -147,6 +160,24 @@ export default function TokenDetailPage() {
         {markets.length > 0 && <MarketsSection markets={markets} />}
 
         <TokenLinksSection address={address} />
+      </main>
+      <Footer />
+    </>
+  );
+}
+
+function ErrorState({ message }: { message: string }) {
+  return (
+    <>
+      <Header hasHero={false} />
+      <main className="flex-1 max-w-[1100px] w-full mx-auto px-4 py-8 text-center">
+        <div className="py-16 text-sm text-[#6a7282] mb-3">{message}</div>
+        <Link
+          href="/"
+          className="text-xs text-[#19549b] hover:text-[#143f78]"
+        >
+          ← Back to dashboard
+        </Link>
       </main>
       <Footer />
     </>

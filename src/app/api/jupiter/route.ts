@@ -1,9 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { buildHomePayload, buildSearchPayload } from "@/lib/jupiter/builders";
 import { fetchJupiterSearch } from "@/lib/jupiter/upstream";
 import { arr, clamp, num, str } from "@/lib/jupiter/utils";
 import type { JsonRecord } from "@/lib/jupiter/types";
 import { enforceRateLimit } from "@/lib/rateLimit";
+import { CACHE, cachedJson } from "@/lib/cacheControl";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -56,6 +57,9 @@ function extractTokenInfo(row: JsonRecord) {
   }
   return {
     address: str(row.id),
+    name: str(row.name) || null,
+    symbol: str(row.symbol) || null,
+    icon: str(row.icon) || null,
     decimals: typeof row.decimals === "number" ? row.decimals : null,
     tokenProgram: str(row.tokenProgram) || null,
     organicScore: typeof row.organicScore === "number" ? row.organicScore : null,
@@ -96,8 +100,9 @@ export async function GET(req: NextRequest) {
     type !== "tokenInfo" &&
     type !== "quote"
   ) {
-    return NextResponse.json(
+    return cachedJson(
       { success: false, error: "invalid type" },
+      CACHE.NO_CACHE,
       { status: 400 }
     );
   }
@@ -106,17 +111,18 @@ export async function GET(req: NextRequest) {
     if (type === "tokenInfo") {
       const address = str(sp.get("address"));
       if (!address) {
-        return NextResponse.json(
+        return cachedJson(
           { success: false, error: "address required" },
+          CACHE.NO_CACHE,
           { status: 400 }
         );
       }
       const rows = await fetchJupiterSearch(address, 5);
       const match = rows.find((r) => str(r.id) === address);
-      return NextResponse.json({
-        success: true,
-        data: match ? extractTokenInfo(match) : null,
-      });
+      return cachedJson(
+        { success: true, data: match ? extractTokenInfo(match) : null },
+        CACHE.STATIC_MED
+      );
     }
 
     if (type === "quote") {
@@ -124,16 +130,18 @@ export async function GET(req: NextRequest) {
       const outputMint = str(sp.get("outputMint"));
       const amountRaw = str(sp.get("amount"));
       if (!inputMint || !outputMint || !amountRaw) {
-        return NextResponse.json(
+        return cachedJson(
           { success: false, error: "inputMint, outputMint, amount required" },
+          CACHE.NO_CACHE,
           { status: 400 }
         );
       }
       // amount is in base units (raw, no decimals applied). Validate it's a
       // positive integer-ish string to keep the upstream URL clean.
       if (!/^[0-9]+$/.test(amountRaw)) {
-        return NextResponse.json(
+        return cachedJson(
           { success: false, error: "amount must be a positive integer string" },
+          CACHE.NO_CACHE,
           { status: 400 }
         );
       }
@@ -146,8 +154,9 @@ export async function GET(req: NextRequest) {
         `&swapMode=ExactIn`;
       const upstream = await fetch(url, { cache: "no-store" });
       if (!upstream.ok) {
-        return NextResponse.json(
+        return cachedJson(
           { success: false, error: `upstream ${upstream.status}` },
+          CACHE.NO_CACHE,
           { status: 200 }
         );
       }
@@ -159,42 +168,53 @@ export async function GET(req: NextRequest) {
           : typeof json.priceImpactPct === "string"
             ? Number(json.priceImpactPct)
             : null;
-      return NextResponse.json({
-        success: true,
-        data: {
-          inputMint,
-          outputMint,
-          inAmount: amountRaw,
-          outAmount: outAmount || null,
-          priceImpactPct: Number.isFinite(priceImpactPct ?? NaN)
-            ? priceImpactPct
-            : null,
-          slippageBps,
+      return cachedJson(
+        {
+          success: true,
+          data: {
+            inputMint,
+            outputMint,
+            inAmount: amountRaw,
+            outAmount: outAmount || null,
+            priceImpactPct: Number.isFinite(priceImpactPct ?? NaN)
+              ? priceImpactPct
+              : null,
+            slippageBps,
+          },
         },
-      });
+        CACHE.NO_CACHE
+      );
     }
 
     if (type === "search") {
       const q = str(sp.get("q"));
       if (!q) {
-        return NextResponse.json(
+        return cachedJson(
           { success: false, error: "q required" },
+          CACHE.NO_CACHE,
           { status: 400 }
         );
       }
       const limit = clamp(num(sp.get("limit"), 10), 1, 50);
       const payload = await buildSearchPayload(q, limit);
-      return NextResponse.json({ success: true, ...payload });
+      return cachedJson(
+        { success: true, ...payload },
+        CACHE.SEMI_STATIC
+      );
     }
 
     const limit = clamp(num(sp.get("limit"), 120), 30, 200);
     const payload = await buildHomePayload(limit);
-    return NextResponse.json({ success: true, ...payload });
+    return cachedJson(
+      { success: true, ...payload },
+      CACHE.VOLATILE
+    );
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     console.error(`[jupiter/home] ${message}`);
-    return NextResponse.json(
+    return cachedJson(
       { success: false, error: "upstream error" },
+      CACHE.NO_CACHE,
       { status: 500 }
     );
   }

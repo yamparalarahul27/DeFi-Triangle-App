@@ -24,6 +24,9 @@ export type JupiterWindowsByKey = Partial<
 
 export interface JupiterTokenInfo {
   address: string;
+  name: string | null;
+  symbol: string | null;
+  icon: string | null;
   decimals: number | null;
   tokenProgram: string | null;
   organicScore: number | null;
