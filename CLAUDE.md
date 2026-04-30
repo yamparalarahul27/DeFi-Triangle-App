@@ -11,6 +11,39 @@ Rules for Claude Code when working in this repo. Read on every session.
 - Give 2–3 options with a recommendation — not a single pre-decided path.
 - When in doubt, ask.
 
+## Explaining changes with ASCII
+
+The user reads on mobile Safari. Walls of bullet points get skimmed; diagrams get read. **When proposing or recapping any technical, UI, or UX change, include a small ASCII diagram alongside the prose** showing the relevant structure.
+
+**When to draw**:
+- New UI surfaces (rails, modals, page layouts) → wireframe of the layout
+- Data flow / API changes → request → server → upstream → response chain
+- File-structure changes → tree of new vs. modified vs. unchanged files
+- Branching / conditional rendering → state-machine or if/else tree
+- Promotion / merge flow → branch graph
+
+**When NOT to draw**: copy-only tweaks, single-line config flips, trivial fixes.
+
+**Style**:
+- Box-drawing characters (`┌ ─ ┐ │ └ ┘ ├ ┤ ▲ ▼ ◀ ▶`) where they add clarity; plain `+ - |` otherwise.
+- Annotate inline (`← like this`) — don't just draw; explain.
+- Keep diagrams ≤ ~40 chars wide so they don't wrap on mobile.
+- One diagram per concept. Don't stack five — pick the most-load-bearing one.
+
+**Example** (rail wireframe):
+
+```
+┌─ Park Your Money ──────────── < > ┐
+│ Stablecoins on Solana — peg, depth │
+├────────────────────────────────────┤
+│ [PUSD]  [USDC]  [USDT]  [PYUSD] →  │  ← horizontal scroller
+│  Soon   On peg  On peg  On peg     │
+│   —     $1.0001 $0.9997 $0.9999    │
+└────────────────────────────────────┘
+```
+
+The diagram is the contract. If your prose disagrees with the diagram, the diagram is what the user remembers.
+
 ## Session start protocol
 
 **Ask the user which environment they're on at the start of every new session**, after their first non-trivial request.
