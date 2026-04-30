@@ -1,6 +1,8 @@
 "use client";
 
+import NumberFlow from "@number-flow/react";
 import { useState } from "react";
+import { SCORE } from "@/lib/numberFormats";
 import type { BreakdownEntry, EdgeScoreResult } from "@/lib/token/edgeScore";
 
 const TOOLTIP_NOTE =
@@ -38,8 +40,8 @@ export function EdgeScorePanel({ result }: { result: EdgeScoreResult | null }) {
             >
               Grade {result.grade}
             </span>
-            <span className="font-mono text-[#11274d] text-base">
-              {result.score} / 100
+            <span className="font-mono text-[#11274d] text-base tabular-nums">
+              <NumberFlow value={result.score} format={SCORE} /> / 100
             </span>
             <span className="text-[#6a7282]">{result.label}</span>
           </div>
@@ -122,7 +124,8 @@ function BreakdownRow({ entry }: { entry: BreakdownEntry }) {
           />
         </div>
         <span className="font-mono text-[10px] text-[#6a7282] text-right tabular-nums shrink-0 w-[60px]">
-          +{entry.contribution.toFixed(0)} / {entry.weight}
+          +<NumberFlow value={entry.contribution} format={SCORE} /> /{" "}
+          {entry.weight}
         </span>
       </div>
     </div>

@@ -97,6 +97,7 @@ export function PriceChartSection({
             domain: ["auto", "auto"],
             tickFormatter: (value) => fmtUsd(Number(value)),
           }}
+          tooltipFormatter={(value) => fmtUsd(Number(value))}
           className="h-full w-full"
         />
       </div>

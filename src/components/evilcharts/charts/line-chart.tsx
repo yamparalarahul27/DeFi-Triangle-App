@@ -80,6 +80,7 @@ type EvilLineChartProps<
   tooltipRoundness?: TooltipRoundness;
   tooltipVariant?: TooltipVariant;
   tooltipDefaultIndex?: number;
+  tooltipFormatter?: ComponentProps<typeof ChartTooltipContent>["formatter"];
   // Interactive Stuffs
   isLoading?: boolean;
   loadingPoints?: number;
@@ -138,6 +139,7 @@ export function EvilLineChart<
   tooltipRoundness,
   tooltipVariant,
   tooltipDefaultIndex,
+  tooltipFormatter,
   isClickable = false,
   isLoading = false,
   loadingPoints,
@@ -264,6 +266,7 @@ export function EvilLineChart<
                 selected={selectedDataKey}
                 roundness={tooltipRoundness}
                 variant={tooltipVariant}
+                formatter={tooltipFormatter}
               />
             }
           />
