@@ -48,10 +48,10 @@ export function TokenModalChart({
         chartConfig={CHART_CONFIG}
         curveType="monotone"
         strokeVariant="solid"
+        activeDotVariant="default"
+        glowingLines={["price"]}
         hideLegend
         hideCartesianGrid
-        hideCursorLine
-        hideTooltip
         xAxisProps={{ hide: true }}
         yAxisProps={{ hide: true, domain: ["auto", "auto"] }}
         className="h-full w-full"

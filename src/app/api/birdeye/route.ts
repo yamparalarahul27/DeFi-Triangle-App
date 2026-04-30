@@ -1,5 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { enforceRateLimit } from "@/lib/rateLimit";
+import { CACHE, cachedJson, type CachePolicy } from "@/lib/cacheControl";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -35,8 +36,9 @@ function birdeyeHeaders(): HeadersInit {
 function errorResponse(context: string, err: unknown, status = 500) {
   const message = err instanceof Error ? err.message : String(err);
   console.error(`[birdeye/${context}] ${message}`);
-  return NextResponse.json(
+  return cachedJson(
     { success: false, error: "upstream error" },
+    CACHE.NO_CACHE,
     { status }
   );
 }
@@ -363,7 +365,7 @@ async function fetchBirdeye(path: string): Promise<Response> {
   return fetch(`${BIRDEYE_BASE}${path}`, { headers, cache: "no-store" });
 }
 
-async function handleTrending(limit: number) {
+async function handleTrending(limit: number, policy: CachePolicy) {
   try {
     const cappedLimit = Math.max(1, Math.min(20, limit));
     const upstream = await fetchBirdeye(`/defi/token_trending?limit=${cappedLimit}`);
@@ -376,20 +378,28 @@ async function handleTrending(limit: number) {
     const itemList = asArray<JsonRecord>(json?.data?.items);
     const tokens: JsonRecord[] = tokenList.length > 0 ? tokenList : itemList;
 
-    return NextResponse.json({
-      success: true,
-      data: tokens.map(mapBirdeyeTokenToPair),
-      paging: {
-        limit: cappedLimit,
-        count: tokens.length,
+    return cachedJson(
+      {
+        success: true,
+        data: tokens.map(mapBirdeyeTokenToPair),
+        paging: {
+          limit: cappedLimit,
+          count: tokens.length,
+        },
       },
-    });
+      policy
+    );
   } catch (err) {
     return errorResponse("trending-fetch", err);
   }
 }
 
-async function handleListV3(limit: number, offset: number, filters: ListFilters) {
+async function handleListV3(
+  limit: number,
+  offset: number,
+  filters: ListFilters,
+  policy: CachePolicy
+) {
   try {
     const cappedLimit = Math.max(1, Math.min(100, limit));
     const cappedOffset = Math.max(0, Math.min(9_900, offset));
@@ -410,27 +420,31 @@ async function handleListV3(limit: number, offset: number, filters: ListFilters)
     const mapped = items.map(mapBirdeyeTokenToPair);
     const filtered = mapped.filter((pair) => passesFilters(pair, filters));
 
-    return NextResponse.json({
-      success: true,
-      data: filtered,
-      paging: {
-        offset: cappedOffset,
-        limit: cappedLimit,
-        count: filtered.length,
-        sourceCount: items.length,
-        hasNext,
+    return cachedJson(
+      {
+        success: true,
+        data: filtered,
+        paging: {
+          offset: cappedOffset,
+          limit: cappedLimit,
+          count: filtered.length,
+          sourceCount: items.length,
+          hasNext,
+        },
+        filters,
       },
-      filters,
-    });
+      policy
+    );
   } catch (err) {
     return errorResponse("list-v3-fetch", err);
   }
 }
 
-async function handleSearch(q: string, limit: number) {
+async function handleSearch(q: string, limit: number, policy: CachePolicy) {
   if (!q) {
-    return NextResponse.json(
+    return cachedJson(
       { success: false, error: "q required" },
+      CACHE.NO_CACHE,
       { status: 400 }
     );
   }
@@ -454,19 +468,23 @@ async function handleSearch(q: string, limit: number) {
       (t) => String(t?.network ?? "").toLowerCase() === "solana"
     );
 
-    return NextResponse.json({
-      success: true,
-      data: solana.slice(0, cappedLimit).map(mapBirdeyeTokenToPair),
-    });
+    return cachedJson(
+      {
+        success: true,
+        data: solana.slice(0, cappedLimit).map(mapBirdeyeTokenToPair),
+      },
+      policy
+    );
   } catch (err) {
     return errorResponse("search-fetch", err);
   }
 }
 
-async function handleToken(address: string) {
+async function handleToken(address: string, policy: CachePolicy) {
   if (!address) {
-    return NextResponse.json(
+    return cachedJson(
       { success: false, error: "address required" },
+      CACHE.NO_CACHE,
       { status: 400 }
     );
   }
@@ -483,19 +501,27 @@ async function handleToken(address: string) {
     const json = await upstream.json();
     const token = (json?.data ?? null) as JsonRecord | null;
 
-    return NextResponse.json({
-      success: true,
-      data: token ? mapBirdeyeTokenToPair(token) : null,
-    });
+    return cachedJson(
+      {
+        success: true,
+        data: token ? mapBirdeyeTokenToPair(token) : null,
+      },
+      policy
+    );
   } catch (err) {
     return errorResponse("token-fetch", err);
   }
 }
 
-async function handleHolders(address: string, limit: number) {
+async function handleHolders(
+  address: string,
+  limit: number,
+  policy: CachePolicy
+) {
   if (!address) {
-    return NextResponse.json(
+    return cachedJson(
       { success: false, error: "address required" },
+      CACHE.NO_CACHE,
       { status: 400 }
     );
   }
@@ -506,26 +532,28 @@ async function handleHolders(address: string, limit: number) {
     );
     const json = await upstream.json().catch(() => ({}));
     if (!upstream.ok) {
-      return NextResponse.json(
+      return cachedJson(
         {
           success: false,
           error: json?.message ?? json?.error ?? `upstream ${upstream.status}`,
           status: upstream.status,
         },
+        CACHE.NO_CACHE,
         { status: 200 }
       );
     }
     const items = asArray<JsonRecord>(json?.data?.items);
-    return NextResponse.json({ success: true, data: items });
+    return cachedJson({ success: true, data: items }, policy);
   } catch (err) {
     return errorResponse("holders-fetch", err);
   }
 }
 
-async function handleSecurity(address: string) {
+async function handleSecurity(address: string, policy: CachePolicy) {
   if (!address) {
-    return NextResponse.json(
+    return cachedJson(
       { success: false, error: "address required" },
+      CACHE.NO_CACHE,
       { status: 400 }
     );
   }
@@ -538,7 +566,7 @@ async function handleSecurity(address: string) {
     const json = await upstream.json().catch(() => ({}));
 
     if (!upstream.ok) {
-      return NextResponse.json(
+      return cachedJson(
         {
           success: false,
           error:
@@ -547,11 +575,12 @@ async function handleSecurity(address: string) {
             `upstream ${upstream.status}`,
           status: upstream.status,
         },
+        CACHE.NO_CACHE,
         { status: 200 }
       );
     }
 
-    return NextResponse.json({ success: true, data: json?.data ?? null });
+    return cachedJson({ success: true, data: json?.data ?? null }, policy);
   } catch (err) {
     return errorResponse("security-fetch", err);
   }
@@ -578,11 +607,13 @@ async function handleOhlcv(
   address: string,
   interval: string,
   timeFrom: number,
-  timeTo: number
+  timeTo: number,
+  policy: CachePolicy
 ) {
   if (!address) {
-    return NextResponse.json(
+    return cachedJson(
       { success: false, error: "address required" },
+      CACHE.NO_CACHE,
       { status: 400 }
     );
   }
@@ -616,7 +647,7 @@ async function handleOhlcv(
         unixTime: Number(c?.unixTime ?? 0),
       };
     });
-    return NextResponse.json({ success: true, data: candles });
+    return cachedJson({ success: true, data: candles }, policy);
   } catch (err) {
     return errorResponse("ohlcv-fetch", err);
   }
@@ -641,29 +672,31 @@ export async function GET(req: NextRequest) {
       searchParams.get("address") ?? "",
       interval,
       timeFrom,
-      timeTo
+      timeTo,
+      CACHE.SEMI_STATIC
     );
   }
 
   if (type === "search") {
     const q = searchParams.get("q")?.trim() ?? "";
     const limit = Number(searchParams.get("limit") ?? 10);
-    return handleSearch(q, Number.isFinite(limit) ? limit : 10);
+    return handleSearch(q, Number.isFinite(limit) ? limit : 10, CACHE.SEMI_STATIC);
   }
 
   if (type === "token") {
-    return handleToken(searchParams.get("address") ?? "");
+    return handleToken(searchParams.get("address") ?? "", CACHE.VOLATILE);
   }
 
   if (type === "security") {
-    return handleSecurity(searchParams.get("address") ?? "");
+    return handleSecurity(searchParams.get("address") ?? "", CACHE.STATIC_MED);
   }
 
   if (type === "holders") {
     const limit = Number(searchParams.get("limit") ?? 10);
     return handleHolders(
       searchParams.get("address") ?? "",
-      Number.isFinite(limit) ? limit : 10
+      Number.isFinite(limit) ? limit : 10,
+      CACHE.STATIC_MED
     );
   }
 
@@ -674,17 +707,19 @@ export async function GET(req: NextRequest) {
     return handleListV3(
       Number.isFinite(limit) ? limit : 100,
       Number.isFinite(offset) ? offset : 0,
-      filters
+      filters,
+      CACHE.VOLATILE
     );
   }
 
   if (type === "trending" || type === "") {
     const limit = Number(searchParams.get("limit") ?? 20);
-    return handleTrending(Number.isFinite(limit) ? limit : 20);
+    return handleTrending(Number.isFinite(limit) ? limit : 20, CACHE.VOLATILE);
   }
 
-  return NextResponse.json(
+  return cachedJson(
     { success: false, error: "invalid type" },
+    CACHE.NO_CACHE,
     { status: 400 }
   );
 }

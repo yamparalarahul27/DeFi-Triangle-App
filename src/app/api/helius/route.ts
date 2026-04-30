@@ -1,6 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { PublicKey } from "@solana/web3.js";
 import { enforceRateLimit } from "@/lib/rateLimit";
+import { CACHE, cachedJson, type CachePolicy } from "@/lib/cacheControl";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -18,8 +19,9 @@ function heliusUrl(): string {
 function errorResponse(context: string, err: unknown, status = 500) {
   const message = err instanceof Error ? err.message : String(err);
   console.error(`[helius/${context}] ${message}`);
-  return NextResponse.json(
+  return cachedJson(
     { success: false, error: "upstream error" },
+    CACHE.NO_CACHE,
     { status }
   );
 }
@@ -34,7 +36,7 @@ function isValidAddress(addr: string): boolean {
 }
 
 function badRequest(error: string) {
-  return NextResponse.json({ success: false, error }, { status: 400 });
+  return cachedJson({ success: false, error }, CACHE.NO_CACHE, { status: 400 });
 }
 
 async function callHeliusRpc(method: string, params: JsonRpcParams) {
@@ -58,7 +60,8 @@ async function callHeliusRpc(method: string, params: JsonRpcParams) {
 async function handleRpc(
   context: string,
   method: string,
-  params: JsonRpcParams
+  params: JsonRpcParams,
+  policy: CachePolicy
 ) {
   try {
     const upstream = await callHeliusRpc(method, params);
@@ -69,7 +72,7 @@ async function handleRpc(
     if (json?.error) {
       return errorResponse(context, `rpc error code ${json.error.code ?? "?"}`);
     }
-    return NextResponse.json({ success: true, data: json?.result ?? null });
+    return cachedJson({ success: true, data: json?.result ?? null }, policy);
   } catch (err) {
     return errorResponse(context, err);
   }
@@ -78,35 +81,46 @@ async function handleRpc(
 async function handleGetAsset(address: string) {
   if (!address) return badRequest("address required");
   if (!isValidAddress(address)) return badRequest("invalid address");
-  return handleRpc("getAsset", "getAsset", {
-    id: address,
-    options: { showFungible: true },
-  });
+  return handleRpc(
+    "getAsset",
+    "getAsset",
+    { id: address, options: { showFungible: true } },
+    CACHE.STATIC_LONG
+  );
 }
 
 async function handleGetAccountInfo(address: string) {
   if (!address) return badRequest("address required");
   if (!isValidAddress(address)) return badRequest("invalid address");
-  return handleRpc("getAccountInfo", "getAccountInfo", [
-    address,
-    { encoding: "jsonParsed" },
-  ]);
+  return handleRpc(
+    "getAccountInfo",
+    "getAccountInfo",
+    [address, { encoding: "jsonParsed" }],
+    CACHE.STATIC_MED
+  );
 }
 
 async function handleGetTokenSupply(address: string) {
   if (!address) return badRequest("address required");
   if (!isValidAddress(address)) return badRequest("invalid address");
-  return handleRpc("getTokenSupply", "getTokenSupply", [address]);
+  return handleRpc(
+    "getTokenSupply",
+    "getTokenSupply",
+    [address],
+    CACHE.SEMI_STATIC
+  );
 }
 
 async function handleGetSignaturesForAddress(address: string, limit: number) {
   if (!address) return badRequest("address required");
   if (!isValidAddress(address)) return badRequest("invalid address");
   const cappedLimit = Math.max(1, Math.min(1000, limit));
-  return handleRpc("getSignaturesForAddress", "getSignaturesForAddress", [
-    address,
-    { limit: cappedLimit },
-  ]);
+  return handleRpc(
+    "getSignaturesForAddress",
+    "getSignaturesForAddress",
+    [address, { limit: cappedLimit }],
+    CACHE.STATIC_LONG
+  );
 }
 
 export async function GET(req: NextRequest) {
@@ -137,8 +151,9 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  return NextResponse.json(
+  return cachedJson(
     { success: false, error: "invalid type" },
+    CACHE.NO_CACHE,
     { status: 400 }
   );
 }

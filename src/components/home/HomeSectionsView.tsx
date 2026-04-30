@@ -3,11 +3,30 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DexCard } from "@/components/ui/DexCard";
-import { SpiralLoader } from "@/components/agent-elements/spiral-loader";
+import { Skeleton } from "@/components/ui/Skeleton";
 import { TabEmpty } from "@/components/tabs/TabShell";
 import { useHomeJupiterPairs } from "@/lib/hooks/useHomeJupiterPairs";
 import { buildHomeSections } from "@/lib/home/sections";
 import type { TokenPair } from "@/lib/home/types";
+
+const RAIL_DEFINITIONS: { title: string; subtitle: string }[] = [
+  {
+    title: "Tokens Gaining Attraction",
+    subtitle:
+      "Strong momentum with minimum liquidity and activity checks",
+  },
+  {
+    title: "Tokens for Long-Term Wealth",
+    subtitle: "Higher depth, holder base, and older market footprint",
+  },
+  {
+    title: "High Risk, High Reward",
+    subtitle:
+      "Higher upside setups with more volatility and lower maturity",
+  },
+];
+
+const SKELETON_CARDS_PER_RAIL = 6;
 
 export function HomeSectionsView({
   paused,
@@ -42,12 +61,7 @@ export function HomeSectionsView({
     sections.attraction.length + sections.longTerm.length + sections.highRisk.length;
 
   if (loading && universe.length === 0) {
-    return (
-      <div className="py-16 flex items-center justify-center gap-2 text-sm text-[#6a7282]">
-        <SpiralLoader size={18} />
-        <span>Loading token rails…</span>
-      </div>
-    );
+    return <RailsSkeleton />;
   }
 
   if (totalVisible === 0) {
@@ -82,6 +96,62 @@ export function HomeSectionsView({
         starredSet={starredSet}
         onStarToggle={onStarToggle}
       />
+    </div>
+  );
+}
+
+function RailsSkeleton() {
+  return (
+    <div className="space-y-5" aria-busy="true" aria-label="Loading token rails">
+      {RAIL_DEFINITIONS.map((rail) => (
+        <section key={rail.title} className="space-y-2">
+          <div className="flex items-end justify-between gap-2">
+            <div>
+              <h2 className="text-sm sm:text-base font-semibold text-[#11274d]">
+                {rail.title}
+              </h2>
+              <p className="text-xs text-[#6a7282] mt-0.5">{rail.subtitle}</p>
+            </div>
+          </div>
+          <div className="overflow-x-auto scrollbar-hide">
+            <div className="flex gap-3 pb-1 px-[6px]">
+              {Array.from({ length: SKELETON_CARDS_PER_RAIL }).map((_, i) => (
+                <DexCardSkeleton key={i} />
+              ))}
+            </div>
+          </div>
+        </section>
+      ))}
+    </div>
+  );
+}
+
+function DexCardSkeleton() {
+  return (
+    <div className="w-[300px] shrink-0 bg-white rounded-[10px] border border-[#11274d]/10 p-4 space-y-3">
+      <div className="flex items-center gap-2">
+        <Skeleton className="h-8 w-8 rounded-full" />
+        <div className="flex-1 space-y-1">
+          <Skeleton className="h-3 w-20" />
+          <Skeleton className="h-2.5 w-28" />
+        </div>
+      </div>
+      <div className="flex items-baseline justify-between">
+        <Skeleton className="h-4 w-20" />
+        <Skeleton className="h-3 w-12" />
+      </div>
+      <div className="grid grid-cols-3 gap-2">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div key={i} className="space-y-1">
+            <Skeleton className="h-2 w-12" />
+            <Skeleton className="h-3 w-14" />
+          </div>
+        ))}
+      </div>
+      <div>
+        <Skeleton className="h-2 w-full mb-1" />
+        <Skeleton className="h-1.5 w-full rounded-full" />
+      </div>
     </div>
   );
 }

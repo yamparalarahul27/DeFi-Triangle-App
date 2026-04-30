@@ -1,4 +1,5 @@
 import type { Candle } from "@/components/ui/PriceChart";
+import type { JupiterTokenInfo } from "@/components/token/MetaStrip";
 import type {
   AssetCore,
   AssetResponse,
@@ -179,6 +180,31 @@ export function normalizeChartCandles(raw: unknown): Candle[] {
   }
 
   return candles;
+}
+
+export function buildAssetFromJupiter(
+  jupiter: JupiterTokenInfo | null,
+  address: string
+): AssetCore | null {
+  if (!jupiter || (!jupiter.name && !jupiter.symbol)) return null;
+  const symbol = jupiter.symbol || shortAddress(address);
+  const name = jupiter.name || symbol;
+  return {
+    assetId: address ? `solana-${address}` : `solana-${symbol.toLowerCase()}`,
+    name,
+    symbol,
+    imageUrl: jupiter.icon ?? undefined,
+    stats: {
+      price: 0,
+      liquidity: 0,
+      volume24hUSD: 0,
+      marketCap: 0,
+      priceChange24hPercent: 0,
+      priceChange1hPercent: 0,
+    },
+    canonicalMarket: undefined,
+    variantGroups: {},
+  };
 }
 
 export function buildAssetFromPair(
