@@ -2,6 +2,7 @@
 
 import { EvilLineChart } from "@/components/evilcharts/charts/line-chart";
 import { type ChartConfig } from "@/components/evilcharts/ui/chart";
+import { fmtUsd } from "@/lib/format";
 import type { Candle } from "./PriceChart";
 
 const CHART_CONFIG = {
@@ -54,6 +55,7 @@ export function TokenModalChart({
         hideCartesianGrid
         xAxisProps={{ hide: true }}
         yAxisProps={{ hide: true, domain: ["auto", "auto"] }}
+        tooltipFormatter={(value) => fmtUsd(Number(value))}
         className="h-full w-full"
       />
     </div>
