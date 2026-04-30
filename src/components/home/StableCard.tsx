@@ -66,8 +66,17 @@ export function StableCardLive({
         <div className="font-mono text-base text-[#11274d]">
           {formatStablePrice(token.priceUsd)}
         </div>
-        <div className={`text-xs font-mono ${tone.deviationText}`}>
-          Δ {deviationPct.toFixed(2)}%
+        <div className={`flex items-center gap-1 text-xs font-mono ${tone.deviationText}`}>
+          {token.priceUsd > 0 && (
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img
+              src={token.priceUsd >= 1 ? "/app/Up.svg" : "/app/Down.svg"}
+              alt=""
+              aria-hidden="true"
+              className="h-3 w-3 shrink-0"
+            />
+          )}
+          <span>{deviationPct.toFixed(2)}%</span>
         </div>
       </div>
 
