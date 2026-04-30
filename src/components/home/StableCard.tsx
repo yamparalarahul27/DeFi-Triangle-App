@@ -4,9 +4,25 @@ import { TokenIcon } from "@/components/ui/TokenIcon";
 import { fmtUsd } from "@/lib/format";
 import {
   PEG_THRESHOLDS_BPS,
+  STABLECOINS,
   type StableLiveData,
   type StablePendingData,
 } from "@/lib/home/stablecoins";
+import { STABLECOIN_ISSUERS } from "@/lib/home/stablecoinIssuers";
+
+/**
+ * Card subtitle prefers the issuer short name (e.g. "Circle" for USDC) over
+ * the official product name (e.g. "USD Coin"). This keeps the rail consistent
+ * — every tile tells you who's behind it at a glance instead of mixing
+ * branded names with descriptive ones. The full product name is still shown
+ * in the modal.
+ */
+function cardSubtitle(mint: string, fallback: string): string {
+  const entry = STABLECOINS.find((s) => s.mint === mint);
+  if (!entry?.issuerKey) return fallback;
+  const issuer = STABLECOIN_ISSUERS[entry.issuerKey];
+  return issuer?.shortName ?? issuer?.name ?? fallback;
+}
 
 const CARD_BASE =
   "shrink-0 bg-white rounded-[10px] border border-[#11274d]/10 p-4 transition-all duration-150";
@@ -56,7 +72,9 @@ export function StableCardLive({
             <div className="text-sm font-semibold text-[#11274d] truncate">
               {token.symbol}
             </div>
-            <div className="text-xs text-[#6a7282] truncate">{token.name}</div>
+            <div className="text-xs text-[#6a7282] truncate">
+              {cardSubtitle(token.mint, token.name)}
+            </div>
           </div>
         </div>
         <PegBadge tone={tone} label={label} />
@@ -128,7 +146,9 @@ export function StableCardPending({
             <div className="text-sm font-semibold text-[#11274d] truncate">
               {token.symbol}
             </div>
-            <div className="text-xs text-[#6a7282] truncate">{token.name}</div>
+            <div className="text-xs text-[#6a7282] truncate">
+              {cardSubtitle(token.mint, token.name)}
+            </div>
           </div>
         </div>
         <span className="text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-[#d97706]/10 text-[#d97706] shrink-0 whitespace-nowrap">

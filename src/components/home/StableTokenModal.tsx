@@ -13,6 +13,7 @@ import {
 import { STABLECOIN_ISSUERS } from "@/lib/home/stablecoinIssuers";
 
 const USDC_MINT = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
+const SOL_MINT = "So11111111111111111111111111111111111111112";
 
 export type StableSelection =
   | { kind: "live"; token: StableLiveData }
@@ -299,14 +300,16 @@ function MintRow({
 }
 
 function SwapCta({ symbol, mint }: { symbol: string; mint: string }) {
-  // Deep-link to Jupiter's hosted swap with USDC pre-selected as input.
-  // Lets users move from USDC → the selected stable in one tap.
-  const url =
-    mint === USDC_MINT
-      ? `https://jup.ag/swap/USDT-${USDC_MINT}`
-      : `https://jup.ag/swap/${USDC_MINT}-${mint}`;
-  const label = mint === USDC_MINT ? `Swap to ${symbol} on Jupiter ↗` : `Swap USDC → ${symbol} on Jupiter ↗`;
-  return <ExternalCta label={label} href={url} />;
+  // Deep-link to Jupiter's hosted swap with USDC as the SELL side. For USDC
+  // itself there's no useful "USDC → stablecoin" swap, so we route to SOL on
+  // the BUY side instead. URL contract is /swap/<sellMint>-<buyMint>.
+  const isUsdc = mint === USDC_MINT;
+  const buyMint = isUsdc ? SOL_MINT : mint;
+  const url = `https://jup.ag/swap/${USDC_MINT}-${buyMint}`;
+  const buyLabel = isUsdc ? "SOL" : symbol;
+  return (
+    <ExternalCta label={`Swap USDC → ${buyLabel} on Jupiter ↗`} href={url} />
+  );
 }
 
 function ExternalCta({ label, href }: { label: string; href: string }) {
