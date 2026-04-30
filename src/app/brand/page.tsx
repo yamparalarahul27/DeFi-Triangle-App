@@ -37,6 +37,14 @@ const VARIANTS: LogoVariant[] = [
     downloadName: "defi-triangle-logo-fill.svg",
     previewBg: "bg-[#f1f5f9]",
   },
+  {
+    label: "Profile · PNG",
+    description:
+      "High-res raster of the filled mark for places SVG isn't accepted (Twitter, Discord, app icons).",
+    src: "/brand/defi_logo_fill_pf.png",
+    downloadName: "defi-triangle-profile.png",
+    previewBg: "bg-[#f1f5f9]",
+  },
 ];
 
 export default function BrandPage() {
