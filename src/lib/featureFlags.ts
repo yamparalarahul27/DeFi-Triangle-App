@@ -17,4 +17,13 @@ export const FEATURES = {
    * flow, so defaults to the same value as WATCHLIST.
    */
   WALLET_CONNECT: false,
+
+  /**
+   * "Park Your Money" stablecoin rail at the top of the home page.
+   * On for branch-preview verification. USDS / USDe mints were added
+   * without sandbox verification — visually confirm all 6 tiles render
+   * on the Vercel preview before merging to stage. See
+   * src/lib/home/stablecoins.ts `unverifiedFromSandbox: true` markers.
+   */
+  STABLECOIN: true,
 } as const;
