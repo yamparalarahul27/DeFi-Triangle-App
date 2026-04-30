@@ -14,14 +14,36 @@ const CARD_SHADOW = {
   boxShadow: "0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)",
 };
 
-export function StableCardLive({ token }: { token: StableLiveData }) {
+export function StableCardLive({
+  token,
+  onClick,
+}: {
+  token: StableLiveData;
+  onClick?: () => void;
+}) {
   const { tone, label } = pegState(token.pegDeviationBps);
   const deviationPct = token.pegDeviationBps / 100;
 
   return (
     <div
-      className={`${CARD_BASE} w-[260px] hover:border-[#11274d]/20`}
+      className={`${CARD_BASE} w-[260px] ${
+        onClick ? "cursor-pointer hover:border-[#11274d]/25" : "hover:border-[#11274d]/20"
+      }`}
       style={CARD_SHADOW}
+      role={onClick ? "button" : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onClick={onClick}
+      onKeyDown={
+        onClick
+          ? (e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onClick();
+              }
+            }
+          : undefined
+      }
+      aria-label={onClick ? `${token.symbol} details` : undefined}
     >
       <div className="flex items-start justify-between gap-2 mb-3">
         <div className="flex items-center gap-2 min-w-0">
@@ -57,11 +79,33 @@ export function StableCardLive({ token }: { token: StableLiveData }) {
   );
 }
 
-export function StableCardPending({ token }: { token: StablePendingData }) {
+export function StableCardPending({
+  token,
+  onClick,
+}: {
+  token: StablePendingData;
+  onClick?: () => void;
+}) {
   return (
     <div
-      className={`${CARD_BASE} w-[260px] border-[#19549b]/15 bg-gradient-to-br from-white to-[#f1f5f9]`}
+      className={`${CARD_BASE} w-[260px] border-[#19549b]/15 bg-gradient-to-br from-white to-[#f1f5f9] ${
+        onClick ? "cursor-pointer hover:border-[#19549b]/30" : ""
+      }`}
       style={CARD_SHADOW}
+      role={onClick ? "button" : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onClick={onClick}
+      onKeyDown={
+        onClick
+          ? (e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onClick();
+              }
+            }
+          : undefined
+      }
+      aria-label={onClick ? `${token.symbol} details` : undefined}
     >
       <div className="flex items-start justify-between gap-2 mb-3">
         <div className="flex items-center gap-2 min-w-0">

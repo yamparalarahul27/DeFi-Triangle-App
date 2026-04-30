@@ -64,6 +64,11 @@ function mapStableLive(
   const pegDeviationBps =
     priceUsd > 0 ? Math.round(Math.abs(priceUsd - 1) * 10_000) : 0;
 
+  const audit = rec(row.audit);
+  const marketCapUsd = num(row.mcap || row.marketCap || row.fdv);
+  const circulatingSupply =
+    priceUsd > 0 && marketCapUsd > 0 ? marketCapUsd / priceUsd : 0;
+
   return {
     mint: str(row.id) || fallbackMint,
     symbol: str(row.symbol) || fallbackSymbol,
@@ -73,5 +78,17 @@ function mapStableLive(
     volume24hUsd: buyVol + sellVol,
     liquidityUsd: num(row.liquidity || row.liquidityUsd),
     pegDeviationBps,
+    marketCapUsd,
+    circulatingSupply,
+    mintAuthorityDisabled:
+      typeof audit.mintAuthorityDisabled === "boolean"
+        ? (audit.mintAuthorityDisabled as boolean)
+        : null,
+    freezeAuthorityDisabled:
+      typeof audit.freezeAuthorityDisabled === "boolean"
+        ? (audit.freezeAuthorityDisabled as boolean)
+        : null,
+    tokenProgram: str(row.tokenProgram) || null,
+    jupiterVerified: row.isVerified === true,
   };
 }

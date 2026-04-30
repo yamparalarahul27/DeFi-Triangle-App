@@ -1,0 +1,388 @@
+"use client";
+
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { TokenIcon } from "@/components/ui/TokenIcon";
+import { fmtNum, fmtUsd } from "@/lib/format";
+import {
+  PEG_THRESHOLDS_BPS,
+  STABLECOINS,
+  TOKEN_2022_PROGRAM_ID,
+  type StableLiveData,
+  type StablePendingData,
+} from "@/lib/home/stablecoins";
+import { STABLECOIN_ISSUERS } from "@/lib/home/stablecoinIssuers";
+
+const USDC_MINT = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
+
+export type StableSelection =
+  | { kind: "live"; token: StableLiveData }
+  | { kind: "pending"; token: StablePendingData };
+
+export function StableTokenModal({
+  selected,
+  onClose,
+}: {
+  selected: StableSelection;
+  onClose: () => void;
+}) {
+  const [copied, setCopied] = useState(false);
+  const mint = selected.token.mint;
+
+  // Resolve issuer from the curated list rather than the API payload — issuer
+  // is editorial metadata, not on-chain truth.
+  const entry = useMemo(
+    () => STABLECOINS.find((s) => s.mint === mint) ?? null,
+    [mint]
+  );
+  const issuer = entry?.issuerKey
+    ? STABLECOIN_ISSUERS[entry.issuerKey] ?? null
+    : null;
+
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") onClose();
+    }
+    document.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [onClose]);
+
+  const copyMint = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(mint);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      // ignore — clipboard may be blocked in iframes
+    }
+  }, [mint]);
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={`${selected.token.symbol} details`}
+    >
+      <div
+        className="relative w-full sm:max-w-[480px] max-h-[100vh] sm:max-h-[92vh] overflow-y-auto bg-white sm:rounded-lg sm:m-4"
+        style={{ boxShadow: "0 25px 50px rgba(0,0,0,0.5)" }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <Header
+          selection={selected}
+          issuerName={issuer?.name}
+          issuerUrl={issuer?.url}
+          onClose={onClose}
+        />
+
+        <div className="p-4 space-y-4">
+          {selected.kind === "live" ? (
+            <LiveBody token={selected.token} />
+          ) : (
+            <PendingBody token={selected.token} pitch={issuer?.pitch} />
+          )}
+
+          <MintRow mint={mint} copied={copied} onCopy={copyMint} />
+
+          {selected.kind === "live" ? (
+            <SwapCta symbol={selected.token.symbol} mint={mint} />
+          ) : issuer ? (
+            <ExternalCta label={`Learn more at ${issuer.name}`} href={issuer.url} />
+          ) : null}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Header({
+  selection,
+  issuerName,
+  issuerUrl,
+  onClose,
+}: {
+  selection: StableSelection;
+  issuerName?: string;
+  issuerUrl?: string;
+  onClose: () => void;
+}) {
+  const { symbol, name } = selection.token;
+  const iconUrl = selection.kind === "live" ? selection.token.iconUrl : null;
+
+  return (
+    <div className="sticky top-0 z-10 bg-white flex items-center justify-between gap-3 p-4 border-b border-[#e5e7eb]">
+      <div className="flex items-center gap-3 min-w-0">
+        {selection.kind === "live" ? (
+          <TokenIcon src={iconUrl ?? undefined} symbol={symbol} size="lg" />
+        ) : (
+          <div
+            aria-label={symbol}
+            className="w-8 h-8 rounded-full bg-[#0d2137] text-[#7ee5c6] flex items-center justify-center font-semibold text-xs shrink-0"
+          >
+            {symbol.slice(0, 2).toUpperCase()}
+          </div>
+        )}
+        <div className="min-w-0">
+          <div className="text-base font-semibold text-[#111827] truncate">
+            {symbol}
+          </div>
+          <div className="text-xs text-[#6B7280] truncate">{name}</div>
+          {issuerName && (
+            <div className="text-[11px] text-[#6B7280] truncate mt-0.5">
+              Issued by{" "}
+              {issuerUrl ? (
+                <a
+                  href={issuerUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#19549b] hover:underline"
+                >
+                  {issuerName} ↗
+                </a>
+              ) : (
+                issuerName
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+      <button
+        type="button"
+        onClick={onClose}
+        aria-label="Close"
+        className="text-2xl text-[#6B7280] hover:text-[#111827] transition-colors leading-none w-8 h-8 flex items-center justify-center shrink-0"
+      >
+        ×
+      </button>
+    </div>
+  );
+}
+
+function LiveBody({ token }: { token: StableLiveData }) {
+  const { tone, label } = pegState(token.pegDeviationBps);
+  const deviationPct = token.pegDeviationBps / 100;
+  const isToken2022 = token.tokenProgram === TOKEN_2022_PROGRAM_ID;
+
+  return (
+    <>
+      <div>
+        <div className="flex items-baseline justify-between gap-3">
+          <div>
+            <div className="text-[10px] uppercase tracking-wider text-[#6B7280]">
+              Current price
+            </div>
+            <div className="font-mono text-xl text-[#111827] mt-1">
+              {formatStablePrice(token.priceUsd)}
+            </div>
+          </div>
+          <div className={`text-right ${tone.deviationText}`}>
+            <span
+              className={`text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded whitespace-nowrap ${tone.badgeBg} ${tone.badgeText}`}
+            >
+              {label}
+            </span>
+            <div className="font-mono text-xs mt-1">
+              Δ {deviationPct.toFixed(2)}% from peg
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <Section label="Stats">
+        <StatRow label="Liquidity" value={fmtUsd(token.liquidityUsd, { compact: true })} />
+        <StatRow label="Volume 24h" value={fmtUsd(token.volume24hUsd, { compact: true })} />
+        <StatRow label="Market Cap" value={fmtUsd(token.marketCapUsd, { compact: true })} />
+        <StatRow
+          label="Circulating"
+          value={
+            token.circulatingSupply > 0
+              ? `${fmtNum(token.circulatingSupply, { compact: true })} ${token.symbol}`
+              : "—"
+          }
+        />
+      </Section>
+
+      <Section label="Trust">
+        <StatRow
+          label="Mint Authority"
+          value={authorityLabel(token.mintAuthorityDisabled)}
+        />
+        <StatRow
+          label="Freeze Authority"
+          value={authorityLabel(token.freezeAuthorityDisabled)}
+        />
+        <StatRow
+          label="Jupiter Verified"
+          value={token.jupiterVerified ? "✓ Yes" : "— No"}
+        />
+        {isToken2022 && <StatRow label="Standard" value="Token-2022" />}
+      </Section>
+    </>
+  );
+}
+
+function PendingBody({
+  token,
+  pitch,
+}: {
+  token: StablePendingData;
+  pitch?: string[];
+}) {
+  return (
+    <>
+      <div className="flex items-center gap-2">
+        <span className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-[#d97706]/10 text-[#d97706] whitespace-nowrap">
+          Coming Soon
+        </span>
+        <span className="text-xs text-[#6a7282]">Awaiting Solana liquidity</span>
+      </div>
+
+      {pitch && pitch.length > 0 && (
+        <Section label={`Why ${token.symbol}`}>
+          {pitch.map((line) => (
+            <div key={line} className="flex items-center gap-2 text-sm text-[#111827]">
+              <span className="text-[#0fa87a]">✓</span>
+              <span>{line}</span>
+            </div>
+          ))}
+        </Section>
+      )}
+
+      <p className="text-xs text-[#6B7280] leading-snug">
+        Live price, depth, and audit data will appear here once the mint has
+        Jupiter-quotable liquidity on Solana.
+      </p>
+    </>
+  );
+}
+
+function MintRow({
+  mint,
+  copied,
+  onCopy,
+}: {
+  mint: string;
+  copied: boolean;
+  onCopy: () => void;
+}) {
+  return (
+    <Section label="Mint">
+      <div className="flex items-center justify-between gap-2">
+        <code className="font-mono text-[11px] text-[#111827] break-all">
+          {truncateMint(mint)}
+        </code>
+        <button
+          type="button"
+          onClick={onCopy}
+          className="text-[10px] uppercase tracking-wider px-2 py-1 rounded border border-[#cbd5e1] bg-white text-[#11274d] hover:bg-[#f1f5f9] transition-colors shrink-0"
+        >
+          {copied ? "Copied" : "Copy"}
+        </button>
+      </div>
+    </Section>
+  );
+}
+
+function SwapCta({ symbol, mint }: { symbol: string; mint: string }) {
+  // Deep-link to Jupiter's hosted swap with USDC pre-selected as input.
+  // Lets users move from USDC → the selected stable in one tap.
+  const url =
+    mint === USDC_MINT
+      ? `https://jup.ag/swap/USDT-${USDC_MINT}`
+      : `https://jup.ag/swap/${USDC_MINT}-${mint}`;
+  const label = mint === USDC_MINT ? `Swap to ${symbol} on Jupiter ↗` : `Swap USDC → ${symbol} on Jupiter ↗`;
+  return <ExternalCta label={label} href={url} />;
+}
+
+function ExternalCta({ label, href }: { label: string; href: string }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="block w-full text-center py-2.5 rounded bg-[#19549b] text-white text-sm font-semibold hover:bg-[#11274d] transition-colors"
+    >
+      {label}
+    </a>
+  );
+}
+
+function Section({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <div className="text-[10px] uppercase tracking-wider text-[#6B7280] mb-2">
+        {label}
+      </div>
+      <div className="space-y-1.5">{children}</div>
+    </div>
+  );
+}
+
+function StatRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between text-xs">
+      <span className="text-[#6B7280]">{label}</span>
+      <span className="font-mono text-[#111827]">{value}</span>
+    </div>
+  );
+}
+
+type PegTone = {
+  badgeBg: string;
+  badgeText: string;
+  deviationText: string;
+};
+
+const TONE_ON_PEG: PegTone = {
+  badgeBg: "bg-[#0fa87a]/10",
+  badgeText: "text-[#0fa87a]",
+  deviationText: "text-[#0fa87a]",
+};
+const TONE_DRIFTING: PegTone = {
+  badgeBg: "bg-[#d97706]/10",
+  badgeText: "text-[#d97706]",
+  deviationText: "text-[#d97706]",
+};
+const TONE_DEPEGGED: PegTone = {
+  badgeBg: "bg-[#ef4444]/10",
+  badgeText: "text-[#ef4444]",
+  deviationText: "text-[#ef4444]",
+};
+
+function pegState(deviationBps: number): { tone: PegTone; label: string } {
+  if (deviationBps <= PEG_THRESHOLDS_BPS.ON_PEG) {
+    return { tone: TONE_ON_PEG, label: "On peg" };
+  }
+  if (deviationBps <= PEG_THRESHOLDS_BPS.DRIFTING) {
+    return { tone: TONE_DRIFTING, label: "Drifting" };
+  }
+  return { tone: TONE_DEPEGGED, label: "Depegged" };
+}
+
+function formatStablePrice(price: number): string {
+  if (!Number.isFinite(price) || price <= 0) return "—";
+  return `$${price.toFixed(4)}`;
+}
+
+function authorityLabel(disabled: boolean | null): string {
+  if (disabled === true) return "✓ Disabled";
+  if (disabled === false) return "✗ Active";
+  return "—";
+}
+
+function truncateMint(mint: string): string {
+  if (mint.length <= 16) return mint;
+  return `${mint.slice(0, 8)}…${mint.slice(-6)}`;
+}
