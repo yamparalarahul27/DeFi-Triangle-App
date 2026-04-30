@@ -3,7 +3,13 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Search as SearchIcon, X } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowUp,
+  CornerDownLeft,
+  Search as SearchIcon,
+  X,
+} from "lucide-react";
 import { SearchRow, type SearchRowData } from "./SearchRow";
 import { useTokenSearch, type TokenSearchResult } from "@/lib/hooks/useTokenSearch";
 import { useRecentSearches } from "@/lib/hooks/useRecentSearches";
@@ -193,8 +199,19 @@ export function SearchModal({ open, onOpenChange }: SearchModalProps) {
 
           <div className="hidden sm:flex items-center justify-between px-3 h-8 text-[10px] text-[#6a7282] border-t border-[#e5e7eb] bg-[#f8fafc] shrink-0">
             <div className="flex items-center gap-3">
-              <KeyHint label="↑↓" text="navigate" />
-              <KeyHint label="↵" text="open" />
+              <KeyHint
+                label={
+                  <span className="inline-flex items-center gap-px">
+                    <ArrowUp className="w-2 h-2" aria-hidden />
+                    <ArrowDown className="w-2 h-2" aria-hidden />
+                  </span>
+                }
+                text="navigate"
+              />
+              <KeyHint
+                label={<CornerDownLeft className="w-2 h-2" aria-hidden />}
+                text="open"
+              />
               <KeyHint label="esc" text="close" />
             </div>
             <span>DeFi Triangle</span>
@@ -379,7 +396,13 @@ function Section({
   );
 }
 
-function KeyHint({ label, text }: { label: string; text: string }) {
+function KeyHint({
+  label,
+  text,
+}: {
+  label: React.ReactNode;
+  text: string;
+}) {
   return (
     <span className="flex items-center gap-1">
       <kbd className="px-1 h-4 text-[9px] rounded-sm border border-[#cbd5e1] bg-white text-[#11274d] leading-none flex items-center">
