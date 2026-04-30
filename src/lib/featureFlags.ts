@@ -17,4 +17,12 @@ export const FEATURES = {
    * flow, so defaults to the same value as WATCHLIST.
    */
   WALLET_CONNECT: false,
+
+  /**
+   * "Park Your Money" stablecoin rail at the top of the home page.
+   * Off until the curated mint list is verified on the Vercel preview
+   * (USDS / USDe mints were added without sandbox verification — see
+   * src/lib/home/stablecoins.ts `unverifiedFromSandbox: true` markers).
+   */
+  STABLECOIN: false,
 } as const;
