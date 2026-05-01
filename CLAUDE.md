@@ -210,6 +210,24 @@ For multi-step tasks, state a brief plan:
 
 Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
 
+### 5. Sign / Direction Display: Trace the Data, Don't Trust Names
+
+When fixing UI that renders direction (`+` / `−` prefix, ▲ / ▼ icon, red / green color), do a 30-second upstream trace before touching the UI:
+
+- Grep for where the value is computed.
+- Look for `Math.abs(...)`, `>= 0`, or any arithmetic that could strip the sign.
+- Verify with both a positive and a negative real example loaded in the browser — not imagined examples.
+
+If the value can't be negative when it should be, fix the source, not the UI. UI fixes for sign-bugs caused upstream are placebos — they look right in the diff and stay broken in production.
+
+Variable names like `XxxDeviation`, `XxxDelta`, `XxxChange` *sound* signed by convention but only carry sign if the producer kept it.
+
+For magnitude-vs-direction split UIs (icon + colored text, peg health + deviation, etc.):
+
+- Magnitude → drives tone / severity buckets. Use `Math.abs(value)`.
+- Direction → drives `+` / `−` prefix and direction icon. Use the signed `value`.
+- Two concerns, two computations. Don't conflate them.
+
 ---
 
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.

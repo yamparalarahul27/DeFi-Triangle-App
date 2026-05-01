@@ -61,8 +61,11 @@ function mapStableLive(
   const buyVol = num(stats24h.buyVolume);
   const sellVol = num(stats24h.sellVolume);
   const priceUsd = num(row.usdPrice || row.price || row.priceUsd);
+  // Signed bps: positive = above peg, negative = below peg. UI uses the sign
+  // for direction display; pegState() uses Math.abs() for magnitude buckets.
+  // Don't abs here — sign is destructive once stripped.
   const pegDeviationBps =
-    priceUsd > 0 ? Math.round(Math.abs(priceUsd - 1) * 10_000) : 0;
+    priceUsd > 0 ? Math.round((priceUsd - 1) * 10_000) : 0;
 
   const audit = rec(row.audit);
   const marketCapUsd = num(row.mcap || row.marketCap || row.fdv);

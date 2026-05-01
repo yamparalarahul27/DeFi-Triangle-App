@@ -209,10 +209,12 @@ const TONE_DEPEGGED: PegTone = {
 };
 
 function pegState(deviationBps: number): { tone: PegTone; label: string } {
-  if (deviationBps <= PEG_THRESHOLDS_BPS.ON_PEG) {
+  // deviationBps is signed (sign = direction); peg health is about magnitude.
+  const magnitude = Math.abs(deviationBps);
+  if (magnitude <= PEG_THRESHOLDS_BPS.ON_PEG) {
     return { tone: TONE_ON_PEG, label: "On peg" };
   }
-  if (deviationBps <= PEG_THRESHOLDS_BPS.DRIFTING) {
+  if (magnitude <= PEG_THRESHOLDS_BPS.DRIFTING) {
     return { tone: TONE_DRIFTING, label: "Drifting" };
   }
   return { tone: TONE_DEPEGGED, label: "Depegged" };
