@@ -188,17 +188,10 @@ function LiveBody({ token }: { token: StableLiveData }) {
             >
               {label}
             </span>
-            <div className="font-mono text-xs mt-1 flex items-center justify-end gap-1">
-              {token.priceUsd > 0 && (
-                /* eslint-disable-next-line @next/next/no-img-element */
-                <img
-                  src={token.priceUsd >= 1 ? "/app/Up.svg" : "/app/Down.svg"}
-                  alt=""
-                  aria-hidden="true"
-                  className="h-3 w-3 shrink-0"
-                />
-              )}
-              <span>{deviationPct.toFixed(2)}% from peg</span>
+            <div className="font-mono text-xs mt-1">
+              {token.priceUsd > 0
+                ? `${deviationPct >= 0 ? "+" : ""}${deviationPct.toFixed(2)}% from peg`
+                : "— from peg"}
             </div>
           </div>
         </div>
