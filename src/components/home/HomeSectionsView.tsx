@@ -5,8 +5,10 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DexCard } from "@/components/ui/DexCard";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { TabEmpty } from "@/components/tabs/TabShell";
+import { ParkYourMoneyRail } from "@/components/home/ParkYourMoneyRail";
 import { useHomeJupiterPairs } from "@/lib/hooks/useHomeJupiterPairs";
 import { buildHomeSections } from "@/lib/home/sections";
+import { FEATURES } from "@/lib/featureFlags";
 import type { TokenPair } from "@/lib/home/types";
 
 const RAIL_DEFINITIONS: { title: string; subtitle: string }[] = [
@@ -60,42 +62,47 @@ export function HomeSectionsView({
   const totalVisible =
     sections.attraction.length + sections.longTerm.length + sections.highRisk.length;
 
-  if (loading && universe.length === 0) {
-    return <RailsSkeleton />;
-  }
-
-  if (totalVisible === 0) {
-    return <TabEmpty text="No tokens available right now." />;
-  }
+  const showRailsSkeleton = loading && universe.length === 0;
+  const showEmpty = !showRailsSkeleton && totalVisible === 0;
 
   return (
     <div className="space-y-5">
-      <TokenRail
-        title="Tokens Gaining Attraction"
-        subtitle="Strong momentum with minimum liquidity and activity checks"
-        tokens={sections.attraction}
-        onSelectPair={onSelectPair}
-        starredSet={starredSet}
-        onStarToggle={onStarToggle}
-      />
+      {FEATURES.STABLECOIN && <ParkYourMoneyRail paused={paused} />}
 
-      <TokenRail
-        title="Tokens for Long-Term Wealth"
-        subtitle="Higher depth, holder base, and older market footprint"
-        tokens={sections.longTerm}
-        onSelectPair={onSelectPair}
-        starredSet={starredSet}
-        onStarToggle={onStarToggle}
-      />
+      {showRailsSkeleton ? (
+        <RailsSkeleton />
+      ) : showEmpty ? (
+        <TabEmpty text="No tokens available right now." />
+      ) : (
+        <>
+          <TokenRail
+            title="Tokens Gaining Attraction"
+            subtitle="Strong momentum with minimum liquidity and activity checks"
+            tokens={sections.attraction}
+            onSelectPair={onSelectPair}
+            starredSet={starredSet}
+            onStarToggle={onStarToggle}
+          />
 
-      <TokenRail
-        title="High Risk, High Reward"
-        subtitle="Higher upside setups with more volatility and lower maturity"
-        tokens={sections.highRisk}
-        onSelectPair={onSelectPair}
-        starredSet={starredSet}
-        onStarToggle={onStarToggle}
-      />
+          <TokenRail
+            title="Tokens for Long-Term Wealth"
+            subtitle="Higher depth, holder base, and older market footprint"
+            tokens={sections.longTerm}
+            onSelectPair={onSelectPair}
+            starredSet={starredSet}
+            onStarToggle={onStarToggle}
+          />
+
+          <TokenRail
+            title="High Risk, High Reward"
+            subtitle="Higher upside setups with more volatility and lower maturity"
+            tokens={sections.highRisk}
+            onSelectPair={onSelectPair}
+            starredSet={starredSet}
+            onStarToggle={onStarToggle}
+          />
+        </>
+      )}
     </div>
   );
 }
