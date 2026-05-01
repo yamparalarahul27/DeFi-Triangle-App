@@ -228,6 +228,20 @@ For magnitude-vs-direction split UIs (icon + colored text, peg health + deviatio
 - Direction → drives `+` / `−` prefix and direction icon. Use the signed `value`.
 - Two concerns, two computations. Don't conflate them.
 
+### 6. Asset Tracking: Local Existence ≠ Deployment
+
+When code references a path under `public/` (or any non-imported asset), `git ls-files <path>` must succeed before you commit.
+
+Next.js dev serves untracked files in `public/` — a 200 response in dev is **not** proof the file will ship. Vercel deployments only contain tracked files; an untracked `/public/foo.png` becomes a 404 in prod even though the import path looks fine.
+
+Before committing a change that references an asset:
+
+- Run `git status` — flag every untracked file in the touched directories.
+- Either `git add` it (if it should ship) or confirm it shouldn't.
+- Don't trust the dev-server HTTP 200 as a deploy gate.
+
+This is the same shape of bug as guideline #5 — *local environment lying to you about deploy state*. Trace the artifact end-to-end (filesystem → git index → deployment) before claiming the change is complete.
+
 ---
 
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
