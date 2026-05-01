@@ -2,7 +2,7 @@
 
 import type { MouseEvent } from "react";
 import { TokenIcon } from "./TokenIcon";
-import { fmtNum, fmtPct, fmtUsd } from "@/lib/format";
+import { fmtNum, fmtPctMagnitude, fmtUsd } from "@/lib/format";
 
 export interface DexCardProps {
   pair: any;
@@ -95,7 +95,7 @@ export function DexCard({
             aria-hidden="true"
             className="h-3 w-3 shrink-0"
           />
-          <span className="font-mono">{fmtPct(Math.abs(priceChange24))}</span>
+          <span className="font-mono">{fmtPctMagnitude(priceChange24)}</span>
         </div>
       </div>
 

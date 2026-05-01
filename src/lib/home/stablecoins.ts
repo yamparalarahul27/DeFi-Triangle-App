@@ -17,6 +17,11 @@ export type StablecoinEntry = {
   symbol: string;
   /** Display name (e.g. "USD Coin"). */
   name: string;
+  /**
+   * Key into STABLECOIN_ISSUERS. Drives the "Issued by …" label and link in
+   * the StableTokenModal. Optional — the modal hides the row if absent.
+   */
+  issuerKey?: string;
   /** Marketing tagline shown on the pending tile. Required when pendingListing. */
   tagline?: string;
   /**
@@ -31,6 +36,16 @@ export type StablecoinEntry = {
    * is informational only — it does not change runtime behaviour.
    */
   unverifiedFromSandbox?: boolean;
+  /**
+   * Marks the entry as a brand-promoted feature. The pending tile gets a
+   * highlight border, a real logo, a "Featured" badge, and a clickable link
+   * to learnMoreUrl instead of the dim "Awaiting Solana liquidity" footer.
+   */
+  featured?: boolean;
+  /** Local or absolute URL of the brand logo. Required when featured. */
+  iconUrl?: string;
+  /** External docs / homepage link for featured pending tiles. */
+  learnMoreUrl?: string;
 };
 
 export const STABLECOINS: StablecoinEntry[] = [
@@ -41,23 +56,30 @@ export const STABLECOINS: StablecoinEntry[] = [
     mint: "CZzgUBvxaMLwMhVSLgqJn3npmxoTo6nzMNQPAnwtHF3s",
     symbol: "PUSD",
     name: "Palm USD",
+    issuerKey: "palmusd",
     tagline: "Non-freezable. Non-blacklistable. USD-pegged.",
     pendingListing: true,
+    featured: true,
+    iconUrl: "/stablecoin/pusd.png",
+    learnMoreUrl: "https://palmusd.com",
   },
   {
     mint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
     symbol: "USDC",
     name: "USD Coin",
+    issuerKey: "circle",
   },
   {
     mint: "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
     symbol: "USDT",
     name: "Tether USD",
+    issuerKey: "tether",
   },
   {
     mint: "2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo",
     symbol: "PYUSD",
     name: "PayPal USD",
+    issuerKey: "paypal",
   },
   {
     // Sky / former MakerDAO USDS rebrand. Wormhole-bridged Solana SPL.
@@ -65,15 +87,16 @@ export const STABLECOINS: StablecoinEntry[] = [
     mint: "USDSwr9ApdHk5bvJKMjzff41FfuX8bSxdKcR81vTwcA",
     symbol: "USDS",
     name: "Sky USDS",
+    issuerKey: "sky",
     unverifiedFromSandbox: true,
   },
   {
-    // Ethena synthetic dollar. Wormhole-bridged Solana SPL.
-    // Verify on Vercel preview before flipping FEATURES.STABLECOIN to true.
-    mint: "DEkqHyPN7GMRJ5cArtQFAWefqbZb33Hyf6s5iCwjEonT",
-    symbol: "USDe",
-    name: "Ethena USDe",
-    unverifiedFromSandbox: true,
+    // USDG — Global Dollar Network, Paxos-issued. Solana SPL mint provided by
+    // user. Replaces Ethena USDe in the v1 list.
+    mint: "2u1tszSeqZ3qBWF3uNGPFc8TzMk2tdiwknnRMWGWjGWH",
+    symbol: "USDG",
+    name: "Global Dollar",
+    issuerKey: "paxos",
   },
 ];
 
@@ -91,6 +114,22 @@ export type StableLiveData = {
    * Computed server-side so all clients see the same threshold buckets.
    */
   pegDeviationBps: number;
+  /** Market cap, USD. Sourced from Jupiter mcap/fdv. */
+  marketCapUsd: number;
+  /**
+   * Circulating supply in token units. For a stablecoin at ≈$1 this is
+   * effectively marketCapUsd, but we surface it explicitly so the modal can
+   * show the right unit.
+   */
+  circulatingSupply: number;
+  /** True if Jupiter audit reports the mint authority disabled. */
+  mintAuthorityDisabled: boolean | null;
+  /** True if Jupiter audit reports the freeze authority disabled. */
+  freezeAuthorityDisabled: boolean | null;
+  /** SPL Token program address. Token-2022 has a distinct program id. */
+  tokenProgram: string | null;
+  /** True if Jupiter marks the token as verified. */
+  jupiterVerified: boolean;
 };
 
 export type StablePendingData = {
@@ -98,6 +137,12 @@ export type StablePendingData = {
   symbol: string;
   name: string;
   tagline: string;
+  /** True when this entry is brand-promoted (drives featured tile styling). */
+  featured?: boolean;
+  /** Brand logo URL. Set on featured entries; pending tiles without it fall back to the symbol-initial placeholder. */
+  iconUrl?: string;
+  /** External "Learn more" URL surfaced on featured pending tiles. */
+  learnMoreUrl?: string;
 };
 
 export type StablecoinsPayload = {
@@ -116,3 +161,7 @@ export const PEG_THRESHOLDS_BPS = {
   ON_PEG: 50,
   DRIFTING: 200,
 } as const;
+
+/** Token-2022 program id. Used by the modal to label non-classic SPL tokens. */
+export const TOKEN_2022_PROGRAM_ID =
+  "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb";

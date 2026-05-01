@@ -25,6 +25,9 @@ export async function GET(req: NextRequest) {
     symbol: s.symbol,
     name: s.name,
     tagline: s.tagline ?? "",
+    featured: s.featured,
+    iconUrl: s.iconUrl,
+    learnMoreUrl: s.learnMoreUrl,
   }));
 
   const liveEntries = STABLECOINS.filter((s) => !s.pendingListing);
@@ -61,8 +64,16 @@ function mapStableLive(
   const buyVol = num(stats24h.buyVolume);
   const sellVol = num(stats24h.sellVolume);
   const priceUsd = num(row.usdPrice || row.price || row.priceUsd);
+  // Signed bps: positive = above peg, negative = below peg. UI uses the sign
+  // for direction display; pegState() uses Math.abs() for magnitude buckets.
+  // Don't abs here — sign is destructive once stripped.
   const pegDeviationBps =
-    priceUsd > 0 ? Math.round(Math.abs(priceUsd - 1) * 10_000) : 0;
+    priceUsd > 0 ? Math.round((priceUsd - 1) * 10_000) : 0;
+
+  const audit = rec(row.audit);
+  const marketCapUsd = num(row.mcap || row.marketCap || row.fdv);
+  const circulatingSupply =
+    priceUsd > 0 && marketCapUsd > 0 ? marketCapUsd / priceUsd : 0;
 
   return {
     mint: str(row.id) || fallbackMint,
@@ -73,5 +84,17 @@ function mapStableLive(
     volume24hUsd: buyVol + sellVol,
     liquidityUsd: num(row.liquidity || row.liquidityUsd),
     pegDeviationBps,
+    marketCapUsd,
+    circulatingSupply,
+    mintAuthorityDisabled:
+      typeof audit.mintAuthorityDisabled === "boolean"
+        ? (audit.mintAuthorityDisabled as boolean)
+        : null,
+    freezeAuthorityDisabled:
+      typeof audit.freezeAuthorityDisabled === "boolean"
+        ? (audit.freezeAuthorityDisabled as boolean)
+        : null,
+    tokenProgram: str(row.tokenProgram) || null,
+    jupiterVerified: row.isVerified === true,
   };
 }

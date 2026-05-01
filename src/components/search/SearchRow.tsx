@@ -1,7 +1,7 @@
 "use client";
 
 import { TokenIcon } from "@/components/ui/TokenIcon";
-import { fmtPct, fmtUsd } from "@/lib/format";
+import { fmtPctMagnitude, fmtUsd } from "@/lib/format";
 
 export interface SearchRowData {
   address: string;
@@ -59,7 +59,7 @@ export function SearchRow({ row, active, onSelect, onHover }: SearchRowProps) {
               up ? "text-[#0fa87a]" : "text-[#ef4444]"
             }`}
           >
-            {up ? "▲" : "▼"} {fmtPct(Math.abs(change))}
+            {up ? "▲" : "▼"} {fmtPctMagnitude(change)}
           </div>
         </div>
       )}
