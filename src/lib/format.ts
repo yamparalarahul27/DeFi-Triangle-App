@@ -20,6 +20,18 @@ export function fmtPct(n: number | null | undefined): string {
   return `${sign}${n.toFixed(2)}%`;
 }
 
+/**
+ * Unsigned magnitude — for sites where the direction is conveyed by an icon
+ * or color, and the text should show only the magnitude (no "+" / "-").
+ * Use this instead of fmtPct(Math.abs(x)), which paradoxically prefixes "+"
+ * since the abs value is positive — making negative changes display as
+ * "+2.03%" in red. See DexCard / SearchRow.
+ */
+export function fmtPctMagnitude(n: number | null | undefined): string {
+  if (n == null || !Number.isFinite(n)) return "—";
+  return `${Math.abs(n).toFixed(2)}%`;
+}
+
 export function fmtNum(
   n: number | null | undefined,
   opts: { compact?: boolean } = {}
