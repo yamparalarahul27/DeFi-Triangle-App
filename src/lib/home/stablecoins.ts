@@ -36,6 +36,16 @@ export type StablecoinEntry = {
    * is informational only — it does not change runtime behaviour.
    */
   unverifiedFromSandbox?: boolean;
+  /**
+   * Marks the entry as a brand-promoted feature. The pending tile gets a
+   * highlight border, a real logo, a "Featured" badge, and a clickable link
+   * to learnMoreUrl instead of the dim "Awaiting Solana liquidity" footer.
+   */
+  featured?: boolean;
+  /** Local or absolute URL of the brand logo. Required when featured. */
+  iconUrl?: string;
+  /** External docs / homepage link for featured pending tiles. */
+  learnMoreUrl?: string;
 };
 
 export const STABLECOINS: StablecoinEntry[] = [
@@ -49,6 +59,9 @@ export const STABLECOINS: StablecoinEntry[] = [
     issuerKey: "palmusd",
     tagline: "Non-freezable. Non-blacklistable. USD-pegged.",
     pendingListing: true,
+    featured: true,
+    iconUrl: "/stablecoin/pusd.png",
+    learnMoreUrl: "https://palmusd.com",
   },
   {
     mint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
@@ -124,6 +137,12 @@ export type StablePendingData = {
   symbol: string;
   name: string;
   tagline: string;
+  /** True when this entry is brand-promoted (drives featured tile styling). */
+  featured?: boolean;
+  /** Brand logo URL. Set on featured entries; pending tiles without it fall back to the symbol-initial placeholder. */
+  iconUrl?: string;
+  /** External "Learn more" URL surfaced on featured pending tiles. */
+  learnMoreUrl?: string;
 };
 
 export type StablecoinsPayload = {

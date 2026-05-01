@@ -1,7 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { PegLegend } from "@/components/home/StableCard";
 import { TokenIcon } from "@/components/ui/TokenIcon";
+import { Tooltip } from "@/components/ui/Tooltip";
 import { fmtNum, fmtUsd } from "@/lib/format";
 import {
   PEG_THRESHOLDS_BPS,
@@ -183,11 +185,13 @@ function LiveBody({ token }: { token: StableLiveData }) {
             </div>
           </div>
           <div className={`text-right ${tone.deviationText}`}>
-            <span
-              className={`text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded whitespace-nowrap ${tone.badgeBg} ${tone.badgeText}`}
-            >
-              {label}
-            </span>
+            <Tooltip content={<PegLegend />} title="Peg health" side="bottom">
+              <span
+                className={`text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded whitespace-nowrap cursor-help ${tone.badgeBg} ${tone.badgeText}`}
+              >
+                {label}
+              </span>
+            </Tooltip>
             <div className="font-mono text-xs mt-1">
               {token.priceUsd > 0
                 ? `${deviationPct >= 0 ? "+" : ""}${deviationPct.toFixed(2)}% from peg`

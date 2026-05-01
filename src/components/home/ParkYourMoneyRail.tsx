@@ -70,7 +70,7 @@ function RailShell({ children }: { children: React.ReactNode }) {
           Park Your Money
         </h2>
         <p className="text-xs text-[#6a7282] mt-0.5">
-          Stablecoins on Solana — peg health, depth, and stability
+          Stablecoins on Solana — color reflects peg health, not price direction
         </p>
       </div>
       {children}

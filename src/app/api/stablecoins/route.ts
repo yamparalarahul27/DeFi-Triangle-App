@@ -25,6 +25,9 @@ export async function GET(req: NextRequest) {
     symbol: s.symbol,
     name: s.name,
     tagline: s.tagline ?? "",
+    featured: s.featured,
+    iconUrl: s.iconUrl,
+    learnMoreUrl: s.learnMoreUrl,
   }));
 
   const liveEntries = STABLECOINS.filter((s) => !s.pendingListing);

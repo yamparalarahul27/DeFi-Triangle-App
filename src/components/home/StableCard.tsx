@@ -1,6 +1,7 @@
 "use client";
 
 import { TokenIcon } from "@/components/ui/TokenIcon";
+import { Tooltip } from "@/components/ui/Tooltip";
 import { fmtUsd } from "@/lib/format";
 import {
   PEG_THRESHOLDS_BPS,
@@ -106,6 +107,27 @@ export function StableCardPending({
   token: StablePendingData;
   onClick?: () => void;
 }) {
+  const isFeatured = token.featured === true;
+  const href = isFeatured ? token.learnMoreUrl : undefined;
+
+  // Featured tiles render as an external link (homepage / docs) instead of
+  // opening the modal. Non-featured pending tiles keep the existing modal
+  // click behaviour for consistency with the rest of the rail.
+  if (isFeatured && href) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`${CARD_BASE} block w-[260px] border-2 border-[#19549b] bg-gradient-to-br from-white to-[#e6efff] cursor-pointer hover:border-[#143f78] hover:shadow-md`}
+        style={CARD_SHADOW}
+        aria-label={`Learn more about ${token.symbol}`}
+      >
+        <FeaturedPendingBody token={token} />
+      </a>
+    );
+  }
+
   return (
     <div
       className={`${CARD_BASE} w-[260px] border-[#19549b]/15 bg-gradient-to-br from-white to-[#f1f5f9] ${
@@ -127,6 +149,46 @@ export function StableCardPending({
       }
       aria-label={onClick ? `${token.symbol} details` : undefined}
     >
+      <DimPendingBody token={token} />
+    </div>
+  );
+}
+
+function FeaturedPendingBody({ token }: { token: StablePendingData }) {
+  return (
+    <>
+      <div className="flex items-start justify-between gap-2 mb-3">
+        <div className="flex items-center gap-2 min-w-0">
+          <TokenIcon
+            src={token.iconUrl ?? undefined}
+            symbol={token.symbol}
+            size="md"
+          />
+          <div className="min-w-0">
+            <div className="text-sm font-semibold text-[#11274d] truncate">
+              {token.symbol}
+            </div>
+            <div className="text-xs text-[#6a7282] truncate">
+              {cardSubtitle(token.mint, token.name)}
+            </div>
+          </div>
+        </div>
+        <span className="text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-[#19549b]/10 text-[#19549b] shrink-0 whitespace-nowrap">
+          ★ Featured
+        </span>
+      </div>
+
+      <p className="text-xs text-[#11274d] leading-snug mb-3">
+        {token.tagline}
+      </p>
+      <p className="text-[11px] text-[#19549b] font-medium">Learn more →</p>
+    </>
+  );
+}
+
+function DimPendingBody({ token }: { token: StablePendingData }) {
+  return (
+    <>
       <div className="flex items-start justify-between gap-2 mb-3">
         <div className="flex items-center gap-2 min-w-0">
           <div
@@ -155,7 +217,7 @@ export function StableCardPending({
       <p className="text-[10px] text-[#6a7282] uppercase tracking-wider">
         Awaiting Solana liquidity
       </p>
-    </div>
+    </>
   );
 }
 
@@ -167,11 +229,39 @@ function PegBadge({
   label: string;
 }) {
   return (
-    <span
-      className={`text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded shrink-0 whitespace-nowrap ${tone.badgeBg} ${tone.badgeText}`}
-    >
-      {label}
-    </span>
+    <Tooltip content={<PegLegend />} title="Peg health" side="bottom">
+      <span
+        className={`text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded shrink-0 whitespace-nowrap cursor-help ${tone.badgeBg} ${tone.badgeText}`}
+      >
+        {label}
+      </span>
+    </Tooltip>
+  );
+}
+
+/**
+ * Legend explaining the magnitude-based color rule. Surfaced in a tooltip
+ * over the peg badge so users who pattern-match "red = bad" from regular
+ * tokens see the right semantic on stablecoins.
+ */
+export function PegLegend() {
+  const onPegPct = (PEG_THRESHOLDS_BPS.ON_PEG / 100).toFixed(2);
+  const driftingPct = (PEG_THRESHOLDS_BPS.DRIFTING / 100).toFixed(2);
+  return (
+    <div className="space-y-1 text-[11px] leading-snug">
+      <div>
+        <span className="text-[#0fa87a]">●</span> On peg — within {onPegPct}%
+      </div>
+      <div>
+        <span className="text-[#f59e0b]">●</span> Drifting — within {driftingPct}%
+      </div>
+      <div>
+        <span className="text-[#ef4444]">●</span> Depegged — beyond {driftingPct}%
+      </div>
+      <div className="opacity-70 pt-1 border-t border-white/15 mt-1">
+        Sign (+/−) shows direction; color shows health.
+      </div>
+    </div>
   );
 }
 
