@@ -47,7 +47,7 @@ export function DexCard({
       onClick={onClick}
       role={onClick ? "button" : undefined}
       tabIndex={onClick ? 0 : undefined}
-      className="group relative bg-white rounded-[10px] border border-[#11274d]/10 p-4 transition-all duration-150 hover:border-[#11274d]/20 cursor-pointer"
+      className="group relative bg-white rounded-[14px] border border-[#11274d]/10 p-4 transition-[border-color,box-shadow,transform] duration-150 active:scale-[0.98] hover:border-[#11274d]/20 cursor-pointer"
       style={{
         boxShadow: "0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)",
       }}

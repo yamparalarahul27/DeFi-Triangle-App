@@ -66,10 +66,10 @@ function RailShell({ children }: { children: React.ReactNode }) {
   return (
     <section className="space-y-2">
       <div>
-        <h2 className="text-sm sm:text-base font-semibold text-[#11274d]">
+        <h2 className="text-sm sm:text-base font-semibold text-[#11274d] [text-wrap:balance]">
           Park Your Money
         </h2>
-        <p className="text-xs text-[#6a7282] mt-0.5">
+        <p className="text-xs text-[#6a7282] mt-0.5 [text-wrap:pretty]">
           Stablecoins on Solana — color reflects peg health, not price direction
         </p>
       </div>
@@ -181,7 +181,7 @@ function RailSkeleton() {
 
 function CardSkeleton() {
   return (
-    <div className="w-[260px] shrink-0 bg-white rounded-[10px] border border-[#11274d]/10 p-4 space-y-3">
+    <div className="w-[260px] shrink-0 bg-white rounded-[14px] border border-[#11274d]/10 p-4 space-y-3">
       <div className="flex items-center gap-2">
         <Skeleton className="h-6 w-6 rounded-full" />
         <div className="flex-1 space-y-1">

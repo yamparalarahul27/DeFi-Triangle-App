@@ -328,6 +328,13 @@ Rules:
 - Primary blue on light surfaces: `#19549b` (frost-400). On dark surfaces: `#3B7DDD` (cta-color).
 - When a design decision isn't covered by DESIGN.md, stop and ask.
 
+## Installed skills
+
+- **`jakubkrehel/make-interfaces-feel-better`** — polish layer beneath DESIGN.md. Enforces concentric border radius, layered shadows, targeted transitions (no `transition-all`), `scale(0.96)` press feedback (cards use `0.98`), 40×40 hit areas, `text-wrap: balance/pretty`, and font smoothing. Run on any UI edit.
+- **DESIGN.md wins on conflicts** — if the skill suggests a value that contradicts DESIGN.md (e.g. a different radius), DESIGN.md is the source of truth. The skill is the polish layer beneath it, not above it.
+- **`src/components/evilcharts/**` is exempt** — same reasoning as the file-size exemption (vendored, would break upstream sync). Don't apply skill rules to chart internals.
+- **Static guard:** `npm run check:polish` greps the relevant files and asserts the rules above are still in place. Run it before opening a PR that touches UI.
+
 ## Testing UI features
 
 - For UI/frontend changes: after edit, start the dev server and exercise the feature in a browser before reporting done.

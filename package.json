@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "check:polish": "node scripts/check-polish.mjs"
   },
   "dependencies": {
     "@jup-ag/wallet-adapter": "^0.2.6",

@@ -25,9 +25,9 @@ export function TabsRow({
             key={t.key}
             type="button"
             onClick={() => onChange(t.key)}
-            className={`min-h-[36px] px-4 rounded-sm text-xs sm:text-sm font-medium transition-all duration-150 ${
+            className={`min-h-[40px] px-4 rounded-sm text-xs sm:text-sm font-medium transition-[background-color,color,box-shadow,transform] duration-150 active:scale-[0.96] ${
               isActive
-                ? "bg-[#19549b] text-white shadow-[0_2px_8px_rgba(25,84,155,0.25)]"
+                ? "bg-[#19549b] text-white shadow-[0_1px_2px_rgba(17,39,77,0.06),0_4px_8px_rgba(25,84,155,0.18),0_12px_24px_rgba(25,84,155,0.10)]"
                 : "bg-white text-[#11274d]/60 border border-[#cbd5e1] hover:text-[#11274d]/90"
             }`}
             aria-pressed={isActive}
