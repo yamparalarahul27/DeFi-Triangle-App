@@ -18,7 +18,7 @@ export function AboutSection({ profile }: { profile: AssetProfile }) {
       <div className="text-[10px] uppercase tracking-wider text-[#6a7282] mb-3">
         About
       </div>
-      <p className="text-sm text-[#11274d] whitespace-pre-line leading-relaxed">
+      <p className="text-sm text-[#11274d] whitespace-pre-line leading-relaxed [text-wrap:pretty]">
         {displayed}
       </p>
       {needsTruncation && (

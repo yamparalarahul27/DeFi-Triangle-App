@@ -26,7 +26,7 @@ function cardSubtitle(mint: string, fallback: string): string {
 }
 
 const CARD_BASE =
-  "shrink-0 bg-white rounded-[10px] border border-[#11274d]/10 p-4 transition-all duration-150";
+  "shrink-0 bg-white rounded-[14px] border border-[#11274d]/10 p-4 transition-[border-color,box-shadow,transform] duration-150";
 const CARD_SHADOW = {
   boxShadow: "0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)",
 };
@@ -44,7 +44,7 @@ export function StableCardLive({
   return (
     <div
       className={`${CARD_BASE} w-[260px] ${
-        onClick ? "cursor-pointer hover:border-[#11274d]/25" : "hover:border-[#11274d]/20"
+        onClick ? "cursor-pointer hover:border-[#11274d]/25 active:scale-[0.98]" : "hover:border-[#11274d]/20"
       }`}
       style={CARD_SHADOW}
       role={onClick ? "button" : undefined}
@@ -119,7 +119,7 @@ export function StableCardPending({
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        className={`${CARD_BASE} block w-[260px] border-2 border-[#19549b] bg-gradient-to-br from-white to-[#e6efff] cursor-pointer hover:border-[#143f78] hover:shadow-md`}
+        className={`${CARD_BASE} block w-[260px] border-2 border-[#19549b] bg-gradient-to-br from-white to-[#e6efff] cursor-pointer hover:border-[#143f78] hover:shadow-md active:scale-[0.98]`}
         style={CARD_SHADOW}
         aria-label={`Learn more about ${token.symbol}`}
       >
@@ -131,7 +131,7 @@ export function StableCardPending({
   return (
     <div
       className={`${CARD_BASE} w-[260px] border-[#19549b]/15 bg-gradient-to-br from-white to-[#f1f5f9] ${
-        onClick ? "cursor-pointer hover:border-[#19549b]/30" : ""
+        onClick ? "cursor-pointer hover:border-[#19549b]/30 active:scale-[0.98]" : ""
       }`}
       style={CARD_SHADOW}
       role={onClick ? "button" : undefined}

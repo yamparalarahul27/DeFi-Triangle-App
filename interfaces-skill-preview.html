@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>make-interfaces-feel-better — before/after preview</title>
+<style>
+  :root{
+    --frost-50:#f1f5f9;
+    --frost-100:#e2e8f0;
+    --frost-200:#cbd5e1;
+    --frost-400:#19549b;
+    --frost-500:#143f78;
+    --hela-900:#11274d;
+    --muted:#6a7282;
+    --bg:#fafbfc;
+    --card:#ffffff;
+    --good:#16a34a;
+    --warn:#b45309;
+    --warn-bg:#fffbeb;
+    --warn-bd:#fde68a;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--hela-900)}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased; /* skill rule #8 — applied to whole page */
+    padding:16px;
+    max-width:760px;
+    margin:0 auto;
+  }
+  h1{font-size:18px;margin:0 0 4px;font-weight:700}
+  .lede{font-size:13px;color:var(--muted);margin:0 0 24px;line-height:1.5}
+  .legend{
+    display:flex;gap:8px;font-size:11px;color:var(--muted);
+    margin-bottom:24px;flex-wrap:wrap;
+  }
+  .legend span{padding:3px 8px;border-radius:2px;background:var(--frost-50);border:1px solid var(--frost-200)}
+
+  .demo{
+    background:var(--card);border:1px solid var(--frost-200);
+    border-radius:8px;padding:16px;margin-bottom:16px;
+  }
+  .demo h2{font-size:13px;font-weight:600;margin:0 0 4px;color:var(--hela-900)}
+  .demo .what{font-size:12px;color:var(--muted);margin:0 0 14px;line-height:1.5}
+  .pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .col{
+    background:var(--frost-50);border:1px dashed var(--frost-200);
+    border-radius:6px;padding:14px 12px;min-height:120px;
+    display:flex;flex-direction:column;justify-content:center;align-items:center;gap:8px;
+    position:relative;
+  }
+  .col .label{
+    position:absolute;top:6px;left:8px;
+    font-size:9px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--muted);font-weight:600;
+  }
+  .col.after{background:#f0f7ff;border-color:#bcd2ee}
+  .col.after .label{color:var(--frost-400)}
+  .note{font-size:10px;color:var(--muted);text-align:center;margin-top:6px;line-height:1.4}
+  .tag{
+    display:inline-flex;align-items:center;gap:4px;
+    font-size:9px;padding:2px 6px;border-radius:2px;
+    background:#fff;border:1px solid var(--frost-200);color:var(--muted);
+  }
+
+  /* ---------- Demo 1: Tab pill ---------- */
+  .tab-before{
+    min-height:36px;padding:0 12px;border-radius:2px;font-size:12px;font-weight:500;
+    background:var(--frost-400);color:#fff;border:0;cursor:pointer;
+    box-shadow:0 2px 8px rgba(25,84,155,.25);
+    transition:all 150ms;
+  }
+  .tab-before:hover{background:var(--frost-500)}
+
+  .tab-after{
+    min-height:40px;padding:0 14px;border-radius:2px;font-size:12px;font-weight:500;
+    background:var(--frost-400);color:#fff;border:0;cursor:pointer;
+    box-shadow:
+      0 1px 2px rgba(17,39,77,.06),
+      0 4px 8px rgba(25,84,155,.18),
+      0 12px 24px rgba(25,84,155,.10);
+    transition:background-color 150ms, box-shadow 150ms, transform 100ms;
+  }
+  .tab-after:hover{background:var(--frost-500)}
+  .tab-after:active{transform:scale(.96)}
+
+  /* ---------- Demo 2: Stablecoin tile (press feedback) ---------- */
+  .tile{
+    width:200px;background:#fff;border:1px solid rgba(17,39,77,.10);
+    border-radius:10px;padding:14px;cursor:pointer;
+    display:flex;flex-direction:column;gap:6px;
+  }
+  .tile .sym{font-size:13px;font-weight:600}
+  .tile .price{font-size:18px;font-variant-numeric:tabular-nums;font-weight:600}
+  .tile .meta{font-size:10px;color:var(--muted)}
+  .tile-before{transition:border-color 150ms}
+  .tile-before:hover{border-color:rgba(17,39,77,.20)}
+  .tile-after{transition:border-color 150ms, transform 100ms ease-out, box-shadow 150ms}
+  .tile-after:hover{border-color:rgba(17,39,77,.20);box-shadow:0 1px 2px rgba(17,39,77,.04),0 4px 12px rgba(17,39,77,.06)}
+  .tile-after:active{transform:scale(.96)}
+
+  /* ---------- Demo 3: Info dot hit area ---------- */
+  .info-wrap{position:relative;display:inline-flex;align-items:center;justify-content:center}
+  .dot{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:12px;height:12px;font-size:9px;border-radius:9999px;
+    background:var(--frost-200);color:var(--muted);cursor:pointer;
+  }
+  .info-after{padding:14px;position:relative} /* extends touch area to ≈40px */
+  .hit-overlay{
+    position:absolute;inset:0;border:1px dashed #ef4444;border-radius:6px;
+    pointer-events:none;
+  }
+  .hit-overlay::after{
+    content:"40×40 hit";position:absolute;left:50%;top:-14px;transform:translateX(-50%);
+    font-size:8px;color:#ef4444;background:#fff;padding:0 4px;letter-spacing:.04em;
+  }
+
+  /* ---------- Demo 4: Concentric radius ---------- */
+  .card-radius{
+    width:100%;max-width:240px;background:#fff;border:1px solid var(--frost-200);
+    padding:12px;display:flex;flex-direction:column;gap:8px;
+  }
+  .card-radius .row{display:flex;gap:6px;flex-wrap:wrap}
+  .card-radius .chip{
+    font-size:10px;padding:2px 8px;background:var(--frost-50);
+    color:var(--hela-900);border:1px solid var(--frost-200);
+  }
+  .card-r-before{border-radius:10px}
+  .card-r-before .chip{border-radius:2px}    /* mismatch: outer 10, inner 2 with 12px padding */
+  .card-r-after{border-radius:14px}          /* outer = inner + padding (2 + 12 ≈ 14) */
+  .card-r-after .chip{border-radius:2px}
+  .annotate{font-size:10px;color:var(--muted);text-align:center}
+
+  /* ---------- Demo 5: text-wrap balance ---------- */
+  .h-before, .h-after{
+    font-size:18px;line-height:1.25;font-weight:600;color:var(--hela-900);
+    max-width:240px;margin:0;text-align:left;
+  }
+  .h-after{text-wrap:balance}
+
+  /* ---------- Demo 6: text-wrap pretty + smoothing ---------- */
+  .p-before, .p-after{
+    font-size:13px;line-height:1.55;color:var(--hela-900);
+    max-width:260px;margin:0;text-align:left;
+    -webkit-font-smoothing:auto;
+  }
+  .p-after{text-wrap:pretty;-webkit-font-smoothing:antialiased}
+
+  /* ---------- Misc ---------- */
+  .footer{font-size:11px;color:var(--muted);text-align:center;margin:24px 0 8px;line-height:1.6}
+  .footer code{background:var(--frost-50);padding:1px 5px;border-radius:2px;font-size:10px}
+
+  /* Mobile stack */
+  @media (max-width:480px){
+    .pair{grid-template-columns:1fr}
+    .col{min-height:100px}
+  }
+</style>
+</head>
+<body>
+
+<h1>make-interfaces-feel-better — before / after</h1>
+<p class="lede">
+Each pair shows the same component as it exists today (left) vs after applying the
+skill's relevant rule (right). Tap the interactive ones — press feedback only shows
+up on the "after" side.
+</p>
+
+<div class="legend">
+  <span>Brand colors from DESIGN.md</span>
+  <span>Tap targets to test on mobile</span>
+  <span>Stacked layout under 480px</span>
+</div>
+
+<!-- ─────────────────────── Demo 1 ─────────────────────── -->
+<section class="demo">
+  <h2>1. Active tab pill</h2>
+  <p class="what">
+    <strong>Before:</strong> <code style="font-size:11px">transition: all 150ms</code>, 36px tall, single-layer shadow.
+    <strong>After:</strong> targeted transition (only what actually changes), 40px hit area, layered shadow, scale-on-press.
+  </p>
+  <div class="pair">
+    <div class="col"><span class="label">Before</span>
+      <button class="tab-before">Markets</button>
+      <p class="note">36px · transition: all · flat shadow</p>
+    </div>
+    <div class="col after"><span class="label">After</span>
+      <button class="tab-after">Markets</button>
+      <p class="note">40px · targeted transitions · layered shadow · scale(.96) on tap</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────── Demo 2 ─────────────────────── -->
+<section class="demo">
+  <h2>2. Stablecoin tile (Park Your Money rail)</h2>
+  <p class="what">
+    Tap each tile. The "after" version compresses slightly on press — the small
+    physical-feeling response is what reads as "polished" on mobile.
+  </p>
+  <div class="pair">
+    <div class="col"><span class="label">Before</span>
+      <div class="tile tile-before">
+        <span class="sym">PUSD</span>
+        <span class="price">$1.0001</span>
+        <span class="meta">On peg · Featured</span>
+      </div>
+      <p class="note">color-only feedback</p>
+    </div>
+    <div class="col after"><span class="label">After</span>
+      <div class="tile tile-after">
+        <span class="sym">PUSD</span>
+        <span class="price">$1.0001</span>
+        <span class="meta">On peg · Featured</span>
+      </div>
+      <p class="note">color + scale(.96) press + soft hover lift</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────── Demo 3 ─────────────────────── -->
+<section class="demo">
+  <h2>3. Info-tip dot (MetaStrip)</h2>
+  <p class="what">
+    The "?" dot is 12×12 today — too small to reliably tap on mobile. The skill extends
+    the hit area to 40×40 with padding, while keeping the dot the same visual size.
+    The red dashed box is the actual touch target.
+  </p>
+  <div class="pair">
+    <div class="col"><span class="label">Before</span>
+      <span class="info-wrap">
+        <span class="dot">?</span>
+      </span>
+      <p class="note">12×12 hit · misses on mobile</p>
+    </div>
+    <div class="col after"><span class="label">After</span>
+      <span class="info-wrap info-after">
+        <span class="hit-overlay"></span>
+        <span class="dot">?</span>
+      </span>
+      <p class="note">40×40 hit · same visual · reliable taps</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────── Demo 4 ─────────────────────── -->
+<section class="demo">
+  <h2>4. Concentric border-radius (DexCard / StableCard)</h2>
+  <p class="what">
+    Outer card uses <code style="font-size:11px">rounded-[10px]</code> with 12px padding,
+    but inner chips are <code style="font-size:11px">rounded-sm (2px)</code>. The skill's
+    rule: outer radius ≈ inner radius + padding. Look at the corners — the "after"
+    version's curves track each other.
+  </p>
+  <div class="pair">
+    <div class="col"><span class="label">Before</span>
+      <div class="card-radius card-r-before">
+        <strong style="font-size:12px">Top markets</strong>
+        <div class="row">
+          <span class="chip">Raydium</span>
+          <span class="chip">Orca</span>
+          <span class="chip">Meteora</span>
+        </div>
+      </div>
+      <p class="note">outer 10px · inner 2px · curves disagree</p>
+    </div>
+    <div class="col after"><span class="label">After</span>
+      <div class="card-radius card-r-after">
+        <strong style="font-size:12px">Top markets</strong>
+        <div class="row">
+          <span class="chip">Raydium</span>
+          <span class="chip">Orca</span>
+          <span class="chip">Meteora</span>
+        </div>
+      </div>
+      <p class="note">outer 14px = inner 2px + 12px padding · concentric</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────── Demo 5 ─────────────────────── -->
+<section class="demo">
+  <h2>5. Heading wrap (<code style="font-size:11px">text-wrap: balance</code>)</h2>
+  <p class="what">
+    Browser balances line lengths automatically — no orphaned words. Free win.
+  </p>
+  <div class="pair">
+    <div class="col"><span class="label">Before</span>
+      <h3 class="h-before">Park your money in stablecoins on Solana</h3>
+      <p class="note">last word may orphan</p>
+    </div>
+    <div class="col after"><span class="label">After</span>
+      <h3 class="h-after">Park your money in stablecoins on Solana</h3>
+      <p class="note">balanced line lengths</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────── Demo 6 ─────────────────────── -->
+<section class="demo">
+  <h2>6. Body text (<code style="font-size:11px">text-wrap: pretty</code> + font smoothing)</h2>
+  <p class="what">
+    <code style="font-size:11px">pretty</code> avoids orphan words at paragraph ends.
+    <code style="font-size:11px">-webkit-font-smoothing: antialiased</code> on the root
+    softens text on Mac displays — subtle, but the whole UI feels less "rendered."
+  </p>
+  <div class="pair">
+    <div class="col"><span class="label">Before</span>
+      <p class="p-before">PUSD is the new payment-grade stablecoin from PayPal, designed for everyday transfers and merchant settlement on Solana.</p>
+      <p class="note">default wrap · default smoothing</p>
+    </div>
+    <div class="col after"><span class="label">After</span>
+      <p class="p-after">PUSD is the new payment-grade stablecoin from PayPal, designed for everyday transfers and merchant settlement on Solana.</p>
+      <p class="note">no orphan · antialiased</p>
+    </div>
+  </div>
+</section>
+
+<p class="footer">
+  Self-contained preview · brand tokens from DESIGN.md · no JS framework, no deps.<br />
+  Open in any browser. To preview on mobile, copy this file or push it to a branch
+  and open the Vercel preview URL.
+</p>
+
+</body>
+</html>
