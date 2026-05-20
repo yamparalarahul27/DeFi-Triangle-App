@@ -11,6 +11,13 @@ Rules for Claude Code when working in this repo. Read on every session.
 - Give 2–3 options with a recommendation — not a single pre-decided path.
 - When in doubt, ask.
 
+### Markdown / docs
+
+- When writing `.md` files (PR bodies, memory files, backlog entries, design docs), reach for **inline HTML** when it makes the information clearer than what raw Markdown can express. Markdown renderers all support a useful subset of HTML inline.
+- Reference: https://thariqs.github.io/html-effectiveness/ — examples of HTML constructs that meaningfully improve readability inside `.md` (callouts, nested tables, side-by-side columns, expandable `<details>` blocks, badge rows, etc.).
+- Don't reach for HTML for the sake of it — only when the alternative (plain prose / a flat table / a long list) genuinely hurts scannability. The goal is the reader's mental load, not visual cleverness.
+- Most useful in practice: `<details><summary>` for collapsible sections, `<sub>` / `<sup>` for terse annotations, side-by-side `<table>` for comparisons that a single column would obscure.
+
 ## Explaining changes with ASCII
 
 The user reads on mobile Safari. Walls of bullet points get skimmed; diagrams get read. **When proposing or recapping any technical, UI, or UX change, include a small ASCII diagram alongside the prose** showing the relevant structure.

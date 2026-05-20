@@ -42,3 +42,7 @@ next-env.d.ts
 
 # local recon / scratch output
 /tmp
+
+# local skill installer artifacts (per-machine, not shipped)
+/.claude/skills/
+/skills-lock.json
