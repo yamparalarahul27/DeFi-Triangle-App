@@ -169,7 +169,7 @@ function Cell({
       {labelTooltip ? (
         <span
           aria-hidden
-          className="inline-flex items-center justify-center w-3 h-3 text-[9px] rounded-full bg-[#cbd5e1] text-[#6a7282]"
+          className="relative inline-flex items-center justify-center w-3 h-3 text-[9px] rounded-full bg-[#cbd5e1] text-[#6a7282] before:absolute before:inset-[-14px] before:content-['']"
         >
           ?
         </span>

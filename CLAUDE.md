@@ -11,6 +11,13 @@ Rules for Claude Code when working in this repo. Read on every session.
 - Give 2–3 options with a recommendation — not a single pre-decided path.
 - When in doubt, ask.
 
+### Markdown / docs
+
+- When writing `.md` files (PR bodies, memory files, backlog entries, design docs), reach for **inline HTML** when it makes the information clearer than what raw Markdown can express. Markdown renderers all support a useful subset of HTML inline.
+- Reference: https://thariqs.github.io/html-effectiveness/ — examples of HTML constructs that meaningfully improve readability inside `.md` (callouts, nested tables, side-by-side columns, expandable `<details>` blocks, badge rows, etc.).
+- Don't reach for HTML for the sake of it — only when the alternative (plain prose / a flat table / a long list) genuinely hurts scannability. The goal is the reader's mental load, not visual cleverness.
+- Most useful in practice: `<details><summary>` for collapsible sections, `<sub>` / `<sup>` for terse annotations, side-by-side `<table>` for comparisons that a single column would obscure.
+
 ## Explaining changes with ASCII
 
 The user reads on mobile Safari. Walls of bullet points get skimmed; diagrams get read. **When proposing or recapping any technical, UI, or UX change, include a small ASCII diagram alongside the prose** showing the relevant structure.
@@ -285,6 +292,10 @@ Rules:
 
 - **Search recents → wallet-scoped server-side storage.** V1 shipped with `localStorage` only (per-device) in `src/lib/hooks/useRecentSearches.ts`. When building the next iteration of the Watchlist feature, add a `search_recents` Supabase table and GET/POST/DELETE endpoints under `/api/search-recents` — same JWT / `getSessionWallet` auth pattern as `/api/watchlist`, same rate-limiting, wallet from JWT not client. On wallet connect, migrate any `localStorage` recents to server once and clear the local copy.
 
+- **Lint cleanup — real issues (after PR #44 merges).** `npm run lint` reports 37 problems on stage; 13 are mechanical wins worth fixing in one small PR. Branch off `stage` only **after PR #44 merges** to avoid file overlap on `TabShell.tsx`, `VariantsSection.tsx`, `DexCard.tsx`. Fixes: (1) **rules-of-hooks bug** in `src/components/token/VariantsSection.tsx` — `useState` is called *after* an early `return null`, can corrupt state if `variants` toggles null↔non-null; move the hook above the early return and use override-pattern for default selection. (2) **2× `no-require-imports`** in `.claude/hooks/scan-secrets.js` — convert `require()` to ESM `import`. (3) **8× `no-explicit-any`** for `pair: any` across `TabShell.tsx`, `WatchlistTab.tsx`, `DexCard.tsx`, `useTabPairs.ts`, `api/watchlist/route.ts` — replace with the DexScreener pair type from `lib/`. (4) **1× impure-function-in-render** in `src/components/ui/PriceChart.tsx:57` — likely `Date.now()` or similar in render body, move to `useMemo` or props. (5) **1× exhaustive-deps** in `src/components/search/SearchModal.tsx:78` — wrap `navigableRows` in `useMemo`. After this PR, lint count drops from 37 → ~24.
+
+- **Lint cleanup — `set-state-in-effect` decision.** The other 17 lint errors all fire on the React 19 `react-hooks/set-state-in-effect` rule across data hooks (`useStablecoins`, `useTokenDetails`, `useWatchlist`, etc.). These are mostly legitimate "fetch on mount" / "reset on prop change" patterns — bulk-fixing in place risks breaking real fetch behavior. Decide before opening the cleanup PR above: (a) disable the rule project-wide in `eslint.config.*` with a CLAUDE.md note explaining why and a separate task to migrate to SWR/React Query, OR (b) keep the rule firing as a TODO marker and migrate the data layer in its own scoped project. **Do not piecemeal-fix.** Defer `<img>` → `<Image />` migration (7 warnings) until LCP scores justify it.
+
 ## Auth & API
 
 - Every protected route and API endpoint requires a JWT cookie check via `getSessionWallet(req)`. No "hidden URL = security".
@@ -327,6 +338,13 @@ Rules:
 - Financial numbers: **Geist Pixel Square** (fallback IBM Plex Mono). Never serif or variable-weight.
 - Primary blue on light surfaces: `#19549b` (frost-400). On dark surfaces: `#3B7DDD` (cta-color).
 - When a design decision isn't covered by DESIGN.md, stop and ask.
+
+## Installed skills
+
+- **`jakubkrehel/make-interfaces-feel-better`** — polish layer beneath DESIGN.md. Enforces concentric border radius, layered shadows, targeted transitions (no `transition-all`), `scale(0.96)` press feedback (cards use `0.98`), 40×40 hit areas, `text-wrap: balance/pretty`, and font smoothing. Run on any UI edit.
+- **DESIGN.md wins on conflicts** — if the skill suggests a value that contradicts DESIGN.md (e.g. a different radius), DESIGN.md is the source of truth. The skill is the polish layer beneath it, not above it.
+- **`src/components/evilcharts/**` is exempt** — same reasoning as the file-size exemption (vendored, would break upstream sync). Don't apply skill rules to chart internals.
+- **Static guard:** `npm run check:polish` greps the relevant files and asserts the rules above are still in place. Run it before opening a PR that touches UI.
 
 ## Testing UI features
 

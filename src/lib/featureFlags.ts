@@ -8,15 +8,16 @@
 export const FEATURES = {
   /**
    * Wallet-authenticated watchlist (connect + star + remove + persist).
-   * v0.01: disabled until the watchlist UX is ready.
+   * v1: single watchlist per wallet. Multi-list ("named folders") is
+   * backlogged — see docs/ideation/multi-watchlist.md.
    */
-  WATCHLIST: false,
+  WATCHLIST: true,
 
   /**
    * Header Connect Wallet button. Currently only used by the watchlist
    * flow, so defaults to the same value as WATCHLIST.
    */
-  WALLET_CONNECT: false,
+  WALLET_CONNECT: true,
 
   /**
    * "Park Your Money" stablecoin rail at the top of the home page.
