@@ -27,4 +27,11 @@ export const FEATURES = {
    * src/lib/home/stablecoins.ts `unverifiedFromSandbox: true` markers.
    */
   STABLECOIN: true,
+
+  /**
+   * NFT Edge — collection browser tab. V1 hard-codes IslandDAO PERKS as
+   * the only collection; data cached in Supabase, ME piggyback for live
+   * stats. See docs/ideation/nft-edge-data-spike.md.
+   */
+  NFT_EDGE: true,
 } as const;

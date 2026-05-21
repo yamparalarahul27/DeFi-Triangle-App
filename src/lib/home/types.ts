@@ -1,4 +1,4 @@
-export type HomeTab = "home" | "watchlist";
+export type HomeTab = "home" | "watchlist" | "nft-edge";
 
 export type TokenPair = {
   pairAddress?: string;

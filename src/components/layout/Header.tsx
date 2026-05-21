@@ -16,6 +16,9 @@ export interface HeaderProps {
   showWatchlistButton?: boolean;
   watchlistActive?: boolean;
   onOpenWatchlist?: () => void;
+  showNftEdgeButton?: boolean;
+  nftEdgeActive?: boolean;
+  onOpenNftEdge?: () => void;
   showSearchButton?: boolean;
   showPauseToggle?: boolean;
   paused?: boolean;
@@ -34,6 +37,9 @@ export function Header({
   showWatchlistButton = false,
   watchlistActive = false,
   onOpenWatchlist,
+  showNftEdgeButton = false,
+  nftEdgeActive = false,
+  onOpenNftEdge,
   showSearchButton = true,
   showPauseToggle = false,
   paused = false,
@@ -44,12 +50,14 @@ export function Header({
   const { open: openSearch } = useSearchModal();
 
   const watchlistEnabled = FEATURES.WATCHLIST && showWatchlistButton;
+  const nftEdgeEnabled = FEATURES.NFT_EDGE && showNftEdgeButton;
   const walletEnabled = FEATURES.WALLET_CONNECT;
 
   const hasRightContent =
     showSearchButton ||
     (showPauseToggle && !!onTogglePause) ||
     (watchlistEnabled && !!onOpenWatchlist) ||
+    (nftEdgeEnabled && !!onOpenNftEdge) ||
     walletEnabled;
 
   useEffect(() => {
@@ -99,6 +107,10 @@ export function Header({
     : "bg-white/10 border border-white/15 text-white hover:bg-white/20";
 
   const watchlistBtnClass = watchlistActive
+    ? "bg-[#19549b] text-white border border-[#19549b]"
+    : actionBtnClass;
+
+  const nftEdgeBtnClass = nftEdgeActive
     ? "bg-[#19549b] text-white border border-[#19549b]"
     : actionBtnClass;
 
@@ -180,6 +192,15 @@ export function Header({
               className={`h-7 px-2 rounded-sm text-xs transition-colors duration-300 inline-flex items-center ${watchlistBtnClass}`}
             >
               Watchlist
+            </button>
+          )}
+          {nftEdgeEnabled && onOpenNftEdge && (
+            <button
+              type="button"
+              onClick={onOpenNftEdge}
+              className={`h-7 px-2 rounded-sm text-xs transition-colors duration-300 inline-flex items-center ${nftEdgeBtnClass}`}
+            >
+              NFT Edge
             </button>
           )}
           {walletEnabled && <ConnectWalletButton />}

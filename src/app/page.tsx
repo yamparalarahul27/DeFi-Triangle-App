@@ -9,6 +9,7 @@ import { HeroSearchButton } from "@/components/search/HeroSearchButton";
 import { HomeSectionsView } from "@/components/home/HomeSectionsView";
 import { TokenModal } from "@/components/ui/TokenModal";
 import { WatchlistTab } from "@/components/tabs/WatchlistTab";
+import { NftEdgeTab } from "@/components/tabs/NftEdgeTab";
 import { useSession } from "@/components/providers/SessionContext";
 import { useWatchlist } from "@/lib/hooks/useWatchlist";
 import { FEATURES } from "@/lib/featureFlags";
@@ -27,6 +28,10 @@ export default function Dashboard() {
 
   const openWatchlist = useCallback(() => {
     setTab((prev) => (prev === "watchlist" ? "home" : "watchlist"));
+  }, []);
+
+  const openNftEdge = useCallback(() => {
+    setTab((prev) => (prev === "nft-edge" ? "home" : "nft-edge"));
   }, []);
 
   const handleStarToggle = useCallback(
@@ -52,7 +57,12 @@ export default function Dashboard() {
   );
 
   const watchlistEnabled = FEATURES.WATCHLIST;
-  const effectiveTab = watchlistEnabled ? tab : "home";
+  const nftEdgeEnabled = FEATURES.NFT_EDGE;
+
+  // Resolve which tab is actually visible given the flag state.
+  let effectiveTab: HomeTab = "home";
+  if (watchlistEnabled && tab === "watchlist") effectiveTab = "watchlist";
+  else if (nftEdgeEnabled && tab === "nft-edge") effectiveTab = "nft-edge";
 
   return (
     <>
@@ -60,13 +70,16 @@ export default function Dashboard() {
         showWatchlistButton={watchlistEnabled}
         watchlistActive={watchlistEnabled && tab === "watchlist"}
         onOpenWatchlist={watchlistEnabled ? openWatchlist : undefined}
+        showNftEdgeButton={nftEdgeEnabled}
+        nftEdgeActive={nftEdgeEnabled && tab === "nft-edge"}
+        onOpenNftEdge={nftEdgeEnabled ? openNftEdge : undefined}
         showSearchButton={false}
       />
       <HeroSection searchSlot={HERO_SEARCH_SLOT} />
 
       <main className="flex-1 max-w-[1400px] w-full mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 space-y-4">
         <section>
-          {watchlistEnabled && effectiveTab === "watchlist" ? (
+          {effectiveTab === "watchlist" ? (
             <WatchlistTab
               authed={authed}
               wallet={wallet}
@@ -75,6 +88,8 @@ export default function Dashboard() {
               onSelectPair={setSelectedPair}
               onRemove={watchlist.remove}
             />
+          ) : effectiveTab === "nft-edge" ? (
+            <NftEdgeTab sessionWallet={wallet} />
           ) : (
             <HomeSectionsView
               paused={false}
