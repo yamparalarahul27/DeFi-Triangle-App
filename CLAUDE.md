@@ -81,31 +81,22 @@ If the user opens the conversation already on a feature branch / mid-flow, infer
 
 ## Workflow & release flow
 
-This repo uses a **stage-then-main** flow. Every session and every PR follows it.
+This repo uses a **main + feature branches** flow. All PRs target `main`.
 
 ### Branch model
 
 | Branch | Means | Who sees it |
 |---|---|---|
 | `main` | Production. Polished, user-facing. | Everyone on the prod URL. |
-| `stage` | Pre-release integration. All work merges here first. | Whoever has the stage preview URL. |
 | `claude/<topic>-<id>` or `<topic>` | Per-Claude-session feature branch. | Only via PR preview. |
 
 ### Per-session flow
 
-1. New Claude session → new branch (auto-named or topic-named).
+1. New Claude session → new branch off `main` (auto-named or topic-named).
 2. Work, commit.
-3. PR → `stage`.
+3. PR → `main`.
 4. **Test on the PR's Vercel preview URL** — Vercel auto-posts the link as a bot comment.
-5. Merge to `stage` only after verifying on preview.
-6. Periodic `stage → main` release (see cadence below).
-
-### Release cadence (stage → main)
-
-- Cut a `stage → main` release PR **weekly**, OR after ~5 stage merges, OR when a major feature lands — whichever comes first.
-- One last polish pass on the stage preview before merging.
-- Merge → users see the new release on prod.
-- Don't let stage drift > 2 weeks from main; large divergence = larger merge conflicts.
+5. Merge to `main` only after verifying on preview.
 
 ### Feature flags for not-yet-polished code
 
@@ -118,30 +109,14 @@ Pattern for code that's technically ready but UX is still rough:
 ```
 
 Vercel env vars hold the actual on/off state per environment:
-- **stage:** `NEXT_PUBLIC_FF_NEW_THING=1` → visible on stage preview for testing
+- **preview:** `NEXT_PUBLIC_FF_NEW_THING=1` → visible on PR preview for testing
 - **prod:** `NEXT_PUBLIC_FF_NEW_THING=0` → hidden from users on main
 
-Stage → main promotion happens normally. Users don't see the gated feature until the prod env var flips. **Delete the flag + conditional once the feature is stable on prod for a few days** — accumulating flags is technical debt.
-
-### Hotfixes
-
-If something is genuinely broken on `main`:
-
-1. Branch off `main` → fix → PR to `main` → merge.
-2. Cherry-pick the fix commit to `stage` so the hotfix doesn't get lost on the next stage→main release.
-
-Reserved for genuine emergencies (broken prod, security). Day-to-day fixes always go through `stage` first.
-
-### Pitfalls to avoid
-
-- **Don't merge to stage without checking the PR preview.** Once stage breaks, it pollutes everything built on top.
-- **Don't promote stage → main in the middle of a multi-PR feature.** Wait until the feature is coherent.
-- **Don't add new feature flags without a "delete the flag" follow-up note.** Otherwise the codebase fills with conditionals nobody owns.
-- **Don't cherry-pick stage commits to main as a substitute for the release cadence.** Cherry-picks are for hotfixes only.
+Users don't see the gated feature until the prod env var flips. **Delete the flag + conditional once the feature is stable on prod for a few days** — accumulating flags is technical debt.
 
 ## Testing & merge policy
 
-Applies to any merge into `main` **or** `stage` (and any PR targeting either branch).
+Applies to any merge into `main` (and any PR targeting `main`).
 
 Before merging, Claude must:
 
@@ -151,7 +126,7 @@ Before merging, Claude must:
 4. **Show the user the results** (test names + pass/fail) and wait for confirmation that they've verified the outcome.
 5. **Only then** prepare the merge / PR.
 
-Triggers: `git merge` into `main`/`stage`, `git push` to `main`/`stage`, opening a PR with `main` or `stage` as the base, and `gh pr merge` / equivalent MCP calls. Does not apply to merges into feature branches unless the user asks.
+Triggers: `git merge` into `main`, `git push` to `main`, opening a PR with `main` as the base, and `gh pr merge` / equivalent MCP calls. Does not apply to merges into feature branches unless the user asks.
 
 If tests are genuinely not applicable (docs-only change, asset commit, comment tweak), say so explicitly and ask the user to waive the requirement for that change. Never self-waive.
 ## Behavioral guidelines
@@ -292,7 +267,7 @@ Rules:
 
 - **Search recents → wallet-scoped server-side storage.** V1 shipped with `localStorage` only (per-device) in `src/lib/hooks/useRecentSearches.ts`. When building the next iteration of the Watchlist feature, add a `search_recents` Supabase table and GET/POST/DELETE endpoints under `/api/search-recents` — same JWT / `getSessionWallet` auth pattern as `/api/watchlist`, same rate-limiting, wallet from JWT not client. On wallet connect, migrate any `localStorage` recents to server once and clear the local copy.
 
-- **Lint cleanup — real issues (after PR #44 merges).** `npm run lint` reports 37 problems on stage; 13 are mechanical wins worth fixing in one small PR. Branch off `stage` only **after PR #44 merges** to avoid file overlap on `TabShell.tsx`, `VariantsSection.tsx`, `DexCard.tsx`. Fixes: (1) **rules-of-hooks bug** in `src/components/token/VariantsSection.tsx` — `useState` is called *after* an early `return null`, can corrupt state if `variants` toggles null↔non-null; move the hook above the early return and use override-pattern for default selection. (2) **2× `no-require-imports`** in `.claude/hooks/scan-secrets.js` — convert `require()` to ESM `import`. (3) **8× `no-explicit-any`** for `pair: any` across `TabShell.tsx`, `WatchlistTab.tsx`, `DexCard.tsx`, `useTabPairs.ts`, `api/watchlist/route.ts` — replace with the DexScreener pair type from `lib/`. (4) **1× impure-function-in-render** in `src/components/ui/PriceChart.tsx:57` — likely `Date.now()` or similar in render body, move to `useMemo` or props. (5) **1× exhaustive-deps** in `src/components/search/SearchModal.tsx:78` — wrap `navigableRows` in `useMemo`. After this PR, lint count drops from 37 → ~24.
+- **Lint cleanup — real issues (after PR #44 merges).** `npm run lint` reports 37 problems; 13 are mechanical wins worth fixing in one small PR. Branch off `main` only **after PR #44 merges** to avoid file overlap on `TabShell.tsx`, `VariantsSection.tsx`, `DexCard.tsx`. Fixes: (1) **rules-of-hooks bug** in `src/components/token/VariantsSection.tsx` — `useState` is called *after* an early `return null`, can corrupt state if `variants` toggles null↔non-null; move the hook above the early return and use override-pattern for default selection. (2) **2× `no-require-imports`** in `.claude/hooks/scan-secrets.js` — convert `require()` to ESM `import`. (3) **8× `no-explicit-any`** for `pair: any` across `TabShell.tsx`, `WatchlistTab.tsx`, `DexCard.tsx`, `useTabPairs.ts`, `api/watchlist/route.ts` — replace with the DexScreener pair type from `lib/`. (4) **1× impure-function-in-render** in `src/components/ui/PriceChart.tsx:57` — likely `Date.now()` or similar in render body, move to `useMemo` or props. (5) **1× exhaustive-deps** in `src/components/search/SearchModal.tsx:78` — wrap `navigableRows` in `useMemo`. After this PR, lint count drops from 37 → ~24.
 
 - **Lint cleanup — `set-state-in-effect` decision.** The other 17 lint errors all fire on the React 19 `react-hooks/set-state-in-effect` rule across data hooks (`useStablecoins`, `useTokenDetails`, `useWatchlist`, etc.). These are mostly legitimate "fetch on mount" / "reset on prop change" patterns — bulk-fixing in place risks breaking real fetch behavior. Decide before opening the cleanup PR above: (a) disable the rule project-wide in `eslint.config.*` with a CLAUDE.md note explaining why and a separate task to migrate to SWR/React Query, OR (b) keep the rule firing as a TODO marker and migrate the data layer in its own scoped project. **Do not piecemeal-fix.** Defer `<img>` → `<Image />` migration (7 warnings) until LCP scores justify it.
 
