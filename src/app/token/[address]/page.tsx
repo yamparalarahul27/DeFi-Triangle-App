@@ -71,7 +71,7 @@ export default function TokenDetailPage() {
       <main className="flex-1 max-w-[1100px] w-full mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 space-y-4">
         <Link
           href="/"
-          className="inline-flex items-center gap-1 text-xs text-[#6a7282] hover:text-[#11274d] transition-colors"
+          className="inline-flex items-center gap-1 text-xs text-fg-muted hover:text-fg transition-colors"
         >
           ← Back
         </Link>
@@ -171,10 +171,10 @@ function ErrorState({ message }: { message: string }) {
     <>
       <Header hasHero={false} />
       <main className="flex-1 max-w-[1100px] w-full mx-auto px-4 py-8 text-center">
-        <div className="py-16 text-sm text-[#6a7282] mb-3">{message}</div>
+        <div className="py-16 text-sm text-fg-muted mb-3">{message}</div>
         <Link
           href="/"
-          className="text-xs text-[#19549b] hover:text-[#143f78]"
+          className="text-xs text-brand hover:text-brand-hover"
         >
           ← Back to dashboard
         </Link>
@@ -188,8 +188,8 @@ function TokenLinksSection({ address }: { address: string }) {
   if (!address) return null;
 
   return (
-    <section className="bg-white rounded-sm border border-[#cbd5e1] p-4 sm:p-6">
-      <div className="text-[10px] uppercase tracking-wider text-[#6a7282] mb-3">
+    <section className="bg-surface-container rounded-sm border border-outline-variant p-4 sm:p-6">
+      <div className="text-[10px] uppercase tracking-wider text-fg-muted mb-3">
         Token links
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
@@ -197,7 +197,7 @@ function TokenLinksSection({ address }: { address: string }) {
           href={`https://solscan.io/token/${address}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="h-9 rounded-sm bg-white border border-[#cbd5e1] text-[#11274d] hover:bg-[#f1f5f9] transition-colors inline-flex items-center justify-center"
+          className="h-9 rounded-sm bg-surface-container border border-outline-variant text-fg hover:bg-surface-page transition-colors inline-flex items-center justify-center"
         >
           Solscan ↗
         </a>
@@ -205,7 +205,7 @@ function TokenLinksSection({ address }: { address: string }) {
           href={`https://birdeye.so/token/${address}?chain=solana`}
           target="_blank"
           rel="noopener noreferrer"
-          className="h-9 rounded-sm bg-[#19549b] text-white hover:bg-[#143f78] transition-colors inline-flex items-center justify-center"
+          className="h-9 rounded-sm bg-brand text-on-brand hover:bg-brand-hover transition-colors inline-flex items-center justify-center"
         >
           Birdeye ↗
         </a>

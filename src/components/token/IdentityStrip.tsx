@@ -77,17 +77,17 @@ export function IdentityStrip({
 
   const toneClass =
     tone === "safe"
-      ? "text-[#0fa87a] bg-[#e5f7f2] border-[#0fa87a]/30"
+      ? "text-buy bg-buy-surface border-buy/30"
       : tone === "caution"
-        ? "text-[#b45309] bg-[#fffbeb] border-[#f59e0b]/40"
-        : "text-[#b91c1c] bg-[#fef2f2] border-[#ef4444]/40";
+        ? "text-warning-strong bg-warning-surface border-warning/40"
+        : "text-sell-strong bg-sell-surface border-sell/40";
 
   const logoUrl =
     asset.imageUrl || primary?.market?.logoURI || undefined;
   const primaryTier = primary?.trustTier;
 
   return (
-    <section className="bg-white rounded-sm border border-[#cbd5e1] p-4 sm:p-6">
+    <section className="bg-surface-container rounded-sm border border-outline-variant p-4 sm:p-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
         <TokenIcon
           src={logoUrl}
@@ -97,11 +97,11 @@ export function IdentityStrip({
         />
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <h1 className="text-2xl font-bold text-[#11274d]">
+            <h1 className="text-2xl font-bold text-fg">
               {asset.name ?? "Solana"}
             </h1>
             {primaryTier === "tier1" && (
-              <span className="text-[10px] uppercase tracking-wider font-semibold px-1.5 py-0.5 rounded-sm border text-[#19549b] bg-[#f1f5f9] border-[#19549b]/30">
+              <span className="text-[10px] uppercase tracking-wider font-semibold px-1.5 py-0.5 rounded-sm border text-brand bg-surface-page border-brand/30">
                 ✓ Verified
               </span>
             )}
@@ -113,7 +113,7 @@ export function IdentityStrip({
               </span>
             )}
           </div>
-          <div className="text-sm text-[#6a7282] mt-1">
+          <div className="text-sm text-fg-muted mt-1">
             {asset.symbol ?? "SOL"}
             {primary?.name && primary.symbol !== asset.symbol
               ? ` · Primary variant: ${primary.name}`
@@ -121,12 +121,12 @@ export function IdentityStrip({
           </div>
         </div>
         <div className="sm:text-right">
-          <div className="font-mono text-3xl text-[#11274d] leading-none">
+          <div className="font-mono text-3xl text-fg leading-none">
             <NumberFlow value={price} format={priceFormat(price)} prefix="$" />
           </div>
           <div
             className={`text-sm flex items-center gap-1 mt-1 ${
-              up ? "text-[#0fa87a]" : "text-[#ef4444]"
+              up ? "text-buy" : "text-sell"
             } sm:justify-end`}
           >
             <img
@@ -153,14 +153,14 @@ export function IdentityStrip({
             </div>
           )}
           {ath != null && athDeltaPct != null && (
-            <div className="text-[11px] text-[#6a7282] mt-2 sm:text-right">
+            <div className="text-[11px] text-fg-muted mt-2 sm:text-right">
               ATH {fmtUsd(ath)}
               {athDate &&
                 ` · ${fmtAge(new Date(athDate).getTime())} ago`}{" "}
               ·{" "}
               <span
                 className={
-                  athDeltaPct < 0 ? "text-[#ef4444]" : "text-[#0fa87a]"
+                  athDeltaPct < 0 ? "text-sell" : "text-buy"
                 }
               >
                 {athDeltaPct < 0 ? "down" : "up"}{" "}

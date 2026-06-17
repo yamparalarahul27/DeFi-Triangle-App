@@ -57,18 +57,18 @@ export function Tooltip({
           <RadixDialog.Overlay className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0" />
           <RadixDialog.Content
             aria-describedby={undefined}
-            className="fixed bottom-0 left-0 right-0 z-50 max-h-[80vh] overflow-y-auto rounded-t-lg bg-white p-5 pb-7 shadow-xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:slide-in-from-bottom data-[state=closed]:slide-out-to-bottom"
+            className="fixed bottom-0 left-0 right-0 z-50 max-h-[80vh] overflow-y-auto rounded-t-lg bg-surface-container p-5 pb-7 shadow-xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:slide-in-from-bottom data-[state=closed]:slide-out-to-bottom"
           >
-            <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-[#cbd5e1]" />
-            <RadixDialog.Title className="mb-3 pr-8 text-sm font-semibold text-[#11274d]">
+            <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-surface-bright" />
+            <RadixDialog.Title className="mb-3 pr-8 text-sm font-semibold text-fg">
               {title}
             </RadixDialog.Title>
-            <div className="text-sm leading-relaxed text-[#11274d]">
+            <div className="text-sm leading-relaxed text-fg">
               {content}
             </div>
             <RadixDialog.Close
               aria-label="Close"
-              className="absolute top-3 right-3 inline-flex h-7 w-7 items-center justify-center rounded-sm text-[#6a7282] hover:bg-[#f1f5f9] hover:text-[#11274d] transition-colors"
+              className="absolute top-3 right-3 inline-flex h-7 w-7 items-center justify-center rounded-sm text-fg-muted hover:bg-surface-page hover:text-fg transition-colors"
             >
               ×
             </RadixDialog.Close>
@@ -86,10 +86,10 @@ export function Tooltip({
           <RadixTooltip.Content
             side={side}
             sideOffset={4}
-            className="z-50 max-w-[260px] rounded-sm bg-[#11274d] px-2.5 py-1.5 text-[11px] leading-snug text-white shadow-md data-[state=delayed-open]:animate-in data-[state=closed]:animate-out data-[state=delayed-open]:fade-in-0 data-[state=closed]:fade-out-0"
+            className="z-50 max-w-[260px] rounded-sm bg-surface-bright px-2.5 py-1.5 text-[11px] leading-snug text-white shadow-md data-[state=delayed-open]:animate-in data-[state=closed]:animate-out data-[state=delayed-open]:fade-in-0 data-[state=closed]:fade-out-0"
           >
             {content}
-            <RadixTooltip.Arrow className="fill-[#11274d]" />
+            <RadixTooltip.Arrow className="fill-fg" />
           </RadixTooltip.Content>
         </RadixTooltip.Portal>
       </RadixTooltip.Root>

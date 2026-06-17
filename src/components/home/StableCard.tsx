@@ -26,7 +26,7 @@ function cardSubtitle(mint: string, fallback: string): string {
 }
 
 const CARD_BASE =
-  "shrink-0 bg-white rounded-[14px] border border-[#11274d]/10 p-4 transition-[border-color,box-shadow,transform] duration-150";
+  "shrink-0 bg-surface-container rounded-[14px] border border-outline/10 p-4 transition-[border-color,box-shadow,transform] duration-150";
 const CARD_SHADOW = {
   boxShadow: "0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)",
 };
@@ -44,7 +44,7 @@ export function StableCardLive({
   return (
     <div
       className={`${CARD_BASE} w-[260px] ${
-        onClick ? "cursor-pointer hover:border-[#11274d]/25 active:scale-[0.98]" : "hover:border-[#11274d]/20"
+        onClick ? "cursor-pointer hover:border-outline/25 active:scale-[0.98]" : "hover:border-outline/20"
       }`}
       style={CARD_SHADOW}
       role={onClick ? "button" : undefined}
@@ -70,10 +70,10 @@ export function StableCardLive({
             size="md"
           />
           <div className="min-w-0">
-            <div className="text-sm font-semibold text-[#11274d] truncate">
+            <div className="text-sm font-semibold text-fg truncate">
               {token.symbol}
             </div>
-            <div className="text-xs text-[#6a7282] truncate">
+            <div className="text-xs text-fg-muted truncate">
               {cardSubtitle(token.mint, token.name)}
             </div>
           </div>
@@ -82,7 +82,7 @@ export function StableCardLive({
       </div>
 
       <div className="flex items-baseline justify-between gap-2 mb-3">
-        <div className="font-mono text-base text-[#11274d]">
+        <div className="font-mono text-base text-fg">
           {formatStablePrice(token.priceUsd)}
         </div>
         <div className={`text-xs font-mono ${tone.deviationText}`}>
@@ -119,7 +119,7 @@ export function StableCardPending({
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        className={`${CARD_BASE} block w-[260px] border-2 border-[#19549b] bg-gradient-to-br from-white to-[#e6efff] cursor-pointer hover:border-[#143f78] hover:shadow-md active:scale-[0.98]`}
+        className={`${CARD_BASE} block w-[260px] border-2 border-brand bg-gradient-to-br from-surface-container to-surface-container-high cursor-pointer hover:border-brand-hover hover:shadow-md active:scale-[0.98]`}
         style={CARD_SHADOW}
         aria-label={`Learn more about ${token.symbol}`}
       >
@@ -130,8 +130,8 @@ export function StableCardPending({
 
   return (
     <div
-      className={`${CARD_BASE} w-[260px] border-[#19549b]/15 bg-gradient-to-br from-white to-[#f1f5f9] ${
-        onClick ? "cursor-pointer hover:border-[#19549b]/30 active:scale-[0.98]" : ""
+      className={`${CARD_BASE} w-[260px] border-brand/15 bg-gradient-to-br from-surface-container to-surface-page ${
+        onClick ? "cursor-pointer hover:border-brand/30 active:scale-[0.98]" : ""
       }`}
       style={CARD_SHADOW}
       role={onClick ? "button" : undefined}
@@ -165,23 +165,23 @@ function FeaturedPendingBody({ token }: { token: StablePendingData }) {
             size="md"
           />
           <div className="min-w-0">
-            <div className="text-sm font-semibold text-[#11274d] truncate">
+            <div className="text-sm font-semibold text-fg truncate">
               {token.symbol}
             </div>
-            <div className="text-xs text-[#6a7282] truncate">
+            <div className="text-xs text-fg-muted truncate">
               {cardSubtitle(token.mint, token.name)}
             </div>
           </div>
         </div>
-        <span className="text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-[#19549b]/10 text-[#19549b] shrink-0 whitespace-nowrap">
+        <span className="text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-brand/10 text-brand shrink-0 whitespace-nowrap">
           ★ Featured
         </span>
       </div>
 
-      <p className="text-xs text-[#11274d] leading-snug mb-3">
+      <p className="text-xs text-fg leading-snug mb-3">
         {token.tagline}
       </p>
-      <p className="text-[11px] text-[#19549b] font-medium">Learn more →</p>
+      <p className="text-[11px] text-brand font-medium">Learn more →</p>
     </>
   );
 }
@@ -193,28 +193,28 @@ function DimPendingBody({ token }: { token: StablePendingData }) {
         <div className="flex items-center gap-2 min-w-0">
           <div
             aria-label={token.symbol}
-            className="w-6 h-6 rounded-full bg-[#0d2137] text-[#7ee5c6] flex items-center justify-center font-semibold text-[10px] shrink-0"
+            className="w-6 h-6 rounded-full bg-surface-container text-buy flex items-center justify-center font-semibold text-[10px] shrink-0"
           >
             {token.symbol.slice(0, 2).toUpperCase()}
           </div>
           <div className="min-w-0">
-            <div className="text-sm font-semibold text-[#11274d] truncate">
+            <div className="text-sm font-semibold text-fg truncate">
               {token.symbol}
             </div>
-            <div className="text-xs text-[#6a7282] truncate">
+            <div className="text-xs text-fg-muted truncate">
               {cardSubtitle(token.mint, token.name)}
             </div>
           </div>
         </div>
-        <span className="text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-[#d97706]/10 text-[#d97706] shrink-0 whitespace-nowrap">
+        <span className="text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-warning-strong/10 text-warning-strong shrink-0 whitespace-nowrap">
           Coming Soon
         </span>
       </div>
 
-      <p className="text-xs text-[#11274d] leading-snug mb-2">
+      <p className="text-xs text-fg leading-snug mb-2">
         {token.tagline}
       </p>
-      <p className="text-[10px] text-[#6a7282] uppercase tracking-wider">
+      <p className="text-[10px] text-fg-muted uppercase tracking-wider">
         Awaiting Solana liquidity
       </p>
     </>
@@ -250,13 +250,13 @@ export function PegLegend() {
   return (
     <div className="space-y-1 text-[11px] leading-snug">
       <div>
-        <span className="text-[#0fa87a]">●</span> On peg — within {onPegPct}%
+        <span className="text-buy">●</span> On peg — within {onPegPct}%
       </div>
       <div>
-        <span className="text-[#f59e0b]">●</span> Drifting — within {driftingPct}%
+        <span className="text-warning">●</span> Drifting — within {driftingPct}%
       </div>
       <div>
-        <span className="text-[#ef4444]">●</span> Depegged — beyond {driftingPct}%
+        <span className="text-sell">●</span> Depegged — beyond {driftingPct}%
       </div>
       <div className="opacity-70 pt-1 border-t border-white/15 mt-1">
         Sign (+/−) shows direction; color shows health.
@@ -268,10 +268,10 @@ export function PegLegend() {
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <div className="text-[10px] uppercase tracking-wider text-[#6a7282]">
+      <div className="text-[10px] uppercase tracking-wider text-fg-muted">
         {label}
       </div>
-      <div className="font-mono text-xs text-[#11274d] mt-0.5">{value}</div>
+      <div className="font-mono text-xs text-fg mt-0.5">{value}</div>
     </div>
   );
 }
@@ -283,19 +283,19 @@ type PegTone = {
 };
 
 const TONE_ON_PEG: PegTone = {
-  badgeBg: "bg-[#0fa87a]/10",
-  badgeText: "text-[#0fa87a]",
-  deviationText: "text-[#0fa87a]",
+  badgeBg: "bg-buy/10",
+  badgeText: "text-buy",
+  deviationText: "text-buy",
 };
 const TONE_DRIFTING: PegTone = {
-  badgeBg: "bg-[#d97706]/10",
-  badgeText: "text-[#d97706]",
-  deviationText: "text-[#d97706]",
+  badgeBg: "bg-warning-strong/10",
+  badgeText: "text-warning-strong",
+  deviationText: "text-warning-strong",
 };
 const TONE_DEPEGGED: PegTone = {
-  badgeBg: "bg-[#ef4444]/10",
-  badgeText: "text-[#ef4444]",
-  deviationText: "text-[#ef4444]",
+  badgeBg: "bg-sell/10",
+  badgeText: "text-sell",
+  deviationText: "text-sell",
 };
 
 function pegState(deviationBps: number): { tone: PegTone; label: string } {

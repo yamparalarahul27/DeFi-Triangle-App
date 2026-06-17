@@ -43,8 +43,8 @@ export function NftRail({
   return (
     <div className="relative mt-6">
       {/* edge fades */}
-      <div className="pointer-events-none absolute left-0 top-3 bottom-3 w-8 bg-gradient-to-r from-[#f1f5f9] to-transparent z-10" />
-      <div className="pointer-events-none absolute right-0 top-3 bottom-3 w-8 bg-gradient-to-l from-[#f1f5f9] to-transparent z-10" />
+      <div className="pointer-events-none absolute left-0 top-3 bottom-3 w-8 bg-gradient-to-r from-surface-page to-transparent z-10" />
+      <div className="pointer-events-none absolute right-0 top-3 bottom-3 w-8 bg-gradient-to-l from-surface-page to-transparent z-10" />
 
       <div
         ref={railRef}
@@ -63,9 +63,9 @@ export function NftRail({
               onClick={() => onSelect(i)}
               aria-label={nft.name}
               aria-pressed={isSelected}
-              className={`group relative shrink-0 w-[72px] h-[72px] rounded-[8px] overflow-hidden cursor-pointer transition-[transform,box-shadow] duration-150 active:scale-[0.96] hover:-translate-y-[2px] border border-[#11274d]/10 ${
+              className={`group relative shrink-0 w-[72px] h-[72px] rounded-[8px] overflow-hidden cursor-pointer transition-[transform,box-shadow] duration-150 active:scale-[0.96] hover:-translate-y-[2px] border border-outline/10 ${
                 isSelected
-                  ? "ring-2 ring-[#19549b] ring-offset-2 ring-offset-[#f1f5f9]"
+                  ? "ring-2 ring-brand ring-offset-2 ring-offset-surface-page"
                   : ""
               }`}
               style={{ scrollSnapAlign: "center" }}
@@ -90,7 +90,7 @@ export function NftRail({
             type="button"
             onClick={onLoadMore}
             disabled={loadingMore}
-            className="shrink-0 w-[72px] h-[72px] rounded-[8px] border-2 border-dashed border-[#cbd5e1] bg-white text-[11px] text-[#6a7282] hover:text-[#11274d] hover:border-[#19549b] transition-colors duration-150 disabled:opacity-60"
+            className="shrink-0 w-[72px] h-[72px] rounded-[8px] border-2 border-dashed border-outline-variant bg-surface-container text-[11px] text-fg-muted hover:text-fg hover:border-brand transition-colors duration-150 disabled:opacity-60"
             style={{ scrollSnapAlign: "center" }}
           >
             {loadingMore ? "…" : "Load more"}
@@ -99,7 +99,7 @@ export function NftRail({
       </div>
 
       {totalSupply != null && (
-        <div className="text-center text-[11px] text-[#6a7282] mt-1 font-mono">
+        <div className="text-center text-[11px] text-fg-muted mt-1 font-mono">
           {assets.length} of {totalSupply}
         </div>
       )}

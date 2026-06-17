@@ -55,7 +55,7 @@ const checks = [
       [/min-h-\[40px\]/, "tab pill min-h-[40px]"],
       [/transition-\[background-color,color,box-shadow,transform\]/, "targeted transition"],
       [/active:scale-\[0\.96\]/, "scale(.96) press"],
-      [/0_12px_24px_rgba\(25,84,155,0\.10\)/, "layered shadow"],
+      [/0_12px_24px_rgba\(90,216,196,0\.12\)/, "layered shadow"],
     ],
   },
   {
@@ -64,7 +64,7 @@ const checks = [
       [/min-h-\[40px\]/, "tab pill min-h-[40px]"],
       [/transition-\[background-color,color,box-shadow,transform\]/, "targeted transition"],
       [/active:scale-\[0\.96\]/, "scale(.96) press"],
-      [/0_12px_24px_rgba\(25,84,155,0\.10\)/, "layered shadow"],
+      [/0_12px_24px_rgba\(90,216,196,0\.12\)/, "layered shadow"],
     ],
   },
   {

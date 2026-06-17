@@ -16,22 +16,22 @@ export function EdgeScorePanel({ result }: { result: EdgeScoreResult | null }) {
   const tone = result.tone;
   const toneBar =
     tone === "safe"
-      ? "bg-[#0fa87a]"
+      ? "bg-buy"
       : tone === "caution"
-        ? "bg-[#f59e0b]"
-        : "bg-[#ef4444]";
+        ? "bg-warning"
+        : "bg-sell";
   const gradeChip =
     tone === "safe"
-      ? "bg-[#ecfdf5] text-[#0fa87a] border-[#a7f3d0]"
+      ? "bg-buy-surface text-buy border-buy"
       : tone === "caution"
-        ? "bg-[#fffbeb] text-[#b45309] border-[#fde68a]"
-        : "bg-[#fef2f2] text-[#b91c1c] border-[#fecaca]";
+        ? "bg-warning-surface text-warning-strong border-warning"
+        : "bg-sell-surface text-sell-strong border-sell";
 
   return (
-    <section className="bg-white rounded-sm border border-[#cbd5e1] p-4 sm:p-6 space-y-4">
+    <section className="bg-surface-container rounded-sm border border-outline-variant p-4 sm:p-6 space-y-4">
       <div>
         <div className="flex flex-wrap items-baseline justify-between gap-2 mb-2">
-          <div className="text-[10px] uppercase tracking-wider text-[#6a7282]">
+          <div className="text-[10px] uppercase tracking-wider text-fg-muted">
             Edge Score · DeFi Triangle composite
           </div>
           <div className="text-xs flex items-baseline gap-2">
@@ -40,13 +40,13 @@ export function EdgeScorePanel({ result }: { result: EdgeScoreResult | null }) {
             >
               Grade {result.grade}
             </span>
-            <span className="font-mono text-[#11274d] text-base tabular-nums">
+            <span className="font-mono text-fg text-base tabular-nums">
               <NumberFlow value={result.score} format={SCORE} /> / 100
             </span>
-            <span className="text-[#6a7282]">{result.label}</span>
+            <span className="text-fg-muted">{result.label}</span>
           </div>
         </div>
-        <div className="h-1.5 rounded-full bg-[#f1f5f9] overflow-hidden">
+        <div className="h-1.5 rounded-full bg-surface-page overflow-hidden">
           <div
             className={`h-full ${toneBar} transition-[width] duration-300`}
             style={{
@@ -54,7 +54,7 @@ export function EdgeScorePanel({ result }: { result: EdgeScoreResult | null }) {
             }}
           />
         </div>
-        <div className="text-[11px] text-[#6a7282] mt-2 leading-snug">
+        <div className="text-[11px] text-fg-muted mt-2 leading-snug">
           {TOOLTIP_NOTE}
         </div>
       </div>
@@ -62,7 +62,7 @@ export function EdgeScorePanel({ result }: { result: EdgeScoreResult | null }) {
       <button
         type="button"
         onClick={() => setExpanded((e) => !e)}
-        className="text-xs text-[#19549b] hover:text-[#143f78] transition-colors"
+        className="text-xs text-brand hover:text-brand-hover transition-colors"
       >
         {expanded ? "Hide" : "Show"} breakdown ({result.signalCount} signals)
       </button>
@@ -83,15 +83,15 @@ function BreakdownRow({ entry }: { entry: BreakdownEntry }) {
     return (
       <div className="text-xs">
         <div className="flex items-center gap-2 min-w-0">
-          <span className="flex-1 min-w-0 text-[#11274d]">{entry.name}</span>
+          <span className="flex-1 min-w-0 text-fg">{entry.name}</span>
           <SourceChip source={entry.source} />
         </div>
         <div className="mt-1 flex items-center gap-2">
-          <span className="flex-1 min-w-0 text-[10px] text-[#6a7282]">
+          <span className="flex-1 min-w-0 text-[10px] text-fg-muted">
             No data
           </span>
-          <div className="w-20 h-1 rounded-full bg-[#f1f5f9] shrink-0" />
-          <span className="font-mono text-[10px] text-[#6a7282] text-right tabular-nums shrink-0 w-[60px]">
+          <div className="w-20 h-1 rounded-full bg-surface-page shrink-0" />
+          <span className="font-mono text-[10px] text-fg-muted text-right tabular-nums shrink-0 w-[60px]">
             —
           </span>
         </div>
@@ -102,28 +102,28 @@ function BreakdownRow({ entry }: { entry: BreakdownEntry }) {
   const ratio = entry.weight > 0 ? entry.contribution / entry.weight : 0;
   const fillColor =
     ratio >= 0.75
-      ? "bg-[#0fa87a]"
+      ? "bg-buy"
       : ratio >= 0.4
-        ? "bg-[#f59e0b]"
-        : "bg-[#ef4444]";
+        ? "bg-warning"
+        : "bg-sell";
 
   return (
     <div className="text-xs">
       <div className="flex items-center gap-2 min-w-0">
-        <span className="flex-1 min-w-0 text-[#11274d]">{entry.name}</span>
+        <span className="flex-1 min-w-0 text-fg">{entry.name}</span>
         <SourceChip source={entry.source} />
       </div>
       <div className="mt-1 flex items-center gap-2">
-        <span className="flex-1 min-w-0 font-mono text-[10px] text-[#11274d] tabular-nums truncate">
+        <span className="flex-1 min-w-0 font-mono text-[10px] text-fg tabular-nums truncate">
           {entry.value}
         </span>
-        <div className="w-20 h-1 rounded-full bg-[#f1f5f9] overflow-hidden shrink-0">
+        <div className="w-20 h-1 rounded-full bg-surface-page overflow-hidden shrink-0">
           <div
             className={`h-full ${fillColor}`}
             style={{ width: `${Math.max(0, Math.min(100, ratio * 100))}%` }}
           />
         </div>
-        <span className="font-mono text-[10px] text-[#6a7282] text-right tabular-nums shrink-0 w-[60px]">
+        <span className="font-mono text-[10px] text-fg-muted text-right tabular-nums shrink-0 w-[60px]">
           +<NumberFlow value={entry.contribution} format={SCORE} /> /{" "}
           {entry.weight}
         </span>
@@ -134,7 +134,7 @@ function BreakdownRow({ entry }: { entry: BreakdownEntry }) {
 
 function SourceChip({ source }: { source: BreakdownEntry["source"] }) {
   return (
-    <span className="text-[9px] uppercase tracking-wider px-1 py-0.5 rounded-sm bg-[#f1f5f9] text-[#6a7282] border border-[#cbd5e1] shrink-0">
+    <span className="text-[9px] uppercase tracking-wider px-1 py-0.5 rounded-sm bg-surface-page text-fg-muted border border-outline-variant shrink-0">
       {source}
     </span>
   );

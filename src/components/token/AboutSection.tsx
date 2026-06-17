@@ -14,18 +14,18 @@ export function AboutSection({ profile }: { profile: AssetProfile }) {
       : description;
 
   return (
-    <section className="bg-white rounded-sm border border-[#cbd5e1] p-4 sm:p-6">
-      <div className="text-[10px] uppercase tracking-wider text-[#6a7282] mb-3">
+    <section className="bg-surface-container rounded-sm border border-outline-variant p-4 sm:p-6">
+      <div className="text-[10px] uppercase tracking-wider text-fg-muted mb-3">
         About
       </div>
-      <p className="text-sm text-[#11274d] whitespace-pre-line leading-relaxed [text-wrap:pretty]">
+      <p className="text-sm text-fg whitespace-pre-line leading-relaxed [text-wrap:pretty]">
         {displayed}
       </p>
       {needsTruncation && (
         <button
           type="button"
           onClick={() => setExpanded((v) => !v)}
-          className="text-xs text-[#19549b] hover:text-[#143f78] mt-2 transition-colors"
+          className="text-xs text-brand hover:text-brand-hover mt-2 transition-colors"
         >
           {expanded ? "Show less" : "Read more"}
         </button>
@@ -38,7 +38,7 @@ export function AboutSection({ profile }: { profile: AssetProfile }) {
               href={url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs px-3 py-1 rounded-sm bg-[#f1f5f9] text-[#11274d] hover:bg-[#e2e8f0] transition-colors capitalize"
+              className="text-xs px-3 py-1 rounded-sm bg-surface-page text-fg hover:bg-surface-container-high transition-colors capitalize"
             >
               {key} ↗
             </a>

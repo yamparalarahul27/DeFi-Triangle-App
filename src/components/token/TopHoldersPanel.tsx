@@ -21,24 +21,24 @@ export function TopHoldersPanel({
   if (!holders || holders.length === 0) return null;
 
   return (
-    <section className="bg-white rounded-sm border border-[#cbd5e1] p-4 sm:p-6 space-y-3">
+    <section className="bg-surface-container rounded-sm border border-outline-variant p-4 sm:p-6 space-y-3">
       <div className="flex items-baseline justify-between">
-        <div className="text-[10px] uppercase tracking-wider text-[#6a7282]">
+        <div className="text-[10px] uppercase tracking-wider text-fg-muted">
           Top holders · Birdeye
         </div>
-        <div className="text-[10px] text-[#6a7282]">
+        <div className="text-[10px] text-fg-muted">
           Top {holders.length}
         </div>
       </div>
 
       <div className="overflow-hidden">
-        <div className="grid grid-cols-[2.5rem_1fr_auto_4rem] sm:grid-cols-[2.5rem_1fr_auto_5rem] gap-2 text-[10px] uppercase tracking-wider text-[#6a7282] pb-2 border-b border-[#cbd5e1]">
+        <div className="grid grid-cols-[2.5rem_1fr_auto_4rem] sm:grid-cols-[2.5rem_1fr_auto_5rem] gap-2 text-[10px] uppercase tracking-wider text-fg-muted pb-2 border-b border-outline-variant">
           <span>#</span>
           <span>Wallet</span>
           <span className="text-right">Amount</span>
           <span className="text-right">% Supply</span>
         </div>
-        <ul className="divide-y divide-[#f1f5f9]">
+        <ul className="divide-y divide-outline-variant">
           {holders.map((h, idx) => (
             <HolderItem
               key={`${h.owner}-${idx}`}
@@ -72,13 +72,13 @@ function HolderItem({
 
   return (
     <li className="grid grid-cols-[2.5rem_1fr_auto_4rem] sm:grid-cols-[2.5rem_1fr_auto_5rem] gap-2 items-center py-2 text-xs">
-      <span className="font-mono text-[#6a7282] tabular-nums">{rank}</span>
+      <span className="font-mono text-fg-muted tabular-nums">{rank}</span>
       <CopyAddress address={row.owner} />
-      <span className="font-mono text-[#11274d] text-right tabular-nums">
+      <span className="font-mono text-fg text-right tabular-nums">
         {fmtAmount(row.uiAmount)}
-        {symbol ? <span className="text-[#6a7282] ml-1">{symbol}</span> : null}
+        {symbol ? <span className="text-fg-muted ml-1">{symbol}</span> : null}
       </span>
-      <span className="font-mono text-[#11274d] text-right tabular-nums">
+      <span className="font-mono text-fg text-right tabular-nums">
         {pct == null ? "—" : `${pct.toFixed(pct < 0.01 ? 4 : 2)}%`}
       </span>
     </li>
@@ -104,7 +104,7 @@ function CopyAddress({ address }: { address: string }) {
         type="button"
         onClick={onCopy}
         title={address}
-        className="font-mono text-[#11274d] hover:text-[#19549b] transition-colors truncate"
+        className="font-mono text-fg hover:text-brand transition-colors truncate"
       >
         {truncate(address)}
       </button>
@@ -112,12 +112,12 @@ function CopyAddress({ address }: { address: string }) {
         href={`https://birdeye.so/solana/wallet-analyzer/${address}?tab=portfolio`}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-[10px] text-[#6a7282] hover:text-[#19549b] transition-colors shrink-0"
+        className="text-[10px] text-fg-muted hover:text-brand transition-colors shrink-0"
         title="Open in Birdeye"
       >
         ↗
       </a>
-      <span className="text-[10px] text-[#6a7282] shrink-0">
+      <span className="text-[10px] text-fg-muted shrink-0">
         {copied ? "Copied" : ""}
       </span>
     </span>

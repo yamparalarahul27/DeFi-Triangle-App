@@ -13,7 +13,7 @@ export function Skeleton({
     <div
       aria-hidden
       className={cn(
-        "animate-pulse bg-[#e2e8f0] rounded-sm",
+        "animate-pulse bg-surface-container-high rounded-sm",
         className
       )}
       style={style}
@@ -32,11 +32,11 @@ export function SectionSkeleton({
     <section
       aria-busy="true"
       aria-label={label ? `${label} loading` : "Loading"}
-      className="bg-white rounded-sm border border-[#cbd5e1] p-4 sm:p-6"
+      className="bg-surface-container rounded-sm border border-outline-variant p-4 sm:p-6"
       style={{ minHeight: height }}
     >
       {label ? (
-        <div className="text-[10px] uppercase tracking-wider text-[#6a7282] mb-3">
+        <div className="text-[10px] uppercase tracking-wider text-fg-muted mb-3">
           {label}
         </div>
       ) : null}

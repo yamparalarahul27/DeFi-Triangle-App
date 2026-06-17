@@ -28,7 +28,7 @@ export function TrendingTab({
 
   return (
     <div className="space-y-3">
-      <div className="text-xs text-[#6B7280]">
+      <div className="text-xs text-fg-subtle">
         Showing {tokens.length} quality tokens from Birdeye V3 list
       </div>
 

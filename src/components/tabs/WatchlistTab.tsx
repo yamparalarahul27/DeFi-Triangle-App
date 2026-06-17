@@ -33,14 +33,14 @@ export function WatchlistTab({
     return (
       <div className="py-16 flex flex-col items-center gap-4 text-center">
         <div className="text-3xl">☆</div>
-        <div className="text-sm text-[#6a7282] max-w-sm">
+        <div className="text-sm text-fg-muted max-w-sm">
           Connect your wallet to save tokens to a persistent watchlist tied to
           your address.
         </div>
         <button
           type="button"
           onClick={() => setShowModal(true)}
-          className="h-9 px-4 rounded-sm bg-[#19549b] text-white text-xs font-semibold hover:bg-[#143f78] transition-colors"
+          className="h-9 px-4 rounded-sm bg-brand text-on-brand text-xs font-semibold hover:bg-brand-hover transition-colors"
         >
           Connect Wallet
         </button>
@@ -94,7 +94,7 @@ export function WatchlistTab({
               <button
                 type="button"
                 onClick={() => onRemove(item.token_address)}
-                className="h-7 rounded-sm bg-white border border-[#cbd5e1] text-xs text-[#6a7282] hover:text-[#b91c1c] hover:border-[#ef4444]/40 transition-colors"
+                className="h-7 rounded-sm bg-surface-container border border-outline-variant text-xs text-fg-muted hover:text-sell-strong hover:border-sell/40 transition-colors"
               >
                 Remove
               </button>
@@ -115,10 +115,10 @@ function WatchlistHeader({
 }) {
   return (
     <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
-      <div className="text-[#11274d] font-semibold">
-        Your Watchlist <span className="text-[#6a7282]">({count})</span>
+      <div className="text-fg font-semibold">
+        Your Watchlist <span className="text-fg-muted">({count})</span>
       </div>
-      <div className="text-[#6a7282]">
+      <div className="text-fg-muted">
         <span className="font-mono">{truncate(wallet ?? "")}</span>
       </div>
     </div>

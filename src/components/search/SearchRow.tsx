@@ -35,28 +35,28 @@ export function SearchRow({ row, active, onSelect, onHover }: SearchRowProps) {
       onMouseEnter={onHover}
       className={`w-full flex items-center gap-3 px-3 py-2 text-left transition-colors border-l-2 ${
         active
-          ? "bg-[#f1f5f9] border-[#19549b]"
-          : "border-transparent hover:bg-[#f8fafc]"
+          ? "bg-surface-page border-brand"
+          : "border-transparent hover:bg-surface"
       }`}
     >
       <TokenIcon src={row.imageUrl} symbol={row.symbol} size="md" />
       <div className="flex-1 min-w-0">
-        <div className="text-xs font-semibold text-[#11274d] truncate">
+        <div className="text-xs font-semibold text-fg truncate">
           {row.symbol || "???"}
         </div>
-        <div className="text-[10px] text-[#6a7282] truncate">
+        <div className="text-[10px] text-fg-muted truncate">
           {row.name}
           {row.secondary ? ` · ${row.secondary}` : ""}
         </div>
       </div>
       {hasPrice && (
         <div className="text-right shrink-0">
-          <div className="font-mono text-xs text-[#11274d]">
+          <div className="font-mono text-xs text-fg">
             {fmtUsd(row.priceUsd!)}
           </div>
           <div
             className={`font-mono text-[10px] ${
-              up ? "text-[#0fa87a]" : "text-[#ef4444]"
+              up ? "text-buy" : "text-sell"
             }`}
           >
             {up ? "▲" : "▼"} {fmtPctMagnitude(change)}

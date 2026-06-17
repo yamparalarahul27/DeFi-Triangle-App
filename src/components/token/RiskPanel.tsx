@@ -7,10 +7,10 @@ export function RiskPanel({ risk }: { risk: RiskData }) {
   const tone = ms.tone;
   const toneBar =
     tone === "safe"
-      ? "bg-[#0fa87a]"
+      ? "bg-buy"
       : tone === "caution"
-        ? "bg-[#f59e0b]"
-        : "bg-[#ef4444]";
+        ? "bg-warning"
+        : "bg-sell";
 
   const components: [string, RiskComponent | undefined][] = [
     ["Liquidity health", ms.components.liquidityHealth],
@@ -20,22 +20,22 @@ export function RiskPanel({ risk }: { risk: RiskData }) {
   ];
 
   return (
-    <section className="bg-white rounded-sm border border-[#cbd5e1] p-4 sm:p-6 space-y-4">
+    <section className="bg-surface-container rounded-sm border border-outline-variant p-4 sm:p-6 space-y-4">
       <div>
         <div className="flex flex-wrap items-baseline justify-between gap-2 mb-2">
-          <div className="text-[10px] uppercase tracking-wider text-[#6a7282]">
+          <div className="text-[10px] uppercase tracking-wider text-fg-muted">
             Risk score · Tokens.xyz
           </div>
           <div className="text-xs">
-            <span className="font-mono text-[#11274d] text-base">
+            <span className="font-mono text-fg text-base">
               {ms.score} / 100
             </span>{" "}
-            <span className="text-[#6a7282]">
+            <span className="text-fg-muted">
               Grade {ms.grade} · {ms.label}
             </span>
           </div>
         </div>
-        <div className="h-1.5 rounded-full bg-[#f1f5f9] overflow-hidden">
+        <div className="h-1.5 rounded-full bg-surface-page overflow-hidden">
           <div
             className={`h-full ${toneBar} transition-[width] duration-300`}
             style={{
@@ -56,7 +56,7 @@ export function RiskPanel({ risk }: { risk: RiskData }) {
           {ms.borderlineSignals.map((s, i) => (
             <div
               key={i}
-              className="text-[11px] text-[#b45309] bg-[#fffbeb] border border-[#fde68a] rounded-sm px-2 py-1"
+              className="text-[11px] text-warning-strong bg-warning-surface border border-warning rounded-sm px-2 py-1"
             >
               {s}
             </div>
@@ -77,23 +77,23 @@ function ComponentBar({
   if (!component || !component.hasData) {
     return (
       <div className="flex items-center gap-3 text-xs">
-        <span className="text-[#11274d] w-44 shrink-0">{label}</span>
-        <div className="flex-1 h-1.5 rounded-full bg-[#f1f5f9]" />
-        <span className="font-mono text-[#6a7282] w-10 text-right">—</span>
+        <span className="text-fg w-44 shrink-0">{label}</span>
+        <div className="flex-1 h-1.5 rounded-full bg-surface-page" />
+        <span className="font-mono text-fg-muted w-10 text-right">—</span>
       </div>
     );
   }
   const color =
     component.status === "safe"
-      ? "bg-[#0fa87a]"
+      ? "bg-buy"
       : component.status === "caution"
-        ? "bg-[#f59e0b]"
-        : "bg-[#ef4444]";
+        ? "bg-warning"
+        : "bg-sell";
 
   return (
     <div className="flex items-center gap-3 text-xs">
-      <span className="text-[#11274d] w-44 shrink-0">{label}</span>
-      <div className="flex-1 h-1.5 rounded-full bg-[#f1f5f9] overflow-hidden">
+      <span className="text-fg w-44 shrink-0">{label}</span>
+      <div className="flex-1 h-1.5 rounded-full bg-surface-page overflow-hidden">
         <div
           className={`h-full ${color} transition-[width] duration-300`}
           style={{
@@ -101,7 +101,7 @@ function ComponentBar({
           }}
         />
       </div>
-      <span className="font-mono text-[#11274d] w-10 text-right">
+      <span className="font-mono text-fg w-10 text-right">
         {component.score}
       </span>
     </div>

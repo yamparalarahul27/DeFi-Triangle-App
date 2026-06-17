@@ -38,7 +38,7 @@ export function TokenIcon({
   if (!src || errored) {
     return (
       <div
-        className={`${SIZE_CLS[size]} ${TEXT_CLS[size]} ${className} rounded-full bg-[#cbd5e1] text-[#11274d] flex items-center justify-center font-semibold shrink-0`}
+        className={`${SIZE_CLS[size]} ${TEXT_CLS[size]} ${className} rounded-full bg-surface-bright text-fg flex items-center justify-center font-semibold shrink-0`}
         aria-label={symbol ?? "token"}
       >
         {initials}

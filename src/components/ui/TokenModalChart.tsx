@@ -9,8 +9,8 @@ const CHART_CONFIG = {
   price: {
     label: "Price",
     colors: {
-      light: ["#19549b"],
-      dark: ["#3B7DDD"],
+      light: ["#5ad8c4"],
+      dark: ["#5ad8c4"],
     },
   },
 } satisfies ChartConfig;
@@ -32,7 +32,7 @@ export function TokenModalChart({
   if (data.length < 2) {
     return (
       <div
-        className="flex items-center justify-center text-xs text-[#6B7280]"
+        className="flex items-center justify-center text-xs text-fg-subtle"
         style={{ height }}
       >
         No chart data

@@ -14,16 +14,16 @@ export function PriceDivergenceChip({
 
   const dot =
     result.tone === "safe"
-      ? "bg-[#0fa87a]"
+      ? "bg-buy"
       : result.tone === "caution"
-        ? "bg-[#f59e0b]"
-        : "bg-[#ef4444]";
+        ? "bg-warning"
+        : "bg-sell";
   const text =
     result.tone === "safe"
-      ? "text-[#0fa87a]"
+      ? "text-buy"
       : result.tone === "caution"
-        ? "text-[#b45309]"
-        : "text-[#b91c1c]";
+        ? "text-warning-strong"
+        : "text-sell-strong";
 
   return (
     <Tooltip
