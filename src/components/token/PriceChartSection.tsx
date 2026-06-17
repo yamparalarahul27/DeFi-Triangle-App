@@ -11,8 +11,8 @@ const CHART_CONFIG = {
   price: {
     label: "Price",
     colors: {
-      light: ["#19549b"],
-      dark: ["#3B7DDD"],
+      light: ["#5ad8c4"],
+      dark: ["#5ad8c4"],
     },
   },
 } satisfies ChartConfig;
@@ -53,9 +53,9 @@ export function PriceChartSection({
   );
 
   return (
-    <section className="bg-white rounded-sm border border-[#cbd5e1] p-4 sm:p-6">
+    <section className="bg-surface-container rounded-sm border border-outline-variant p-4 sm:p-6">
       <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-        <div className="text-[10px] uppercase tracking-wider text-[#6a7282]">
+        <div className="text-[10px] uppercase tracking-wider text-fg-muted">
           Price chart
         </div>
         <div className="flex items-center gap-1">
@@ -68,8 +68,8 @@ export function PriceChartSection({
                 onClick={() => onRangeChange(r.label)}
                 className={`min-h-[40px] px-3 rounded-sm text-xs transition-[background-color,color,box-shadow,transform] duration-150 active:scale-[0.96] ${
                   active
-                    ? "bg-[#19549b] text-white shadow-[0_1px_2px_rgba(17,39,77,0.06),0_4px_8px_rgba(25,84,155,0.18),0_12px_24px_rgba(25,84,155,0.10)]"
-                    : "bg-white text-[#11274d]/60 border border-[#cbd5e1] hover:text-[#11274d]"
+                    ? "bg-brand text-on-brand shadow-[0_1px_2px_rgba(4,17,15,0.40),0_4px_8px_rgba(90,216,196,0.20),0_12px_24px_rgba(90,216,196,0.12)]"
+                    : "bg-surface-container text-fg/60 border border-outline-variant hover:text-fg"
                 }`}
               >
                 {r.label}

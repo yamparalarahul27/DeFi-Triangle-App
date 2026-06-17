@@ -9,29 +9,122 @@
 }
 
 :root {
-  --background: #f1f5f9;
-  --foreground: #212121;
-  --wallet-backdrop-rgb: 5 10 20;
-  --wallet-backdrop-opacity: 0.5;
-  --wallet-backdrop-blur: 8px;
+  /* ── Dark token layer (market-dark palette) ──────────────────
+     Single source of truth for theme colors. Components consume
+     these via the @theme utilities below (bg-surface, text-fg,
+     text-brand, …) — never via hardcoded hex. See DESIGN.md. */
+
+  /* Surfaces — near-black, layered by elevation */
+  --surface-dim: #030405;
+  --surface-page: #090a0d;
+  --surface: #101115;
+  --surface-container: #17191e;
+  --surface-container-high: #202228;
+  --surface-bright: #2a2d34;
+
+  /* Borders */
+  --outline: #383b43;
+  --outline-variant: #23262d;
+
+  /* Foreground / text */
+  --fg: #f4f4f5;
+  --fg-muted: #a7abb3;
+  --fg-subtle: #868b95;
+  --fg-inverse: #07080a;
+
+  /* Brand — mint-teal identity accent */
+  --brand: #5ad8c4;
+  --brand-hover: #78e8d7;
+  --brand-bright: #a7fff0;
+  --brand-subtle: #c9fbf2;
+  --on-brand: #04110f;
+
+  /* Semantic — trading + state */
+  --buy: #34d399;
+  --buy-strong: #10b981;
+  --sell: #f87171;
+  --sell-strong: #ef4444;
+  --warning: #f4d35e;
+  --warning-strong: #f59e0b;
+  --error: #fb7185;
+  --error-strong: #f43f5e;
+  --info: #75a7ff;
+  --info-strong: #3b82f6;
+  --success: #34d399;
+  --success-strong: #10b981;
+
+  /* Tinted state surfaces (dark equivalents of light state-bg) */
+  --buy-surface: #0f1f1a;
+  --sell-surface: #211214;
+  --warning-surface: #211d10;
+  --info-surface: #111827;
+
+  /* Back-compat aliases (kept so legacy var reads still resolve) */
+  --background: var(--surface-page);
+  --foreground: var(--fg);
+
+  /* Wallet modal backdrop */
+  --wallet-backdrop-rgb: 3 4 5;
+  --wallet-backdrop-opacity: 0.6;
+  --wallet-backdrop-blur: 28px;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: var(--surface-page);
+  --color-foreground: var(--fg);
+
+  --color-surface-dim: var(--surface-dim);
+  --color-surface-page: var(--surface-page);
+  --color-surface: var(--surface);
+  --color-surface-container: var(--surface-container);
+  --color-surface-container-high: var(--surface-container-high);
+  --color-surface-bright: var(--surface-bright);
+
+  --color-outline: var(--outline);
+  --color-outline-variant: var(--outline-variant);
+
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-subtle: var(--fg-subtle);
+  --color-fg-inverse: var(--fg-inverse);
+
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-bright: var(--brand-bright);
+  --color-brand-subtle: var(--brand-subtle);
+  --color-on-brand: var(--on-brand);
+
+  --color-buy: var(--buy);
+  --color-buy-strong: var(--buy-strong);
+  --color-sell: var(--sell);
+  --color-sell-strong: var(--sell-strong);
+  --color-warning: var(--warning);
+  --color-warning-strong: var(--warning-strong);
+  --color-error: var(--error);
+  --color-error-strong: var(--error-strong);
+  --color-info: var(--info);
+  --color-info-strong: var(--info-strong);
+  --color-success: var(--success);
+  --color-success-strong: var(--success-strong);
+
+  --color-buy-surface: var(--buy-surface);
+  --color-sell-surface: var(--sell-surface);
+  --color-warning-surface: var(--warning-surface);
+  --color-info-surface: var(--info-surface);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--surface-page);
+  color: var(--fg);
   font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
 }
 
 html {
   scrollbar-width: thin;
-  scrollbar-color: rgba(17, 39, 77, 0.2) transparent;
+  scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
 }
 
 @keyframes fade-up {
@@ -63,11 +156,11 @@ html {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(17, 39, 77, 0.2);
+  background: rgba(255, 255, 255, 0.16);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(17, 39, 77, 0.3);
+  background: rgba(255, 255, 255, 0.26);
 }
 .scrollbar-hide {
   scrollbar-width: none;

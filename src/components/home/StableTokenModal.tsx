@@ -73,7 +73,7 @@ export function StableTokenModal({
       aria-label={`${selected.token.symbol} details`}
     >
       <div
-        className="relative w-full sm:max-w-[480px] max-h-[100vh] sm:max-h-[92vh] overflow-y-auto bg-white sm:rounded-lg sm:m-4"
+        className="relative w-full sm:max-w-[480px] max-h-[100vh] sm:max-h-[92vh] overflow-y-auto bg-surface-container sm:rounded-lg sm:m-4"
         style={{ boxShadow: "0 25px 50px rgba(0,0,0,0.5)" }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -119,32 +119,32 @@ function Header({
   const iconUrl = selection.kind === "live" ? selection.token.iconUrl : null;
 
   return (
-    <div className="sticky top-0 z-10 bg-white flex items-center justify-between gap-3 p-4 border-b border-[#e5e7eb]">
+    <div className="sticky top-0 z-10 bg-surface-container flex items-center justify-between gap-3 p-4 border-b border-outline-variant">
       <div className="flex items-center gap-3 min-w-0">
         {selection.kind === "live" ? (
           <TokenIcon src={iconUrl ?? undefined} symbol={symbol} size="lg" />
         ) : (
           <div
             aria-label={symbol}
-            className="w-8 h-8 rounded-full bg-[#0d2137] text-[#7ee5c6] flex items-center justify-center font-semibold text-xs shrink-0"
+            className="w-8 h-8 rounded-full bg-surface-container text-buy flex items-center justify-center font-semibold text-xs shrink-0"
           >
             {symbol.slice(0, 2).toUpperCase()}
           </div>
         )}
         <div className="min-w-0">
-          <div className="text-base font-semibold text-[#111827] truncate">
+          <div className="text-base font-semibold text-fg truncate">
             {symbol}
           </div>
-          <div className="text-xs text-[#6B7280] truncate">{name}</div>
+          <div className="text-xs text-fg-subtle truncate">{name}</div>
           {issuerName && (
-            <div className="text-[11px] text-[#6B7280] truncate mt-0.5">
+            <div className="text-[11px] text-fg-subtle truncate mt-0.5">
               Issued by{" "}
               {issuerUrl ? (
                 <a
                   href={issuerUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[#19549b] hover:underline"
+                  className="text-brand hover:underline"
                 >
                   {issuerName} ↗
                 </a>
@@ -159,7 +159,7 @@ function Header({
         type="button"
         onClick={onClose}
         aria-label="Close"
-        className="text-2xl text-[#6B7280] hover:text-[#111827] transition-colors leading-none w-8 h-8 flex items-center justify-center shrink-0"
+        className="text-2xl text-fg-subtle hover:text-fg transition-colors leading-none w-8 h-8 flex items-center justify-center shrink-0"
       >
         ×
       </button>
@@ -177,10 +177,10 @@ function LiveBody({ token }: { token: StableLiveData }) {
       <div>
         <div className="flex items-baseline justify-between gap-3">
           <div>
-            <div className="text-[10px] uppercase tracking-wider text-[#6B7280]">
+            <div className="text-[10px] uppercase tracking-wider text-fg-subtle">
               Current price
             </div>
-            <div className="font-mono text-xl text-[#111827] mt-1">
+            <div className="font-mono text-xl text-fg mt-1">
               {formatStablePrice(token.priceUsd)}
             </div>
           </div>
@@ -244,24 +244,24 @@ function PendingBody({
   return (
     <>
       <div className="flex items-center gap-2">
-        <span className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-[#d97706]/10 text-[#d97706] whitespace-nowrap">
+        <span className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-warning-strong/10 text-warning-strong whitespace-nowrap">
           Coming Soon
         </span>
-        <span className="text-xs text-[#6a7282]">Awaiting Solana liquidity</span>
+        <span className="text-xs text-fg-muted">Awaiting Solana liquidity</span>
       </div>
 
       {pitch && pitch.length > 0 && (
         <Section label={`Why ${token.symbol}`}>
           {pitch.map((line) => (
-            <div key={line} className="flex items-center gap-2 text-sm text-[#111827]">
-              <span className="text-[#0fa87a]">✓</span>
+            <div key={line} className="flex items-center gap-2 text-sm text-fg">
+              <span className="text-buy">✓</span>
               <span>{line}</span>
             </div>
           ))}
         </Section>
       )}
 
-      <p className="text-xs text-[#6B7280] leading-snug">
+      <p className="text-xs text-fg-subtle leading-snug">
         Live price, depth, and audit data will appear here once the mint has
         Jupiter-quotable liquidity on Solana.
       </p>
@@ -281,13 +281,13 @@ function MintRow({
   return (
     <Section label="Mint">
       <div className="flex items-center justify-between gap-2">
-        <code className="font-mono text-[11px] text-[#111827] break-all">
+        <code className="font-mono text-[11px] text-fg break-all">
           {truncateMint(mint)}
         </code>
         <button
           type="button"
           onClick={onCopy}
-          className="text-[10px] uppercase tracking-wider px-2 py-1 rounded border border-[#cbd5e1] bg-white text-[#11274d] hover:bg-[#f1f5f9] transition-colors shrink-0"
+          className="text-[10px] uppercase tracking-wider px-2 py-1 rounded border border-outline-variant bg-surface-container text-fg hover:bg-surface-page transition-colors shrink-0"
         >
           {copied ? "Copied" : "Copy"}
         </button>
@@ -315,7 +315,7 @@ function ExternalCta({ label, href }: { label: string; href: string }) {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="block w-full text-center py-2.5 rounded bg-[#19549b] text-white text-sm font-semibold hover:bg-[#11274d] transition-colors"
+      className="block w-full text-center py-2.5 rounded bg-brand text-on-brand text-sm font-semibold hover:bg-brand-hover transition-colors"
     >
       {label}
     </a>
@@ -331,7 +331,7 @@ function Section({
 }) {
   return (
     <div>
-      <div className="text-[10px] uppercase tracking-wider text-[#6B7280] mb-2">
+      <div className="text-[10px] uppercase tracking-wider text-fg-subtle mb-2">
         {label}
       </div>
       <div className="space-y-1.5">{children}</div>
@@ -342,8 +342,8 @@ function Section({
 function StatRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center justify-between text-xs">
-      <span className="text-[#6B7280]">{label}</span>
-      <span className="font-mono text-[#111827]">{value}</span>
+      <span className="text-fg-subtle">{label}</span>
+      <span className="font-mono text-fg">{value}</span>
     </div>
   );
 }
@@ -355,19 +355,19 @@ type PegTone = {
 };
 
 const TONE_ON_PEG: PegTone = {
-  badgeBg: "bg-[#0fa87a]/10",
-  badgeText: "text-[#0fa87a]",
-  deviationText: "text-[#0fa87a]",
+  badgeBg: "bg-buy/10",
+  badgeText: "text-buy",
+  deviationText: "text-buy",
 };
 const TONE_DRIFTING: PegTone = {
-  badgeBg: "bg-[#d97706]/10",
-  badgeText: "text-[#d97706]",
-  deviationText: "text-[#d97706]",
+  badgeBg: "bg-warning-strong/10",
+  badgeText: "text-warning-strong",
+  deviationText: "text-warning-strong",
 };
 const TONE_DEPEGGED: PegTone = {
-  badgeBg: "bg-[#ef4444]/10",
-  badgeText: "text-[#ef4444]",
-  deviationText: "text-[#ef4444]",
+  badgeBg: "bg-sell/10",
+  badgeText: "text-sell",
+  deviationText: "text-sell",
 };
 
 function pegState(deviationBps: number): { tone: PegTone; label: string } {

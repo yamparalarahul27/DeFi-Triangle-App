@@ -309,9 +309,10 @@ Rules:
 
 ## Design system
 
-- Follow [DESIGN.md](./DESIGN.md) for all UI work — colour tokens (Frost/Hela/Loki), typography (Geist Mono / IBM Plex / Geist Pixel Square), spacing (8px base), components (rounded-sm 2px, 150ms transitions).
+- Follow [DESIGN.md](./DESIGN.md) for all UI work — semantic colour tokens in `globals.css` (surface / fg / brand / buy / sell / warning), typography (Geist Mono / IBM Plex / Geist Pixel Square), spacing (8px base), components (rounded-sm 2px, 150ms transitions).
+- The app is **dark-only** (near-black "market-dark" palette). Consume colour via semantic Tailwind utilities (`bg-surface-container`, `text-fg`, `text-brand`) — **never hardcode `bg-[#hex]`**. `npm run check:theme` enforces this.
 - Financial numbers: **Geist Pixel Square** (fallback IBM Plex Mono). Never serif or variable-weight.
-- Primary blue on light surfaces: `#19549b` (frost-400). On dark surfaces: `#3B7DDD` (cta-color).
+- Identity accent is **mint-teal** `--brand #5ad8c4`. Filled brand surfaces use dark `text-on-brand`, never `text-white`.
 - When a design decision isn't covered by DESIGN.md, stop and ask.
 
 ## Installed skills

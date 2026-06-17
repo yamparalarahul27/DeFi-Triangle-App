@@ -1,10 +1,10 @@
 type Variant = "live" | "success" | "danger" | "warning";
 
 const COLORS: Record<Variant, string> = {
-  live: "bg-[#0fa87a]",
-  success: "bg-[#0fa87a]",
-  danger: "bg-[#ef4444]",
-  warning: "bg-[#f59e0b]",
+  live: "bg-buy",
+  success: "bg-buy",
+  danger: "bg-sell",
+  warning: "bg-warning",
 };
 
 export function StatusDot({

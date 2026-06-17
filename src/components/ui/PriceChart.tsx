@@ -26,7 +26,7 @@ export function PriceChart({
   if (closes.length < 2) {
     return (
       <div
-        className="flex items-center justify-center text-xs text-[#6B7280]"
+        className="flex items-center justify-center text-xs text-fg-subtle"
         style={{ height }}
       >
         No chart data
@@ -53,7 +53,7 @@ export function PriceChart({
   const first = closes[0];
   const last = closes[closes.length - 1];
   const up = last >= first;
-  const color = up ? "#0fa87a" : "#ef4444";
+  const color = up ? "#34d399" : "#f87171";
   const fillId = `chartFill-${up ? "up" : "down"}-${Math.random().toString(36).slice(2, 8)}`;
 
   const minIdx = closes.indexOf(min);
@@ -86,8 +86,8 @@ export function PriceChart({
           strokeLinejoin="round"
           vectorEffect="non-scaling-stroke"
         />
-        <circle cx={maxPt.x} cy={maxPt.y} r={4} fill="#0fa87a" />
-        <circle cx={minPt.x} cy={minPt.y} r={4} fill="#ef4444" />
+        <circle cx={maxPt.x} cy={maxPt.y} r={4} fill="#34d399" />
+        <circle cx={minPt.x} cy={minPt.y} r={4} fill="#f87171" />
         <circle
           cx={lastPt.x}
           cy={lastPt.y}
@@ -98,14 +98,14 @@ export function PriceChart({
         />
       </svg>
       {(showAxes || showTooltip) && (
-        <div className="pointer-events-none absolute top-1 right-1 text-[10px] font-mono text-[#6B7280]">
+        <div className="pointer-events-none absolute top-1 right-1 text-[10px] font-mono text-fg-subtle">
           <div className="text-right">
-            <span className="text-[#0fa87a]">High </span>
-            <span className="text-[#11274d]">{fmtUsd(max)}</span>
+            <span className="text-buy">High </span>
+            <span className="text-fg">{fmtUsd(max)}</span>
           </div>
           <div className="text-right">
-            <span className="text-[#ef4444]">Low </span>
-            <span className="text-[#11274d]">{fmtUsd(min)}</span>
+            <span className="text-sell">Low </span>
+            <span className="text-fg">{fmtUsd(min)}</span>
           </div>
         </div>
       )}

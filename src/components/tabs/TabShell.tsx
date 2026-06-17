@@ -10,11 +10,11 @@ export interface TabProps {
 }
 
 export function TabLoading({ text = "Loading…" }: { text?: string }) {
-  return <div className="py-12 text-center text-sm text-[#6a7282]">{text}</div>;
+  return <div className="py-12 text-center text-sm text-fg-muted">{text}</div>;
 }
 
 export function TabEmpty({ text = "No data available." }: { text?: string }) {
-  return <div className="py-12 text-center text-sm text-[#6a7282]">{text}</div>;
+  return <div className="py-12 text-center text-sm text-fg-muted">{text}</div>;
 }
 
 export function TabGrid({
@@ -56,8 +56,8 @@ export function FilterChips<T extends string>({
             onClick={() => onChange(o.key)}
             className={`min-h-[40px] px-3 rounded-sm text-xs font-medium transition-[background-color,color,box-shadow,transform] duration-150 active:scale-[0.96] ${
               active
-                ? "bg-[#19549b] text-white shadow-[0_1px_2px_rgba(17,39,77,0.06),0_4px_8px_rgba(25,84,155,0.18),0_12px_24px_rgba(25,84,155,0.10)]"
-                : "bg-white text-[#11274d]/60 border border-[#cbd5e1] hover:text-[#11274d]/90"
+                ? "bg-brand text-on-brand shadow-[0_1px_2px_rgba(4,17,15,0.40),0_4px_8px_rgba(90,216,196,0.20),0_12px_24px_rgba(90,216,196,0.12)]"
+                : "bg-surface-container text-fg/60 border border-outline-variant hover:text-fg/90"
             }`}
             aria-pressed={active}
           >

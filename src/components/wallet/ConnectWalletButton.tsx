@@ -123,9 +123,9 @@ export function ConnectWalletButton() {
         <button
           type="button"
           onClick={() => setMenuOpen((v) => !v)}
-          className="h-7 px-3 rounded-sm bg-white border border-[#cbd5e1] text-[#11274d] text-xs font-mono hover:bg-[#e2e8f0] transition-colors inline-flex items-center gap-2"
+          className="h-7 px-3 rounded-sm bg-surface-container border border-outline-variant text-fg text-xs font-mono hover:bg-surface-container-high transition-colors inline-flex items-center gap-2"
         >
-          <span className="w-1.5 h-1.5 rounded-full bg-[#0fa87a]" />
+          <span className="w-1.5 h-1.5 rounded-full bg-buy" />
           <span>{truncate(authedWallet)}</span>
           <span
             className={`text-[10px] transition-transform ${menuOpen ? "rotate-180" : ""}`}
@@ -134,19 +134,19 @@ export function ConnectWalletButton() {
           </span>
         </button>
         {menuOpen && (
-          <div className="absolute right-0 top-8 z-30 bg-white border border-[#cbd5e1] rounded-sm min-w-[240px] py-1 shadow-md">
-            <div className="px-3 py-2 border-b border-[#e2e8f0]">
-              <div className="text-[10px] uppercase tracking-wider text-[#6a7282]">
+          <div className="absolute right-0 top-8 z-30 bg-surface-container border border-outline-variant rounded-sm min-w-[240px] py-1 shadow-md">
+            <div className="px-3 py-2 border-b border-outline-variant">
+              <div className="text-[10px] uppercase tracking-wider text-fg-muted">
                 Connected
               </div>
-              <div className="font-mono text-[11px] text-[#11274d] break-all mt-1">
+              <div className="font-mono text-[11px] text-fg break-all mt-1">
                 {authedWallet}
               </div>
             </div>
             <button
               type="button"
               onClick={handleLogout}
-              className="w-full text-left px-3 py-2 text-xs text-[#11274d] hover:bg-[#f1f5f9] transition-colors"
+              className="w-full text-left px-3 py-2 text-xs text-fg hover:bg-surface-page transition-colors"
             >
               Disconnect
             </button>
@@ -162,12 +162,12 @@ export function ConnectWalletButton() {
         type="button"
         disabled={phase === "signing"}
         onClick={handleConnect}
-        className="h-7 px-3 rounded-sm bg-white border border-[#cbd5e1] text-[#11274d] text-xs hover:bg-[#e2e8f0] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+        className="h-7 px-3 rounded-sm bg-surface-container border border-outline-variant text-fg text-xs hover:bg-surface-container-high transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
       >
         {phase === "signing" ? "Signing…" : "Connect Wallet"}
       </button>
       {error && (
-        <div className="text-[11px] text-[#ef4444] mt-1">{error}</div>
+        <div className="text-[11px] text-sell mt-1">{error}</div>
       )}
     </div>
   );

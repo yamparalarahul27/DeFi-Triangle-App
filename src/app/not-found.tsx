@@ -42,7 +42,7 @@ export default function NotFound() {
         </p>
         <Link
           href="/"
-          className="mt-8 inline-flex items-center gap-2 h-10 px-5 rounded-sm bg-white text-[#11274d] text-sm font-semibold hover:bg-white/90 transition-colors"
+          className="mt-8 inline-flex items-center gap-2 h-10 px-5 rounded-sm bg-white text-fg-inverse text-sm font-semibold hover:bg-white/90 transition-colors"
         >
           ← Back to home
         </Link>

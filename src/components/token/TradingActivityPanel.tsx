@@ -34,9 +34,9 @@ export function TradingActivityPanel({
   });
 
   return (
-    <section className="bg-white rounded-sm border border-[#cbd5e1] p-4 sm:p-6 space-y-4">
+    <section className="bg-surface-container rounded-sm border border-outline-variant p-4 sm:p-6 space-y-4">
       <div className="flex items-baseline justify-between gap-2">
-        <div className="text-[10px] uppercase tracking-wider text-[#6a7282]">
+        <div className="text-[10px] uppercase tracking-wider text-fg-muted">
           Trading activity · Birdeye + Jupiter
         </div>
       </div>
@@ -55,8 +55,8 @@ export function TradingActivityPanel({
               onClick={() => setActiveKey(w.key)}
               className={`text-[11px] font-mono px-2 py-1 rounded-sm border transition-colors ${
                 isActive
-                  ? "bg-[#19549b] text-white border-[#19549b]"
-                  : "bg-white text-[#11274d] border-[#cbd5e1] hover:bg-[#f1f5f9]"
+                  ? "bg-brand text-on-brand border-brand"
+                  : "bg-surface-container text-fg border-outline-variant hover:bg-surface-page"
               }`}
             >
               {w.label}
@@ -80,21 +80,21 @@ function HumanActivityHeader({
   const tone = result.tone;
   const fillBar =
     tone === "safe"
-      ? "bg-[#0fa87a]"
+      ? "bg-buy"
       : tone === "caution"
-        ? "bg-[#f59e0b]"
-        : "bg-[#ef4444]";
+        ? "bg-warning"
+        : "bg-sell";
   const gradeChip =
     tone === "safe"
-      ? "bg-[#ecfdf5] text-[#0fa87a] border-[#a7f3d0]"
+      ? "bg-buy-surface text-buy border-buy"
       : tone === "caution"
-        ? "bg-[#fffbeb] text-[#b45309] border-[#fde68a]"
-        : "bg-[#fef2f2] text-[#b91c1c] border-[#fecaca]";
+        ? "bg-warning-surface text-warning-strong border-warning"
+        : "bg-sell-surface text-sell-strong border-sell";
 
   return (
-    <div className="rounded-sm border border-[#cbd5e1] bg-[#f8fafc] p-3 space-y-2">
+    <div className="rounded-sm border border-outline-variant bg-surface p-3 space-y-2">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <div className="text-[10px] uppercase tracking-wider text-[#6a7282]">
+        <div className="text-[10px] uppercase tracking-wider text-fg-muted">
           Real-human activity · {window}
         </div>
         <div className="flex items-baseline gap-2 text-xs">
@@ -103,13 +103,13 @@ function HumanActivityHeader({
           >
             Grade {result.grade}
           </span>
-          <span className="font-mono text-[#11274d] text-base">
+          <span className="font-mono text-fg text-base">
             {result.score} / 100
           </span>
-          <span className="text-[#6a7282]">{result.label}</span>
+          <span className="text-fg-muted">{result.label}</span>
         </div>
       </div>
-      <div className="h-1.5 rounded-full bg-[#e2e8f0] overflow-hidden">
+      <div className="h-1.5 rounded-full bg-surface-container-high overflow-hidden">
         <div
           className={`h-full ${fillBar} transition-[width] duration-300`}
           style={{
@@ -150,12 +150,12 @@ function SubBar({
   return (
     <div>
       <div className="flex items-baseline justify-between mb-1">
-        <span className="text-[#6a7282]">{label}</span>
-        <span className="font-mono text-[#11274d]">{value}</span>
+        <span className="text-fg-muted">{label}</span>
+        <span className="font-mono text-fg">{value}</span>
       </div>
-      <div className="h-1 rounded-full bg-[#e2e8f0] overflow-hidden">
+      <div className="h-1 rounded-full bg-surface-container-high overflow-hidden">
         <div
-          className="h-full bg-[#19549b] transition-[width] duration-300"
+          className="h-full bg-brand transition-[width] duration-300"
           style={{ width: `${pct}%` }}
         />
       </div>
@@ -203,7 +203,7 @@ function Cells({ metrics }: { metrics: WindowMetrics }) {
           value={
             <span className="font-mono">
               {fmtCount(metrics.buys)}
-              <span className="text-[#6a7282] mx-1">/</span>
+              <span className="text-fg-muted mx-1">/</span>
               {fmtCount(metrics.sells)}
             </span>
           }
@@ -267,7 +267,7 @@ function Cells({ metrics }: { metrics: WindowMetrics }) {
 
   if (cells.length === 0) {
     return (
-      <div className="text-xs text-[#6a7282]">No data for this window.</div>
+      <div className="text-xs text-fg-muted">No data for this window.</div>
     );
   }
 
@@ -293,17 +293,17 @@ function Stat({
 }) {
   const valueClass =
     tone === "safe"
-      ? "text-[#0fa87a]"
+      ? "text-buy"
       : tone === "risk"
-        ? "text-[#ef4444]"
-        : "text-[#11274d]";
+        ? "text-sell"
+        : "text-fg";
 
   return (
     <div className="min-w-0">
-      <div className="text-[10px] uppercase tracking-wider text-[#6a7282]">
+      <div className="text-[10px] uppercase tracking-wider text-fg-muted">
         {label}
         {hint ? (
-          <span className="ml-1 text-[#cbd5e1] normal-case">· {hint}</span>
+          <span className="ml-1 text-fg-subtle normal-case">· {hint}</span>
         ) : null}
       </div>
       <div className={`font-mono text-sm ${valueClass}`}>{value}</div>

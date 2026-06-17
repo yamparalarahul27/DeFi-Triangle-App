@@ -114,10 +114,10 @@ function RailsSkeleton() {
         <section key={rail.title} className="space-y-2">
           <div className="flex items-end justify-between gap-2">
             <div>
-              <h2 className="text-sm sm:text-base font-semibold text-[#11274d]">
+              <h2 className="text-sm sm:text-base font-semibold text-fg">
                 {rail.title}
               </h2>
-              <p className="text-xs text-[#6a7282] mt-0.5">{rail.subtitle}</p>
+              <p className="text-xs text-fg-muted mt-0.5">{rail.subtitle}</p>
             </div>
           </div>
           <div className="overflow-x-auto scrollbar-hide">
@@ -135,7 +135,7 @@ function RailsSkeleton() {
 
 function DexCardSkeleton() {
   return (
-    <div className="w-[300px] shrink-0 bg-white rounded-[10px] border border-[#11274d]/10 p-4 space-y-3">
+    <div className="w-[300px] shrink-0 bg-surface-container rounded-[10px] border border-outline/10 p-4 space-y-3">
       <div className="flex items-center gap-2">
         <Skeleton className="h-8 w-8 rounded-full" />
         <div className="flex-1 space-y-1">
@@ -224,15 +224,15 @@ function TokenRail({
     <section className="space-y-2">
       <div className="flex items-end justify-between gap-2">
         <div>
-          <h2 className="text-sm sm:text-base font-semibold text-[#11274d]">{title}</h2>
-          <p className="text-xs text-[#6a7282] mt-0.5">{subtitle}</p>
+          <h2 className="text-sm sm:text-base font-semibold text-fg">{title}</h2>
+          <p className="text-xs text-fg-muted mt-0.5">{subtitle}</p>
         </div>
         <div className="hidden sm:flex items-center gap-1">
           <button
             type="button"
             disabled={!canScrollLeft}
             onClick={() => scrollByCards("left")}
-            className="h-8 w-8 rounded-full border border-[#cbd5e1] bg-white text-[#11274d] inline-flex items-center justify-center transition-colors disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#f1f5f9]"
+            className="h-8 w-8 rounded-full border border-outline-variant bg-surface-container text-fg inline-flex items-center justify-center transition-colors disabled:opacity-40 disabled:cursor-not-allowed hover:bg-surface-page"
             aria-label={`Scroll ${title} left`}
           >
             <ChevronLeft className="h-4 w-4" />
@@ -241,7 +241,7 @@ function TokenRail({
             type="button"
             disabled={!canScrollRight}
             onClick={() => scrollByCards("right")}
-            className="h-8 w-8 rounded-full border border-[#cbd5e1] bg-white text-[#11274d] inline-flex items-center justify-center transition-colors disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#f1f5f9]"
+            className="h-8 w-8 rounded-full border border-outline-variant bg-surface-container text-fg inline-flex items-center justify-center transition-colors disabled:opacity-40 disabled:cursor-not-allowed hover:bg-surface-page"
             aria-label={`Scroll ${title} right`}
           >
             <ChevronRight className="h-4 w-4" />
@@ -250,7 +250,7 @@ function TokenRail({
       </div>
 
       {tokens.length === 0 ? (
-        <div className="py-6 text-xs text-[#6a7282]">No tokens in this section right now.</div>
+        <div className="py-6 text-xs text-fg-muted">No tokens in this section right now.</div>
       ) : (
         <div className="relative">
           <div ref={scrollerRef} className="overflow-x-auto scrollbar-hide">
@@ -274,13 +274,13 @@ function TokenRail({
               {canScrollLeft && (
                 <div
                   aria-hidden="true"
-                  className="pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-[#f1f5f9] via-[#f1f5f9]/85 to-transparent backdrop-blur-[1px]"
+                  className="pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-surface-page via-surface-page/85 to-transparent backdrop-blur-[1px]"
                 />
               )}
               {canScrollRight && (
                 <div
                   aria-hidden="true"
-                  className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-[#f1f5f9] via-[#f1f5f9]/85 to-transparent backdrop-blur-[1px]"
+                  className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-surface-page via-surface-page/85 to-transparent backdrop-blur-[1px]"
                 />
               )}
             </>

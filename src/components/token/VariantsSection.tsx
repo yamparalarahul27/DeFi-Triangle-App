@@ -27,9 +27,9 @@ export function VariantsSection({
     : [];
 
   return (
-    <section className="bg-white rounded-sm border border-[#cbd5e1] p-4 sm:p-6">
+    <section className="bg-surface-container rounded-sm border border-outline-variant p-4 sm:p-6">
       <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-        <div className="text-[10px] uppercase tracking-wider text-[#6a7282]">
+        <div className="text-[10px] uppercase tracking-wider text-fg-muted">
           Variants
         </div>
         <div className="flex flex-wrap gap-1">
@@ -43,8 +43,8 @@ export function VariantsSection({
                 onClick={() => setActiveKind(kind)}
                 className={`min-h-[40px] px-3 rounded-sm text-xs transition-[background-color,color,box-shadow,transform] duration-150 active:scale-[0.96] ${
                   active
-                    ? "bg-[#19549b] text-white shadow-[0_1px_2px_rgba(17,39,77,0.06),0_4px_8px_rgba(25,84,155,0.18),0_12px_24px_rgba(25,84,155,0.10)]"
-                    : "bg-white text-[#11274d]/60 border border-[#cbd5e1] hover:text-[#11274d]"
+                    ? "bg-brand text-on-brand shadow-[0_1px_2px_rgba(4,17,15,0.40),0_4px_8px_rgba(90,216,196,0.20),0_12px_24px_rgba(90,216,196,0.12)]"
+                    : "bg-surface-container text-fg/60 border border-outline-variant hover:text-fg"
                 }`}
               >
                 {label} ({list!.length})
@@ -75,13 +75,13 @@ function VariantCard({ variant }: { variant: Variant }) {
   const up = change >= 0;
   const tier =
     variant.trustTier === "tier1"
-      ? "bg-[#e5f7f2] text-[#0fa87a] border-[#0fa87a]/30"
+      ? "bg-buy-surface text-buy border-buy/30"
       : variant.trustTier === "tier2"
-        ? "bg-[#fffbeb] text-[#b45309] border-[#f59e0b]/30"
-        : "bg-[#f1f5f9] text-[#6a7282] border-[#cbd5e1]";
+        ? "bg-warning-surface text-warning-strong border-warning/30"
+        : "bg-surface-page text-fg-muted border-outline-variant";
 
   return (
-    <div className="bg-white border border-[#11274d]/10 rounded-sm p-3 hover:border-[#11274d]/20 transition-colors">
+    <div className="bg-surface-container border border-outline/10 rounded-sm p-3 hover:border-outline/20 transition-colors">
       <div className="flex items-start gap-2 mb-2">
         <TokenIcon
           src={market?.logoURI}
@@ -89,10 +89,10 @@ function VariantCard({ variant }: { variant: Variant }) {
           size="md"
         />
         <div className="min-w-0 flex-1">
-          <div className="text-xs font-semibold text-[#11274d] truncate">
+          <div className="text-xs font-semibold text-fg truncate">
             {variant.symbol}
           </div>
-          <div className="text-[10px] text-[#6a7282] truncate">
+          <div className="text-[10px] text-fg-muted truncate">
             {variant.name}
           </div>
         </div>
@@ -102,12 +102,12 @@ function VariantCard({ variant }: { variant: Variant }) {
           {variant.trustTier.replace("tier", "T")}
         </span>
       </div>
-      <div className="font-mono text-xs text-[#11274d]">
+      <div className="font-mono text-xs text-fg">
         {fmtUsd(market?.price ?? 0)}
       </div>
       <div
         className={`font-mono text-[10px] ${
-          up ? "text-[#0fa87a]" : "text-[#ef4444]"
+          up ? "text-buy" : "text-sell"
         }`}
       >
         <span className="inline-flex items-center gap-1">

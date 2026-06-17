@@ -28,14 +28,14 @@ const VARIANTS: LogoVariant[] = [
     description: "Use on dark backgrounds.",
     src: "/brand/defi_logo_white.svg",
     downloadName: "defi-triangle-logo-light.svg",
-    previewBg: "bg-[#11274d]",
+    previewBg: "bg-surface",
   },
   {
     label: "Logo · filled",
     description: "Solid mark for monochrome contexts.",
     src: "/brand/defi_logo_fill.svg",
     downloadName: "defi-triangle-logo-fill.svg",
-    previewBg: "bg-[#f1f5f9]",
+    previewBg: "bg-white",
   },
   {
     label: "Profile · PNG",
@@ -43,7 +43,7 @@ const VARIANTS: LogoVariant[] = [
       "High-res raster of the filled mark for places SVG isn't accepted (Twitter, Discord, app icons).",
     src: "/brand/defi_logo_fill_pf.png",
     downloadName: "defi-triangle-profile.png",
-    previewBg: "bg-[#f1f5f9]",
+    previewBg: "bg-white",
   },
 ];
 
@@ -53,8 +53,8 @@ export default function BrandPage() {
       <Header hasHero={false} />
       <main className="flex-1 max-w-[1100px] w-full mx-auto px-3 sm:px-4 lg:px-6 py-8 sm:py-12">
         <header className="mb-8">
-          <h1 className="text-3xl font-bold text-[#11274d] mb-2">Brand Kit</h1>
-          <p className="text-sm text-[#6a7282]">
+          <h1 className="text-3xl font-bold text-fg mb-2">Brand Kit</h1>
+          <p className="text-sm text-fg-muted">
             Logos and brand assets for DeFi Triangle. Click any Download button
             to save the SVG.
           </p>
@@ -67,10 +67,10 @@ export default function BrandPage() {
         </section>
 
         <section className="mt-12">
-          <h2 className="text-[10px] uppercase tracking-wider text-[#6a7282] mb-3">
+          <h2 className="text-[10px] uppercase tracking-wider text-fg-muted mb-3">
             Usage
           </h2>
-          <ul className="text-xs text-[#11274d] space-y-1.5 list-disc pl-5">
+          <ul className="text-xs text-fg space-y-1.5 list-disc pl-5">
             <li>Maintain clear space around the mark equal to the height of the apex.</li>
             <li>Don&apos;t recolor, rotate, or distort the triangle.</li>
             <li>SVG preferred for web. Use the filled mark for favicons or social avatars.</li>
@@ -85,7 +85,7 @@ export default function BrandPage() {
 
 function LogoCard({ variant }: { variant: LogoVariant }) {
   return (
-    <article className="bg-white rounded-sm border border-[#cbd5e1] overflow-hidden">
+    <article className="bg-surface-container rounded-sm border border-outline-variant overflow-hidden">
       <div
         className={`flex items-center justify-center ${variant.previewBg} aspect-square`}
       >
@@ -98,15 +98,15 @@ function LogoCard({ variant }: { variant: LogoVariant }) {
       </div>
       <div className="p-4 space-y-3">
         <div>
-          <div className="text-sm font-semibold text-[#11274d]">
+          <div className="text-sm font-semibold text-fg">
             {variant.label}
           </div>
-          <div className="text-xs text-[#6a7282]">{variant.description}</div>
+          <div className="text-xs text-fg-muted">{variant.description}</div>
         </div>
         <a
           href={variant.src}
           download={variant.downloadName}
-          className="inline-flex items-center justify-center w-full h-9 rounded-sm bg-[#19549b] text-white text-xs font-semibold hover:bg-[#143f78] transition-colors"
+          className="inline-flex items-center justify-center w-full h-9 rounded-sm bg-brand text-on-brand text-xs font-semibold hover:bg-brand-hover transition-colors"
         >
           Download SVG
         </a>

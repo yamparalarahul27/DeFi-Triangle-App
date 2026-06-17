@@ -129,25 +129,25 @@ export function TokenModal({ pair: initialPair, onClose }: TokenModalProps) {
       aria-label={`${symbol} details`}
     >
       <div
-        className="relative w-full sm:max-w-[480px] max-h-[100vh] sm:max-h-[92vh] overflow-y-auto bg-white sm:rounded-lg sm:m-4"
+        className="relative w-full sm:max-w-[480px] max-h-[100vh] sm:max-h-[92vh] overflow-y-auto bg-surface-container sm:rounded-lg sm:m-4"
         style={{ boxShadow: "0 25px 50px rgba(0,0,0,0.5)" }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="sticky top-0 z-10 bg-white flex items-center justify-between gap-3 p-4 border-b border-[#e5e7eb]">
+        <div className="sticky top-0 z-10 bg-surface-container flex items-center justify-between gap-3 p-4 border-b border-outline-variant">
           <div className="flex items-center gap-3 min-w-0">
             <TokenIcon src={imageUrl} symbol={symbol} size="lg" />
             <div className="min-w-0">
-              <div className="text-base font-semibold text-[#111827] truncate">
+              <div className="text-base font-semibold text-fg truncate">
                 {symbol}
               </div>
-              <div className="text-xs text-[#6B7280] truncate">{name}</div>
+              <div className="text-xs text-fg-subtle truncate">{name}</div>
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="text-2xl text-[#6B7280] hover:text-[#111827] transition-colors leading-none w-8 h-8 flex items-center justify-center"
+            className="text-2xl text-fg-subtle hover:text-fg transition-colors leading-none w-8 h-8 flex items-center justify-center"
           >
             ×
           </button>
@@ -157,10 +157,10 @@ export function TokenModal({ pair: initialPair, onClose }: TokenModalProps) {
           <div>
             <div className="flex items-baseline justify-between">
               <div>
-                <div className="text-[10px] uppercase tracking-wider text-[#6B7280]">
+                <div className="text-[10px] uppercase tracking-wider text-fg-subtle">
                   Current price
                 </div>
-                <div className="font-mono text-xl text-[#111827] mt-1">
+                <div className="font-mono text-xl text-fg mt-1">
                   <NumberFlow
                     value={priceUsd}
                     format={modalPriceFormat(priceUsd)}
@@ -170,7 +170,7 @@ export function TokenModal({ pair: initialPair, onClose }: TokenModalProps) {
               </div>
               <div
                 className={`flex items-center gap-1 text-sm ${
-                  priceUp ? "text-[#0fa87a]" : "text-[#ef4444]"
+                  priceUp ? "text-buy" : "text-sell"
                 }`}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -191,11 +191,11 @@ export function TokenModal({ pair: initialPair, onClose }: TokenModalProps) {
             </div>
             <div className="mt-3">
               {loadingChart ? (
-                <div className="h-20 flex items-center justify-center text-xs text-[#6B7280]">
+                <div className="h-20 flex items-center justify-center text-xs text-fg-subtle">
                   Loading chart…
                 </div>
               ) : !candles || candles.length < 2 ? (
-                <div className="h-20 flex items-center justify-center text-xs text-[#6B7280]">
+                <div className="h-20 flex items-center justify-center text-xs text-fg-subtle">
                   No chart data
                 </div>
               ) : (
@@ -205,7 +205,7 @@ export function TokenModal({ pair: initialPair, onClose }: TokenModalProps) {
           </div>
 
           <div>
-            <div className="text-[10px] uppercase tracking-wider text-[#6B7280] mb-2">
+            <div className="text-[10px] uppercase tracking-wider text-fg-subtle mb-2">
               Token data
             </div>
             <div className="grid grid-cols-2 gap-y-1 gap-x-3 text-xs">
@@ -248,11 +248,11 @@ export function TokenModal({ pair: initialPair, onClose }: TokenModalProps) {
           </div>
 
           <div>
-            <div className="text-[10px] uppercase tracking-wider text-[#6B7280] mb-2">
+            <div className="text-[10px] uppercase tracking-wider text-fg-subtle mb-2">
               Security
             </div>
             {loadingSecurity ? (
-              <div className="text-xs text-[#6B7280]">Loading security…</div>
+              <div className="text-xs text-fg-subtle">Loading security…</div>
             ) : securitySignals.length > 0 ? (
               <div className="grid grid-cols-2 gap-y-1 gap-x-3 text-xs">
                 {securitySignals.map((item) => (
@@ -260,7 +260,7 @@ export function TokenModal({ pair: initialPair, onClose }: TokenModalProps) {
                 ))}
               </div>
             ) : (
-              <div className="text-xs text-[#6B7280]">
+              <div className="text-xs text-fg-subtle">
                 {securityError ?? "Security data unavailable for this token."}
               </div>
             )}
@@ -268,7 +268,7 @@ export function TokenModal({ pair: initialPair, onClose }: TokenModalProps) {
 
           {(socials.length > 0 || websites.length > 0) && (
             <div>
-              <div className="text-[10px] uppercase tracking-wider text-[#6B7280] mb-2">
+              <div className="text-[10px] uppercase tracking-wider text-fg-subtle mb-2">
                 Socials
               </div>
               <div className="flex flex-wrap gap-2">
@@ -278,7 +278,7 @@ export function TokenModal({ pair: initialPair, onClose }: TokenModalProps) {
                     href={s.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-xs px-3 py-1 rounded-sm bg-[#f1f5f9] text-[#11274d] hover:bg-[#e2e8f0] transition-colors"
+                    className="text-xs px-3 py-1 rounded-sm bg-surface-page text-fg hover:bg-surface-container-high transition-colors"
                   >
                     {SOCIAL_LABELS[(s.type ?? "").toLowerCase()] ?? s.type}
                   </a>
@@ -289,7 +289,7 @@ export function TokenModal({ pair: initialPair, onClose }: TokenModalProps) {
                     href={w.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-xs px-3 py-1 rounded-sm bg-[#f1f5f9] text-[#11274d] hover:bg-[#e2e8f0] transition-colors"
+                    className="text-xs px-3 py-1 rounded-sm bg-surface-page text-fg hover:bg-surface-container-high transition-colors"
                   >
                     Website
                   </a>
@@ -299,18 +299,18 @@ export function TokenModal({ pair: initialPair, onClose }: TokenModalProps) {
           )}
 
           <div>
-            <div className="text-[10px] uppercase tracking-wider text-[#6B7280] mb-2">
+            <div className="text-[10px] uppercase tracking-wider text-fg-subtle mb-2">
               Contract address
             </div>
             <div className="flex items-center gap-2">
-              <code className="flex-1 font-mono text-[11px] text-[#111827] break-all bg-[#f1f5f9] p-2 rounded-sm">
+              <code className="flex-1 font-mono text-[11px] text-fg break-all bg-surface-page p-2 rounded-sm">
                 {address || "—"}
               </code>
               <button
                 type="button"
                 onClick={copyAddress}
                 disabled={!address}
-                className="text-xs px-3 py-2 rounded-sm bg-[#19549b] text-white hover:bg-[#143f78] transition-colors disabled:opacity-40"
+                className="text-xs px-3 py-2 rounded-sm bg-brand text-on-brand hover:bg-brand-hover transition-colors disabled:opacity-40"
               >
                 {copied ? "Copied" : "Copy"}
               </button>
@@ -322,7 +322,7 @@ export function TokenModal({ pair: initialPair, onClose }: TokenModalProps) {
               href={`/token/${address}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="block w-full text-center text-sm text-white bg-[#19549b] hover:bg-[#143f78] py-3 rounded-sm transition-colors"
+              className="block w-full text-center text-sm text-on-brand bg-brand hover:bg-brand-hover py-3 rounded-sm transition-colors"
             >
               View token details
             </Link>
@@ -336,8 +336,8 @@ export function TokenModal({ pair: initialPair, onClose }: TokenModalProps) {
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center justify-between gap-3">
-      <span className="text-[#6B7280]">{label}</span>
-      <span className="font-mono text-[#111827] text-right truncate">
+      <span className="text-fg-subtle">{label}</span>
+      <span className="font-mono text-fg text-right truncate">
         {value}
       </span>
     </div>

@@ -34,7 +34,7 @@ export function DexCard({
   const isVerified = Boolean(pair?.isVerified);
 
   const priceUp = priceChange24 >= 0;
-  const priceColor = priceUp ? "text-[#0fa87a]" : "text-[#ef4444]";
+  const priceColor = priceUp ? "text-buy" : "text-sell";
   const trendIconSrc = priceUp ? "/app/Up.svg" : "/app/Down.svg";
 
   const handleStar = (e: MouseEvent) => {
@@ -47,7 +47,7 @@ export function DexCard({
       onClick={onClick}
       role={onClick ? "button" : undefined}
       tabIndex={onClick ? 0 : undefined}
-      className="group relative bg-white rounded-[14px] border border-[#11274d]/10 p-4 transition-[border-color,box-shadow,transform] duration-150 active:scale-[0.98] hover:border-[#11274d]/20 cursor-pointer"
+      className="group relative bg-surface-container rounded-[14px] border border-outline/10 p-4 transition-[border-color,box-shadow,transform] duration-150 active:scale-[0.98] hover:border-outline/20 cursor-pointer"
       style={{
         boxShadow: "0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)",
       }}
@@ -56,7 +56,7 @@ export function DexCard({
         <div className="flex items-center gap-2 min-w-0">
           <TokenIcon src={info.imageUrl} symbol={base.symbol} size="md" />
           <div className="min-w-0">
-            <div className="text-sm font-semibold text-[#11274d] truncate inline-flex items-center gap-1">
+            <div className="text-sm font-semibold text-fg truncate inline-flex items-center gap-1">
               <span className="truncate">{base.symbol ?? "???"}</span>
               {isVerified && (
                 <img
@@ -66,9 +66,9 @@ export function DexCard({
                   title={isStrict ? "Verified by Tokens.xyz (strict source tags present)" : "Verified by Tokens.xyz"}
                 />
               )}
-              {quote.symbol && <span className="text-[#6a7282] font-normal">/ {quote.symbol}</span>}
+              {quote.symbol && <span className="text-fg-muted font-normal">/ {quote.symbol}</span>}
             </div>
-            <div className="text-xs text-[#6a7282] truncate">{base.name ?? ""}</div>
+            <div className="text-xs text-fg-muted truncate">{base.name ?? ""}</div>
           </div>
         </div>
         {onStarToggle && (
@@ -78,7 +78,7 @@ export function DexCard({
             aria-label={starred ? "Remove from watchlist" : "Add to watchlist"}
             aria-pressed={starred}
             className={`text-base leading-none shrink-0 transition-colors ${
-              starred ? "text-[#f59e0b]" : "text-[#6a7282] hover:text-[#f59e0b]"
+              starred ? "text-warning" : "text-fg-muted hover:text-warning"
             }`}
           >
             {starred ? "★" : "☆"}
@@ -87,7 +87,7 @@ export function DexCard({
       </div>
 
       <div className="flex items-baseline justify-between gap-2 mb-3">
-        <div className="font-mono text-base text-[#11274d]">{fmtUsd(priceUsd)}</div>
+        <div className="font-mono text-base text-fg">{fmtUsd(priceUsd)}</div>
         <div className={`flex items-center gap-1 text-xs ${priceColor}`}>
           <img
             src={trendIconSrc}
@@ -106,18 +106,18 @@ export function DexCard({
       </div>
 
       <div className="mb-3">
-        <div className="flex items-center justify-between text-[10px] text-[#6a7282] mb-1">
+        <div className="flex items-center justify-between text-[10px] text-fg-muted mb-1">
           <span className="uppercase tracking-wider">Buy / Sell · 24h</span>
           <span className="font-mono">
             {fmtNum(buys24, { compact: true })} / {fmtNum(sells24, { compact: true })}
           </span>
         </div>
-        <div className="relative h-1.5 rounded-full bg-[#ef4444]/15 overflow-hidden">
-          <div className="absolute inset-y-0 left-0 bg-[#0fa87a]" style={{ width: `${buyPct}%` }} />
+        <div className="relative h-1.5 rounded-full bg-sell/15 overflow-hidden">
+          <div className="absolute inset-y-0 left-0 bg-buy" style={{ width: `${buyPct}%` }} />
         </div>
         <div className="flex items-center justify-between text-[10px] font-mono mt-1">
-          <span className="text-[#0fa87a]">{buyPct}% buys</span>
-          <span className="text-[#ef4444]">{100 - buyPct}% sells</span>
+          <span className="text-buy">{buyPct}% buys</span>
+          <span className="text-sell">{100 - buyPct}% sells</span>
         </div>
       </div>
     </div>
@@ -127,8 +127,8 @@ export function DexCard({
 function StatBlock({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <div className="text-[10px] uppercase tracking-wider text-[#6a7282]">{label}</div>
-      <div className="font-mono text-xs text-[#11274d] mt-0.5">{value}</div>
+      <div className="text-[10px] uppercase tracking-wider text-fg-muted">{label}</div>
+      <div className="font-mono text-xs text-fg mt-0.5">{value}</div>
     </div>
   );
 }

@@ -113,7 +113,7 @@ export function MetaStrip({ data }: { data: MetaStripData | null }) {
       key: "listed",
       node: (
         <Cell label="Listed">
-          <span className="text-[#11274d]">{fmtAge(firstPoolMs)} ago</span>
+          <span className="text-fg">{fmtAge(firstPoolMs)} ago</span>
         </Cell>
       ),
     });
@@ -124,7 +124,7 @@ export function MetaStrip({ data }: { data: MetaStripData | null }) {
       key: "markets",
       node: (
         <Cell label="Markets">
-          <span className="font-mono text-[#11274d]">
+          <span className="font-mono text-fg">
             {numberMarkets.toLocaleString()}
           </span>
         </Cell>
@@ -135,8 +135,8 @@ export function MetaStrip({ data }: { data: MetaStripData | null }) {
   if (cells.length === 0) return null;
 
   return (
-    <section className="bg-white rounded-sm border border-[#cbd5e1] p-4 sm:p-6">
-      <div className="text-[10px] uppercase tracking-wider text-[#6a7282] mb-3">
+    <section className="bg-surface-container rounded-sm border border-outline-variant p-4 sm:p-6">
+      <div className="text-[10px] uppercase tracking-wider text-fg-muted mb-3">
         Token meta · Jupiter + Birdeye
       </div>
       <div className="flex flex-wrap gap-x-6 gap-y-3 text-xs">
@@ -161,15 +161,15 @@ function Cell({
     <div
       className={`text-[10px] uppercase tracking-wider mb-1 ${
         labelTooltip
-          ? "text-[#6a7282] inline-flex items-center gap-1 cursor-help"
-          : "text-[#6a7282]"
+          ? "text-fg-muted inline-flex items-center gap-1 cursor-help"
+          : "text-fg-muted"
       }`}
     >
       {label}
       {labelTooltip ? (
         <span
           aria-hidden
-          className="relative inline-flex items-center justify-center w-3 h-3 text-[9px] rounded-full bg-[#cbd5e1] text-[#6a7282] before:absolute before:inset-[-14px] before:content-['']"
+          className="relative inline-flex items-center justify-center w-3 h-3 text-[9px] rounded-full bg-surface-bright text-fg-muted before:absolute before:inset-[-14px] before:content-['']"
         >
           ?
         </span>
@@ -213,7 +213,7 @@ function TagPills({ tags }: { tags: string[] }) {
       {tags.map((tag) => (
         <span
           key={tag}
-          className="inline-flex items-center px-1.5 py-0.5 rounded-sm bg-[#f1f5f9] text-[10px] text-[#11274d] border border-[#cbd5e1]"
+          className="inline-flex items-center px-1.5 py-0.5 rounded-sm bg-surface-page text-[10px] text-fg border border-outline-variant"
         >
           {tag}
         </span>
@@ -233,12 +233,12 @@ function Badge({
 }) {
   const cls =
     tone === "safe"
-      ? "bg-[#ecfdf5] text-[#0fa87a] border-[#a7f3d0]"
+      ? "bg-buy-surface text-buy border-buy"
       : tone === "warn"
-        ? "bg-[#fffbeb] text-[#b45309] border-[#fde68a]"
+        ? "bg-warning-surface text-warning-strong border-warning"
         : tone === "danger"
-          ? "bg-[#fef2f2] text-[#b91c1c] border-[#fecaca]"
-          : "bg-[#f1f5f9] text-[#19549b] border-[#19549b]/30";
+          ? "bg-sell-surface text-sell-strong border-sell"
+          : "bg-surface-page text-brand border-brand/30";
   return (
     <span
       className={`inline-flex items-center text-[11px] px-2 py-0.5 rounded-sm border ${cls}`}
@@ -266,10 +266,10 @@ function CopyAddress({ address }: { address: string }) {
       type="button"
       onClick={onCopy}
       title={address}
-      className="font-mono text-[#11274d] hover:text-[#19549b] transition-colors"
+      className="font-mono text-fg hover:text-brand transition-colors"
     >
       {truncate(address)}
-      <span className="ml-2 text-[10px] text-[#6a7282]">
+      <span className="ml-2 text-[10px] text-fg-muted">
         {copied ? "Copied" : "Copy"}
       </span>
     </button>

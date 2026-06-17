@@ -42,17 +42,17 @@ export function StatsGrid({
   ];
 
   return (
-    <section className="bg-white rounded-sm border border-[#cbd5e1] p-4 sm:p-6">
-      <div className="text-[10px] uppercase tracking-wider text-[#6a7282] mb-3">
+    <section className="bg-surface-container rounded-sm border border-outline-variant p-4 sm:p-6">
+      <div className="text-[10px] uppercase tracking-wider text-fg-muted mb-3">
         Stats
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-y-3 gap-x-6 text-xs">
         {stats.map(([label, value]) => (
           <div key={label}>
-            <div className="text-[10px] uppercase tracking-wider text-[#6a7282]">
+            <div className="text-[10px] uppercase tracking-wider text-fg-muted">
               {label}
             </div>
-            <div className="font-mono text-sm text-[#11274d] mt-0.5 tabular-nums">
+            <div className="font-mono text-sm text-fg mt-0.5 tabular-nums">
               {value}
             </div>
           </div>

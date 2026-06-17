@@ -133,7 +133,7 @@ export function SearchModal({ open, onOpenChange }: SearchModalProps) {
             e.preventDefault();
             inputRef.current?.focus();
           }}
-          className="fixed left-1/2 -translate-x-1/2 top-20 z-50 flex flex-col w-[calc(100%-1rem)] max-w-[640px] max-h-[80vh] bg-white rounded-sm shadow-2xl border border-[#e5e7eb] overflow-hidden"
+          className="fixed left-1/2 -translate-x-1/2 top-20 z-50 flex flex-col w-[calc(100%-1rem)] max-w-[640px] max-h-[80vh] bg-surface-container rounded-sm shadow-2xl border border-outline-variant overflow-hidden"
         >
           <Dialog.Title className="sr-only">Search tokens</Dialog.Title>
           <Dialog.Description className="sr-only">
@@ -141,8 +141,8 @@ export function SearchModal({ open, onOpenChange }: SearchModalProps) {
             navigate results and enter to open.
           </Dialog.Description>
 
-          <div className="flex items-center gap-2 px-3 h-12 border-b border-[#e5e7eb] shrink-0">
-            <SearchIcon className="w-4 h-4 text-[#6a7282] shrink-0" />
+          <div className="flex items-center gap-2 px-3 h-12 border-b border-outline-variant shrink-0">
+            <SearchIcon className="w-4 h-4 text-fg-muted shrink-0" />
             <input
               ref={inputRef}
               type="text"
@@ -157,14 +157,14 @@ export function SearchModal({ open, onOpenChange }: SearchModalProps) {
                   ? `search-row-${navigableRows[activeIndex].address}`
                   : undefined
               }
-              className="flex-1 bg-transparent text-sm text-[#11274d] placeholder-[#6a7282] focus:outline-none"
+              className="flex-1 bg-transparent text-sm text-fg placeholder-fg-subtle focus:outline-none"
             />
             {hasQuery && (
               <button
                 type="button"
                 onClick={() => setQuery("")}
                 aria-label="Clear search"
-                className="text-[#6a7282] hover:text-[#11274d] transition-colors p-1"
+                className="text-fg-muted hover:text-fg transition-colors p-1"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -197,7 +197,7 @@ export function SearchModal({ open, onOpenChange }: SearchModalProps) {
             )}
           </div>
 
-          <div className="hidden sm:flex items-center justify-between px-3 h-8 text-[10px] text-[#6a7282] border-t border-[#e5e7eb] bg-[#f8fafc] shrink-0">
+          <div className="hidden sm:flex items-center justify-between px-3 h-8 text-[10px] text-fg-muted border-t border-outline-variant bg-surface shrink-0">
             <div className="flex items-center gap-3">
               <KeyHint
                 label={
@@ -239,14 +239,14 @@ function QueryResults({
 }) {
   if (loading && rows.length === 0 && matchedRecents.length === 0) {
     return (
-      <div className="px-3 py-8 text-xs text-[#6a7282] text-center">
+      <div className="px-3 py-8 text-xs text-fg-muted text-center">
         Searching…
       </div>
     );
   }
   if (rows.length === 0 && matchedRecents.length === 0) {
     return (
-      <div className="px-3 py-8 text-xs text-[#6a7282] text-center">
+      <div className="px-3 py-8 text-xs text-fg-muted text-center">
         No tokens matched that query.
       </div>
     );
@@ -310,7 +310,7 @@ function EmptyStateLists({
 }) {
   if (recents.length === 0 && recommended.length === 0) {
     return (
-      <div className="px-3 py-8 text-xs text-[#6a7282] text-center">
+      <div className="px-3 py-8 text-xs text-fg-muted text-center">
         Start typing to search Solana tokens.
       </div>
     );
@@ -326,7 +326,7 @@ function EmptyStateLists({
             <button
               type="button"
               onClick={onClearRecents}
-              className="text-[10px] text-[#6a7282] hover:text-[#11274d] transition-colors"
+              className="text-[10px] text-fg-muted hover:text-fg transition-colors"
             >
               Clear
             </button>
@@ -381,11 +381,11 @@ function Section({
   return (
     <div>
       {showHeader && (
-        <div className="sticky top-0 z-10 flex items-center justify-between px-3 py-1.5 bg-white/95 backdrop-blur-sm border-b border-[#f1f5f9]">
-          <div className="text-[10px] uppercase tracking-wider text-[#6a7282]">
+        <div className="sticky top-0 z-10 flex items-center justify-between px-3 py-1.5 bg-surface/95 backdrop-blur-sm border-b border-outline-variant">
+          <div className="text-[10px] uppercase tracking-wider text-fg-muted">
             {title}
             {typeof count === "number" && (
-              <span className="ml-1.5 text-[#9aa3b2]">· {count}</span>
+              <span className="ml-1.5 text-fg-subtle">· {count}</span>
             )}
           </div>
           {action}
@@ -405,7 +405,7 @@ function KeyHint({
 }) {
   return (
     <span className="flex items-center gap-1">
-      <kbd className="px-1 h-4 text-[9px] rounded-sm border border-[#cbd5e1] bg-white text-[#11274d] leading-none flex items-center">
+      <kbd className="px-1 h-4 text-[9px] rounded-sm border border-outline-variant bg-surface-container text-fg leading-none flex items-center">
         {label}
       </kbd>
       <span>{text}</span>

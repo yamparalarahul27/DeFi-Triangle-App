@@ -29,8 +29,8 @@ export function OnChainPanel({ data }: { data: OnChainData | null }) {
   const royalty = asset?.royalty && asset.royalty.percent > 0 ? asset.royalty : null;
 
   return (
-    <section className="bg-white rounded-sm border border-[#cbd5e1] p-4 sm:p-6 space-y-3">
-      <div className="text-[10px] uppercase tracking-wider text-[#6a7282]">
+    <section className="bg-surface-container rounded-sm border border-outline-variant p-4 sm:p-6 space-y-3">
+      <div className="text-[10px] uppercase tracking-wider text-fg-muted">
         On-chain · Helius
       </div>
 
@@ -54,11 +54,11 @@ export function OnChainPanel({ data }: { data: OnChainData | null }) {
         )}
         {royalty && (
           <div className="flex items-baseline gap-3">
-            <dt className="text-[#6a7282] w-44 shrink-0">Royalty</dt>
-            <dd className="font-mono text-[#11274d] flex-1 break-all">
+            <dt className="text-fg-muted w-44 shrink-0">Royalty</dt>
+            <dd className="font-mono text-fg flex-1 break-all">
               {royalty.percent}%
               {royalty.target ? (
-                <span className="text-[#6a7282]"> → {truncate(royalty.target)}</span>
+                <span className="text-fg-muted"> → {truncate(royalty.target)}</span>
               ) : null}
             </dd>
           </div>
@@ -71,7 +71,7 @@ export function OnChainPanel({ data }: { data: OnChainData | null }) {
 function AuthorityRow({ label, value }: { label: string; value: string | null }) {
   return (
     <div className="flex items-baseline gap-3">
-      <dt className="text-[#6a7282] w-44 shrink-0">{label}</dt>
+      <dt className="text-fg-muted w-44 shrink-0">{label}</dt>
       <dd className="flex-1 min-w-0">
         {value === null ? (
           <Badge tone="safe">Renounced ✓</Badge>
@@ -95,7 +95,7 @@ function BoolRow({
 }) {
   return (
     <div className="flex items-baseline gap-3">
-      <dt className="text-[#6a7282] w-44 shrink-0">{label}</dt>
+      <dt className="text-fg-muted w-44 shrink-0">{label}</dt>
       <dd className="flex-1">
         <Badge tone={tone}>{valueLabel}</Badge>
       </dd>
@@ -112,8 +112,8 @@ function Badge({
 }) {
   const cls =
     tone === "safe"
-      ? "bg-[#ecfdf5] text-[#0fa87a] border-[#a7f3d0]"
-      : "bg-[#fffbeb] text-[#b45309] border-[#fde68a]";
+      ? "bg-buy-surface text-buy border-buy"
+      : "bg-warning-surface text-warning-strong border-warning";
   return (
     <span
       className={`inline-flex items-center text-[11px] px-2 py-0.5 rounded-sm border ${cls}`}
@@ -141,10 +141,10 @@ function CopyAddress({ address }: { address: string }) {
       type="button"
       onClick={onCopy}
       title={address}
-      className="font-mono text-[#11274d] hover:text-[#19549b] transition-colors"
+      className="font-mono text-fg hover:text-brand transition-colors"
     >
       {truncate(address)}
-      <span className="ml-2 text-[10px] text-[#6a7282]">
+      <span className="ml-2 text-[10px] text-fg-muted">
         {copied ? "Copied" : "Copy"}
       </span>
     </button>

@@ -37,10 +37,10 @@ export function DexCexSpread({
 
   const text =
     tone === "safe"
-      ? "text-[#0fa87a]"
+      ? "text-buy"
       : tone === "caution"
-        ? "text-[#b45309]"
-        : "text-[#b91c1c]";
+        ? "text-warning-strong"
+        : "text-sell-strong";
 
   return (
     <Tooltip content={TOOLTIP} side="bottom" title="DEX vs CEX spread">

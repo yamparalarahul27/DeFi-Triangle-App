@@ -28,8 +28,8 @@ function lamportsToSol(lamports: number | null | undefined): string | null {
 export function NftDetail({ detail, detailLoading, otherOwned }: Props) {
   if (!detail) {
     return (
-      <div className="rounded-[14px] border border-[#11274d]/10 bg-white p-6 sm:p-8 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]">
-        <div className="text-sm text-[#6a7282] text-center py-20">
+      <div className="rounded-[14px] border border-outline/10 bg-surface-container p-6 sm:p-8 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]">
+        <div className="text-sm text-fg-muted text-center py-20">
           {detailLoading ? "Loading…" : "Select an NFT below"}
         </div>
       </div>
@@ -43,8 +43,8 @@ export function NftDetail({ detail, detailLoading, otherOwned }: Props) {
       : "—";
 
   return (
-    <div className="rounded-[14px] border border-[#11274d]/10 bg-white p-6 sm:p-8 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]">
-      <h1 className="text-center font-mono text-2xl sm:text-3xl font-bold text-[#11274d] mb-6 [text-wrap:balance]">
+    <div className="rounded-[14px] border border-outline/10 bg-surface-container p-6 sm:p-8 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]">
+      <h1 className="text-center font-mono text-2xl sm:text-3xl font-bold text-fg mb-6 [text-wrap:balance]">
         {asset.name.toUpperCase()}
       </h1>
 
@@ -54,7 +54,7 @@ export function NftDetail({ detail, detailLoading, otherOwned }: Props) {
           <img
             src={asset.image_url}
             alt={asset.name}
-            className="block w-[71.4%] mx-auto aspect-square rounded-[10px] border border-[#11274d]/10 object-cover"
+            className="block w-[71.4%] mx-auto aspect-square rounded-[10px] border border-outline/10 object-cover"
             onError={(e) => {
               (e.currentTarget as HTMLImageElement).style.background =
                 "linear-gradient(135deg,#fbbf24,#ef4444)";
@@ -62,11 +62,11 @@ export function NftDetail({ detail, detailLoading, otherOwned }: Props) {
             }}
           />
           {(asset.description || collection.description) && (
-            <div className="rounded-[10px] border border-[#11274d]/10 bg-white p-4">
-              <div className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#6a7282] mb-2">
+            <div className="rounded-[10px] border border-outline/10 bg-surface-container p-4">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.1em] text-fg-muted mb-2">
                 About {collection.name ?? "Collection"}
               </div>
-              <p className="text-sm text-[#212121] [text-wrap:pretty]">
+              <p className="text-sm text-fg [text-wrap:pretty]">
                 {asset.description || collection.description}
               </p>
             </div>
@@ -76,13 +76,13 @@ export function NftDetail({ detail, detailLoading, otherOwned }: Props) {
         {/* RIGHT — info panels */}
         <div className="flex flex-col gap-3">
           {/* Owner */}
-          <div className="rounded-[10px] border border-[#11274d]/10 bg-white p-4">
+          <div className="rounded-[10px] border border-outline/10 bg-surface-container p-4">
             <div className="flex items-center justify-between mb-3">
-              <div className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#6a7282]">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.1em] text-fg-muted">
                 Owner Profile
               </div>
               {otherOwned && otherOwned.count > 1 && (
-                <div className="text-[10px] font-semibold text-[#6a7282]">
+                <div className="text-[10px] font-semibold text-fg-muted">
                   +{otherOwned.count - 1} in collection
                 </div>
               )}
@@ -97,10 +97,10 @@ export function NftDetail({ detail, detailLoading, otherOwned }: Props) {
                 }}
               />
               <div className="min-w-0">
-                <div className="font-mono text-sm text-[#11274d] truncate">
+                <div className="font-mono text-sm text-fg truncate">
                   {truncate(asset.owner)}
                 </div>
-                <div className="text-xs text-[#6a7282]">
+                <div className="text-xs text-fg-muted">
                   Solana wallet
                 </div>
               </div>
@@ -108,10 +108,10 @@ export function NftDetail({ detail, detailLoading, otherOwned }: Props) {
           </div>
 
           {/* Traits */}
-          <div className="rounded-[10px] border border-[#11274d]/10 bg-white p-4">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#6a7282] mb-3 flex items-center gap-2">
+          <div className="rounded-[10px] border border-outline/10 bg-surface-container p-4">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.1em] text-fg-muted mb-3 flex items-center gap-2">
               Traits
-              <span className="inline-flex items-center justify-center h-[18px] min-w-[18px] px-1.5 rounded-full bg-[#f1f5f9] text-[10px] text-[#11274d]">
+              <span className="inline-flex items-center justify-center h-[18px] min-w-[18px] px-1.5 rounded-full bg-surface-page text-[10px] text-fg">
                 {asset.attributes.length}
               </span>
             </div>
@@ -133,19 +133,19 @@ export function NftDetail({ detail, detailLoading, otherOwned }: Props) {
                 return (
                   <div
                     key={i}
-                    className="rounded-[8px] border border-[#11274d]/10 bg-[#f1f5f9] p-2.5"
+                    className="rounded-[8px] border border-outline/10 bg-surface-page p-2.5"
                   >
-                    <div className="text-[9px] font-medium uppercase tracking-[0.08em] text-[#6a7282] mb-1.5">
+                    <div className="text-[9px] font-medium uppercase tracking-[0.08em] text-fg-muted mb-1.5">
                       {trait.trait_type ?? "—"}
                     </div>
-                    <div className="font-mono text-[13px] text-[#11274d] break-words">
+                    <div className="font-mono text-[13px] text-fg break-words">
                       {value}
                     </div>
                     {rarityRow && (
-                      <div className="flex items-center gap-1.5 mt-2 text-[11px] font-mono text-[#6a7282]">
+                      <div className="flex items-center gap-1.5 mt-2 text-[11px] font-mono text-fg-muted">
                         {rarityRow.count}
                         {pct && (
-                          <span className="inline-flex items-center h-[18px] px-1.5 rounded-full bg-[#e5f7f2] text-[#0fa87a] text-[10px] font-semibold">
+                          <span className="inline-flex items-center h-[18px] px-1.5 rounded-full bg-buy-surface text-buy text-[10px] font-semibold">
                             {pct}%
                           </span>
                         )}
@@ -158,8 +158,8 @@ export function NftDetail({ detail, detailLoading, otherOwned }: Props) {
           </div>
 
           {/* Details */}
-          <div className="rounded-[10px] border border-[#11274d]/10 bg-white p-4">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#6a7282] mb-3">
+          <div className="rounded-[10px] border border-outline/10 bg-surface-container p-4">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.1em] text-fg-muted mb-3">
               Details
             </div>
             <dl className="space-y-2 text-xs">
@@ -192,8 +192,8 @@ export function NftDetail({ detail, detailLoading, otherOwned }: Props) {
           </div>
 
           {/* JSON Metadata */}
-          <div className="rounded-[10px] border border-[#11274d]/10 bg-white p-4">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#6a7282] mb-3">
+          <div className="rounded-[10px] border border-outline/10 bg-surface-container p-4">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.1em] text-fg-muted mb-3">
               JSON Metadata
             </div>
             {asset.metadata_url ? (
@@ -201,12 +201,12 @@ export function NftDetail({ detail, detailLoading, otherOwned }: Props) {
                 href={asset.metadata_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-mono text-xs text-[#19549b] hover:underline truncate block"
+                className="font-mono text-xs text-brand hover:underline truncate block"
               >
                 {asset.metadata_url}
               </a>
             ) : (
-              <div className="text-xs text-[#6a7282]">none</div>
+              <div className="text-xs text-fg-muted">none</div>
             )}
           </div>
         </div>
@@ -226,8 +226,8 @@ function Row({
 }) {
   return (
     <div className="flex items-center justify-between gap-3">
-      <dt className="text-[#6a7282]">{label}</dt>
-      <dd className={`text-[#11274d] ${mono ? "font-mono" : ""}`}>{value}</dd>
+      <dt className="text-fg-muted">{label}</dt>
+      <dd className={`text-fg ${mono ? "font-mono" : ""}`}>{value}</dd>
     </div>
   );
 }

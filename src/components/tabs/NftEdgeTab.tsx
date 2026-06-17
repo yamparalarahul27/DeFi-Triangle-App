@@ -46,7 +46,7 @@ export function NftEdgeTab({ sessionWallet }: Props) {
 
   if (loading) {
     return (
-      <div className="rounded-[14px] border border-[#11274d]/10 bg-white p-12 text-center text-sm text-[#6a7282]">
+      <div className="rounded-[14px] border border-outline/10 bg-surface-container p-12 text-center text-sm text-fg-muted">
         Loading collection…
       </div>
     );
@@ -54,7 +54,7 @@ export function NftEdgeTab({ sessionWallet }: Props) {
 
   if (error) {
     return (
-      <div className="rounded-[14px] border border-[#fde68a] bg-[#FFFBEB] p-6 text-sm text-[#B45309]">
+      <div className="rounded-[14px] border border-warning bg-warning-surface p-6 text-sm text-warning-strong">
         Couldn&apos;t load the NFT collection. Reason: {error}
       </div>
     );
@@ -62,7 +62,7 @@ export function NftEdgeTab({ sessionWallet }: Props) {
 
   if (!collection || assets.length === 0) {
     return (
-      <div className="rounded-[14px] border border-[#11274d]/10 bg-white p-12 text-center text-sm text-[#6a7282]">
+      <div className="rounded-[14px] border border-outline/10 bg-surface-container p-12 text-center text-sm text-fg-muted">
         No NFTs found for this collection.
       </div>
     );
@@ -80,7 +80,7 @@ export function NftEdgeTab({ sessionWallet }: Props) {
           onClick={() => canPrev && selectIndex(selectedIndex - 1)}
           disabled={!canPrev}
           aria-label="Previous NFT"
-          className="hidden md:inline-flex absolute left-[-20px] top-1/2 -translate-y-1/2 z-10 w-10 h-10 items-center justify-center rounded-full bg-white border border-[#11274d]/10 text-[#11274d] hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed transition-[box-shadow,transform] duration-150 active:scale-[0.96]"
+          className="hidden md:inline-flex absolute left-[-20px] top-1/2 -translate-y-1/2 z-10 w-10 h-10 items-center justify-center rounded-full bg-surface-container border border-outline/10 text-fg hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed transition-[box-shadow,transform] duration-150 active:scale-[0.96]"
           style={{
             boxShadow:
               "0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)",
@@ -99,7 +99,7 @@ export function NftEdgeTab({ sessionWallet }: Props) {
           }}
           disabled={!canNext}
           aria-label="Next NFT"
-          className="hidden md:inline-flex absolute right-[-20px] top-1/2 -translate-y-1/2 z-10 w-10 h-10 items-center justify-center rounded-full bg-white border border-[#11274d]/10 text-[#11274d] hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed transition-[box-shadow,transform] duration-150 active:scale-[0.96]"
+          className="hidden md:inline-flex absolute right-[-20px] top-1/2 -translate-y-1/2 z-10 w-10 h-10 items-center justify-center rounded-full bg-surface-container border border-outline/10 text-fg hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed transition-[box-shadow,transform] duration-150 active:scale-[0.96]"
           style={{
             boxShadow:
               "0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)",

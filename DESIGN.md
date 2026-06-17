@@ -10,98 +10,85 @@
 ## Identity
 
 **Product name:** TBD (Y-Vault)
-**Visual theme:** Refined Institutional DeFi Terminal
-**Aesthetic:** A premium, data-dense trading interface that communicates competence and authority. Deep dark-navy hero sections bleed into a clean light-surface body — numbers are the hero, decoration is the enemy.
+**Visual theme:** Near-Black Financial Terminal — "Fey Dark Wealth" / market-dark
+**Aesthetic:** A premium, data-dense trading interface that communicates competence and authority. A cinematic near-black canvas with soft charcoal elevation; mint-teal is the single identity accent. Numbers are the hero, decoration is the enemy — depth comes from tonal layering and soft shadows, not borders.
 
-**Mood words:** Institutional · Precise · Spacious · Trustworthy · Calm authority
-**Anti-mood words:** Flashy · Neon · Cluttered · Gamified · Playful
+**Mood words:** Precise · Premium · Spacious · Trustworthy · Calm authority · Cinematic
+**Anti-mood words:** Flashy · Neon · Cluttered · Gamified · Playful · Bright
 
 ---
 
 ## Color
 
-### Palette Naming Convention
+> **Single source of truth: `src/app/globals.css`.** Every colour is a CSS variable
+> exposed as a semantic Tailwind utility via `@theme inline`. **Consume tokens —
+> never hardcode hex in classes.** Use `bg-surface-container`, `text-fg`,
+> `text-brand`, `text-buy`, etc. The `npm run check:theme` guard fails CI if a
+> `*-[#hex]` utility class reappears anywhere under `src/` (evilcharts exempt).
+> The whole app is dark; there is no light mode and no runtime theme toggle.
 
-The palette uses three named scales — **Frost** (blues), **Hela** (neutrals), **Loki** (greens) — plus semantic and state tokens.
+### Surfaces (near-black, layered by elevation)
 
-### Frost (Blues)
+| Token | Value | Utility | Role |
+|---|---|---|---|
+| `--surface-dim` | `#030405` | `bg-surface-dim` | Deepest frame, gutters, masked edges |
+| `--surface-page` | `#090a0d` | `bg-surface-page` | Default app background (body) |
+| `--surface` | `#101115` | `bg-surface` | Panel / dashboard body surface |
+| `--surface-container` | `#17191e` | `bg-surface-container` | Cards, table rows, inputs |
+| `--surface-container-high` | `#202228` | `bg-surface-container-high` | Hover, dropdowns, raised controls |
+| `--surface-bright` | `#2a2d34` | `bg-surface-bright` | Selected rows, popovers, tooltips |
 
-| Token | Value | Role |
-|---|---|---|
-| `--frost-200` | `#f1f5f9` | Page background (light body) |
-| `--frost-300` | `#cbd5e1` | Muted borders on light surfaces |
-| `--frost-400` | `#19549b` | Interactive blue, card gradient end |
-| `--frost-500` | `#11274d` | Deep blue surface, card gradient start |
-| `--frost-600` | `#091731` | Dark header surface |
-| `--frost-700` | `#030f1a` | Deepest navy (hero bottom) |
+### Borders
 
-### Hela (Neutrals)
+| Token | Value | Utility | Role |
+|---|---|---|---|
+| `--outline` | `#383b43` | `border-outline` | Visible card / control separator |
+| `--outline-variant` | `#23262d` | `border-outline-variant` | Hairline dividers, table rules |
 
-| Token | Value | Role |
-|---|---|---|
-| `--hela-600` | `#4c4c5b` | Muted text on dark surfaces |
-| `--hela-750` | `#1d2836` | Elevated card surface in dark contexts |
-| `--hela-800` | `#061322` | Deep panel background |
-| `--hela-900` | `#020e1a` | Absolute background floor |
+### Foreground / Text
 
-### Loki (Greens)
+| Token | Value | Utility | Role |
+|---|---|---|---|
+| `--fg` | `#f4f4f5` | `text-fg` | Primary text, headline figures, active tabs |
+| `--fg-muted` | `#a7abb3` | `text-fg-muted` | Secondary text, supporting labels |
+| `--fg-subtle` | `#868b95` | `text-fg-subtle` | Tertiary metadata, placeholders, faint hints |
+| `--fg-inverse` | `#07080a` | `text-fg-inverse` | Text on light pills (e.g. white CTA) |
+| `--on-brand` | `#04110f` | `text-on-brand` | Text/icon on mint brand fills |
 
-| Token | Value | Role |
-|---|---|---|
-| `--loki-100` | `#e5f7f2` | Subtle success background |
-| `--loki-600` | `#0fa87a` | Success / positive PnL / live indicator |
-| `--loki-700` | `#157357` | Hover state for success actions |
+<sub>All fg-on-surface pairs clear WCAG AA (4.5:1) on every surface; `fg-subtle` is AA on page/container and AA-large on the rare `surface-bright`. Verified, not eyeballed.</sub>
 
-### Semantic Tokens
+### Brand — mint-teal identity accent
 
-| Token | Value | Role |
-|---|---|---|
-| `--main-bg` | `#f1f5f9` | Body page background |
-| `--ink` | `#212121` | Primary text on light surfaces |
-| `--muted` | `#6a7282` | Secondary / supporting text |
-| `--true-black` | `#111113` | Absolute black for borders and overlays |
-| `--green-main` | `#18df74` | High-emphasis positive (hero APY) |
-| `--danger` | `#ef4444` | Negative PnL, errors, short positions |
-| `--warning` | `#f59e0b` | Warnings, pending states |
-| `--cta-color` | `#3B7DDD` | Primary CTA (user-customisable via Settings) |
+| Token | Value | Utility | Role |
+|---|---|---|---|
+| `--brand` | `#5ad8c4` | `text-brand` / `bg-brand` | Primary CTA, links, selected state, focus |
+| `--brand-hover` | `#78e8d7` | `bg-brand-hover` | Hover on brand-filled actions |
+| `--brand-bright` | `#a7fff0` | — | High-contrast glow for charts/highlights |
+| `--brand-subtle` | `#c9fbf2` | — | Pale mint tint for soft brand fills |
 
-### Customisable Tokens (Settings Modal)
+> **Filled mint surfaces use dark text (`text-on-brand`), never `text-white`** — mint
+> is a light accent; white text on it fails contrast. The guard enforces this.
 
-| Token | Default | Role |
-|---|---|---|
-| `--card-gradient-from` | `#091731` | Card gradient dark stop |
-| `--card-gradient-to` | `#19549b` | Card gradient light stop |
-| `--cta-color` | `#3B7DDD` | Button / link accent colour |
+### Semantic — trading + state
 
-### State Messaging Tokens
+| Token | Value | Utility | Role |
+|---|---|---|---|
+| `--buy` / `--buy-strong` | `#34d399` / `#10b981` | `text-buy` | Positive PnL, success, live, on-peg |
+| `--sell` / `--sell-strong` | `#f87171` / `#ef4444` | `text-sell` | Negative PnL, errors, short |
+| `--warning` / `--warning-strong` | `#f4d35e` / `#f59e0b` | `text-warning` | Warnings, pending, cautionary |
+| `--info` / `--info-strong` | `#75a7ff` / `#3b82f6` | `text-info` | Informational accent (secondary to brand) |
+| `--error` / `--error-strong` | `#fb7185` / `#f43f5e` | `text-error` | Destructive feedback (rose) |
 
-| Variant | Background | Border | Text | Icon |
-|---|---|---|---|---|
-| Info | `#EFF6FF` | `#BFDBFE` | `#1D4ED8` | `#2563EB` |
-| Warning | `#FFFBEB` | `#FDE68A` | `#B45309` | `#D97706` |
-| Error | `#FEF2F2` | `#FECACA` | `#B91C1C` | `#DC2626` |
+### Tinted state surfaces (dark)
 
-State surface: `#FFFFFF` · State meta text: `#6B7280` · State divider: `#E5E7EB`
+| Token | Value | Utility | Role |
+|---|---|---|---|
+| `--buy-surface` | `#0f1f1a` | `bg-buy-surface` | Subtle positive/success background |
+| `--sell-surface` | `#211214` | `bg-sell-surface` | Subtle error background |
+| `--warning-surface` | `#211d10` | `bg-warning-surface` | Subtle warning background |
+| `--info-surface` | `#111827` | `bg-info-surface` | Subtle info background |
 
-### Dark Surface Overrides (Terminal / Trade Views)
-
-When rendered on dark surfaces use the following instead of the semantic tokens above:
-
-| Role | Value |
-|---|---|
-| Primary background | `#0F1521` |
-| Elevated card | `#1A2332` |
-| Dense panel | `#151C28` |
-| Bottom status bar | `#0B0F18` |
-| Border subtle | `rgba(255,255,255,0.08)` |
-| Border light | `rgba(255,255,255,0.12)` |
-| Border active | `rgba(255,255,255,0.20)` |
-| Text primary | `#FFFFFF` |
-| Text secondary | `#9CA3AF` |
-| Text muted | `#6B7280` |
-| Success | `#10B981` |
-| Success bright | `#22C55E` |
-| Danger | `#EF4444` |
+<sub>Sign vs. magnitude (guideline #5): magnitude drives tone via `Math.abs()`, direction drives the signed `+`/`−` and ▲/▼. Two concerns, two computations. Peg-health colour reflects health, not price direction.</sub>
 
 ### Hero Gradient
 
@@ -165,8 +152,7 @@ Used on the full-bleed landing hero section only.
 
 - All financial numbers use **Geist Pixel Square** (fallback: IBM Plex Mono). Never a serif or variable-weight font.
 - Section labels are always **uppercase with letter-spacing ≥ 0.08em**.
-- Dark surface labels use `rgba(255,255,255,0.4)`.
-- Light surface labels use `rgba(17,17,19,0.5)`.
+- Section labels use `text-fg-subtle` (or `rgba(255,255,255,0.4)` on glass surfaces).
 - Never use serif fonts anywhere in the UI.
 
 ---
@@ -206,11 +192,10 @@ Used on the full-bleed landing hero section only.
 
 | Variant | Background | Text | Hover |
 |---|---|---|---|
-| `primary` | `#19549b` (frost-400) | white | `#143f78` |
-| `execute` | `#19549b` (frost-400) | white | `#143f78` |
-| `secondary` | `#FFFFFF` + `border border-[#cbd5e1]` | `#11274d` | bg `#f1f5f9` |
-| `ghost-dark` | `rgba(255,255,255,0.10)` | white | bg `rgba(255,255,255,0.20)` |
-| `ghost-light` | transparent | `#6a7282` | text `#212121`, bg `#f1f5f9` |
+| `primary` | `bg-brand` | `text-on-brand` (dark) | `bg-brand-hover` |
+| `execute` | `bg-brand` | `text-on-brand` (dark) | `bg-brand-hover` |
+| `secondary` | `bg-surface-container` + `border border-outline-variant` | `text-fg` | `bg-surface-container-high` |
+| `ghost` | transparent or `bg-white/10` (on glass) | `text-fg` / `text-fg-muted` | `bg-surface-container` / `bg-white/20` |
 
 | Size | Padding | Font size |
 |---|---|---|
@@ -221,7 +206,7 @@ Used on the full-bleed landing hero section only.
 **Transition:** `all 150ms` (not 200ms)
 
 **Connect Wallet button (navbar):**
-- Uses `ghost-light` variant + explicit `border border-[#cbd5e1] bg-white hover:bg-[#e2e8f0]`
+- Uses `ghost-light` variant + explicit `border border-outline-variant bg-surface-container hover:bg-surface-container-high`
 - Height: `28px` (h-7), padding: `0 12px`
 
 ---
@@ -234,15 +219,15 @@ Used on the full-bleed landing hero section only.
 > Transition: `all 150ms`
 
 **Active:**
-- Background: `#19549b` (frost-400)
-- Text: white
-- Shadow: `raised-frosted-active` → `0 2px 8px rgba(25,84,155,0.25)`
+- Background: `bg-brand`
+- Text: `text-on-brand` (dark)
+- Shadow: layered mint glow → `0 1px 2px rgba(4,17,15,0.40), 0 4px 8px rgba(90,216,196,0.20), 0 12px 24px rgba(90,216,196,0.12)`
 
 **Inactive:**
-- Background: `#FFFFFF`
-- Text: `rgba(17,39,77,0.50)` (frost-500 at 50%)
-- Shadow: `raised-frosted-tab` → `0 1px 2px rgba(0,0,0,0.05)`
-- Hover text: `rgba(17,39,77,0.70)`
+- Background: transparent (or `bg-surface-container`)
+- Text: `text-fg-muted`
+- Border: `border-outline-variant`
+- Hover text: `text-fg`
 
 | Size | Height | Padding | Font size |
 |---|---|---|---|
@@ -250,8 +235,8 @@ Used on the full-bleed landing hero section only.
 | Desktop (lg+) | `40px` (h-10) | `8px 18px` | 14px |
 
 **Leverage / Status Badge (inline):**
-- Background: `#f1f5f9`
-- Text: `#6a7282`, 9px, uppercase, `tracking-wider`
+- Background: `bg-surface-container` (or `bg-brand/10` tint)
+- Text: `text-fg-muted` (or `text-brand` on tint), 9px, uppercase, `tracking-wider`
 - Border-radius: `rounded-sm`
 - Padding: `2px 6px`
 - Example: "Soon" badge in navbar disabled items
@@ -260,30 +245,29 @@ Used on the full-bleed landing hero section only.
 
 ### Cards & Containers
 
-**Light surface (body):**
-- Background: `#FFFFFF`
-- Border: `1px solid rgba(17,17,19,0.08)`
+**Card surface:**
+- Background: `bg-surface-container`
+- Border: `border border-outline-variant`
 - Border-radius: `8px`
 - Padding: `16–24px`
-- Shadow (rest): `0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)`
-- Shadow (hover): `0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04)`
-- Shadow (active): `0 2px 8px rgba(25,84,155,0.25)`
+- Shadow (rest): `0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3)`
+- Hover: lift to `bg-surface-container-high`
+- Shadow (active/selected): layered mint → `0 12px 24px rgba(90,216,196,0.12)`
 
-**Dark surface (terminal):**
-- Background: `#1A2332`
-- Border: `1px solid rgba(255,255,255,0.08)`
-- Border-radius: `8px`
-- No shadow (depth via background shift only)
-- Hover border: `rgba(255,255,255,0.20)`, `200ms ease`
+**Flat variant (dense panels):**
+- Background: `bg-surface-container`
+- Border: `border-outline-variant`
+- No shadow — depth via background shift only
+- Hover border: `border-outline`, `200ms ease`
 
-**Gradient card (customisable):**
-```css
-background: linear-gradient(var(--card-gradient-from), var(--card-gradient-to));
+**Gradient card (e.g. featured StableCard):**
+```
+bg-gradient-to-br from-surface-container to-surface-container-high
 ```
 
 **Card footer tint:**
 ```css
-background-color: rgba(15, 23, 42, 0.03); /* .bg-frost-tint */
+background-color: rgba(255,255,255,0.03); /* subtle dark tint */
 ```
 
 ---
@@ -296,23 +280,23 @@ background-color: rgba(15, 23, 42, 0.03); /* .bg-frost-tint */
 - Border-radius: `8px`
 - Padding: `10px 14px`
 - Text: white, IBM Plex Sans 400, 14px
-- Placeholder: `#6B7280`
+- Placeholder: `fg-subtle`
 - Focus border: `rgba(255,255,255,0.25)`
 
 **Segmented Control (e.g. Slippage):**
 - Container: `rgba(255,255,255,0.05)`, border-radius `8px`
-- Active segment: `#1A2332`, text white
-- Inactive segment: transparent, text `#9CA3AF`
+- Active segment: `surface-container`, text white
+- Inactive segment: transparent, text `fg-muted`
 - Segment border-radius: `6px`
 - Padding per segment: `8px 12px`
 
 **Slider (Leverage 1x–9x):**
 - Track: `rgba(255,255,255,0.1)`, height `4px`
-- Filled: `#3B7DDD`
+- Filled: `bg-brand`
 - Thumb: white circle, `16px`
 
 **Toggle Switch:**
-- Active: `--cta-color` or teal track
+- Active: `--brand` or teal track
 - Inactive: gray track
 - Thumb: white circle, height `20px`
 
@@ -328,7 +312,7 @@ background-color: rgba(15, 23, 42, 0.03); /* .bg-frost-tint */
 .state-notice-text      IBM Plex Sans 500, 12px/16px
 .state-severity-label   IBM Plex Sans 600, 10px/12px, tracking 0.02em
 .state-stale-badge      pill, warning colours, 10px/12px 600
-.state-action-btn       #19549B, IBM Plex Sans 500, 12px; hover #143F78
+.state-action-btn       brand (#5ad8c4), IBM Plex Sans 500, 12px; hover #143F78
 ```
 
 ---
@@ -339,20 +323,20 @@ background-color: rgba(15, 23, 42, 0.03); /* .bg-frost-tint */
 
 **Container:**
 - `sticky top-0 z-20`
-- Background: `rgba(241,245,249,0.95)` (`bg-[#f1f5f9]/95`) + `backdrop-blur-lg`
-- Border: `border-b border-[#cbd5e1]`
+- Background: `rgba(241,245,249,0.95)` (`bg-surface-page/95`) + `backdrop-blur-lg`
+- Border: `border-b border-outline-variant`
 - Height: **48px** (h-12) — not 56–64px
 - Max-width: `1400px`, centered
 - Padding: `0 16px` mobile, `0 24px` desktop (lg+)
 
 **Logo area (left):**
 - Logo `/logo.svg` — `24×24px`
-- Wordmark: Geist Mono (`.font-satoshi`) bold 14px `#11274d` — hidden on mobile, visible `lg+`
+- Wordmark: Geist Mono (`.font-satoshi`) bold 14px `text-fg` — hidden on mobile, visible `lg+`
 
 **Nav items (desktop, hidden on mobile):**
 - Font: IBM Plex Sans, `12px`, weight `400`
-- Inactive: `#6a7282` → `#11274d` on hover
-- Active: `#11274d`
+- Inactive: `text-fg-muted` → `text-fg` on hover
+- Active: `text-fg`
 - Transition: `colors 150ms`
 - Gap between items: `24px`
 
@@ -365,10 +349,10 @@ background-color: rgba(15, 23, 42, 0.03); /* .bg-frost-tint */
 
 | Control | Style |
 |---|---|
-| Settings button | `h-7 px-2 rounded-sm bg-white border border-[#cbd5e1] text-[#11274d] hover:bg-[#e2e8f0]` |
-| Connect Wallet | `Button ghost-light sm` + `border border-[#cbd5e1] bg-white hover:bg-[#e2e8f0]` |
+| Settings button | `h-7 px-2 rounded-sm bg-surface-container border border-outline-variant text-fg hover:bg-surface-container-high` |
+| Connect Wallet | `Button ghost-light sm` + `border border-outline-variant bg-surface-container hover:bg-surface-container-high` |
 | Hamburger | Same as settings button, `lg:hidden` |
-| Wallet chip (connected) | `h-7 px-3 bg-white border border-[#cbd5e1] rounded-sm text-xs IBM Plex Sans hover:bg-[#e2e8f0]` |
+| Wallet chip (connected) | `h-7 px-3 bg-surface-container border border-outline-variant rounded-sm text-xs IBM Plex Sans hover:bg-surface-container-high` |
 
 ---
 
@@ -386,15 +370,15 @@ background-color: rgba(15, 23, 42, 0.03); /* .bg-frost-tint */
 
 **Menu item:**
 - `w-full flex items-center gap-2 px-3 py-2`
-- Font: IBM Plex Sans, 12px, `#11274d`
-- Hover: `bg-[#f1f5f9]`, transition `colors`
-- Icon: 12px, `#6a7282`
+- Font: IBM Plex Sans, 12px, `text-fg`
+- Hover: `bg-surface-page`, transition `colors`
+- Icon: 12px, `text-fg-muted`
 
 **Wallet chip (connected state):**
-- Green dot (`w-1.5 h-1.5 rounded-full bg-[#0fa87a]`) + truncated address (`0x1234...5678`) + `ChevronDown` icon
-- Address label: `font-mono text-xs text-[#11274d]`
-- "Connected" badge header inside dropdown: `text-[10px] uppercase tracking-wider text-[#6a7282]`
-- Full address: `font-mono text-[11px] text-[#11274d] break-all`
+- Green dot (`w-1.5 h-1.5 rounded-full bg-buy`) + truncated address (`0x1234...5678`) + `ChevronDown` icon
+- Address label: `font-mono text-xs text-fg`
+- "Connected" badge header inside dropdown: `text-[10px] uppercase tracking-wider text-fg-muted`
+- Full address: `font-mono text-[11px] text-fg break-all`
 
 **Dismiss:** Click outside or `Escape` key
 
@@ -403,7 +387,7 @@ background-color: rgba(15, 23, 42, 0.03); /* .bg-frost-tint */
 ### Tables
 
 **Dark background:**
-- Header: `#6B7280`, uppercase, IBM Plex Sans 500, 12px, `letter-spacing: 0.05em`
+- Header: `fg-subtle`, uppercase, IBM Plex Sans 500, 12px, `letter-spacing: 0.05em`
 - Row border: `1px solid rgba(255,255,255,0.08)`
 - Row hover: `rgba(255,255,255,0.02)`
 - Cell padding: `12–16px` vertical, `16px` horizontal
@@ -411,7 +395,7 @@ background-color: rgba(15, 23, 42, 0.03); /* .bg-frost-tint */
 - Text cells: IBM Plex Sans
 
 **Light modal:**
-- Header: `#6B7280`, uppercase, 12px
+- Header: `fg-subtle`, uppercase, 12px
 - Row border: `1px solid #E5E7EB`
 - Row hover: `rgba(0,0,0,0.02)`
 
@@ -426,7 +410,7 @@ background-color: rgba(15, 23, 42, 0.03); /* .bg-frost-tint */
 - Shadow: `0 25px 50px rgba(0,0,0,0.5)`
 - Backdrop: `rgba(0,0,0,0.6)`, `backdrop-filter: blur(4px)`
 - Title: `#111827`, IBM Plex Sans 600, 18px
-- Body text: `#111827` primary, `#6B7280` secondary
+- Body text: `#111827` primary, `fg-subtle` secondary
 - Dividers: `#E5E7EB`
 - Mobile: full-width bottom-sheet, border-radius top only
 
@@ -473,8 +457,8 @@ Icon size: `1rem`.
 
 | Variant | Color |
 |---|---|
-| `live` | `#0fa87a` (loki-600) |
-| `success` | `#0fa87a` (loki-600) |
+| `live` | `text-buy` |
+| `success` | `text-buy` |
 | `danger` | `#ef4444` |
 | `warning` | `#f59e0b` |
 
@@ -492,13 +476,13 @@ Icon size: `1rem`.
 
 - `fixed bottom-0 left-0 right-0 z-40`
 - Background: `rgba(255,255,255,0.95)` + `backdrop-blur`
-- Border: `border-t border-[#cbd5e1]`
+- Border: `border-t border-outline-variant`
 - Height: `36px` (h-9)
 - Max-width: `1400px`, centered, padding `0 16px` / `0 24px` desktop
 
 **Left side:**
-- `StatusDot` (live, no pulse) + "Live" label — IBM Plex Sans 12px `#6a7282`
-- SOL price — `font-mono text-xs text-[#6a7282]`, fetched from Binance every 30s, shows `...` while loading
+- `StatusDot` (live, no pulse) + "Live" label — IBM Plex Sans 12px `text-fg-muted`
+- SOL price — `font-mono text-xs text-fg-muted`, fetched from Binance every 30s, shows `...` while loading
 
 **Right side:**
 - "Design & Engineered by Yamparala Rahul" — IBM Plex Sans 12px `#94a3b8`
@@ -554,9 +538,9 @@ Icon size: `1rem`.
 
 | Layer | Token / Value | Role |
 |---|---|---|
-| 0 | `#0B0F18` | Bottom status bar (floor) |
-| 1 | `#0F1521` / `#030f1a` | Page background |
-| 2 | `#1A2332` / `#1d2836` | Cards, side panels |
+| 0 | `surface-dim` | Bottom status bar (floor) |
+| 1 | `surface-page` / `#030f1a` | Page background |
+| 2 | `surface-container` / `#1d2836` | Cards, side panels |
 | 3 | `rgba(255,255,255,0.05)` | Hovered cards, active inputs |
 | 4 | `rgba(0,0,0,0.6) + blur(4px)` | Modal backdrop |
 | 5 | `#FFFFFF` | Modals, overlays |
@@ -565,14 +549,12 @@ Icon size: `1rem`.
 
 | Class | Value | Use |
 |---|---|---|
-| `.raised-frosted` | `0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)` | Default light card |
-| `.raised-frosted:hover` | `0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04)` | Hovered light card |
-| `.raised-frosted-active` | `0 2px 8px rgba(25,84,155,0.25)` | Active/selected state |
-| `.raised-frosted-tab` | `0 1px 2px rgba(0,0,0,0.05)` | Pill inactive state |
-| Modal on dark | `0 25px 50px rgba(0,0,0,0.50)` | White modal over dark backdrop |
+| Card (rest) | `0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3)` | Default dark card |
+| Active/selected pill | `0 1px 2px rgba(4,17,15,0.40), 0 4px 8px rgba(90,216,196,0.20), 0 12px 24px rgba(90,216,196,0.12)` | Layered mint glow on `bg-brand` selection |
+| Modal / floating | `0 24px 80px rgba(0,0,0,0.7)` | Deep shadow over `bg-surface-dim/60` backdrop |
 
-- **Dark surfaces:** no shadows — depth via background colour shift only
-- Never use coloured glows or neon shadows
+- **Depth comes from tonal layering** (surface → container → container-high → bright) first; shadows are secondary and deep/black.
+- The **only** coloured shadow allowed is the subtle mint glow on an active `bg-brand` pill. No other neon glows.
 
 ---
 
@@ -624,9 +606,9 @@ Icon size: `1rem`.
 - Use background-color shifts for depth on dark surfaces (not shadows)
 - Keep all financial numbers in **Geist Pixel Square** or IBM Plex Mono
 - Use `rounded-sm` (2px) on buttons, pills, cards, inputs — it is the system default radius
-- Use `#19549b` (frost-400) as the primary interactive blue on light surfaces
-- Use white modals over dark blurred backdrops for clear layer separation
-- Show green (`#0fa87a` / `#18df74`) for positive values, red (`#ef4444`) for negative — always
+- Use `bg-brand` (mint) as the single identity accent — links, selected state, primary CTA. Filled brand always pairs with `text-on-brand` (dark text)
+- Use `bg-surface` modals over `bg-surface-dim/60` blurred backdrops for clear layer separation
+- Show `text-buy` (mint-green) for positive values, `text-sell` (red) for negative — always
 - Use 0.08–0.10em letter-spacing on all uppercase section labels
 - Keep a minimum `44px` touch target on mobile
 - Use `150ms` for all hover/active transitions
@@ -634,14 +616,14 @@ Icon size: `1rem`.
 ### Don't ❌
 - Don't use `border-radius: 0` — minimum is `rounded-sm` (2px)
 - Don't use `rounded-full` (9999px) on buttons or pills — that's for status dots only
-- Don't use neon glows, coloured shadows, or text shadows
+- Don't use neon glows or text shadows (the one allowed coloured shadow is the subtle mint glow on an active `bg-brand` pill)
 - Don't use `backdrop-filter: blur()` on cards (Navbar and BottomBar use it — but not data cards)
 - Don't use decorative corner accents or shine/sweep animations
 - Don't use serif fonts anywhere
-- Don't use gradients on cards or buttons (flat colours only, except banners and hero)
+- Don't use gradients on cards or buttons (flat surface tokens only, except the featured StableCard, banners, and hero)
 - Don't alternate table row background colours
-- Don't override `--cta-color` in component code — it's user-controlled
-- Don't use `#3B7DDD` as the primary blue on **light surfaces** — that's for dark-terminal context; use `#19549b` on light backgrounds
+- Don't hardcode hex in Tailwind classes (`bg-[#…]`) — always use a semantic token; `npm run check:theme` enforces this
+- Don't put `text-white` on a `bg-brand` fill — mint needs dark `text-on-brand`
 
 ---
 
@@ -667,31 +649,35 @@ Icon size: `1rem`.
 
 ## Quick Reference for AI Agents
 
-### Colour Tokens (Tailwind arbitrary values)
+### Colour Tokens (semantic Tailwind utilities)
+
+> Use these utilities — **never** `bg-[#hex]`. Defined in `globals.css @theme`.
 
 ```
-/* Light body */
-bg-[#f1f5f9]          /* page background */
-text-[#212121]        /* body text */
-text-[#6a7282]        /* muted text */
+/* Surfaces (low → high elevation) */
+bg-surface-page              /* page background */
+bg-surface                   /* panel body */
+bg-surface-container         /* cards, rows, inputs */
+bg-surface-container-high    /* hover / dropdowns */
+bg-surface-bright            /* selected / popovers / tooltips */
 
-/* Dark terminal */
-bg-[#0F1521]          /* page bg */
-bg-[#1A2332]          /* surface / card */
-bg-[#151C28]          /* dense panel */
-bg-[#0B0F18]          /* status bar */
+/* Text */
+text-fg                      /* primary / figures */
+text-fg-muted                /* secondary */
+text-fg-subtle               /* tertiary / placeholders */
 
-/* Accents */
-bg-[#3B7DDD] hover:bg-[#2B6BC4] text-white   /* primary CTA */
-text-[#10B981]        /* success / positive */
-text-[#18df74]        /* success bright (hero) */
-text-[#ef4444]        /* danger / negative */
-text-[#f59e0b]        /* warning */
+/* Brand (mint) + filled */
+text-brand                   /* links, selected, accent */
+bg-brand text-on-brand hover:bg-brand-hover   /* primary CTA — DARK text */
 
-/* Borders */
-border-white/[0.08]   /* subtle */
-border-white/[0.12]   /* light */
-border-white/[0.20]   /* active */
+/* Semantic */
+text-buy   text-sell   text-warning   text-info
+bg-buy-surface  bg-sell-surface  bg-warning-surface  /* tinted state bg */
+
+/* Borders + glints on dark */
+border-outline               /* visible separator */
+border-outline-variant       /* hairline / table rule */
+border-white/15              /* subtle glass rim on hero/glass only */
 ```
 
 ### Font Tokens
@@ -712,23 +698,23 @@ font-['IBM_Plex_Sans'] font-semibold text-[11px] uppercase tracking-[0.1em]
 
 ### Component Prompt Recipes
 
-**Data table (dark):**
-> "Table with `#1A2332` background. Headers: IBM Plex Sans 500, 12px, uppercase, `letter-spacing: 0.05em`, `#6B7280`. Numbers: Geist Pixel Square. Row border: `rgba(255,255,255,0.08)`. Row hover: `rgba(255,255,255,0.02)`. Green positive, red negative."
+**Data table:**
+> "`bg-surface-container`. Headers: IBM Plex Sans 600, 12px, uppercase, `tracking-[0.05em]`, `text-fg-subtle`. Numbers: Geist Pixel Square, `text-fg`. Row rule: `border-outline-variant`. Row hover: `bg-surface-container-high`. `text-buy` positive, `text-sell` negative."
 
-**Card (light surface):**
-> "White card, `rgba(17,17,19,0.08)` border, `8px` radius, `16–24px` padding. Shadow: `0 1px 3px rgba(0,0,0,0.06)`. Hover: `0 4px 12px rgba(0,0,0,0.08)`."
+**Card:**
+> "`bg-surface-container`, `border border-outline-variant`, `rounded-sm` (5–8px), `16–24px` padding. Layered shadow; hover lifts to `bg-surface-container-high`. Text `text-fg` / `text-fg-muted`."
 
 **Modal:**
-> "White modal, `12–16px` radius, `24px` padding, shadow `0 25px 50px rgba(0,0,0,0.5)`, over `rgba(0,0,0,0.6)` backdrop with `blur(4px)`. Title: `#111827`, IBM Plex Sans 600, 18px."
+> "`bg-surface` panel, `rounded-xl` (12px), `24px` padding, deep shadow `0 24px 80px rgba(0,0,0,0.7)`, over `bg-surface-dim/60` backdrop with `backdrop-blur`. Title: `text-fg`, IBM Plex Sans 600, 18px."
 
 **Primary button:**
-> "`#3B7DDD` background, white IBM Plex Sans 600 14px, `10px 20px` padding, `8px` radius. Hover `#2B6BC4`, `200ms ease`."
+> "`bg-brand text-on-brand` (DARK text on mint), IBM Plex Sans 600 14px, `10px 20px` padding, `rounded-sm`. Hover `bg-brand-hover`, targeted `transition-[background-color,color,box-shadow,transform]`, `active:scale-[0.96]`."
 
 **Filter pills:**
-> "Fully-rounded pills (`9999px`). Active: `#3B7DDD` bg, white text. Inactive: transparent, `rgba(255,255,255,0.12)` border, `#9CA3AF` text. Hover: brighten border and text."
+> "Fully-rounded (`9999px`), `min-h-[40px]`. Active: `bg-brand text-on-brand` + layered mint shadow. Inactive: transparent, `border-outline-variant`, `text-fg-muted`. Hover: brighten border + text."
 
 **Trade layout:**
-> "70/30 CSS Grid. Left: chart, `#151C28`. Right: order panel, `#1A2332`, `rgba(255,255,255,0.08)` left border. Stack vertically below `1024px`."
+> "70/30 CSS Grid. Left: chart, `bg-surface`. Right: order panel, `bg-surface-container`, `border-outline-variant` left border. Stack vertically below `1024px`."
 
 **Hero section:**
-> "Full-bleed gradient: `#000003 → #000036 (37.9%) → #143f79 (81.7%) → #fcffff (285%)`. Geist Mono bold display heading. Fade-up animation on entry (`400ms ease-out`)."
+> "Full-bleed gradient: `#000003 → #000036 (37.9%) → #143f79 (81.7%) → #fcffff (285%)` (the one place a literal gradient is allowed — it's a `style` background, not a utility class). Geist Mono bold display heading. Fade-up on entry (`400ms ease-out`)."

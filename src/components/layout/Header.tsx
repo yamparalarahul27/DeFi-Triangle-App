@@ -95,23 +95,23 @@ export function Header({
   }, [hasHero]);
 
   const shellClass = scrolled
-    ? "bg-white/95 backdrop-blur-lg border-b border-[#cbd5e1] shadow-[0_1px_3px_rgba(0,0,0,0.08),0_1px_2px_rgba(0,0,0,0.04)]"
+    ? "bg-surface-page/90 backdrop-blur-lg border-b border-outline-variant shadow-[0_1px_3px_rgba(0,0,0,0.08),0_1px_2px_rgba(0,0,0,0.04)]"
     : "bg-transparent backdrop-blur-lg border-b border-white/10";
 
   const wordmarkClass = scrolled
-    ? "text-[#11274d] hover:text-[#0a1a36]"
+    ? "text-fg hover:text-fg"
     : "text-white hover:text-white/80";
 
   const actionBtnClass = scrolled
-    ? "bg-white border border-[#cbd5e1] text-[#11274d] hover:bg-[#e2e8f0]"
+    ? "bg-surface-container border border-outline-variant text-fg hover:bg-surface-container-high"
     : "bg-white/10 border border-white/15 text-white hover:bg-white/20";
 
   const watchlistBtnClass = watchlistActive
-    ? "bg-[#19549b] text-white border border-[#19549b]"
+    ? "bg-brand text-on-brand border border-brand"
     : actionBtnClass;
 
   const nftEdgeBtnClass = nftEdgeActive
-    ? "bg-[#19549b] text-white border border-[#19549b]"
+    ? "bg-brand text-on-brand border border-brand"
     : actionBtnClass;
 
   return (
@@ -134,7 +134,7 @@ export function Header({
         >
           <span aria-hidden="true" className="inline-flex">
             <img
-              src={scrolled ? "/brand/defi_logo_dark.svg" : "/brand/defi_logo_white.svg"}
+              src={"/brand/defi_logo_white.svg"}
               alt=""
               className="h-5 w-auto shrink-0"
               width={20}
@@ -161,7 +161,7 @@ export function Header({
               <kbd
                 className={`hidden sm:inline-flex items-center gap-0.5 px-1 h-4 ml-0.5 text-[9px] rounded-sm border leading-none ${
                   scrolled
-                    ? "border-[#cbd5e1] bg-[#f1f5f9] text-[#6a7282]"
+                    ? "border-outline-variant bg-surface-page text-fg-muted"
                     : "border-white/20 bg-white/10 text-white/80"
                 }`}
               >
