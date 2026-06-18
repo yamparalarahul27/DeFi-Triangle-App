@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en" class="h-full antialiased">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Jupiter (JUP) · DeFi Triangle (Prototype)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/tw-config.js"></script>
+    <link rel="stylesheet" href="assets/theme.css" />
+  </head>
+  <body class="min-h-full flex flex-col bg-surface-page text-fg pb-14">
+    <!-- Header (no hero → scrolled style) -->
+    <header id="site-header" data-nohero="1" class="sticky top-0 z-20 bg-surface-page/90 backdrop-blur-lg border-b border-outline-variant shadow-[0_1px_3px_rgba(0,0,0,0.08),0_1px_2px_rgba(0,0,0,0.04)]">
+      <div class="max-w-[1400px] mx-auto h-12 px-4 lg:px-6 items-center gap-3 flex justify-between">
+        <a href="index.html" class="inline-flex items-center gap-2 text-sm font-semibold tracking-tight text-fg">
+          <span aria-hidden="true" class="inline-flex"><img src="/brand/defi_logo_white.svg" alt="" class="h-5 w-auto shrink-0" width="20" height="20" /></span>
+          DeFi Triangle
+        </a>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="PROTO.openSearch()" aria-label="Open search" class="h-7 px-2 rounded-sm text-xs transition-colors inline-flex items-center gap-1.5 bg-surface-container border border-outline-variant text-fg hover:bg-surface-container-high">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-3.5 h-3.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <span class="hidden sm:inline">Search</span>
+            <kbd class="hidden sm:inline-flex items-center gap-0.5 px-1 h-4 ml-0.5 text-[9px] rounded-sm border border-outline-variant bg-surface-page text-fg-muted leading-none">⌘ K</kbd>
+          </button>
+          <button type="button" class="h-7 px-3 rounded-sm bg-surface-container border border-outline-variant text-fg text-xs hover:bg-surface-container-high transition-colors">Connect Wallet</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="flex-1 max-w-[1100px] w-full mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 space-y-4">
+      <a href="index.html" class="inline-flex items-center gap-1 text-xs text-fg-muted hover:text-fg transition-colors">← Back</a>
+
+      <!-- IdentityStrip -->
+      <section class="bg-surface-container rounded-sm border border-outline-variant p-4 sm:p-6">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          <div class="w-14 h-14 sm:w-16 sm:h-16 text-xl rounded-full bg-surface-bright text-fg flex items-center justify-center font-semibold shrink-0">JU</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <h1 class="text-2xl font-bold text-fg">Jupiter</h1>
+              <span class="text-[10px] uppercase tracking-wider font-semibold px-1.5 py-0.5 rounded-sm border text-brand bg-surface-page border-brand/30">✓ Verified</span>
+              <span class="text-[10px] uppercase tracking-wider font-semibold px-1.5 py-0.5 rounded-sm border bg-buy-surface text-buy border-buy">Grade A · Low risk</span>
+            </div>
+            <div class="text-sm text-fg-muted mt-1">JUP · Primary variant: Jupiter</div>
+          </div>
+          <div class="sm:text-right">
+            <div class="font-mono text-3xl text-fg leading-none">$0.8421</div>
+            <div class="text-sm flex items-center gap-1 mt-1 text-buy sm:justify-end"><img src="/app/Up.svg" alt="" class="h-3 w-3 shrink-0" /><span class="font-mono">12.40%</span></div>
+            <div class="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 sm:justify-end">
+              <span class="inline-flex items-center gap-1.5 text-[11px] text-buy"><span class="inline-block w-1.5 h-1.5 rounded-full bg-buy"></span><span>Sources aligned</span></span>
+              <span class="inline-flex items-center gap-1.5 text-[11px] text-buy"><span class="opacity-70">DEX</span><span class="font-mono tabular-nums">+0.04%</span><span class="opacity-70">vs CEX</span></span>
+            </div>
+            <div class="text-[11px] text-fg-muted mt-2 sm:text-right">ATH $2.04 · 412d ago · <span class="text-sell">down 58.72%</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- MetaStrip -->
+      <section class="bg-surface-container rounded-sm border border-outline-variant p-4 sm:p-6">
+        <div class="text-[10px] uppercase tracking-wider text-fg-muted mb-3">Token meta · Jupiter + Birdeye</div>
+        <div class="flex flex-wrap gap-x-6 gap-y-3 text-xs">
+          <div class="min-w-0"><div class="text-[10px] uppercase tracking-wider mb-1 text-fg-muted">Mint</div><div class="font-mono text-fg">JUPy…mint</div></div>
+          <div class="min-w-0"><div class="text-[10px] uppercase tracking-wider mb-1 text-fg-muted">Organic score</div><div class="text-fg">82 / 100 · High</div></div>
+          <div class="min-w-0"><div class="text-[10px] uppercase tracking-wider mb-1 text-fg-muted">Verified</div><span class="inline-flex items-center text-[11px] px-2 py-0.5 rounded-sm border bg-buy-surface text-buy border-buy">Jupiter strict</span></div>
+          <div class="min-w-0"><div class="text-[10px] uppercase tracking-wider mb-1 text-fg-muted">Tags</div><div class="flex flex-wrap gap-1"><span class="inline-flex items-center px-1.5 py-0.5 rounded-sm bg-surface-page text-[10px] text-fg border border-outline-variant">verified</span><span class="inline-flex items-center px-1.5 py-0.5 rounded-sm bg-surface-page text-[10px] text-fg border border-outline-variant">community</span></div></div>
+          <div class="min-w-0"><div class="text-[10px] uppercase tracking-wider mb-1 text-fg-muted">Markets</div><div class="font-mono text-fg">37</div></div>
+          <div class="min-w-0"><div class="text-[10px] uppercase tracking-wider mb-1 text-fg-muted">First pool</div><div class="font-mono text-fg">Jan 2024 · 17mo</div></div>
+        </div>
+      </section>
+
+      <!-- PriceChartSection -->
+      <section class="bg-surface-container rounded-sm border border-outline-variant p-4 sm:p-6">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <div class="text-[10px] uppercase tracking-wider text-fg-muted">Price chart</div>
+          <div class="flex items-center gap-1" data-rangegroup>
+            <button type="button" class="rng min-h-[40px] px-3 rounded-sm text-xs transition-[background-color,color,box-shadow,transform] duration-150 active:scale-[0.96] bg-brand text-on-brand shadow-[0_1px_2px_rgba(4,17,15,0.40),0_4px_8px_rgba(90,216,196,0.20),0_12px_24px_rgba(90,216,196,0.12)]">1D</button>
+            <button type="button" class="rng min-h-[40px] px-3 rounded-sm text-xs transition-[background-color,color,box-shadow,transform] duration-150 active:scale-[0.96] bg-surface-container text-fg/60 border border-outline-variant hover:text-fg">1W</button>
+            <button type="button" class="rng min-h-[40px] px-3 rounded-sm text-xs transition-[background-color,color,box-shadow,transform] duration-150 active:scale-[0.96] bg-surface-container text-fg/60 border border-outline-variant hover:text-fg">1M</button>
+            <button type="button" class="rng min-h-[40px] px-3 rounded-sm text-xs transition-[background-color,color,box-shadow,transform] duration-150 active:scale-[0.96] bg-surface-container text-fg/60 border border-outline-variant hover:text-fg">1Y</button>
+          </div>
+        </div>
+        <div class="h-[240px] w-full">
+          <svg viewBox="0 0 600 240" preserveAspectRatio="none" class="h-full w-full">
+            <defs><linearGradient id="area" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5ad8c4" stop-opacity="0.28"/><stop offset="1" stop-color="#5ad8c4" stop-opacity="0"/></linearGradient></defs>
+            <path d="M0,180 L60,168 L120,172 L180,140 L240,150 L300,120 L360,128 L420,86 L480,96 L540,60 L600,48 L600,240 L0,240 Z" fill="url(#area)"/>
+            <path d="M0,180 L60,168 L120,172 L180,140 L240,150 L300,120 L360,128 L420,86 L480,96 L540,60 L600,48" fill="none" stroke="#5ad8c4" stroke-width="2"/>
+          </svg>
+        </div>
+      </section>
+
+      <!-- StatsGrid -->
+      <section class="bg-surface-container rounded-sm border border-outline-variant p-4 sm:p-6">
+        <div class="text-[10px] uppercase tracking-wider text-fg-muted mb-3">Stats</div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-y-3 gap-x-6 text-xs">
+          <div><div class="text-[10px] uppercase tracking-wider text-fg-muted">Market cap</div><div class="font-mono text-sm text-fg mt-0.5 tabular-nums">$1.14B</div></div>
+          <div><div class="text-[10px] uppercase tracking-wider text-fg-muted">24h volume</div><div class="font-mono text-sm text-fg mt-0.5 tabular-nums">$38.20M</div></div>
+          <div><div class="text-[10px] uppercase tracking-wider text-fg-muted">FDV</div><div class="font-mono text-sm text-fg mt-0.5 tabular-nums">$1.14B</div></div>
+          <div><div class="text-[10px] uppercase tracking-wider text-fg-muted">7d volume</div><div class="font-mono text-sm text-fg mt-0.5 tabular-nums">$241.6M</div></div>
+          <div><div class="text-[10px] uppercase tracking-wider text-fg-muted">Circ. supply</div><div class="font-mono text-sm text-fg mt-0.5 tabular-nums">1.35B JUP</div></div>
+          <div><div class="text-[10px] uppercase tracking-wider text-fg-muted">Total supply</div><div class="font-mono text-sm text-fg mt-0.5 tabular-nums">10B JUP</div></div>
+          <div><div class="text-[10px] uppercase tracking-wider text-fg-muted">Pair liquidity</div><div class="font-mono text-sm text-fg mt-0.5 tabular-nums">$4.20M</div></div>
+          <div><div class="text-[10px] uppercase tracking-wider text-fg-muted">All-time high</div><div class="font-mono text-sm text-fg mt-0.5 tabular-nums">$2.04</div></div>
+        </div>
+      </section>
+
+      <!-- OnChainPanel -->
+      <section class="bg-surface-container rounded-sm border border-outline-variant p-4 sm:p-6 space-y-3">
+        <div class="text-[10px] uppercase tracking-wider text-fg-muted">On-chain · Helius</div>
+        <dl class="space-y-2 text-xs">
+          <div class="flex items-baseline gap-3"><dt class="text-fg-muted w-44 shrink-0">Mint authority</dt><dd class="flex-1 min-w-0"><span class="inline-flex items-center text-[11px] px-2 py-0.5 rounded-sm border bg-buy-surface text-buy border-buy">Renounced ✓</span></dd></div>
+          <div class="flex items-baseline gap-3"><dt class="text-fg-muted w-44 shrink-0">Freeze authority</dt><dd class="flex-1 min-w-0"><span class="inline-flex items-center text-[11px] px-2 py-0.5 rounded-sm border bg-buy-surface text-buy border-buy">Renounced ✓</span></dd></div>
+          <div class="flex items-baseline gap-3"><dt class="text-fg-muted w-44 shrink-0">Mutable</dt><dd class="flex-1"><span class="inline-flex items-center text-[11px] px-2 py-0.5 rounded-sm border bg-buy-surface text-buy border-buy">No</span></dd></div>
+        </dl>
+      </section>
+
+      <!-- EdgeScorePanel -->
+      <section class="bg-surface-container rounded-sm border border-outline-variant p-4 sm:p-6 space-y-4">
+        <div>
+          <div class="flex flex-wrap items-baseline justify-between gap-2 mb-2">
+            <div class="text-[10px] uppercase tracking-wider text-fg-muted">Edge Score · DeFi Triangle composite</div>
+            <div class="text-xs flex items-baseline gap-2"><span class="inline-flex items-center font-semibold text-[11px] px-2 py-0.5 rounded-sm border bg-buy-surface text-buy border-buy">Grade A</span><span class="font-mono text-fg text-base tabular-nums">86 / 100</span><span class="text-fg-muted">Low risk</span></div>
+          </div>
+          <div class="h-1.5 rounded-full bg-surface-page overflow-hidden"><div class="h-full bg-buy transition-[width] duration-300" style="width:86%"></div></div>
+          <div class="text-[11px] text-fg-muted mt-2 leading-snug">Composite of on-chain authority, liquidity depth, holder distribution and trading authenticity. Higher is safer.</div>
+        </div>
+        <button type="button" class="text-xs text-brand hover:text-brand-hover transition-colors">Show breakdown (5 signals)</button>
+      </section>
+
+      <!-- TopHoldersPanel -->
+      <section class="bg-surface-container rounded-sm border border-outline-variant p-4 sm:p-6 space-y-3">
+        <div class="flex items-baseline justify-between"><div class="text-[10px] uppercase tracking-wider text-fg-muted">Top holders · Birdeye</div><div class="text-[10px] text-fg-muted">Top 5</div></div>
+        <div class="overflow-hidden">
+          <div class="grid grid-cols-[2.5rem_1fr_auto_4rem] sm:grid-cols-[2.5rem_1fr_auto_5rem] gap-2 text-[10px] uppercase tracking-wider text-fg-muted pb-2 border-b border-outline-variant"><span>#</span><span>Wallet</span><span class="text-right">Amount</span><span class="text-right">% Supply</span></div>
+          <ul class="divide-y divide-outline-variant">
+            <li class="grid grid-cols-[2.5rem_1fr_auto_4rem] sm:grid-cols-[2.5rem_1fr_auto_5rem] gap-2 items-center py-2 text-xs"><span class="font-mono text-fg-muted tabular-nums">1</span><span class="flex items-center gap-2 min-w-0"><span class="font-mono text-fg truncate">9WzD…AWWM</span></span><span class="font-mono text-fg text-right tabular-nums">82.4M <span class="text-fg-muted ml-1">JUP</span></span><span class="font-mono text-fg text-right tabular-nums">6.10%</span></li>
+            <li class="grid grid-cols-[2.5rem_1fr_auto_4rem] sm:grid-cols-[2.5rem_1fr_auto_5rem] gap-2 items-center py-2 text-xs"><span class="font-mono text-fg-muted tabular-nums">2</span><span class="flex items-center gap-2 min-w-0"><span class="font-mono text-fg truncate">5Q54…h2bT</span></span><span class="font-mono text-fg text-right tabular-nums">41.0M <span class="text-fg-muted ml-1">JUP</span></span><span class="font-mono text-fg text-right tabular-nums">3.04%</span></li>
+            <li class="grid grid-cols-[2.5rem_1fr_auto_4rem] sm:grid-cols-[2.5rem_1fr_auto_5rem] gap-2 items-center py-2 text-xs"><span class="font-mono text-fg-muted tabular-nums">3</span><span class="flex items-center gap-2 min-w-0"><span class="font-mono text-fg truncate">3Nf8…kQ9p</span></span><span class="font-mono text-fg text-right tabular-nums">28.7M <span class="text-fg-muted ml-1">JUP</span></span><span class="font-mono text-fg text-right tabular-nums">2.12%</span></li>
+            <li class="grid grid-cols-[2.5rem_1fr_auto_4rem] sm:grid-cols-[2.5rem_1fr_auto_5rem] gap-2 items-center py-2 text-xs"><span class="font-mono text-fg-muted tabular-nums">4</span><span class="flex items-center gap-2 min-w-0"><span class="font-mono text-fg truncate">Hk9r…pT4m</span></span><span class="font-mono text-fg text-right tabular-nums">19.3M <span class="text-fg-muted ml-1">JUP</span></span><span class="font-mono text-fg text-right tabular-nums">1.43%</span></li>
+            <li class="grid grid-cols-[2.5rem_1fr_auto_4rem] sm:grid-cols-[2.5rem_1fr_auto_5rem] gap-2 items-center py-2 text-xs"><span class="font-mono text-fg-muted tabular-nums">5</span><span class="flex items-center gap-2 min-w-0"><span class="font-mono text-fg truncate">2vYu…Qw0e</span></span><span class="font-mono text-fg text-right tabular-nums">12.1M <span class="text-fg-muted ml-1">JUP</span></span><span class="font-mono text-fg text-right tabular-nums">0.90%</span></li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- TradingActivityPanel -->
+      <section class="bg-surface-container rounded-sm border border-outline-variant p-4 sm:p-6 space-y-4">
+        <div class="flex items-baseline justify-between gap-2"><div class="text-[10px] uppercase tracking-wider text-fg-muted">Trading activity · Birdeye + Jupiter</div></div>
+        <div class="rounded-sm border border-outline-variant bg-surface p-3 space-y-2">
+          <div class="flex flex-wrap items-baseline justify-between gap-2"><div class="text-[10px] uppercase tracking-wider text-fg-muted">Real-human activity · 24h</div><div class="flex items-baseline gap-2 text-xs"><span class="inline-flex items-center font-semibold text-[11px] px-2 py-0.5 rounded-sm border bg-buy-surface text-buy border-buy">Grade A</span><span class="font-mono text-fg text-base">88 / 100</span><span class="text-fg-muted">Mostly organic</span></div></div>
+          <div class="h-1.5 rounded-full bg-surface-container-high overflow-hidden"><div class="h-full bg-buy transition-[width] duration-300" style="width:88%"></div></div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5 text-[11px]">
+            <div><div class="flex items-baseline justify-between mb-1"><span class="text-fg-muted">Unique wallets</span><span class="font-mono text-fg">14.2K</span></div><div class="h-1 rounded-full bg-surface-container-high overflow-hidden"><div class="h-full bg-brand transition-[width] duration-300" style="width:78%"></div></div></div>
+            <div><div class="flex items-baseline justify-between mb-1"><span class="text-fg-muted">Organic %</span><span class="font-mono text-fg">91.40%</span></div><div class="h-1 rounded-full bg-surface-container-high overflow-hidden"><div class="h-full bg-brand transition-[width] duration-300" style="width:91%"></div></div></div>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-1" data-windowgroup>
+          <button type="button" class="win text-[11px] font-mono px-2 py-1 rounded-sm border transition-colors bg-surface-container text-fg border-outline-variant hover:bg-surface-page">5m</button>
+          <button type="button" class="win text-[11px] font-mono px-2 py-1 rounded-sm border transition-colors bg-surface-container text-fg border-outline-variant hover:bg-surface-page">1h</button>
+          <button type="button" class="win text-[11px] font-mono px-2 py-1 rounded-sm border transition-colors bg-surface-container text-fg border-outline-variant hover:bg-surface-page">6h</button>
+          <button type="button" class="win text-[11px] font-mono px-2 py-1 rounded-sm border transition-colors bg-brand text-on-brand border-brand">24h</button>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-3">
+          <div class="min-w-0"><div class="text-[10px] uppercase tracking-wider text-fg-muted">Volume</div><div class="font-mono text-sm text-fg">$38.2M</div></div>
+          <div class="min-w-0"><div class="text-[10px] uppercase tracking-wider text-fg-muted">Price change</div><div class="font-mono text-sm text-buy">+12.40%</div></div>
+          <div class="min-w-0"><div class="text-[10px] uppercase tracking-wider text-fg-muted">Buys</div><div class="font-mono text-sm text-buy">18.4K</div></div>
+          <div class="min-w-0"><div class="text-[10px] uppercase tracking-wider text-fg-muted">Sells</div><div class="font-mono text-sm text-sell">12.1K</div></div>
+          <div class="min-w-0"><div class="text-[10px] uppercase tracking-wider text-fg-muted">Unique wallets</div><div class="font-mono text-sm text-fg">14.2K</div></div>
+          <div class="min-w-0"><div class="text-[10px] uppercase tracking-wider text-fg-muted">Net buyers</div><div class="font-mono text-sm text-buy">+2.3K</div></div>
+          <div class="min-w-0"><div class="text-[10px] uppercase tracking-wider text-fg-muted">Organic buyers</div><div class="font-mono text-sm text-fg">12.9K</div></div>
+          <div class="min-w-0"><div class="text-[10px] uppercase tracking-wider text-fg-muted">Organic vol</div><div class="font-mono text-sm text-fg">$34.9M</div></div>
+        </div>
+      </section>
+
+      <!-- SlippagePanel -->
+      <section class="bg-surface-container rounded-sm border border-outline-variant p-4 sm:p-6 space-y-3">
+        <div class="flex items-baseline justify-between gap-2"><div class="text-[10px] uppercase tracking-wider text-fg-muted">Slippage at size · Jupiter Quote</div><div class="text-[10px] text-fg-muted">Sell JUP → USDC</div></div>
+        <div class="text-[11px] text-fg-muted leading-snug">Expected price impact when selling into the deepest USDC route.</div>
+        <div class="overflow-hidden">
+          <div class="grid grid-cols-[5rem_1fr_1fr] gap-2 text-[10px] uppercase tracking-wider text-fg-muted pb-2 border-b border-outline-variant"><span>Size</span><span class="text-right">Price impact</span><span class="text-right">Out (USDC)</span></div>
+          <ul class="divide-y divide-outline-variant">
+            <li class="grid grid-cols-[5rem_1fr_1fr] gap-2 items-baseline py-2 text-xs"><span class="font-mono text-fg">$100</span><span class="font-mono text-right text-buy">0.01%</span><span class="font-mono text-fg text-right">$99.99</span></li>
+            <li class="grid grid-cols-[5rem_1fr_1fr] gap-2 items-baseline py-2 text-xs"><span class="font-mono text-fg">$1.0K</span><span class="font-mono text-right text-buy">0.08%</span><span class="font-mono text-fg text-right">$999.2</span></li>
+            <li class="grid grid-cols-[5rem_1fr_1fr] gap-2 items-baseline py-2 text-xs"><span class="font-mono text-fg">$10.0K</span><span class="font-mono text-right text-warning-strong">0.74%</span><span class="font-mono text-fg text-right">$9.93K</span></li>
+            <li class="grid grid-cols-[5rem_1fr_1fr] gap-2 items-baseline py-2 text-xs"><span class="font-mono text-fg">$100.0K</span><span class="font-mono text-right text-sell-strong">3.21%</span><span class="font-mono text-fg text-right">$96.8K</span></li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- AboutSection -->
+      <section class="bg-surface-container rounded-sm border border-outline-variant p-4 sm:p-6">
+        <div class="text-[10px] uppercase tracking-wider text-fg-muted mb-3">About</div>
+        <p class="text-sm text-fg whitespace-pre-line leading-relaxed [text-wrap:pretty]">Jupiter is the key liquidity aggregator and swap infrastructure for Solana, routing trades across every major DEX to find the best price. JUP is its governance token.</p>
+        <div class="flex flex-wrap gap-2 mt-4">
+          <a href="#" class="text-xs px-3 py-1 rounded-sm bg-surface-page text-fg hover:bg-surface-container-high transition-colors capitalize">website ↗</a>
+          <a href="#" class="text-xs px-3 py-1 rounded-sm bg-surface-page text-fg hover:bg-surface-container-high transition-colors capitalize">twitter ↗</a>
+          <a href="#" class="text-xs px-3 py-1 rounded-sm bg-surface-page text-fg hover:bg-surface-container-high transition-colors capitalize">docs ↗</a>
+        </div>
+      </section>
+
+      <!-- VariantsSection -->
+      <section class="bg-surface-container rounded-sm border border-outline-variant p-4 sm:p-6">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <div class="text-[10px] uppercase tracking-wider text-fg-muted">Variants</div>
+          <div class="flex flex-wrap gap-1" data-variantgroup>
+            <button type="button" class="vrt min-h-[40px] px-3 rounded-sm text-xs transition-[background-color,color,box-shadow,transform] duration-150 active:scale-[0.96] bg-brand text-on-brand shadow-[0_1px_2px_rgba(4,17,15,0.40),0_4px_8px_rgba(90,216,196,0.20),0_12px_24px_rgba(90,216,196,0.12)]">Canonical (1)</button>
+            <button type="button" class="vrt min-h-[40px] px-3 rounded-sm text-xs transition-[background-color,color,box-shadow,transform] duration-150 active:scale-[0.96] bg-surface-container text-fg/60 border border-outline-variant hover:text-fg">Bridged (2)</button>
+          </div>
+        </div>
+        <div class="grid gap-3" style="grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr))">
+          <div class="bg-surface-container border border-outline/10 rounded-sm p-3 hover:border-outline/20 transition-colors">
+            <div class="flex items-start gap-2 mb-2"><div class="w-6 h-6 text-[10px] rounded-full bg-surface-bright text-fg flex items-center justify-center font-semibold shrink-0">JU</div><div class="min-w-0 flex-1"><div class="text-xs font-semibold text-fg truncate">JUP</div><div class="text-[10px] text-fg-muted truncate">Jupiter</div></div><span class="text-[9px] uppercase tracking-wider font-semibold px-1.5 py-0.5 rounded-sm border bg-buy-surface text-buy border-buy/30">T1</span></div>
+            <div class="font-mono text-xs text-fg">$0.8421</div>
+            <div class="font-mono text-[10px] text-buy"><span class="inline-flex items-center gap-1"><img src="/app/Up.svg" alt="" aria-hidden="true" class="h-3 w-3 shrink-0" /><span>12.40%</span></span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- MarketsSection -->
+      <section class="bg-surface-container rounded-sm border border-outline-variant overflow-hidden">
+        <div class="px-4 sm:px-6 pt-4 flex flex-wrap items-baseline justify-between gap-2"><div class="text-[10px] uppercase tracking-wider text-fg-muted">All markets · Tokens.xyz</div><div class="text-[10px] text-fg-muted">37 pools · sorted by liquidity</div></div>
+        <div class="overflow-x-auto mt-3">
+          <table class="w-full text-xs min-w-[720px]">
+            <thead class="bg-surface-page text-fg-subtle"><tr>
+              <th class="text-left font-medium uppercase tracking-wider px-4 py-3 sticky left-0 bg-surface-page z-10">Pool</th>
+              <th class="text-left font-medium uppercase tracking-wider px-4 py-3">Source</th>
+              <th class="text-right font-medium uppercase tracking-wider px-4 py-3">Liquidity</th>
+              <th class="text-right font-medium uppercase tracking-wider px-4 py-3">24h Vol</th>
+              <th class="text-right font-medium uppercase tracking-wider px-4 py-3">Trades 24h</th>
+              <th class="text-right font-medium uppercase tracking-wider px-4 py-3">Wallets 24h</th>
+            </tr></thead>
+            <tbody class="divide-y divide-outline-variant">
+              <tr class="hover:bg-black/[0.02] transition-colors"><td class="px-4 py-3 sticky left-0 bg-surface-container z-10"><div class="flex items-center gap-2 min-w-[160px]"><div class="w-5 h-5 text-[9px] rounded-full bg-surface-bright text-fg flex items-center justify-center font-semibold shrink-0">JU</div><div class="min-w-0"><div class="text-xs font-semibold text-fg truncate">JUP / SOL</div></div></div></td><td class="px-4 py-3 text-fg-muted">Meteora</td><td class="px-4 py-3 text-right font-mono text-fg">$4.20M</td><td class="px-4 py-3 text-right font-mono text-fg">$38.2M</td><td class="px-4 py-3 text-right"><span class="font-mono text-fg">30531</span><span class="text-[10px] ml-1 text-buy">(+18%)</span></td><td class="px-4 py-3 text-right font-mono text-fg">14210</td></tr>
+              <tr class="hover:bg-black/[0.02] transition-colors"><td class="px-4 py-3 sticky left-0 bg-surface-container z-10"><div class="flex items-center gap-2 min-w-[160px]"><div class="w-5 h-5 text-[9px] rounded-full bg-surface-bright text-fg flex items-center justify-center font-semibold shrink-0">JU</div><div class="min-w-0"><div class="text-xs font-semibold text-fg truncate">JUP / USDC</div></div></div></td><td class="px-4 py-3 text-fg-muted">Orca</td><td class="px-4 py-3 text-right font-mono text-fg">$2.80M</td><td class="px-4 py-3 text-right font-mono text-fg">$19.1M</td><td class="px-4 py-3 text-right"><span class="font-mono text-fg">18402</span><span class="text-[10px] ml-1 text-sell">(-4%)</span></td><td class="px-4 py-3 text-right font-mono text-fg">8810</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Token links -->
+      <section class="bg-surface-container rounded-sm border border-outline-variant p-4 sm:p-6">
+        <div class="text-[10px] uppercase tracking-wider text-fg-muted mb-3">Token links</div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+          <a href="#" class="h-9 rounded-sm bg-surface-container border border-outline-variant text-fg hover:bg-surface-page transition-colors inline-flex items-center justify-center">Solscan ↗</a>
+          <a href="#" class="h-9 rounded-sm bg-brand text-on-brand hover:bg-brand-hover transition-colors inline-flex items-center justify-center">Birdeye ↗</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="fixed inset-x-0 bottom-0 z-40 border-t border-outline-variant/80 bg-surface-page/70 backdrop-blur-md">
+      <div class="max-w-[1400px] mx-auto px-4 lg:px-6 min-h-10 py-2 flex items-center justify-between gap-3 text-[11px] text-fg-muted bg-surface-page/55 backdrop-blur-md min-w-0">
+        <span class="text-fg-subtle text-left truncate min-w-0">Design &amp; Engineered by Yamparala Rahul</span>
+        <div class="flex items-center gap-2 justify-end">
+          <span class="inline-flex items-center justify-center h-[24px] w-[24px] rounded-full border border-outline-variant/70 bg-surface-container overflow-hidden shrink-0" title="Birdeye"><img src="/brand/birdeye.png" alt="Birdeye" class="h-full w-full object-cover" /></span>
+          <span class="inline-flex items-center justify-center h-[24px] w-[24px] rounded-full border border-outline-variant/70 bg-surface-container overflow-hidden shrink-0" title="Jupiter"><img src="/brand/Jupiter.jpg" alt="Jupiter" class="h-full w-full object-cover" /></span>
+          <span class="inline-flex items-center justify-center h-[24px] w-[24px] rounded-full border border-outline-variant/70 bg-surface-container overflow-hidden shrink-0" title="Tokens.xyz"><img src="/brand/Tokens_xyz.svg" alt="Tokens.xyz" class="h-full w-full object-cover" /></span>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Search modal (shared markup) -->
+    <div id="search-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm">
+      <div data-close class="absolute inset-0"></div>
+      <div class="absolute left-1/2 -translate-x-1/2 top-20 flex flex-col w-[calc(100%-1rem)] max-w-[640px] max-h-[80vh] bg-surface-container rounded-sm shadow-2xl border border-outline-variant overflow-hidden">
+        <div class="flex items-center gap-2 px-3 h-12 border-b border-outline-variant shrink-0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-4 h-4 text-fg-muted shrink-0"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input id="search-input" type="text" placeholder="Search tokens, pairs, or paste an address…" aria-label="Search tokens" class="flex-1 bg-transparent text-sm text-fg placeholder-fg-subtle focus:outline-none" />
+        </div>
+        <div id="search-list" role="listbox" aria-label="Search results" class="flex-1 overflow-y-auto"></div>
+      </div>
+    </div>
+    <div id="modal-root"></div>
+
+    <script src="assets/data.js"></script>
+    <script src="assets/app.js"></script>
+    <script>
+      // tiny local toggles for the segmented controls on this page
+      function seg(group, active, idle) {
+        document.querySelectorAll(group).forEach(function (b) {
+          b.addEventListener("click", function () {
+            b.parentNode.querySelectorAll(group).forEach(function (x) { x.className = x.className.replace(active, "").trim() + " " + idle; x.className = x.className.replace(/\s+/g, " "); });
+            b.className = b.className.replace(idle, "").trim() + " " + active;
+            b.className = b.className.replace(/\s+/g, " ");
+          });
+        });
+      }
+      seg(".rng", "bg-brand text-on-brand shadow-[0_1px_2px_rgba(4,17,15,0.40),0_4px_8px_rgba(90,216,196,0.20),0_12px_24px_rgba(90,216,196,0.12)]", "bg-surface-container text-fg/60 border border-outline-variant hover:text-fg");
+      seg(".vrt", "bg-brand text-on-brand shadow-[0_1px_2px_rgba(4,17,15,0.40),0_4px_8px_rgba(90,216,196,0.20),0_12px_24px_rgba(90,216,196,0.12)]", "bg-surface-container text-fg/60 border border-outline-variant hover:text-fg");
+      seg(".win", "bg-brand text-on-brand border-brand", "bg-surface-container text-fg border-outline-variant hover:bg-surface-page");
+    </script>
+  </body>
+</html>
