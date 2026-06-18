@@ -3,7 +3,6 @@
 import { UnifiedWalletProvider } from "@jup-ag/wallet-adapter";
 import type { ReactNode } from "react";
 import { SessionProvider } from "./SessionContext";
-import { SearchModalProvider } from "@/components/search/SearchModalProvider";
 
 export function Providers({ children }: { children: ReactNode }) {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "";
@@ -24,9 +23,7 @@ export function Providers({ children }: { children: ReactNode }) {
         lang: "en",
       }}
     >
-      <SessionProvider>
-        <SearchModalProvider>{children}</SearchModalProvider>
-      </SessionProvider>
+      <SessionProvider>{children}</SessionProvider>
     </UnifiedWalletProvider>
   );
 }

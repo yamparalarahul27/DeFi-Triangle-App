@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { Candle } from "@/components/ui/PriceChart";
+import type { Candle } from "@/lib/token/types";
 
 type ChartSource =
   | "Birdeye"

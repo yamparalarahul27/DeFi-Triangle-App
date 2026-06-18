@@ -3,10 +3,13 @@
 import { PublicKey } from "@solana/web3.js";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useInterval } from "@/lib/hooks/useInterval";
-import type { Candle } from "@/components/ui/PriceChart";
-import type { OnChainData } from "@/components/token/OnChainPanel";
-import type { JupiterTokenInfo, MetaStripData } from "@/components/token/MetaStrip";
-import type { HolderRow } from "@/components/token/TopHoldersPanel";
+import type {
+  Candle,
+  OnChainData,
+  JupiterTokenInfo,
+  MetaStripData,
+  HolderRow,
+} from "@/lib/token/types";
 import type { AssetCore, AssetResponse, Variant } from "@/lib/tokens-xyz-types";
 import { lookupToken } from "@/lib/token/lookup";
 import { computeEdgeScore, type EdgeScoreResult } from "@/lib/token/edgeScore";

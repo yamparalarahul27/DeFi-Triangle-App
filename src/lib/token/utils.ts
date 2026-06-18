@@ -1,5 +1,4 @@
-import type { Candle } from "@/components/ui/PriceChart";
-import type { JupiterTokenInfo } from "@/components/token/MetaStrip";
+import type { Candle, JupiterTokenInfo } from "@/lib/token/types";
 import type {
   AssetCore,
   AssetResponse,
