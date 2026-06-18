@@ -5,7 +5,7 @@ import type {
 import type {
   JupiterWindowsByKey,
   JupiterWindowKey,
-} from "@/components/token/MetaStrip";
+} from "@/lib/token/types";
 
 export type WindowKey =
   | "1m"

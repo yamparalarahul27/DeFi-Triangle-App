@@ -1,4 +1,4 @@
-import type { OnChainData } from "@/components/token/OnChainPanel";
+import type { OnChainData } from "@/lib/token/types";
 
 interface ApiResponse<T> {
   success: boolean;
