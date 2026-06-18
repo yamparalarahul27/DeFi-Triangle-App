@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en" class="h-full antialiased">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Brand Kit · DeFi Triangle (Prototype)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/tw-config.js"></script>
+    <link rel="stylesheet" href="assets/theme.css" />
+  </head>
+  <body class="min-h-full flex flex-col bg-surface-page text-fg pb-14">
+    <header class="sticky top-0 z-20 bg-surface-page/90 backdrop-blur-lg border-b border-outline-variant shadow-[0_1px_3px_rgba(0,0,0,0.08),0_1px_2px_rgba(0,0,0,0.04)]">
+      <div class="max-w-[1400px] mx-auto h-12 px-4 lg:px-6 items-center gap-3 flex justify-between">
+        <a href="index.html" class="inline-flex items-center gap-2 text-sm font-semibold tracking-tight text-fg">
+          <span aria-hidden="true" class="inline-flex"><img src="/brand/defi_logo_white.svg" alt="" class="h-5 w-auto shrink-0" width="20" height="20" /></span>
+          DeFi Triangle
+        </a>
+        <div class="flex items-center gap-2">
+          <button type="button" class="h-7 px-3 rounded-sm bg-surface-container border border-outline-variant text-fg text-xs hover:bg-surface-container-high transition-colors">Connect Wallet</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="flex-1 max-w-[1100px] w-full mx-auto px-3 sm:px-4 lg:px-6 py-8 sm:py-12">
+      <header class="mb-8">
+        <h1 class="text-3xl font-bold text-fg mb-2">Brand Kit</h1>
+        <p class="text-sm text-fg-muted">Logos and brand assets for DeFi Triangle. Click any Download button to save the SVG.</p>
+      </header>
+
+      <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <article class="bg-surface-container rounded-sm border border-outline-variant overflow-hidden">
+          <div class="flex items-center justify-center bg-surface-page aspect-square"><img src="/brand/defi_logo_white.svg" alt="White mark" class="w-1/2 h-1/2 object-contain" /></div>
+          <div class="p-4 space-y-3"><div><div class="text-sm font-semibold text-fg">White mark</div><div class="text-xs text-fg-muted">For dark backgrounds and the navbar.</div></div><a href="/brand/defi_logo_white.svg" download class="inline-flex items-center justify-center w-full h-9 rounded-sm bg-brand text-on-brand text-xs font-semibold hover:bg-brand-hover transition-colors">Download SVG</a></div>
+        </article>
+        <article class="bg-surface-container rounded-sm border border-outline-variant overflow-hidden">
+          <div class="flex items-center justify-center bg-white aspect-square"><img src="/brand/defi_logo_dark.svg" alt="Dark mark" class="w-1/2 h-1/2 object-contain" /></div>
+          <div class="p-4 space-y-3"><div><div class="text-sm font-semibold text-fg">Dark mark</div><div class="text-xs text-fg-muted">For light backgrounds and print.</div></div><a href="/brand/defi_logo_dark.svg" download class="inline-flex items-center justify-center w-full h-9 rounded-sm bg-brand text-on-brand text-xs font-semibold hover:bg-brand-hover transition-colors">Download SVG</a></div>
+        </article>
+        <article class="bg-surface-container rounded-sm border border-outline-variant overflow-hidden">
+          <div class="flex items-center justify-center bg-surface-bright aspect-square"><img src="/brand/defi_logo_fill.svg" alt="Filled mark" class="w-1/2 h-1/2 object-contain" /></div>
+          <div class="p-4 space-y-3"><div><div class="text-sm font-semibold text-fg">Filled mark</div><div class="text-xs text-fg-muted">For favicons and social avatars.</div></div><a href="/brand/defi_logo_fill.svg" download class="inline-flex items-center justify-center w-full h-9 rounded-sm bg-brand text-on-brand text-xs font-semibold hover:bg-brand-hover transition-colors">Download SVG</a></div>
+        </article>
+      </section>
+
+      <section class="mt-12">
+        <h2 class="text-[10px] uppercase tracking-wider text-fg-muted mb-3">Usage</h2>
+        <ul class="text-xs text-fg space-y-1.5 list-disc pl-5">
+          <li>Maintain clear space around the mark equal to the height of the apex.</li>
+          <li>Don't recolor, rotate, or distort the triangle.</li>
+          <li>SVG preferred for web. Use the filled mark for favicons or social avatars.</li>
+          <li>For partner logos, contact the team.</li>
+        </ul>
+      </section>
+    </main>
+
+    <footer class="fixed inset-x-0 bottom-0 z-40 border-t border-outline-variant/80 bg-surface-page/70 backdrop-blur-md">
+      <div class="max-w-[1400px] mx-auto px-4 lg:px-6 min-h-10 py-2 flex items-center justify-between gap-3 text-[11px] text-fg-muted bg-surface-page/55 backdrop-blur-md min-w-0">
+        <span class="text-fg-subtle text-left truncate min-w-0">Design &amp; Engineered by Yamparala Rahul</span>
+        <div class="flex items-center gap-2 justify-end">
+          <span class="inline-flex items-center justify-center h-[24px] w-[24px] rounded-full border border-outline-variant/70 bg-surface-container overflow-hidden shrink-0" title="Birdeye"><img src="/brand/birdeye.png" alt="Birdeye" class="h-full w-full object-cover" /></span>
+          <span class="inline-flex items-center justify-center h-[24px] w-[24px] rounded-full border border-outline-variant/70 bg-surface-container overflow-hidden shrink-0" title="Jupiter"><img src="/brand/Jupiter.jpg" alt="Jupiter" class="h-full w-full object-cover" /></span>
+          <span class="inline-flex items-center justify-center h-[24px] w-[24px] rounded-full border border-outline-variant/70 bg-surface-container overflow-hidden shrink-0" title="Tokens.xyz"><img src="/brand/Tokens_xyz.svg" alt="Tokens.xyz" class="h-full w-full object-cover" /></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
