@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Watchlist · DeFi Triangle (Redesign)</title>
+
+<!-- Fonts: Geist (sans) + Geist Mono (numbers) + IBM Plex fallback -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<!-- Phosphor icons (regular + fill + bold weights) -->
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+<!-- Tailwind Play CDN + shared token config + theme layer -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="./assets/tw-config.js"></script>
+<link rel="stylesheet" href="./assets/theme.css" />
+
+<style>
+  body { font-family: "Geist", "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif; }
+  .num { font-family: "Geist Mono", "IBM Plex Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+  /* layered depth — shadows over borders (make-interfaces-feel-better #3) */
+  .card-shadow { box-shadow: 0 1px 2px rgba(0,0,0,0.40), 0 8px 24px -12px rgba(0,0,0,0.55); }
+  .dock-shadow { box-shadow: 0 2px 6px rgba(0,0,0,0.45), 0 16px 40px -12px rgba(0,0,0,0.65); }
+  /* row hover/selection — transition only specific props, <200ms, ease-out */
+  .wl-row { transition: background-color 150ms ease-out, box-shadow 150ms ease-out; }
+  .press { transition: scale 120ms ease-out, background-color 150ms ease-out; }
+  .press:active { scale: 0.96; }
+  /* icon-only hit area helper → 40×40 (#16) */
+  .hit { display:inline-flex; align-items:center; justify-content:center; min-width:40px; min-height:40px; }
+  /* staggered enter */
+  .stagger > * { animation: fade-up 420ms ease-out backwards; }
+</style>
+</head>
+
+<body class="min-h-dvh bg-surface-page text-fg">
+
+  <!-- ── Faux window chrome (reference fidelity) ─────────────────── -->
+  <div class="sticky top-0 z-40 h-9 flex items-center justify-between px-4 bg-surface-page/80 backdrop-blur-md">
+    <div class="flex items-center gap-2">
+      <span class="size-3 rounded-full bg-[#ff5f57]"></span>
+      <span class="size-3 rounded-full bg-[#febc2e]"></span>
+      <span class="size-3 rounded-full bg-[#28c840]"></span>
+    </div>
+    <div class="flex items-center gap-1 text-fg-subtle">
+      <button class="hit press rounded-md hover:text-fg" aria-label="Toggle sidebar"><i class="ph ph-sidebar text-lg"></i></button>
+      <button class="hit press rounded-md hover:text-fg" aria-label="Toggle layout"><i class="ph ph-square-split-horizontal text-lg"></i></button>
+    </div>
+  </div>
+
+  <main class="mx-auto max-w-[1500px] px-6 sm:px-10 pb-32 pt-6 stagger">
+
+    <!-- ── Page header ──────────────────────────────────────────── -->
+    <header class="flex items-center gap-3 mb-8" style="animation-delay:0ms">
+      <span class="grid place-items-center size-7 rounded-md bg-brand/15 text-brand">
+        <i class="ph-fill ph-triangle text-base"></i>
+      </span>
+      <h1 class="text-xl font-semibold tracking-tight text-balance">Watchlist</h1>
+    </header>
+
+    <!-- ── Top grid: earnings + performance ─────────────────────── -->
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-10">
+
+      <!-- Upcoming earnings card -->
+      <div class="rounded-2xl bg-surface-container card-shadow p-6" style="animation-delay:80ms">
+        <h2 class="text-sm font-semibold text-fg mb-5">Upcoming earnings</h2>
+        <ul class="space-y-1">
+          <!-- rows -->
+          <li class="group flex items-center gap-3 px-2 py-2.5 rounded-lg wl-row hover:bg-surface-container-high">
+            <i class="ph ph-calendar-dots text-brand text-lg"></i>
+            <span class="font-semibold text-sm text-fg w-12">SPOT</span>
+            <span class="text-sm text-fg-muted flex-1 truncate">Spotify Technology S.A.</span>
+            <span class="num text-xs text-fg-subtle w-32 text-right">Nov 12 at 5:00 PM</span>
+            <span class="num text-sm text-fg w-12 text-right">1.45</span>
+            <span class="w-16 text-right"><span class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-medium bg-sell-surface text-sell">Missed</span></span>
+          </li>
+          <li class="group flex items-center gap-3 px-2 py-2.5 rounded-lg wl-row hover:bg-surface-container-high">
+            <i class="ph ph-calendar-dots text-brand text-lg"></i>
+            <span class="font-semibold text-sm text-fg w-12">DIS</span>
+            <span class="text-sm text-fg-muted flex-1 truncate">The Walt Disney Compa…</span>
+            <span class="num text-xs text-fg-subtle w-32 text-right">Nov 14 at 9:30 AM</span>
+            <span class="num text-sm text-fg w-12 text-right">1.14</span>
+            <span class="w-16 text-right"><span class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-medium bg-buy-surface text-buy">Beat</span></span>
+          </li>
+          <li class="group flex items-center gap-3 px-2 py-2.5 rounded-lg wl-row hover:bg-surface-container-high">
+            <i class="ph ph-calendar-dots text-brand text-lg"></i>
+            <span class="font-semibold text-sm text-fg w-12">NVDA</span>
+            <span class="text-sm text-fg-muted flex-1 truncate">NVIDIA Corporation</span>
+            <span class="num text-xs text-fg-subtle w-32 text-right">Nov 20 at 5:00 PM</span>
+            <span class="num text-sm text-fg w-12 text-right">0.81</span>
+            <span class="w-16 text-right"><span class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-medium bg-buy-surface text-buy">Beat</span></span>
+          </li>
+          <li class="group flex items-center gap-3 px-2 py-2.5 rounded-lg wl-row hover:bg-surface-container-high">
+            <i class="ph ph-calendar-dots text-brand text-lg"></i>
+            <span class="font-semibold text-sm text-fg w-12">NFLX</span>
+            <span class="text-sm text-fg-muted flex-1 truncate">Netflix Inc.</span>
+            <span class="num text-xs text-fg-subtle w-32 text-right">Jan 21 at 4:45 PM</span>
+            <span class="num text-sm text-fg w-12 text-right">4.22</span>
+            <span class="w-16 text-right"><span class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-medium bg-surface-bright text-fg-muted">Est.</span></span>
+          </li>
+          <li class="group flex items-center gap-3 px-2 py-2.5 rounded-lg wl-row hover:bg-surface-container-high">
+            <i class="ph ph-calendar-dots text-brand text-lg"></i>
+            <span class="font-semibold text-sm text-fg w-12">AXP</span>
+            <span class="text-sm text-fg-muted flex-1 truncate">American Express Comp…</span>
+            <span class="num text-xs text-fg-subtle w-32 text-right">Jan 24 at 8:30 AM</span>
+            <span class="num text-sm text-fg w-12 text-right">3.03</span>
+            <span class="w-16 text-right"><span class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-medium bg-surface-bright text-fg-muted">Est.</span></span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Performance card -->
+      <div class="rounded-2xl bg-surface-container card-shadow p-6 flex flex-col" style="animation-delay:160ms">
+        <div class="flex items-start justify-between mb-2">
+          <h2 class="text-sm font-semibold text-fg">
+            Your performance <span class="num text-buy ml-1">+25.22%</span>
+          </h2>
+          <div class="flex items-center gap-1 p-0.5 rounded-lg bg-surface-page">
+            <button class="press px-2.5 py-1 rounded-md text-xs font-medium bg-surface-bright text-fg">S&amp;P 500</button>
+            <button class="press px-2.5 py-1 rounded-md text-xs font-medium text-fg-muted hover:text-fg">Nasdaq</button>
+          </div>
+        </div>
+
+        <!-- line chart -->
+        <div class="flex-1 min-h-[180px] my-2">
+          <svg viewBox="0 0 680 200" preserveAspectRatio="none" class="w-full h-[180px]">
+            <!-- benchmark (dotted, muted) -->
+            <polyline fill="none" stroke="#a7abb3" stroke-opacity="0.7" stroke-width="1.5" stroke-dasharray="2 4" stroke-linecap="round"
+              points="0,150 40,148 80,152 120,145 160,150 200,140 240,146 280,138 320,142 360,135 400,138 440,132 480,136 520,130 560,134 600,128 640,132 680,129" />
+            <!-- your performance (solid, white) -->
+            <polyline fill="none" stroke="#f4f4f5" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"
+              points="0,150 40,156 80,148 120,158 160,150 200,168 240,150 280,120 320,128 360,96 400,104 440,72 480,84 520,52 560,66 600,40 640,52 680,38" />
+          </svg>
+        </div>
+
+        <!-- footer: range + legend -->
+        <div class="flex items-center justify-between mt-1">
+          <div class="flex items-center gap-1">
+            <button class="press px-2 py-1 rounded-md text-xs text-fg-muted hover:text-fg">1M</button>
+            <button class="press px-2 py-1 rounded-md text-xs text-fg-muted hover:text-fg">3M</button>
+            <button class="press px-2 py-1 rounded-md text-xs font-medium bg-surface-bright text-fg">6M</button>
+            <button class="press px-2 py-1 rounded-md text-xs text-fg-muted hover:text-fg">YTD</button>
+            <button class="press px-2 py-1 rounded-md text-xs text-fg-muted hover:text-fg">5Y</button>
+          </div>
+          <div class="flex items-center gap-4 text-xs text-fg-muted">
+            <span class="inline-flex items-center gap-1.5"><span class="size-1.5 rounded-full bg-fg"></span>Watchlist</span>
+            <span class="inline-flex items-center gap-1.5"><i class="ph ph-asterisk text-fg-subtle text-xs"></i>Markets</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Watchlist table ──────────────────────────────────────── -->
+    <section style="animation-delay:240ms">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-sm font-semibold text-fg-muted">Your watchlist</h2>
+        <div class="flex items-center gap-2">
+          <div class="flex items-center gap-0.5 p-0.5 rounded-lg bg-surface-container">
+            <button class="press px-2 py-1 rounded-md text-xs font-medium bg-surface-bright text-fg">1D</button>
+            <button class="press px-2 py-1 rounded-md text-xs text-fg-muted hover:text-fg">1W</button>
+            <button class="press px-2 py-1 rounded-md text-xs text-fg-muted hover:text-fg">1M</button>
+          </div>
+          <div class="flex items-center gap-0.5 p-0.5 rounded-lg bg-surface-container">
+            <button class="hit press rounded-md text-fg-muted hover:text-fg !min-h-[32px] !min-w-[32px]" aria-label="List view"><i class="ph ph-list-dashes"></i></button>
+            <button class="hit press rounded-md text-fg !min-h-[32px] !min-w-[32px] bg-surface-bright" aria-label="Grid view"><i class="ph ph-squares-four"></i></button>
+          </div>
+          <button class="press inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-surface-container text-xs text-fg-muted hover:text-fg">
+            <i class="ph ph-columns"></i> Split
+          </button>
+        </div>
+      </div>
+
+      <!-- column headers -->
+      <div class="grid grid-cols-[minmax(220px,2fr)_56px_88px_104px_104px_92px_120px_104px_104px] gap-3 px-4 pb-2 text-[11px] text-fg-subtle">
+        <div>Stocks</div><div>Ccy</div><div>Exchange</div><div>YOY revenue</div>
+        <div>Earnings</div><div>Volume</div><div class="text-center">Daily chart</div>
+        <div class="text-right">Price</div><div class="text-right">Performance</div>
+      </div>
+
+      <div id="rows" class="space-y-0.5"></div>
+    </section>
+  </main>
+
+  <!-- ── Floating dock ────────────────────────────────────────── -->
+  <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2" style="padding-bottom:env(safe-area-inset-bottom)">
+    <nav class="flex items-center gap-1 px-2 py-1.5 rounded-full bg-surface-container-high/95 backdrop-blur-md dock-shadow border border-outline-variant">
+      <button class="hit press rounded-full text-fg-muted hover:text-fg" aria-label="Home"><i class="ph ph-house text-xl"></i></button>
+      <button class="hit press rounded-full text-fg-muted hover:text-fg" aria-label="Explore"><i class="ph ph-compass text-xl"></i></button>
+      <button class="hit press rounded-full text-fg-muted hover:text-fg" aria-label="Calendar"><i class="ph ph-calendar-dots text-xl"></i></button>
+      <button class="hit press rounded-full text-on-brand bg-brand" aria-label="Watchlist" aria-current="page"><i class="ph-fill ph-bookmark-simple text-xl"></i></button>
+      <button class="hit press rounded-full text-fg-muted hover:text-fg" aria-label="Charts"><i class="ph ph-chart-line text-xl"></i></button>
+      <button class="hit press rounded-full text-fg-muted hover:text-fg" aria-label="Messages"><i class="ph ph-chat-circle text-xl"></i></button>
+      <button class="hit press rounded-full text-fg-muted hover:text-fg" aria-label="Settings"><i class="ph ph-gear text-xl"></i></button>
+    </nav>
+    <button class="hit press rounded-full bg-surface-container-high/95 backdrop-blur-md dock-shadow border border-outline-variant text-fg-muted hover:text-fg" aria-label="Search"><i class="ph ph-magnifying-glass text-xl"></i></button>
+  </div>
+
+  <!-- corner controls -->
+  <button class="fixed bottom-6 left-6 z-40 hit press rounded-full text-fg-subtle hover:text-fg" aria-label="Info"><i class="ph ph-info text-lg"></i></button>
+  <button class="fixed bottom-6 right-6 z-40 hit press rounded-full text-fg-subtle hover:text-fg" aria-label="Export"><i class="ph ph-export text-lg"></i></button>
+
+  <script>
+    // ── Frozen prototype data (maps to useWatchlist fields later) ──
+    const ROWS = [
+      { t:"TSLA", n:"Tesla Inc.",                 ex:"Nasdaq", yoy:18.80, earn:"Jan 29",     vol:"72.36M", price:394.20, chg:-0.16,  perf:-0.04, c:"#e82127", sel:true,  dir:"up"   },
+      { t:"MSFT", n:"Microsoft Corporation",      ex:"Nasdaq", yoy:15.67, earn:"Jan 30 est", vol:"14.87M", price:424.10, chg:1.73,   perf:0.41,  c:"#43a5e0", dir:"up"   },
+      { t:"AXP",  n:"American Express Company",    ex:"NYSE",   yoy:9.69,  earn:"Jan 24",     vol:"1.68M",  price:302.21, chg:0.19,   perf:0.06,  c:"#2e77bc", dir:"up"   },
+      { t:"UBER", n:"Uber Technologies Inc.",     ex:"NYSE",   yoy:16.95, earn:"Feb 7 est",  vol:"24.51M", price:64.78,  chg:-1.36,  perf:-2.06, c:"#0a0a0a", dir:"down" },
+      { t:"MCO",  n:"Moody's Corporation",        ex:"NYSE",   yoy:8.19,  earn:"Feb 13 est", vol:"507.70k",price:474.17, chg:10.17,  perf:2.19,  c:"#1f6fbf", dir:"up"   },
+      { t:"SMH",  n:"VanEck ETF Trust - VanEck Semicon…", ex:"Nasdaq", yoy:null, earn:"N/A", vol:"5.15M", price:251.36, chg:-2.67, perf:-1.05, c:"#d4564b", dir:"down" },
+      { t:"NVDA", n:"NVIDIA Corporation",         ex:"Nasdaq", yoy:125.85,earn:"Feb 26",     vol:"223M",   price:138.63, chg:-1.51,  perf:-1.08, c:"#76b900", dir:"down" },
+      { t:"AMZN", n:"Amazon.com Inc.",            ex:"Nasdaq", yoy:11.83, earn:"Feb 1 est",  vol:"24.12M", price:222.01, chg:-0.09,  perf:-0.04, c:"#ff9900", dir:"down" },
+      { t:"ASML", n:"ASML Holding N.V.",          ex:"Nasdaq", yoy:38.10, earn:"Jan 29",     vol:"1.15M",  price:743.72, chg:-13.85, perf:-1.83, c:"#0b5cab", dir:"down" },
+      { t:"GOOG", n:"Alphabet Inc.",              ex:"Nasdaq", yoy:13.86, earn:"Jan 30 est", vol:"13.86M", price:195.23, chg:-1.48,  perf:-0.75, c:"#4285f4", dir:"down" },
+    ];
+
+    // deterministic-ish sparkline path from a seed string
+    function spark(seed, dir) {
+      let h = 0; for (const ch of seed) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+      const n = 24, pts = []; let y = 14;
+      for (let i = 0; i < n; i++) {
+        h = (h * 1103515245 + 12345) >>> 0;
+        const step = ((h % 100) / 100 - 0.5) * 8;
+        const drift = dir === "up" ? -0.35 : 0.35;
+        y = Math.max(3, Math.min(25, y + step + drift));
+        pts.push(`${(i / (n - 1) * 84).toFixed(1)},${y.toFixed(1)}`);
+      }
+      const cut = Math.floor(n * 0.72);
+      const solid = pts.slice(0, cut + 1).join(" ");
+      const dash = pts.slice(cut).join(" ");
+      return `<svg viewBox="0 0 84 28" class="w-[84px] h-7">
+        <polyline fill="none" stroke="#cdd0d6" stroke-width="1.25" stroke-linejoin="round" stroke-linecap="round" points="${solid}"/>
+        <polyline fill="none" stroke="#cdd0d6" stroke-opacity="0.55" stroke-width="1.25" stroke-dasharray="1.5 2.5" stroke-linecap="round" points="${dash}"/>
+      </svg>`;
+    }
+
+    const fmtYoy = (v) => v == null
+      ? `<span class="text-fg-subtle">N/A</span>`
+      : `<span class="num text-buy inline-flex items-center gap-0.5">${v.toFixed(2)}% <i class="ph-bold ph-arrow-up-right text-[10px]"></i></span>`;
+
+    const fmtChg = (v) => {
+      const cls = v >= 0 ? "text-buy" : "text-sell";
+      const sign = v >= 0 ? "+" : "−";
+      return `<span class="num ${cls}">${sign}$${Math.abs(v).toFixed(2)}</span>`;
+    };
+
+    const fmtPerf = (v) => {
+      const up = v >= 0;
+      const cls = up ? "bg-buy-surface text-buy" : "bg-sell-surface text-sell";
+      const sign = up ? "+" : "−";
+      return `<span class="num inline-flex items-center justify-end px-2 py-0.5 rounded-md text-xs ${cls}">${sign}${Math.abs(v).toFixed(2)}%</span>`;
+    };
+
+    document.getElementById("rows").innerHTML = ROWS.map((r) => `
+      <div class="grid grid-cols-[minmax(220px,2fr)_56px_88px_104px_104px_92px_120px_104px_104px] gap-3 items-center px-4 py-3 rounded-xl wl-row cursor-pointer ${
+        r.sel ? "bg-surface-container ring-1 ring-outline" : "hover:bg-surface-container"
+      }">
+        <div class="flex items-center gap-3 min-w-0">
+          <span class="grid place-items-center size-7 shrink-0 rounded-full text-[11px] font-semibold text-white ring-1 ring-white/10" style="background:${r.c}">${r.t.slice(0,1)}</span>
+          <span class="font-semibold text-sm text-fg shrink-0">${r.t}</span>
+          <span class="text-sm text-fg-muted truncate">${r.n}</span>
+        </div>
+        <div><span class="num text-[11px] px-1.5 py-0.5 rounded bg-surface-container-high text-fg-subtle">USD</span></div>
+        <div class="text-sm text-fg">${r.ex}</div>
+        <div class="text-sm">${fmtYoy(r.yoy)}</div>
+        <div class="num text-sm text-fg-muted">${r.earn}</div>
+        <div class="num text-sm text-fg-muted">${r.vol}</div>
+        <div class="flex justify-center">${spark(r.t + r.n, r.dir)}</div>
+        <div class="num text-sm text-fg text-right">$${r.price.toFixed(2)}</div>
+        <div class="flex items-center justify-end gap-2">${fmtChg(r.chg)}${fmtPerf(r.perf)}</div>
+      </div>`).join("");
+  </script>
+</body>
+</html>
