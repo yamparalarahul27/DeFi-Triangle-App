@@ -1,0 +1,102 @@
+/* ──────────────────────────────────────────────────────────────
+   DeFi Triangle — static prototype theme layer
+   Mirrors src/app/globals.css design tokens. The colour utilities
+   themselves (bg-surface-container, text-fg, text-brand …) are
+   produced by the Tailwind Play CDN config in each HTML file;
+   this file carries only what the CDN config can't: the self-hosted
+   pixel font, the fade-up keyframe, and scrollbar styling.
+   ────────────────────────────────────────────────────────────── */
+
+@font-face {
+  font-family: "GeistPixelSquare";
+  src: url("/fonts/GeistPixelSquare.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+}
+
+:root {
+  --surface-dim: #030405;
+  --surface-page: #090a0d;
+  --surface: #101115;
+  --surface-container: #17191e;
+  --surface-container-high: #202228;
+  --surface-bright: #2a2d34;
+  --outline: #383b43;
+  --outline-variant: #23262d;
+  --fg: #f4f4f5;
+  --fg-muted: #a7abb3;
+  --fg-subtle: #868b95;
+  --brand: #5ad8c4;
+  --on-brand: #04110f;
+  --buy: #34d399;
+  --sell: #f87171;
+  --warning: #f4d35e;
+  --background: var(--surface-page);
+  --ink: var(--fg);
+  --frost-500: var(--fg-subtle);
+}
+
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+}
+
+body {
+  background: var(--surface-page);
+  color: var(--fg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 400ms ease-out backwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.26);
+}
+.scrollbar-hide {
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* The pixel display font used for the hero figure (globals.css) */
+.font-pixel {
+  font-family: "GeistPixelSquare", "Geist Mono", "IBM Plex Mono", ui-monospace,
+    monospace;
+}

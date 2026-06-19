@@ -45,4 +45,5 @@ next-env.d.ts
 
 # local skill installer artifacts (per-machine, not shipped)
 /.claude/skills/
+/.agents/
 /skills-lock.json
