@@ -585,6 +585,66 @@ Icon size: `1rem`.
 - Reserve `backdrop-filter: blur()` for modal backdrops only — never on cards
 - No shine, sweep, or parallax effects
 - No looping animations on data elements
+- **Honor `prefers-reduced-motion`** — all motion is disabled under it via a global guard in `globals.css`. New motion must degrade to its final state instantly. See [Accessibility](#accessibility).
+
+---
+
+## Accessibility
+
+> Keyboard, motion, and contrast guarantees the UI must hold. Not optional polish —
+> the floor. Verified, not eyeballed.
+
+### Keyboard focus
+
+Every interactive element shows a **`:focus-visible` ring** on keyboard / programmatic focus —
+brand mint, drawn with `outline` (never `box-shadow`, so layout never shifts), never removed.
+The ring is suppressed for pointer interaction (`:focus` without `-visible`), so mouse users
+don't see it. The base rule lives in `globals.css`:
+
+```css
+:focus-visible {
+  outline: 2px solid var(--brand);   /* #5ad8c4 */
+  outline-offset: 2px;
+}
+```
+
+- **Never** `outline: none` without an equivalent visible replacement.
+- Component-level focus styling (e.g. input focus border) is **additive**, not a replacement.
+- One-off Tailwind override: `focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand`.
+
+### Reduced motion
+
+All animation and transition is **disabled under `prefers-reduced-motion: reduce`** via a global
+guard in `globals.css`. `.animate-fade-up`, modal entry, and press scales collapse to their final
+state instantly:
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+```
+
+Never gate meaning behind an animation.
+
+### Contrast
+
+All `fg`-on-surface pairs clear **WCAG AA (4.5:1)**; `fg-subtle` is AA on page/container and
+AA-large on `surface-bright`. Filled mint surfaces use `text-on-brand` (dark) — white on mint
+fails contrast, and `check:theme` blocks it. See [Color](#color).
+
+### Touch targets
+
+Interactive controls are **≥ 40×40px**. When the visual is smaller, extend the hit area with a
+`before:` pseudo-element rather than padding the visual (see the `MetaStrip` info dot). See
+[Touch Targets](#touch-targets).
+
+### Icon-only controls
+
+Buttons or links with no visible text label require an **`aria-label`** describing the action.
 
 ---
 
