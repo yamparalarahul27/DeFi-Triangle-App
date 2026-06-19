@@ -127,6 +127,16 @@ html {
   scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
 }
 
+/* Accessibility — keyboard focus ring.
+   Visible only for keyboard / programmatic focus (:focus-visible), never on
+   pointer interaction. Uses the brand accent via `outline` (not box-shadow) so
+   it never shifts layout. Component focus styles are additive, not a
+   replacement. See DESIGN.md → Accessibility. */
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
 @keyframes fade-up {
   from {
     opacity: 0;
