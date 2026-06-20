@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Wallet connections · DeFi Triangle (Redesign)</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="./assets/tw-config.js"></script>
+<link rel="stylesheet" href="./assets/theme.css" />
+
+<style>
+  body { font-family: "Geist", "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif; }
+  .press { transition: scale 120ms ease-out, background-color 150ms ease-out; }
+  .press:active { scale: 0.96; }
+  .hit { display:inline-flex; align-items:center; justify-content:center; min-width:40px; min-height:40px; }
+
+  /* ── depth replication ─────────────────────────────────────── */
+  /* modal: soft top highlight + deep ambient + contact shadow */
+  .modal {
+    background: linear-gradient(180deg, #262629 0%, #202024 42%, #1c1c1f 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.06),
+      0 2px 6px rgba(0,0,0,0.5),
+      0 24px 64px -12px rgba(0,0,0,0.75);
+  }
+  /* warm glow behind the title (reference) */
+  .topglow { background: radial-gradient(58% 80% at 50% 0%, rgba(255,238,214,0.10), transparent 70%); }
+  /* inset list well — darker than the modal, recessed */
+  .well {
+    background: #161618;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.55), 0 1px 0 rgba(255,255,255,0.03);
+  }
+  /* small control buttons */
+  .ctrl { background: #2c2c30; box-shadow: inset 0 1px 0 rgba(255,255,255,0.05); }
+  .ctrl:hover { background: #34343a; }
+  /* destructive confirm — maroon, elevated above the list */
+  .danger {
+    background: linear-gradient(180deg, #4e2829 0%, #3f2122 100%);
+    border: 1px solid rgba(248,113,113,0.34);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.06),
+      0 10px 28px -10px rgba(0,0,0,0.65),
+      0 0 0 4px rgba(248,113,113,0.04);
+  }
+  /* white CTA */
+  .cta { box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset, 0 8px 22px -10px rgba(0,0,0,0.6); }
+</style>
+</head>
+
+<body class="min-h-dvh bg-surface-page text-fg grid place-items-center p-4">
+
+  <!-- only the modal — no background dashboard -->
+  <div class="modal relative w-full max-w-[440px] rounded-[28px] p-6 overflow-hidden">
+    <div class="topglow pointer-events-none absolute inset-x-0 top-0 h-40"></div>
+
+    <!-- header -->
+    <div class="relative text-center mb-6">
+      <i class="ph ph-arrows-in-line-horizontal text-3xl text-fg-muted"></i>
+      <h2 class="mt-2.5 text-xl font-semibold tracking-tight text-fg">Wallet connections</h2>
+    </div>
+
+    <!-- inset list well -->
+    <div class="well relative rounded-2xl p-1.5">
+      <div id="rows"></div>
+
+      <!-- destructive confirm (Ledger Live) -->
+      <div class="danger relative z-10 rounded-xl mx-0.5 mb-0.5 px-3 py-3 flex items-center gap-3">
+        <span class="relative grid place-items-center size-9 shrink-0 rounded-lg overflow-hidden ring-1 ring-white/10 bg-white text-[11px] font-semibold text-black">
+          L
+          <img src="https://cdn.defitriangle.xyz/logos/wallet/ledger-live/128.png" alt="" class="absolute inset-0 size-full object-cover" onerror="this.style.display='none'" />
+        </span>
+        <p class="flex-1 text-sm text-white/90 leading-snug">You are about to remove this wallet from DeFi&nbsp;Triangle.</p>
+        <button class="press rounded-md px-3 py-1.5 text-sm font-medium text-white bg-white/12 hover:bg-white/20">Confirm</button>
+        <button class="hit press rounded-md text-white/80 hover:bg-white/10 !min-w-[32px] !min-h-[32px]" aria-label="Cancel"><i class="ph ph-x"></i></button>
+      </div>
+    </div>
+
+    <!-- footer note -->
+    <p class="relative text-center text-xs text-fg-subtle leading-relaxed mt-5 px-4">
+      DeFi Triangle has <span class="underline decoration-fg-subtle/50 underline-offset-2">read-only access</span> and cannot move any of your funds.
+    </p>
+
+    <!-- CTA -->
+    <button class="cta press w-full mt-5 rounded-2xl bg-white text-[#0b0b0c] py-4 text-[15px] font-semibold">
+      Connect wallet
+    </button>
+  </div>
+
+  <script>
+    const WALLETS = [
+      { name: "Phantom",  slug: "phantom",  synced: "Synced 4 minutes ago",  c: "#ab9ff2" },
+      { name: "Solflare", slug: "solflare", synced: "Synced 6 minutes ago",  c: "#fc7227" },
+      { name: "Backpack", slug: "backpack", synced: "Synced 12 minutes ago", c: "#e33e3f" },
+    ];
+    const logo = (s) => `https://cdn.defitriangle.xyz/logos/wallet/${s}/128.png`;
+
+    document.getElementById("rows").innerHTML = WALLETS.map((w, i) => `
+      <div class="flex items-center gap-3 px-2.5 py-3 ${i < WALLETS.length - 1 ? "border-b border-white/[0.06]" : ""}">
+        <span class="relative grid place-items-center size-9 shrink-0 rounded-lg overflow-hidden ring-1 ring-white/10 text-[11px] font-semibold text-white" style="background:${w.c}">
+          ${w.name.slice(0,1)}
+          <img src="${logo(w.slug)}" alt="" class="absolute inset-0 size-full object-cover" onerror="this.style.display='none'" />
+        </span>
+        <div class="flex-1 min-w-0">
+          <div class="text-[15px] font-semibold text-fg">${w.name}</div>
+          <div class="flex items-center gap-1.5 text-xs text-fg-muted">${w.synced}<span class="size-1.5 rounded-full bg-buy"></span></div>
+        </div>
+        <button class="ctrl hit press rounded-lg text-fg-muted hover:text-fg !min-w-[36px] !min-h-[36px]" aria-label="Resync ${w.name}"><i class="ph ph-arrows-clockwise text-base"></i></button>
+        <button class="ctrl hit press rounded-lg text-sell hover:text-sell-strong !min-w-[36px] !min-h-[36px]" aria-label="Remove ${w.name}"><i class="ph ph-trash text-base"></i></button>
+      </div>`).join("");
+  </script>
+</body>
+</html>
