@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Transaction Card · DeFi Triangle (Redesign)</title>
+
+<!-- Fonts: Geist (sans) + Geist Mono (numbers) + IBM Plex fallback -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<!-- Phosphor icons (regular + fill + bold weights) -->
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+<!-- Tailwind Play CDN + shared token config + theme layer -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="./assets/tw-config.js"></script>
+<link rel="stylesheet" href="./assets/theme.css" />
+
+<style>
+  body { font-family: "Geist", "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif; }
+  .num { font-family: "Geist Mono", "IBM Plex Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+  /* layered depth — shadows over borders (make-interfaces-feel-better #3) */
+  .card-shadow { box-shadow: 0 1px 2px rgba(0,0,0,0.40), 0 8px 24px -12px rgba(0,0,0,0.55); }
+  /* chart scales uniformly so the label + strokes never distort */
+  .chart { width: 100%; height: auto; aspect-ratio: 760 / 230; display: block; }
+  .end-label { fill: var(--sell); font-family: "Geist Mono","IBM Plex Mono",monospace; font-size: 14px; font-weight: 600; }
+</style>
+</head>
+
+<body class="min-h-dvh bg-surface-page text-fg grid place-items-center p-4 sm:p-8">
+
+  <article class="w-full max-w-[880px] bg-surface border border-outline-variant rounded-[22px] card-shadow p-6 sm:px-8 sm:pt-7 sm:pb-8 animate-fade-up">
+
+    <!-- header -->
+    <header class="flex items-center justify-between mb-5">
+      <div class="flex items-center gap-3">
+        <span class="grid place-items-center w-[30px] h-[30px] rounded-full shrink-0" style="background:#e31937" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="#fff">
+            <path d="M12 4.2c2.7 0 5 .5 5 .5l.7-1.4S15.6 2 12 2 6.3 3.3 6.3 3.3L7 4.7s2.3-.5 5-.5zM12 6.4 8.7 5.1 6 6.3 9.2 7.5v13.7h5.6V7.5L18 6.3l-2.7-1.2L12 6.4z"/>
+          </svg>
+        </span>
+        <span class="font-semibold text-[15px] tracking-wide">TSLA</span>
+      </div>
+      <div class="text-[14px] text-fg-subtle"><span class="text-fg-muted font-semibold">Today</span> · 1 hour ago</div>
+    </header>
+
+    <!-- news blurb -->
+    <p class="text-[21px] leading-[1.45] text-fg/95 mb-6 max-w-[62ch] text-pretty">
+      Tesla shares dropped after Elon Musk&rsquo;s clash with Donald Trump, netting short
+      sellers $4B. The dip follows a downgrade and concerns over Tesla&rsquo;s political
+      entanglements.
+    </p>
+
+    <!-- inner performance panel -->
+    <section class="bg-surface-page border border-outline-variant rounded-[14px] overflow-hidden">
+
+      <div class="flex items-center justify-between px-5 py-4 border-b border-outline-variant">
+        <span class="text-[15px] text-fg-muted">Performance since last transaction</span>
+        <span class="num text-[12.5px] font-semibold tracking-wide text-sell bg-sell-surface rounded-md px-2.5 py-1">Sell</span>
+      </div>
+
+      <div class="relative px-5 pt-5 pb-4">
+        <!-- overlay column: ticker / price / source -->
+        <div class="absolute z-[2] top-5 left-5 flex flex-col" style="height:calc(100% - 36px)">
+          <div class="text-[14.5px] text-fg-muted mb-2">TSLA <b class="text-fg font-semibold">Market sell</b></div>
+          <div class="flex items-center gap-3">
+            <span class="num text-[30px] font-semibold tracking-[-0.01em] text-fg">$13,245.65</span>
+            <span class="num text-[13px] font-semibold text-sell bg-sell-surface rounded-md px-2 py-1">-33.68%</span>
+          </div>
+          <div class="mt-auto flex items-center gap-2.5 text-[13.5px] text-fg-muted">
+            <span class="grid place-items-center w-[22px] h-[22px] rounded-full bg-fg text-surface-page font-bold text-[11px] shrink-0">W</span>
+            <span>TFSA · December 26, 2024</span>
+          </div>
+        </div>
+
+        <!-- price line: white pre-transaction → sell-red post-transaction -->
+        <svg class="chart" viewBox="0 0 760 230" aria-label="TSLA price since last transaction, down 33.68%">
+          <defs>
+            <linearGradient id="leftFade" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="var(--surface-page)" stop-opacity="1" />
+              <stop offset="0.42" stop-color="var(--surface-page)" stop-opacity="1" />
+              <stop offset="0.6" stop-color="var(--surface-page)" stop-opacity="0" />
+            </linearGradient>
+          </defs>
+
+          <!-- closing-level reference line -->
+          <line x1="430" y1="150" x2="700" y2="150" stroke="var(--sell)" stroke-opacity="0.32" stroke-width="1" stroke-dasharray="3 4" />
+          <!-- transaction divider -->
+          <line x1="430" y1="14" x2="430" y2="216" stroke="var(--outline)" stroke-opacity="0.7" stroke-width="1" stroke-dasharray="3 4" />
+
+          <!-- pre-transaction -->
+          <path fill="none" stroke="var(--fg)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"
+            d="M0,150 L22,154 L40,146 L58,156 L76,148 L96,158 L116,150 L138,153 L158,140 L180,146 L202,130 L224,138 L246,120 L268,128 L290,108 L312,116 L334,98 L356,104 L378,88 L400,80 L418,90 L430,72" />
+          <!-- post-transaction -->
+          <path fill="none" stroke="var(--sell)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"
+            d="M430,72 L446,90 L462,82 L480,106 L498,98 L516,122 L534,114 L552,138 L570,130 L588,150 L606,142 L624,160 L642,150 L660,138 L678,146 L692,150" />
+
+          <circle cx="692" cy="150" r="4" fill="var(--sell)" />
+
+          <!-- scrim keeps overlaid stats legible over the line -->
+          <rect x="0" y="0" width="760" height="230" fill="url(#leftFade)" />
+
+          <text class="end-label" x="706" y="155">+33.68%</text>
+        </svg>
+      </div>
+    </section>
+
+  </article>
+
+</body>
+</html>

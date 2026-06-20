@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Price Chart · DeFi Triangle (Redesign)</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="./assets/tw-config.js"></script>
+<link rel="stylesheet" href="./assets/theme.css" />
+
+<style>
+  body { font-family: "Geist", "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif; }
+  .num { font-family: "Geist Mono", "IBM Plex Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+  .card-shadow { box-shadow: 0 1px 2px rgba(0,0,0,0.40), 0 8px 24px -12px rgba(0,0,0,0.55); }
+  .tip-shadow { box-shadow: 0 4px 12px rgba(0,0,0,0.45), 0 12px 32px -8px rgba(0,0,0,0.6); }
+  .press { transition: scale 120ms ease-out, color 150ms ease-out; }
+  .press:active { scale: 0.96; }
+  /* faint dot grid behind the plot (reference) */
+  .dotgrid { background-image: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 22px 22px; }
+  /* crosshair + tooltip fade — specific props only, <200ms */
+  .xhair { transition: opacity 120ms ease-out; }
+  .tip { transition: opacity 140ms ease-out; }
+</style>
+</head>
+
+<body class="min-h-dvh bg-surface-page text-fg grid place-items-center p-4 sm:p-6">
+
+  <!-- Responsive, self-contained chart card:
+       mobile = full width; web = capped at max-w-2xl. Heights scale per breakpoint. -->
+  <section class="w-full max-w-2xl rounded-2xl bg-surface-container card-shadow p-4 sm:p-6">
+
+    <!-- compact header -->
+    <header class="flex items-center justify-between mb-4">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <span class="relative grid place-items-center size-8 shrink-0 rounded-full ring-1 ring-white/10 overflow-hidden text-xs font-semibold text-white" style="background:#111522">
+          S
+          <img src="https://cdn.defitriangle.xyz/logos/solana/native/64.png" alt="" class="absolute inset-0 size-full object-cover" onerror="this.style.display='none'" />
+        </span>
+        <div class="min-w-0">
+          <div class="flex items-center gap-1.5">
+            <span class="font-semibold text-sm text-fg">SOL</span>
+            <span class="text-xs text-fg-subtle truncate">Solana</span>
+          </div>
+          <div class="text-[11px] text-fg-subtle">Solana · USDC</div>
+        </div>
+      </div>
+      <div class="text-right">
+        <div id="hdrPrice" class="num text-base sm:text-lg font-semibold text-fg">$182.42</div>
+        <div class="num text-xs text-buy">+1.24%</div>
+      </div>
+    </header>
+
+    <!-- plot: wrapper is position:relative so the HTML tooltip can be absolutely placed -->
+    <div id="plot" class="relative dotgrid rounded-xl overflow-hidden cursor-crosshair select-none">
+      <!-- price line -->
+      <svg id="line" viewBox="0 0 1000 320" preserveAspectRatio="none" class="block w-full h-[180px] sm:h-[260px] lg:h-[300px]">
+        <defs>
+          <linearGradient id="fill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#5ad8c4" stop-opacity="0.18" />
+            <stop offset="1" stop-color="#5ad8c4" stop-opacity="0" />
+          </linearGradient>
+        </defs>
+        <line id="baseline" x1="0" x2="1000" stroke="#383b43" stroke-width="1" stroke-dasharray="3 5" />
+        <path id="area" fill="url(#fill)" stroke="none" />
+        <polyline id="path" fill="none" stroke="#5ad8c4" stroke-width="2.25" stroke-linejoin="round" stroke-linecap="round" />
+        <line id="vx" class="xhair opacity-0" y1="0" y2="320" stroke="rgba(255,255,255,0.35)" stroke-width="1" />
+        <circle id="dot" class="xhair opacity-0" r="4" fill="#5ad8c4" stroke="#090a0d" stroke-width="2" />
+      </svg>
+
+      <!-- volume histogram -->
+      <svg id="vol" viewBox="0 0 1000 80" preserveAspectRatio="none" class="block w-full h-[40px] sm:h-[56px]"></svg>
+
+      <!-- floating tooltip -->
+      <div id="tip" class="tip opacity-0 pointer-events-none absolute top-2 left-0 z-10 rounded-xl bg-surface-container-high/95 backdrop-blur-md tip-shadow border border-outline-variant px-3.5 py-3 w-[180px]">
+        <div id="tipDate" class="text-[11px] text-fg-subtle mb-2">—</div>
+        <div class="flex items-center justify-between gap-3 mb-1.5">
+          <span class="flex items-center gap-2 text-xs text-fg-muted"><span class="w-0.5 h-3.5 rounded-full bg-brand"></span>Price</span>
+          <span id="tipPrice" class="num text-sm font-semibold text-fg">—</span>
+        </div>
+        <div class="flex items-center justify-between gap-3">
+          <span class="flex items-center gap-2 text-xs text-fg-muted"><span class="w-0.5 h-3.5 rounded-full bg-fg-subtle"></span>Volume</span>
+          <span id="tipVol" class="num text-sm text-fg-muted">—</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- range tabs -->
+    <div id="ranges" class="flex items-center gap-1 mt-4">
+      <button data-r="1D"  class="press relative px-3 py-1.5 text-sm font-medium text-fg-muted">1D</button>
+      <button data-r="1W"  class="press relative px-3 py-1.5 text-sm font-medium text-fg-muted">1W</button>
+      <button data-r="1M"  class="press relative px-3 py-1.5 text-sm font-medium text-fg-muted">1M</button>
+      <button data-r="3M"  class="press relative px-3 py-1.5 text-sm font-medium text-fg-muted">3M</button>
+      <button data-r="YTD" class="press relative px-3 py-1.5 text-sm font-medium text-fg" aria-current="true">YTD</button>
+      <button data-r="All" class="press relative px-3 py-1.5 text-sm font-medium text-fg-muted">All</button>
+    </div>
+  </section>
+
+  <script>
+    const W = 1000, H = 320, PAD = 24;
+    const POINTS = { "1D": 96, "1W": 84, "1M": 90, "3M": 90, "YTD": 160, "All": 220 };
+
+    const $ = (id) => document.getElementById(id);
+    const fmtUsd = (v) => "$" + v.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const fmtInt = (v) => Math.round(v).toLocaleString("en-US");
+
+    // seeded PRNG so the curve is stable per range
+    function rng(seed) { let s = seed >>> 0; return () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; }; }
+
+    function makeSeries(range) {
+      const n = POINTS[range], rand = rng(range.split("").reduce((a, c) => a * 31 + c.charCodeAt(0), 7));
+      const prices = [], vols = [], dates = [];
+      let p = 178;
+      const start = new Date(2024, 0, 1).getTime(), dayMs = 86400000;
+      for (let i = 0; i < n; i++) {
+        // gentle down-drift through the middle, recovery at the end (mirrors the reference)
+        const t = i / (n - 1);
+        const trend = -22 * Math.sin(Math.PI * Math.min(t, 0.78)) + (t > 0.72 ? (t - 0.72) * 190 : 0);
+        p += (rand() - 0.5) * 7;
+        prices.push(Math.max(120, 178 + trend + (p - 178) * 0.5));
+        vols.push(60 + rand() * 180 + (Math.abs(rand() - 0.5) > 0.42 ? 120 : 0));
+        dates.push(new Date(start + i * dayMs));
+      }
+      return { prices, vols, dates, n };
+    }
+
+    let S, geom;
+
+    function render(range) {
+      S = makeSeries(range);
+      const min = Math.min(...S.prices), max = Math.max(...S.prices), span = max - min || 1;
+      const x = (i) => (i / (S.n - 1)) * W;
+      const y = (v) => PAD + (1 - (v - min) / span) * (H - PAD * 2);
+      geom = { x, y, min, max };
+
+      const pts = S.prices.map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
+      $("path").setAttribute("points", pts);
+      $("area").setAttribute("d", `M0,${H} L${pts.split(" ").join(" L")} L${W},${H} Z`);
+      $("baseline").setAttribute("y1", y(S.prices[0]).toFixed(1));
+      $("baseline").setAttribute("y2", y(S.prices[0]).toFixed(1));
+
+      // volume bars
+      const vmax = Math.max(...S.vols), bw = (W / S.n) * 0.62;
+      $("vol").innerHTML = S.vols.map((v, i) => {
+        const h = (v / vmax) * 72, bx = x(i) - bw / 2;
+        return `<rect x="${bx.toFixed(1)}" y="${(80 - h).toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="0.8" fill="#5ad8c4" fill-opacity="0.14" />`;
+      }).join("");
+
+      // header reflects latest point
+      $("hdrPrice").textContent = fmtUsd(S.prices[S.n - 1]);
+      moveTo(Math.round(S.n * 0.42)); // default tooltip position (like the reference)
+    }
+
+    function moveTo(i) {
+      i = Math.max(0, Math.min(S.n - 1, i));
+      const px = geom.x(i), py = geom.y(S.prices[i]);
+      $("vx").setAttribute("x1", px); $("vx").setAttribute("x2", px);
+      $("dot").setAttribute("cx", px); $("dot").setAttribute("cy", py);
+      $("vx").classList.remove("opacity-0"); $("dot").classList.remove("opacity-0");
+
+      $("tipDate").textContent = S.dates[i].toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+      $("tipPrice").textContent = fmtUsd(S.prices[i]);
+      $("tipVol").textContent = fmtInt(S.vols[i] * 1_000_000);
+
+      // position HTML tooltip within the plot, clamped to its width
+      const plot = $("plot"), tip = $("tip");
+      const frac = i / (S.n - 1), wpx = plot.clientWidth;
+      let left = frac * wpx + 14;
+      left = Math.max(8, Math.min(left, wpx - tip.offsetWidth - 8));
+      tip.style.left = left + "px";
+      tip.classList.remove("opacity-0");
+    }
+
+    // pointer tracking over the plot
+    const plot = $("plot");
+    plot.addEventListener("pointermove", (e) => {
+      const r = plot.getBoundingClientRect();
+      const frac = (e.clientX - r.left) / r.width;
+      moveTo(Math.round(frac * (S.n - 1)));
+    });
+    plot.addEventListener("pointerleave", () => moveTo(Math.round(S.n * 0.42)));
+
+    // range tabs
+    $("ranges").addEventListener("click", (e) => {
+      const btn = e.target.closest("button[data-r]"); if (!btn) return;
+      [...$("ranges").children].forEach((b) => {
+        const on = b === btn;
+        b.classList.toggle("text-fg", on);
+        b.classList.toggle("text-fg-muted", !on);
+        b.removeAttribute("aria-current");
+        b.querySelector(".u")?.remove();
+        if (on) { b.setAttribute("aria-current", "true");
+          const u = document.createElement("span");
+          u.className = "u absolute left-3 right-3 -bottom-px h-0.5 rounded-full bg-brand";
+          b.appendChild(u);
+        }
+      });
+      render(btn.dataset.r);
+    });
+
+    // init (YTD active underline + first render)
+    const ytd = document.querySelector('[data-r="YTD"]');
+    const u = document.createElement("span");
+    u.className = "u absolute left-3 right-3 -bottom-px h-0.5 rounded-full bg-brand";
+    ytd.appendChild(u);
+    render("YTD");
+    window.addEventListener("resize", () => moveTo(Math.round(S.n * 0.42)));
+  </script>
+</body>
+</html>
