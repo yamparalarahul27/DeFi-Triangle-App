@@ -22,6 +22,13 @@
 | [02-design-system.md](./02-design-system.md) | How DESIGN.md evolves for social + the `/design` gallery spec |
 | [03-data-model.md](./03-data-model.md) | Supabase tables, API routes, auth, seeding strategy |
 | [04-roadmap.md](./04-roadmap.md) | Phases, feature flags, verification gates per phase |
+| [05-ux-flows.md](./05-ux-flows.md) | Recommended user journeys, identity gating, state strategy |
+| [06-ui-spec.md](./06-ui-spec.md) | Measurements: layout, type, identity hues, component anatomy |
+| [07-tech.md](./07-tech.md) | Full blueprint: folders, hooks, SQL DDL, API payloads |
+
+**Visual mocks:** static HTML at `public/Prototypes/tide/` — open
+`/Prototypes/tide/` on any Vercel preview (phone-framed, real design
+tokens, frozen sample data).
 
 ## Decisions already made (interview log)
 

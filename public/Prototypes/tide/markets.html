@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en" class="h-full antialiased">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="robots" content="noindex" />
+    <title>Markets · Tide (mock)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../assets/tw-config.js"></script>
+    <link rel="stylesheet" href="../assets/theme.css" />
+    <link rel="stylesheet" href="tide.css" />
+  </head>
+  <body class="gutter">
+    <div class="mocknav"><a href="index.html">← mocks</a></div>
+    <div class="phone">
+      <header class="app-header">
+        <span class="text-lg font-bold text-fg" style="font-family:'Geist Mono',monospace">Markets</span>
+        <span class="avatar s28 hue-tide">y</span>
+      </header>
+
+      <main class="screen pt-4 space-y-7">
+        <!-- Yours rail (members with watches) -->
+        <section>
+          <div class="flex items-baseline justify-between mb-3">
+            <h2 class="label-section">Yours</h2>
+            <a href="profile.html" class="text-[11px] text-fg-subtle no-underline">all ›</a>
+          </div>
+          <div class="rail">
+            <a href="token.html" class="card token-card no-underline">
+              <div class="flex items-center justify-between">
+                <span class="w-9 h-9 rounded-full bg-buy-surface border border-outline-variant grid place-items-center text-xs text-buy">P</span>
+                <span class="text-brand text-sm">♥</span>
+              </div>
+              <div class="mono text-[13px] font-medium text-fg mt-3">PYUSD</div>
+              <div class="data-md text-fg mt-1">$0.9999</div>
+              <div class="data-sm text-buy mt-0.5">▲ +0.01%</div>
+              <div class="mt-auto text-[11px] text-fg-muted">◔ 41 watching</div>
+            </a>
+            <a href="token.html" class="card token-card no-underline">
+              <div class="flex items-center justify-between">
+                <span class="w-9 h-9 rounded-full bg-surface-bright border border-outline-variant grid place-items-center text-xs text-fg-muted">J</span>
+                <span class="text-brand text-sm">♥</span>
+              </div>
+              <div class="mono text-[13px] font-medium text-fg mt-3">JUP</div>
+              <div class="data-md text-fg mt-1">$0.8123</div>
+              <div class="data-sm text-buy mt-0.5">▲ +4.2%</div>
+              <div class="mt-auto text-[11px] text-fg-muted">◔ 128 watching</div>
+            </a>
+            <a href="token.html" class="card token-card no-underline">
+              <div class="flex items-center justify-between">
+                <span class="w-9 h-9 rounded-full bg-surface-bright border border-outline-variant grid place-items-center text-xs text-fg-muted">S</span>
+                <span class="text-brand text-sm">♥</span>
+              </div>
+              <div class="mono text-[13px] font-medium text-fg mt-3">SOL</div>
+              <div class="data-md text-fg mt-1">$178.42</div>
+              <div class="data-sm text-sell mt-0.5">▼ −1.8%</div>
+              <div class="mt-auto text-[11px] text-fg-muted">◔ 402 watching</div>
+            </a>
+          </div>
+        </section>
+
+        <!-- Attraction rail -->
+        <section>
+          <div class="flex items-baseline justify-between mb-3">
+            <h2 class="label-section">Attraction</h2>
+            <span class="text-[11px] text-fg-subtle">24h movers</span>
+          </div>
+          <div class="rail">
+            <a href="token.html" class="card token-card no-underline">
+              <span class="w-9 h-9 rounded-full bg-surface-bright border border-outline-variant grid place-items-center text-xs text-fg-muted">B</span>
+              <div class="mono text-[13px] font-medium text-fg mt-3">BONK</div>
+              <div class="data-md text-fg mt-1">$0.000031</div>
+              <div class="data-sm text-buy mt-0.5">▲ +12.4%</div>
+              <div class="mt-auto flex items-center justify-between">
+                <span class="text-[11px] text-fg-muted">◔ 96</span>
+                <span class="avatar-group"><span class="avatar s20 hue-lilac">m</span><span class="avatar s20 hue-rose">n</span></span>
+              </div>
+            </a>
+            <a href="token.html" class="card token-card no-underline">
+              <span class="w-9 h-9 rounded-full bg-surface-bright border border-outline-variant grid place-items-center text-xs text-fg-muted">W</span>
+              <div class="mono text-[13px] font-medium text-fg mt-3">WIF</div>
+              <div class="data-md text-fg mt-1">$1.87</div>
+              <div class="data-sm text-sell mt-0.5">▼ −1.1%</div>
+              <div class="mt-auto text-[11px] text-fg-muted">◔ 12</div>
+            </a>
+            <a href="token.html" class="card token-card no-underline">
+              <span class="w-9 h-9 rounded-full bg-surface-bright border border-outline-variant grid place-items-center text-xs text-fg-muted">J</span>
+              <div class="mono text-[13px] font-medium text-fg mt-3">JTO</div>
+              <div class="data-md text-fg mt-1">$2.41</div>
+              <div class="data-sm text-buy mt-0.5">▲ +6.8%</div>
+              <div class="mt-auto text-[11px] text-fg-muted">◔ 27</div>
+            </a>
+          </div>
+        </section>
+
+        <!-- Park Your Money rail -->
+        <section>
+          <div class="flex items-baseline justify-between mb-3">
+            <h2 class="label-section">Park your money</h2>
+            <span class="text-[11px] text-fg-subtle">stablecoins · peg + depth</span>
+          </div>
+          <div class="rail">
+            <a href="token.html" class="card token-card no-underline">
+              <div class="flex items-center gap-1.5">
+                <span class="w-9 h-9 rounded-full bg-buy-surface border border-outline-variant grid place-items-center text-xs text-buy">U</span>
+              </div>
+              <div class="mono text-[13px] font-medium text-fg mt-3">USDC</div>
+              <div class="data-md text-fg mt-1">$1.0001</div>
+              <div class="mt-0.5 flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-buy"></span>
+                <span class="text-[11px] text-buy">on peg</span>
+              </div>
+              <div class="mt-auto text-[11px] text-fg-muted">depth $412M</div>
+            </a>
+            <a href="token.html" class="card token-card no-underline">
+              <span class="w-9 h-9 rounded-full bg-buy-surface border border-outline-variant grid place-items-center text-xs text-buy">P</span>
+              <div class="mono text-[13px] font-medium text-fg mt-3">PYUSD</div>
+              <div class="data-md text-fg mt-1">$0.9999</div>
+              <div class="mt-0.5 flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-buy"></span>
+                <span class="text-[11px] text-buy">on peg</span>
+              </div>
+              <div class="mt-auto text-[11px] text-fg-muted">depth $58M</div>
+            </a>
+            <a href="token.html" class="card token-card no-underline">
+              <span class="w-9 h-9 rounded-full bg-warning-surface border border-outline-variant grid place-items-center text-xs text-warning">T</span>
+              <div class="mono text-[13px] font-medium text-fg mt-3">USDT</div>
+              <div class="data-md text-fg mt-1">$0.9971</div>
+              <div class="mt-0.5 flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-warning"></span>
+                <span class="text-[11px] text-warning">−29 bps</span>
+              </div>
+              <div class="mt-auto text-[11px] text-fg-muted">depth $890M</div>
+            </a>
+          </div>
+        </section>
+
+        <!-- Long-term / High-risk collapsed rails -->
+        <section class="space-y-2">
+          <a href="#" class="card p-4 flex items-center justify-between no-underline">
+            <div>
+              <div class="text-sm font-semibold text-fg">Long-term</div>
+              <div class="text-[11px] text-fg-muted mt-0.5">verified, deep liquidity · 24 tokens</div>
+            </div><span class="text-fg-subtle">›</span>
+          </a>
+          <a href="#" class="card p-4 flex items-center justify-between no-underline">
+            <div>
+              <div class="text-sm font-semibold text-fg">High-risk</div>
+              <div class="text-[11px] text-fg-muted mt-0.5">young, volatile, thin books · 31 tokens</div>
+            </div><span class="text-fg-subtle">›</span>
+          </a>
+        </section>
+      </main>
+
+      <nav class="bottom-bar">
+        <a href="feed.html"><span class="ic">~</span>Feed</a>
+        <a href="markets.html" class="active"><span class="ic">◍</span>Markets</a>
+        <a href="#"><span class="ic">⌕</span>Search</a>
+        <a href="profile.html"><span class="ic">◐</span>Me</a>
+      </nav>
+    </div>
+  </body>
+</html>

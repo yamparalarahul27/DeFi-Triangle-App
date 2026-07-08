@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en" class="h-full antialiased">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="robots" content="noindex" />
+    <title>JUP · Tide (mock)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../assets/tw-config.js"></script>
+    <link rel="stylesheet" href="../assets/theme.css" />
+    <link rel="stylesheet" href="tide.css" />
+  </head>
+  <body class="gutter">
+    <div class="mocknav"><a href="index.html">← mocks</a></div>
+    <div class="phone">
+      <header class="app-header">
+        <div class="flex items-center gap-3">
+          <a href="markets.html" class="text-fg-muted no-underline text-lg" style="width:44px;height:44px;display:grid;place-items:center;margin-left:-12px">‹</a>
+          <span class="w-7 h-7 rounded-full bg-surface-bright border border-outline-variant grid place-items-center text-[11px] text-fg-muted">J</span>
+          <span class="mono text-sm font-semibold text-fg">JUP</span>
+        </div>
+        <span class="text-[11px] text-fg-subtle mono">7xKt…9fQ2</span>
+      </header>
+
+      <main class="screen pt-4 space-y-4">
+        <!-- price header -->
+        <section>
+          <div class="data-lg text-fg">$0.8123</div>
+          <div class="mt-1 flex items-center gap-2">
+            <span class="data-sm text-buy">▲ +4.2% · 24h</span>
+            <span class="text-[11px] text-fg-subtle">updated 2s ago</span>
+          </div>
+          <!-- chart placeholder -->
+          <div class="mt-3 card p-3" style="box-shadow:none">
+            <svg viewBox="0 0 360 96" class="w-full h-24" preserveAspectRatio="none" aria-hidden="true">
+              <path d="M0,70 C30,66 45,74 70,60 C95,46 110,58 140,50 C170,42 185,55 215,44 C245,33 260,40 290,30 C320,20 335,28 360,18" fill="none" stroke="#5ad8c4" stroke-width="1.5"/>
+              <path d="M0,70 C30,66 45,74 70,60 C95,46 110,58 140,50 C170,42 185,55 215,44 C245,33 260,40 290,30 C320,20 335,28 360,18 L360,96 L0,96 Z" fill="url(#g)" opacity=".25"/>
+              <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5ad8c4"/><stop offset="1" stop-color="#5ad8c4" stop-opacity="0"/></linearGradient></defs>
+            </svg>
+            <div class="mt-2 flex gap-1.5">
+              <button class="lane" style="padding:0"><button class="on" style="height:26px;padding:0 10px;font-size:11px">1D</button></button>
+              <button class="text-[11px] text-fg-muted px-2.5">1W</button>
+              <button class="text-[11px] text-fg-muted px-2.5">1M</button>
+              <button class="text-[11px] text-fg-muted px-2.5">1Y</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- SOCIAL STRIP (new) -->
+        <section class="card p-3 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-fg-muted"><span class="text-brand" style="opacity:.7">◔</span> 128 watching · 9 today</span>
+            <button class="btn-follow">♥ Watch</button>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="avatar-group">
+              <span class="avatar s20 hue-lilac">m</span>
+              <span class="avatar s20 hue-rose">n</span>
+              <span class="avatar s20 hue-sky">k</span>
+            </span>
+            <span class="text-xs text-fg-muted">watched by <span class="t-lilac mono">@mira</span>, <span class="t-rose mono">@noor</span> +38</span>
+          </div>
+          <button class="w-full flex items-center justify-between text-xs text-fg-muted border-t border-outline-variant pt-3">
+            <span>💬 12 comments</span><span class="text-fg-subtle">›</span>
+          </button>
+        </section>
+
+        <!-- engine sections (existing 13, re-skinned) -->
+        <section class="card p-4">
+          <h2 class="label-section mb-3">Stats</h2>
+          <div class="grid grid-cols-2 gap-y-3 gap-x-4">
+            <div><div class="text-[11px] text-fg-subtle">Market cap</div><div class="data-md text-fg mt-0.5">$1.09B</div></div>
+            <div><div class="text-[11px] text-fg-subtle">24h volume</div><div class="data-md text-fg mt-0.5">$84.2M</div></div>
+            <div><div class="text-[11px] text-fg-subtle">Liquidity</div><div class="data-md text-fg mt-0.5">$18.7M</div></div>
+            <div><div class="text-[11px] text-fg-subtle">Holders</div><div class="data-md text-fg mt-0.5">412,880</div></div>
+          </div>
+        </section>
+
+        <section class="card p-4">
+          <div class="flex items-center justify-between">
+            <h2 class="label-section">Risk grade</h2>
+            <span class="data-md text-buy">B+</span>
+          </div>
+          <div class="mt-3 space-y-2 text-xs">
+            <div class="flex justify-between"><span class="text-fg-muted">Mint authority</span><span class="text-buy">disabled ✓</span></div>
+            <div class="flex justify-between"><span class="text-fg-muted">Freeze authority</span><span class="text-buy">disabled ✓</span></div>
+            <div class="flex justify-between"><span class="text-fg-muted">Top-10 hold</span><span class="text-warning">31%</span></div>
+          </div>
+        </section>
+
+        <!-- comments preview (thread opens as sheet) -->
+        <section class="card p-4">
+          <h2 class="label-section mb-3">Comments</h2>
+          <div class="space-y-4">
+            <div class="flex gap-2.5">
+              <span class="avatar s28 hue-sky">k</span>
+              <div class="min-w-0">
+                <div class="flex items-baseline gap-2"><span class="mono text-[13px] t-sky">@kesh</span><span class="text-[11px] text-fg-subtle">1h</span></div>
+                <p class="text-sm text-fg mt-1" style="text-wrap:pretty">the 0.80 support is doing a lot of work here</p>
+                <div class="mt-1.5 flex gap-4 text-[11px] text-fg-subtle"><button>♥ 3</button><button>reply</button></div>
+              </div>
+            </div>
+            <div class="flex gap-2.5 pl-9">
+              <span class="avatar s20 hue-lilac">m</span>
+              <div class="min-w-0 border-l border-outline-variant pl-3 -ml-3">
+                <div class="flex items-baseline gap-2"><span class="mono text-[13px] t-lilac">@mira</span><span class="text-[11px] text-fg-subtle">40m</span></div>
+                <p class="text-sm text-fg mt-1">volume agrees with you for once</p>
+                <div class="mt-1.5 flex gap-4 text-[11px] text-fg-subtle"><button>♥ 1</button><button>reply</button></div>
+              </div>
+            </div>
+          </div>
+          <button class="mt-4 w-full h-9 rounded-sm bg-surface-container-high text-xs text-fg-muted border border-outline-variant">show all 12 ›</button>
+        </section>
+
+        <div class="text-center text-[11px] text-fg-subtle pb-2">holders · trading activity · slippage ·<br/>markets · on-chain … (13 engine sections)</div>
+      </main>
+
+      <nav class="bottom-bar">
+        <a href="feed.html"><span class="ic">~</span>Feed</a>
+        <a href="markets.html" class="active"><span class="ic">◍</span>Markets</a>
+        <a href="#"><span class="ic">⌕</span>Search</a>
+        <a href="profile.html"><span class="ic">◐</span>Me</a>
+      </nav>
+    </div>
+  </body>
+</html>
