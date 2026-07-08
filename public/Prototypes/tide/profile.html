@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en" class="h-full antialiased">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="robots" content="noindex" />
+    <title>@mira · Tide (mock)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../assets/tw-config.js"></script>
+    <link rel="stylesheet" href="../assets/theme.css" />
+    <link rel="stylesheet" href="tide.css" />
+  </head>
+  <body class="gutter">
+    <div class="mocknav"><a href="index.html">← mocks</a></div>
+    <div class="phone">
+      <header class="app-header">
+        <div class="flex items-center gap-2">
+          <a href="feed.html" class="text-fg-muted no-underline text-lg" style="width:44px;height:44px;display:grid;place-items:center;margin-left:-12px">‹</a>
+          <span class="mono text-sm font-medium t-lilac">@mira</span>
+        </div>
+        <button class="text-fg-subtle">⋯</button>
+      </header>
+
+      <main class="screen pt-5">
+        <!-- identity header -->
+        <section class="flex items-start gap-4">
+          <span class="avatar s64 hue-lilac">m</span>
+          <div class="min-w-0 flex-1">
+            <h1 class="text-xl font-bold text-fg" style="font-family:'Geist Mono',monospace">Mira</h1>
+            <div class="mono text-[13px] t-lilac mt-0.5">@mira · joined May '26</div>
+            <p class="text-sm text-fg-muted mt-2" style="text-wrap:pretty">stables maxi. boring is beautiful.</p>
+          </div>
+        </section>
+
+        <div class="mt-4 flex items-center gap-4">
+          <button class="text-left"><span class="data-md text-fg">120</span> <span class="text-xs text-fg-muted">followers</span></button>
+          <button class="text-left"><span class="data-md text-fg">89</span> <span class="text-xs text-fg-muted">following</span></button>
+          <button class="btn-follow ml-auto">Follow</button>
+        </div>
+
+        <!-- tabs -->
+        <div class="mt-5 lane w-full" style="display:flex">
+          <button class="on flex-1">Watching · 14</button>
+          <button class="flex-1">Takes · 23</button>
+        </div>
+
+        <!-- public watchlist grid -->
+        <section class="mt-4 grid grid-cols-2 gap-2.5">
+          <a href="token.html" class="card p-3.5 no-underline">
+            <div class="flex items-center gap-2">
+              <span class="w-7 h-7 rounded-full bg-buy-surface border border-outline-variant grid place-items-center text-[10px] text-buy">P</span>
+              <span class="mono text-xs font-medium text-fg">PYUSD</span>
+            </div>
+            <div class="data-md text-fg mt-2.5">$0.9999</div>
+            <div class="data-sm text-buy mt-0.5">▲ +0.01%</div>
+            <p class="text-[11px] text-fg-muted mt-2 leading-snug" style="text-wrap:pretty">"peg's been glued on"</p>
+          </a>
+          <a href="token.html" class="card p-3.5 no-underline">
+            <div class="flex items-center gap-2">
+              <span class="w-7 h-7 rounded-full bg-buy-surface border border-outline-variant grid place-items-center text-[10px] text-buy">U</span>
+              <span class="mono text-xs font-medium text-fg">USDC</span>
+            </div>
+            <div class="data-md text-fg mt-2.5">$1.0001</div>
+            <div class="data-sm text-buy mt-0.5">▲ +0.00%</div>
+          </a>
+          <a href="token.html" class="card p-3.5 no-underline">
+            <div class="flex items-center gap-2">
+              <span class="w-7 h-7 rounded-full bg-surface-bright border border-outline-variant grid place-items-center text-[10px] text-fg-muted">J</span>
+              <span class="mono text-xs font-medium text-fg">JUP</span>
+            </div>
+            <div class="data-md text-fg mt-2.5">$0.8123</div>
+            <div class="data-sm text-buy mt-0.5">▲ +4.2%</div>
+            <p class="text-[11px] text-fg-muted mt-2 leading-snug" style="text-wrap:pretty">"the one non-stable I trust"</p>
+          </a>
+          <a href="token.html" class="card p-3.5 no-underline">
+            <div class="flex items-center gap-2">
+              <span class="w-7 h-7 rounded-full bg-warning-surface border border-outline-variant grid place-items-center text-[10px] text-warning">T</span>
+              <span class="mono text-xs font-medium text-fg">USDT</span>
+            </div>
+            <div class="data-md text-fg mt-2.5">$0.9971</div>
+            <div class="data-sm text-warning mt-0.5">−29 bps</div>
+          </a>
+        </section>
+      </main>
+
+      <nav class="bottom-bar">
+        <a href="feed.html"><span class="ic">~</span>Feed</a>
+        <a href="markets.html"><span class="ic">◍</span>Markets</a>
+        <a href="#"><span class="ic">⌕</span>Search</a>
+        <a href="profile.html" class="active"><span class="ic">◐</span>Me</a>
+      </nav>
+    </div>
+  </body>
+</html>

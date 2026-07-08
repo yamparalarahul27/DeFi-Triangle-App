@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en" class="h-full antialiased">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="robots" content="noindex" />
+    <title>tide / design (mock)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../assets/tw-config.js"></script>
+    <link rel="stylesheet" href="../assets/theme.css" />
+    <link rel="stylesheet" href="tide.css" />
+  </head>
+  <body class="gutter">
+    <div class="mocknav"><a href="index.html">← mocks</a></div>
+    <div class="phone">
+      <header class="app-header">
+        <span class="mono text-sm font-semibold text-fg">tide <span class="text-brand">~</span> <span class="text-fg-subtle">/ design</span></span>
+        <span class="text-[10px] text-fg-subtle mono">unlisted</span>
+      </header>
+
+      <!-- sticky section nav -->
+      <div class="sticky z-10 flex gap-1.5 px-4 py-2.5 bg-surface-page/90 border-b border-outline-variant overflow-x-auto" style="top:48px;backdrop-filter:blur(12px);scrollbar-width:none">
+        <button class="lane" style="padding:0"><button class="on" style="height:28px;padding:0 12px;font-size:11px">Foundations</button></button>
+        <button class="text-[11px] text-fg-muted px-3 flex-none">Components</button>
+        <button class="text-[11px] text-fg-muted px-3 flex-none">Patterns</button>
+        <button class="text-[11px] text-fg-muted px-3 flex-none">Motion</button>
+      </div>
+
+      <main class="screen pt-5 space-y-8" style="padding-bottom:48px">
+        <section>
+          <h1 class="text-xl font-bold text-fg" style="font-family:'Geist Mono',monospace">The Tide system</h1>
+          <p class="mt-2 text-sm text-fg-muted" style="text-wrap:pretty">A near-black financial terminal that learned to be social. Numbers are the hero; people are the plot; playfulness is budgeted to human moments.</p>
+        </section>
+
+        <!-- color -->
+        <section>
+          <h2 class="label-section mb-3">Color · surfaces</h2>
+          <div class="grid grid-cols-3 gap-2">
+            <div><div class="h-12 rounded-lg border border-outline-variant" style="background:#030405"></div><div class="mono text-[10px] text-fg-subtle mt-1">dim</div></div>
+            <div><div class="h-12 rounded-lg border border-outline-variant" style="background:#090a0d"></div><div class="mono text-[10px] text-fg-subtle mt-1">page</div></div>
+            <div><div class="h-12 rounded-lg border border-outline-variant" style="background:#17191e"></div><div class="mono text-[10px] text-fg-subtle mt-1">container</div></div>
+          </div>
+          <h2 class="label-section mb-3 mt-5">Color · identity hues <span class="normal-case tracking-normal">(new)</span></h2>
+          <div class="flex gap-2 flex-wrap">
+            <span class="avatar s40 hue-tide">t</span>
+            <span class="avatar s40 hue-coral">c</span>
+            <span class="avatar s40 hue-sand">s</span>
+            <span class="avatar s40 hue-lilac">l</span>
+            <span class="avatar s40 hue-sky">k</span>
+            <span class="avatar s40 hue-moss">m</span>
+            <span class="avatar s40 hue-rose">r</span>
+            <span class="avatar s40 hue-slate">g</span>
+          </div>
+          <p class="text-[11px] text-fg-subtle mt-2">assigned hash(wallet) % 8 · avatars & handles only, never data · AA-verified in phase 0</p>
+        </section>
+
+        <!-- type -->
+        <section>
+          <h2 class="label-section mb-3">Type</h2>
+          <div class="card p-4 space-y-3">
+            <div><div class="text-xl font-bold text-fg" style="font-family:'Geist Mono',monospace">Geist Mono 700</div><div class="text-[10px] text-fg-subtle mono mt-0.5">titles</div></div>
+            <div><div class="data-lg text-fg">$1,234.56</div><div class="text-[10px] text-fg-subtle mono mt-0.5">GeistPixelSquare · financial data</div></div>
+            <div><div class="mono text-[13px] t-lilac">@handle</div><div class="text-[10px] text-fg-subtle mono mt-0.5">IBM Plex Mono · identity</div></div>
+            <div><div class="text-sm text-fg">IBM Plex Sans body for everything humans say.</div><div class="text-[10px] text-fg-subtle mono mt-0.5">body 14/1.5</div></div>
+          </div>
+        </section>
+
+        <!-- components -->
+        <section>
+          <h2 class="label-section mb-3">Components · social kit</h2>
+          <div class="space-y-3">
+            <div class="card p-4">
+              <div class="text-xs font-semibold text-fg mb-3">ReactionBar</div>
+              <div class="flex gap-1 -ml-2">
+                <button class="react mine"><span class="em">♥</span><span class="n">12</span></button>
+                <button class="react"><span class="em">🔥</span><span class="n">8</span></button>
+                <button class="react"><span class="em">🧠</span><span class="n">4</span></button>
+                <button class="react"><span class="em">+</span></button>
+              </div>
+              <div class="mono text-[10px] text-fg-subtle mt-2">tap = spring-pop 250ms · mine = bg-brand/10</div>
+            </div>
+            <div class="card p-4">
+              <div class="text-xs font-semibold text-fg mb-3">FollowButton</div>
+              <div class="flex gap-2"><button class="btn-follow">Follow</button><button class="btn-follow following">Following</button></div>
+              <div class="mono text-[10px] text-fg-subtle mt-2">fill→outline morph 200ms · optimistic</div>
+            </div>
+            <div class="card p-4">
+              <div class="text-xs font-semibold text-fg mb-3">AvatarGroup + SocialProofChip</div>
+              <div class="flex items-center gap-2">
+                <span class="avatar-group"><span class="avatar s20 hue-lilac">m</span><span class="avatar s20 hue-sky">k</span><span class="avatar s20 hue-rose">n</span><span class="avatar s20 more">+38</span></span>
+                <span class="text-xs text-fg-muted"><span class="text-brand" style="opacity:.7">◔</span> 41 watching</span>
+              </div>
+              <div class="mono text-[10px] text-fg-subtle mt-2">−8px overlap · followed-by-you first</div>
+            </div>
+            <div class="card p-4">
+              <div class="text-xs font-semibold text-fg mb-3">TokenChip</div>
+              <span class="tchip"><span class="w-5 h-5 rounded-full bg-surface-bright border border-outline-variant grid place-items-center text-[9px] text-fg-muted">J</span><span class="mono text-xs font-medium text-fg">JUP</span><span class="data-sm text-fg">$0.8123</span><span class="data-sm text-buy">▲ +4.2%</span></span>
+              <div class="mono text-[10px] text-fg-subtle mt-2">live price · signed 24h · pixel numerals</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- patterns -->
+        <section>
+          <h2 class="label-section mb-3">Patterns · empty state</h2>
+          <div class="card p-4" style="border-style:dashed">
+            <div class="label-section">Your tide is quiet</div>
+            <p class="text-xs text-fg-muted mt-1.5">Follow a few people to fill this lane.</p>
+            <button class="btn-follow mt-3">browse Everyone</button>
+          </div>
+          <p class="text-[11px] text-fg-subtle mt-2">every list ships a designed empty · one playful line each</p>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
