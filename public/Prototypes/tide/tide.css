@@ -204,6 +204,58 @@ body.gutter { background: var(--surface-dim); }
 }
 .grab { width: 32px; height: 4px; border-radius: 99px; background: var(--outline); margin: 10px auto 0; }
 
+/* ── skeletons & state chrome ────────────────────────────── */
+.skel {
+  background: linear-gradient(90deg,
+    var(--surface-container) 25%,
+    var(--surface-container-high) 50%,
+    var(--surface-container) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+  border-radius: 4px;
+}
+.skel.disc { border-radius: 9999px; }
+@keyframes shimmer { to { background-position: -200% 0; } }
+
+.error-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 14px;
+  background: var(--surface-container);
+  border: 1px dashed var(--outline);
+  border-radius: 8px;
+  font: 400 12px "IBM Plex Sans", sans-serif;
+  color: var(--fg-muted);
+}
+.error-row .retry {
+  font: 600 12px "Instrument Sans","IBM Plex Sans",sans-serif;
+  color: var(--brand); background: none; border: 0; cursor: pointer;
+}
+
+.banner-offline {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  height: 28px; font: 500 11px "IBM Plex Sans", sans-serif;
+  color: var(--warning); background: var(--warning-surface);
+  border-bottom: 1px solid var(--outline-variant);
+}
+
+.toast {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--surface-bright); color: var(--fg);
+  border: 1px solid var(--outline-variant); border-radius: 8px;
+  padding: 10px 14px; font: 400 12px "IBM Plex Sans", sans-serif;
+  box-shadow: 0 8px 24px rgba(0,0,0,.5);
+}
+
+.state-label {
+  font: 500 10px "IBM Plex Mono", monospace;
+  color: var(--fg-subtle);
+  margin: 20px 0 8px;
+  display: flex; align-items: center; gap: 8px;
+}
+.state-label::after { content: ""; flex: 1; height: 1px; background: var(--outline-variant); }
+
+@media (prefers-reduced-motion: reduce) { .skel { animation: none; } }
+
 /* mock-only chrome */
 .mocknav {
   position: fixed; top: 8px; right: 8px; z-index: 50;

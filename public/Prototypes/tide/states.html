@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en" class="h-full antialiased">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="robots" content="noindex" />
+    <title>States · Tide (mock)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../assets/tw-config.js"></script>
+    <link rel="stylesheet" href="../assets/theme.css" />
+    <link rel="stylesheet" href="tide.css" />
+  </head>
+  <body class="gutter">
+    <div class="mocknav"><a href="index.html">← mocks</a></div>
+    <div class="phone">
+      <header class="app-header">
+        <span class="mono text-sm font-semibold text-fg">tide <span class="text-brand">~</span> <span class="text-fg-subtle">/ states</span></span>
+        <span class="text-[10px] text-fg-subtle mono">every non-happy path</span>
+      </header>
+      <div class="banner-offline">⚠ you're offline — showing last data</div>
+
+      <main class="screen pt-2" style="padding-bottom:48px">
+        <p class="text-xs text-fg-muted mt-3" style="text-wrap:pretty">Loading, empty, error, no-data, and failure states for every surface — per docs/tide/05 (state strategy) and 06 (skeleton geometry). The offline banner above is itself a state.</p>
+
+        <!-- ═══ FEED ═══ -->
+        <h2 class="label-section mt-7">S1 · Feed</h2>
+
+        <div class="state-label">loading — skeletons match card geometry</div>
+        <div class="space-y-3">
+          <div class="card p-4">
+            <div class="flex items-center gap-2">
+              <span class="skel disc" style="width:28px;height:28px"></span>
+              <span class="skel" style="width:72px;height:12px"></span>
+              <span class="skel ml-auto" style="width:24px;height:10px"></span>
+            </div>
+            <div class="skel mt-3" style="width:100%;height:12px"></div>
+            <div class="skel mt-2" style="width:70%;height:12px"></div>
+            <div class="mt-3 flex gap-2">
+              <span class="skel" style="width:44px;height:24px"></span>
+              <span class="skel" style="width:44px;height:24px"></span>
+            </div>
+          </div>
+          <div class="card p-4" style="opacity:.6">
+            <div class="flex items-center gap-2">
+              <span class="skel disc" style="width:28px;height:28px"></span>
+              <span class="skel" style="width:88px;height:12px"></span>
+            </div>
+            <div class="skel mt-3" style="width:90%;height:12px"></div>
+          </div>
+        </div>
+
+        <div class="state-label">empty — no follows yet (also on feed.html)</div>
+        <div class="card p-4" style="border-style:dashed">
+          <div class="label-section">Your tide is quiet</div>
+          <p class="text-xs text-fg-muted mt-1.5">Follow a few people to fill this lane — or see what everyone's watching.</p>
+          <div class="mt-3 flex gap-2"><button class="btn-follow">browse Everyone</button></div>
+        </div>
+
+        <div class="state-label">empty — Everyone lane, day zero (pre-seed)</div>
+        <div class="card p-4" style="border-style:dashed">
+          <div class="label-section">Flat water</div>
+          <p class="text-xs text-fg-muted mt-1.5">Nothing posted yet. Watch a token and say why — first tide's yours.</p>
+        </div>
+
+        <div class="state-label">read failed — section-level, generic copy</div>
+        <div class="error-row"><span>Couldn't load the feed.</span><button class="retry">retry</button></div>
+
+        <div class="state-label">write failed — post rolls back to retry card, text never lost</div>
+        <div class="card p-4" style="border-color:var(--sell);border-style:solid">
+          <div class="flex items-center gap-2">
+            <span class="avatar s28 hue-tide">y</span>
+            <span class="mono text-[13px] t-tide">@you</span>
+            <span class="kind" style="background:var(--sell-surface);color:var(--sell)">not posted</span>
+          </div>
+          <p class="mt-3 text-sm text-fg" style="opacity:.7">Rotation into stables is the real signal this week.</p>
+          <div class="mt-3 flex gap-3">
+            <button class="btn-follow">Retry</button>
+            <button class="text-xs text-fg-subtle">discard</button>
+          </div>
+        </div>
+
+        <div class="state-label">refresh — new items arrive without moving the page</div>
+        <div class="flex justify-center"><button class="text-[11px] mono text-fg-muted bg-surface-bright border border-outline-variant rounded-full px-3 py-1">· 3 new tides ·</button></div>
+
+        <!-- ═══ MARKETS ═══ -->
+        <h2 class="label-section mt-9">S2 · Markets</h2>
+
+        <div class="state-label">rail loading — card-shaped skeletons</div>
+        <div class="rail">
+          <div class="card token-card">
+            <span class="skel disc" style="width:36px;height:36px"></span>
+            <span class="skel mt-3" style="width:56px;height:12px"></span>
+            <span class="skel mt-2" style="width:72px;height:14px"></span>
+            <span class="skel mt-auto" style="width:64px;height:10px"></span>
+          </div>
+          <div class="card token-card" style="opacity:.7">
+            <span class="skel disc" style="width:36px;height:36px"></span>
+            <span class="skel mt-3" style="width:56px;height:12px"></span>
+            <span class="skel mt-2" style="width:72px;height:14px"></span>
+          </div>
+        </div>
+
+        <div class="state-label">rail failed — rail keeps its slot, page never collapses</div>
+        <div class="error-row"><span>Attraction rail couldn't load.</span><button class="retry">retry</button></div>
+
+        <div class="state-label">partial data — icon missing, no watchers yet, stale price</div>
+        <div class="rail">
+          <div class="card token-card">
+            <span class="w-9 h-9 rounded-full bg-surface-bright border border-outline-variant grid place-items-center text-xs text-fg-subtle">?</span>
+            <div class="mono text-[13px] font-medium text-fg mt-3">NEWTKN</div>
+            <div class="data-md text-fg mt-1">$0.0042</div>
+            <div class="data-sm text-fg-subtle mt-0.5">— no 24h yet</div>
+            <div class="mt-auto text-[11px] text-fg-subtle">◔ be the first</div>
+          </div>
+          <div class="card token-card">
+            <span class="w-9 h-9 rounded-full bg-surface-bright border border-outline-variant grid place-items-center text-xs text-fg-muted">R</span>
+            <div class="mono text-[13px] font-medium text-fg mt-3">RAY</div>
+            <div class="data-md text-fg-muted mt-1">$2.18</div>
+            <div class="mt-0.5 text-[10px] text-warning">price 4m old</div>
+            <div class="mt-auto text-[11px] text-fg-muted">◔ 18</div>
+          </div>
+        </div>
+
+        <div class="state-label">stablecoin pending — "Soon" card (StablePendingData)</div>
+        <div class="rail">
+          <div class="card token-card" style="border-style:dashed">
+            <div class="flex items-center justify-between">
+              <span class="w-9 h-9 rounded-full bg-surface-bright border border-outline-variant grid place-items-center text-xs text-fg-muted">P</span>
+              <span class="kind kind-take">soon</span>
+            </div>
+            <div class="mono text-[13px] font-medium text-fg mt-3">PUSD</div>
+            <p class="text-[11px] text-fg-muted mt-1 leading-snug">native yield stable, launching on Solana</p>
+            <a href="#" class="mt-auto text-[11px] text-brand no-underline">learn more ›</a>
+          </div>
+        </div>
+
+        <!-- ═══ TOKEN DETAIL ═══ -->
+        <h2 class="label-section mt-9">S4 · Token detail</h2>
+
+        <div class="state-label">social strip loading — market data never waits for it</div>
+        <div class="card p-3 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="skel" style="width:120px;height:12px"></span>
+            <span class="skel" style="width:72px;height:28px"></span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="skel disc" style="width:20px;height:20px"></span>
+            <span class="skel disc" style="width:20px;height:20px;margin-left:-8px"></span>
+            <span class="skel" style="width:140px;height:10px"></span>
+          </div>
+        </div>
+
+        <div class="state-label">social failed — strip collapses to just Watch, no error text</div>
+        <div class="card p-3 flex items-center justify-between">
+          <span class="text-xs text-fg-subtle">—</span>
+          <button class="btn-follow">♥ Watch</button>
+        </div>
+
+        <div class="state-label">section loading — each of the 13 skeletons independently</div>
+        <div class="card p-4">
+          <h3 class="label-section mb-3">Stats</h3>
+          <div class="grid grid-cols-2 gap-y-3 gap-x-4">
+            <div><span class="skel" style="width:60px;height:9px;display:block"></span><span class="skel mt-1.5" style="width:80px;height:14px;display:block"></span></div>
+            <div><span class="skel" style="width:60px;height:9px;display:block"></span><span class="skel mt-1.5" style="width:80px;height:14px;display:block"></span></div>
+          </div>
+        </div>
+
+        <div class="state-label">not indexed — full-page state (engine: notIndexed)</div>
+        <div class="card p-6 text-center">
+          <div class="text-2xl text-fg-subtle">◌</div>
+          <div class="text-sm font-semibold text-fg mt-2">Not indexed yet</div>
+          <p class="text-xs text-fg-muted mt-1.5" style="text-wrap:pretty">This token is too new for our data providers. Check back in a few minutes.</p>
+          <button class="btn-follow mt-4">♥ Watch anyway</button>
+        </div>
+
+        <div class="state-label">invalid address — full-page state (engine: invalidAddress)</div>
+        <div class="card p-6 text-center">
+          <div class="text-2xl text-sell">✕</div>
+          <div class="text-sm font-semibold text-fg mt-2">That's not a mint address</div>
+          <p class="text-xs text-fg-muted mt-1.5">Double-check the link, or search for the token instead.</p>
+          <button class="mt-4 h-9 px-4 rounded-sm bg-surface-container-high border border-outline-variant text-xs text-fg">⌕ Search</button>
+        </div>
+
+        <!-- ═══ PROFILE ═══ -->
+        <h2 class="label-section mt-9">S5/S6 · Profile</h2>
+
+        <div class="state-label">loading — header skeleton</div>
+        <div class="flex items-start gap-4">
+          <span class="skel disc" style="width:64px;height:64px"></span>
+          <div class="flex-1">
+            <span class="skel" style="width:120px;height:18px;display:block"></span>
+            <span class="skel mt-2" style="width:90px;height:11px;display:block"></span>
+            <span class="skel mt-3" style="width:100%;height:11px;display:block"></span>
+          </div>
+        </div>
+
+        <div class="state-label">no info — member with no bio, nothing watched, no takes</div>
+        <div class="card p-4">
+          <div class="flex items-center gap-3">
+            <span class="avatar s40 hue-slate">q</span>
+            <div>
+              <div class="text-sm font-semibold text-fg">quietwhale</div>
+              <div class="mono text-[12px] t-slate">@quietwhale · joined Jul '26</div>
+            </div>
+            <button class="btn-follow ml-auto">Follow</button>
+          </div>
+          <div class="mt-4 border-t border-outline-variant pt-4 text-center">
+            <p class="text-xs text-fg-muted">Not watching anything yet — still reading the water.</p>
+          </div>
+        </div>
+
+        <div class="state-label">not found — /u/nobody</div>
+        <div class="card p-6 text-center">
+          <div class="text-2xl text-fg-subtle">◐</div>
+          <div class="text-sm font-semibold text-fg mt-2">No one here</div>
+          <p class="text-xs text-fg-muted mt-1.5">@nobody doesn't exist — the handle may have never been claimed.</p>
+        </div>
+
+        <div class="state-label">own profile — edit affordances replace Follow</div>
+        <div class="flex items-center gap-4">
+          <span class="avatar s40 hue-tide">y</span>
+          <div class="min-w-0">
+            <div class="text-sm font-semibold text-fg">you</div>
+            <div class="mono text-[12px] t-tide">@you</div>
+          </div>
+          <button class="btn-follow following ml-auto">Edit profile</button>
+        </div>
+
+        <!-- ═══ COMMENTS ═══ -->
+        <h2 class="label-section mt-9">Comments thread</h2>
+
+        <div class="state-label">loading</div>
+        <div class="card p-4 space-y-4">
+          <div class="flex gap-2.5"><span class="skel disc" style="width:28px;height:28px"></span><div class="flex-1"><span class="skel" style="width:90px;height:11px;display:block"></span><span class="skel mt-2" style="width:100%;height:11px;display:block"></span></div></div>
+          <div class="flex gap-2.5" style="opacity:.6"><span class="skel disc" style="width:28px;height:28px"></span><div class="flex-1"><span class="skel" style="width:70px;height:11px;display:block"></span><span class="skel mt-2" style="width:80%;height:11px;display:block"></span></div></div>
+        </div>
+
+        <div class="state-label">empty</div>
+        <div class="card p-5 text-center" style="border-style:dashed">
+          <p class="text-xs text-fg-muted">No takes on this one yet. Say what you see.</p>
+          <div class="mt-3 flex items-center h-10 bg-surface-container rounded-sm border border-outline-variant px-3 text-left">
+            <span class="text-xs text-fg-subtle">what's the tide?</span>
+            <span class="ml-auto w-8 h-8 rounded-full bg-brand grid place-items-center text-on-brand text-xs">↑</span>
+          </div>
+        </div>
+
+        <div class="state-label">deleted with replies — tombstone keeps the thread</div>
+        <div class="card p-4 space-y-3">
+          <div class="flex gap-2.5 items-center">
+            <span class="w-7 h-7 rounded-full bg-surface-container-high grid place-items-center text-[11px] text-fg-subtle">✕</span>
+            <span class="text-xs text-fg-subtle italic">comment removed</span>
+          </div>
+          <div class="flex gap-2.5 pl-9">
+            <span class="avatar s20 hue-sky">k</span>
+            <div class="border-l border-outline-variant pl-3 -ml-3">
+              <span class="mono text-[12px] t-sky">@kesh</span>
+              <p class="text-sm text-fg mt-0.5">this reply survives the parent</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="state-label">send failed — inline on the artifact, input preserved</div>
+        <div class="card p-3">
+          <div class="flex items-center h-10 bg-surface rounded-sm border px-3" style="border-color:var(--sell)">
+            <span class="text-sm text-fg">volume agrees with you…</span>
+          </div>
+          <div class="mt-2 flex items-center justify-between">
+            <span class="text-[11px]" style="color:var(--sell)">Couldn't send.</span>
+            <button class="text-[11px] font-semibold text-brand">retry</button>
+          </div>
+        </div>
+
+        <!-- ═══ IDENTITY GATE ═══ -->
+        <h2 class="label-section mt-9">S7 · Identity gate</h2>
+
+        <div class="state-label">connect pending — wallet app open</div>
+        <div class="card p-4 flex items-center gap-3">
+          <span class="skel disc" style="width:20px;height:20px"></span>
+          <span class="text-xs text-fg-muted">waiting for Phantom…</span>
+          <button class="ml-auto text-[11px] text-fg-subtle">cancel</button>
+        </div>
+
+        <div class="state-label">signature rejected — recoverable, never punitive</div>
+        <div class="card p-4">
+          <div class="flex items-center gap-3">
+            <span class="text-warning text-sm">⚠</span>
+            <span class="text-xs text-fg-muted">Signature declined — no harm done.</span>
+          </div>
+          <button class="btn-follow mt-3">Try again</button>
+        </div>
+
+        <div class="state-label">handle — checking / available / taken / reserved</div>
+        <div class="space-y-2">
+          <div class="flex items-center h-11 bg-surface rounded-sm border border-outline px-3">
+            <span class="mono text-sm text-fg-subtle">@</span><span class="mono text-sm text-fg">coral_ott</span>
+            <span class="ml-auto text-[11px] text-fg-subtle">checking…</span>
+          </div>
+          <div class="flex items-center h-11 bg-surface rounded-sm border border-outline px-3">
+            <span class="mono text-sm text-fg-subtle">@</span><span class="mono text-sm text-fg">coral_otter</span>
+            <span class="ml-auto text-[11px] text-buy">✓ available</span>
+          </div>
+          <div>
+            <div class="flex items-center h-11 bg-surface rounded-sm border px-3" style="border-color:var(--sell)">
+              <span class="mono text-sm text-fg-subtle">@</span><span class="mono text-sm text-fg">mira</span>
+              <span class="ml-auto text-[11px]" style="color:var(--sell)">taken</span>
+            </div>
+            <p class="text-[11px] text-fg-subtle mt-1 pl-1">try @mira_ or @themira</p>
+          </div>
+          <div class="flex items-center h-11 bg-surface rounded-sm border px-3" style="border-color:var(--sell)">
+            <span class="mono text-sm text-fg-subtle">@</span><span class="mono text-sm text-fg">admin</span>
+            <span class="ml-auto text-[11px]" style="color:var(--sell)">reserved</span>
+          </div>
+        </div>
+
+        <!-- ═══ GLOBAL ═══ -->
+        <h2 class="label-section mt-9">Global & system</h2>
+
+        <div class="state-label">generic write failure — toast (rate-limit shows the same)</div>
+        <div class="flex justify-center"><span class="toast"><span style="color:var(--sell)">✕</span> Something went sideways. Try again.</span></div>
+
+        <div class="state-label">action confirmation — destructive delete</div>
+        <div class="sheet" style="position:static;border-bottom:1px solid var(--outline-variant);border-radius:12px">
+          <div class="grab"></div>
+          <div class="p-5 text-center">
+            <div class="text-sm font-semibold text-fg">Delete this take?</div>
+            <p class="text-xs text-fg-muted mt-1">Its reactions and comments go with it. This can't be undone.</p>
+            <button class="mt-4 w-full h-10 rounded-sm text-sm font-semibold text-fg" style="background:var(--sell-surface);border:1px solid var(--sell);color:var(--sell)">Delete</button>
+            <button class="mt-2 w-full h-9 text-xs text-fg-subtle">keep it</button>
+          </div>
+        </div>
+
+        <div class="state-label">404 — fresh design (not in old prototype)</div>
+        <div class="card p-8 text-center">
+          <div class="data-lg text-fg-subtle">4◐4</div>
+          <div class="text-sm font-semibold text-fg mt-2">The tide went out</div>
+          <p class="text-xs text-fg-muted mt-1.5">This page doesn't exist — or drifted away.</p>
+          <button class="btn-follow mt-4">back to shore</button>
+        </div>
+
+        <div class="state-label">route error — thrown in page</div>
+        <div class="card p-8 text-center">
+          <div class="text-2xl text-warning">◍</div>
+          <div class="text-sm font-semibold text-fg mt-2">Rough water</div>
+          <p class="text-xs text-fg-muted mt-1.5">Something broke on our side. Your data is fine.</p>
+          <button class="btn-follow mt-4">reload</button>
+        </div>
+      </main>
+
+      <nav class="bottom-bar">
+        <a href="feed.html"><span class="ic">~</span>Feed</a>
+        <a href="markets.html"><span class="ic">◍</span>Markets</a>
+        <a href="#"><span class="ic">⌕</span>Search</a>
+        <a href="profile.html"><span class="ic">◐</span>Me</a>
+      </nav>
+    </div>
+  </body>
+</html>
