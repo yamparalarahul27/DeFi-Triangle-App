@@ -14,7 +14,16 @@
 **Aesthetic:** A premium, data-dense trading interface that communicates competence and authority. A cinematic near-black canvas with soft charcoal elevation; mint-teal is the single identity accent. Numbers are the hero, decoration is the enemy — depth comes from tonal layering and soft shadows, not borders.
 
 **Mood words:** Precise · Premium · Spacious · Trustworthy · Calm authority · Cinematic
-**Anti-mood words:** Flashy · Neon · Cluttered · Gamified · Playful · Bright
+**Anti-mood words:** Flashy · Neon · Cluttered · Bright
+
+> **Amendment — tide social layer (calm base, playful moments).** The
+> canvas, typography, and data surfaces keep calm authority. Playfulness
+> is budgeted *exclusively* to feedback on human actions — reacting,
+> following, watching, celebrating. If a static screen looks playful, we
+> overspent. *Playful* is therefore removed from the anti-mood list as an
+> absolute; *Gamified* is refined to **no mechanics** (points / streaks /
+> ranks) — celebratory feedback is allowed, game loops are not. Rationale
+> and scope: [docs/tide/02-design-system.md](./docs/tide/02-design-system.md).
 
 ---
 
@@ -56,6 +65,43 @@
 | `--on-brand` | `#04110f` | `text-on-brand` | Text/icon on mint brand fills |
 
 <sub>All fg-on-surface pairs clear WCAG AA (4.5:1) on every surface; `fg-subtle` is AA on page/container and AA-large on the rare `surface-bright`. Verified, not eyeballed.</sub>
+
+### Identity hues (tide social layer)
+
+> **Amendment — new foundation.** Social UIs need per-person color; one
+> accent (`--brand`) can't carry N people, and free hex would break the
+> token system. This adds a fixed **8-hue identity palette**, muted to sit
+> on near-black. Assigned deterministically from the wallet address
+> (`hash(wallet) % 8`) — stable, no user picker in v1. Consumed **only** by
+> avatars, handle accents, and presence indicators — **never for data or
+> state** (buy / sell / warning keep their semantic hues).
+
+| Token | Value | Utility | Note |
+|---|---|---|---|
+| `--id-tide` | `#5ad8c4` | `text-id-tide` / `bg-id-tide` | reserved for the signed-in user (matches `--brand`; kept a separate token so it can diverge) |
+| `--id-coral` | `#e8927c` | `*-id-coral` | |
+| `--id-sand` | `#d9b380` | `*-id-sand` | |
+| `--id-lilac` | `#b39fd8` | `*-id-lilac` | |
+| `--id-sky` | `#7fb3d9` | `*-id-sky` | |
+| `--id-moss` | `#93b98a` | `*-id-moss` | |
+| `--id-rose` | `#cf8ca3` | `*-id-rose` | |
+| `--id-slate` | `#93a1b8` | `*-id-slate` | |
+
+**Verification (not eyeballed).** `npm run check:contrast` asserts WCAG AA
+(4.5:1) for both consumption paths and fails CI otherwise:
+
+- **Avatar glyph** — dark `--fg-inverse` (`#07080a`) on the flat hue:
+  **7.6–11.5:1** ✓
+- **Handle / presence accent** — the hue as text on `surface-page`,
+  `surface-container`, and `surface-bright`: lowest **5.2:1** ✓
+
+**Avatar fill** is a radial gradient
+`radial-gradient(120% 120% at 30% 20%, var(--id-x), color-mix(in srgb, var(--id-x) 60%, black))`
+— always reference the token, never a hardcoded dark end. The gradient's
+*darkest corner* measures 3.2–4.4:1 against the glyph, but the glyph is
+centered (~30% down the gradient from the light origin) and never occupies
+that corner, so it stays above 4.5:1 in use. The verifier reports the
+corner value as an informational note.
 
 ### Brand — mint-teal identity accent
 
@@ -572,6 +618,20 @@ Icon size: `1rem`.
 | Modal entry | `300ms` | `ease-out` | opacity, transform |
 
 **Note:** The standard transition is `150ms` across all interactive UI components — the old doc incorrectly stated `200ms`.
+
+### Motion primitives (tide social layer)
+
+> **Amendment — named tokens.** Three duration + easing pairs live in
+> `globals.css` so motion is consumed by name, not by re-typed magic
+> numbers. Consume via CSS (`transition: transform var(--motion-fast)`) or
+> an arbitrary-value utility. All honor `prefers-reduced-motion` through
+> the global reset.
+
+| Token | Value | Use |
+|---|---|---|
+| `--motion-fast` | `150ms ease-out` | state / hover / press — the `150ms` base above, as a token |
+| `--motion-settle` | `200ms cubic-bezier(0.2, 0.8, 0.2, 1)` | enter / morph (e.g. FollowButton fill→outline) |
+| `--motion-spring` | `250ms cubic-bezier(0.34, 1.56, 0.64, 1)` | playful feedback on human actions only (react-pop) — the "budgeted playfulness" from Identity |
 
 ### `fade-up` keyframe
 ```css
