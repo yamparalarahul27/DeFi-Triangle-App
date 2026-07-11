@@ -1,0 +1,131 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { FEATURES } from "@/lib/featureFlags";
+import { Avatar, AvatarGroup, TokenChip, ID_HUES } from "@/design-system";
+
+export const metadata: Metadata = {
+  title: "tide / design",
+  robots: { index: false, follow: false },
+};
+
+// Section label matching DESIGN.md .label-section (uppercase, tracked, subtle).
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <h2 className="mb-3 text-[0.6875rem] font-semibold uppercase tracking-[0.1em] text-fg-subtle">
+      {children}
+    </h2>
+  );
+}
+
+function Row({ children }: { children: React.ReactNode }) {
+  return <div className="flex flex-wrap items-center gap-3">{children}</div>;
+}
+
+const SURFACES = [
+  ["dim", "bg-surface-dim"],
+  ["page", "bg-surface-page"],
+  ["surface", "bg-surface"],
+  ["container", "bg-surface-container"],
+  ["high", "bg-surface-container-high"],
+  ["bright", "bg-surface-bright"],
+] as const;
+
+const WATCHERS = [
+  { name: "mira", seed: "wallet-mira" },
+  { name: "kip", seed: "wallet-kip" },
+  { name: "nova", seed: "wallet-nova" },
+  { name: "aria", seed: "wallet-aria" },
+  { name: "sol", seed: "wallet-sol" },
+];
+
+export default function DesignGalleryPage() {
+  if (!FEATURES.DESIGN_GALLERY) notFound();
+
+  return (
+    <main className="mx-auto min-h-dvh max-w-[430px] bg-surface-page px-4 pb-24 pt-6 text-fg">
+      <header className="mb-8">
+        <h1
+          className="text-xl font-bold text-fg"
+          style={{ fontFamily: "var(--font-geist-mono), monospace" }}
+        >
+          tide <span className="text-brand">~</span>{" "}
+          <span className="text-fg-subtle">/ design</span>
+        </h1>
+        <p className="mt-2 text-pretty text-sm text-fg-muted">
+          Live gallery of <code>src/design-system/</code>. Numbers are the hero;
+          identity hues carry people, never data.
+        </p>
+      </header>
+
+      <div className="space-y-9">
+        {/* ── Foundations ─────────────────────────────────────── */}
+        <section>
+          <SectionLabel>Foundations · surfaces</SectionLabel>
+          <div className="grid grid-cols-3 gap-2">
+            {SURFACES.map(([label, cls]) => (
+              <div key={label}>
+                <div
+                  className={`h-12 rounded-lg border border-outline-variant ${cls}`}
+                />
+                <div className="mt-1 text-[10px] text-fg-subtle">{label}</div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section>
+          <SectionLabel>Foundations · identity hues</SectionLabel>
+          <Row>
+            {ID_HUES.map((hue) => (
+              <div key={hue} className="text-center">
+                <Avatar name={hue} hue={hue} size={40} />
+                <div className="mt-1 text-[10px] text-fg-subtle">{hue}</div>
+              </div>
+            ))}
+          </Row>
+          <p className="mt-2 text-[11px] text-fg-subtle">
+            hash(wallet) % 8 · tide reserved for you · AA-verified
+          </p>
+        </section>
+
+        {/* ── Components ──────────────────────────────────────── */}
+        <section>
+          <SectionLabel>Avatar · sizes</SectionLabel>
+          <Row>
+            <Avatar name="Mira" seed="wallet-mira" size={20} />
+            <Avatar name="Mira" seed="wallet-mira" size={28} />
+            <Avatar name="Mira" seed="wallet-mira" size={40} />
+            <Avatar name="Mira" seed="wallet-mira" size={64} />
+            <Avatar name="You" you size={40} />
+          </Row>
+          <p className="mt-2 text-[11px] text-fg-subtle">
+            20 · 28 · 40 · 64 · you (tide)
+          </p>
+        </section>
+
+        <section>
+          <SectionLabel>AvatarGroup</SectionLabel>
+          <div className="space-y-3">
+            <AvatarGroup members={WATCHERS} />
+            <AvatarGroup members={WATCHERS} max={5} size={28} />
+          </div>
+          <p className="mt-2 text-[11px] text-fg-subtle">
+            −8px overlap · +N overflow · 2px ring
+          </p>
+        </section>
+
+        <section>
+          <SectionLabel>TokenChip · both directions</SectionLabel>
+          <div className="flex flex-col items-start gap-3">
+            <TokenChip symbol="JUP" price="$0.8123" change24h={4.2} />
+            <TokenChip symbol="BONK" price="$0.0000213" change24h={-1.31} />
+            <TokenChip symbol="SOL" price="$182.40" change24h={0} />
+          </div>
+          <p className="mt-2 text-[11px] text-fg-subtle">
+            direction from sign (▲ buy / ▼ sell) · number from magnitude
+          </p>
+        </section>
+      </div>
+    </main>
+  );
+}
