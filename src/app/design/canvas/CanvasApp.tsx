@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { CANVAS_ITEMS } from "./items";
 import { ThemeToggle } from "../ThemeToggle";
+import { LayersPanel } from "./LayersPanel";
 import { DEMOS } from "./demos";
 
 type View = { x: number; y: number; s: number };
@@ -66,6 +67,35 @@ export function CanvasApp() {
     setPanning(false);
   };
 
+  const [selected, setSelected] = useState<string | null>(null);
+  const [layersOpen, setLayersOpen] = useState(true);
+  const [animating, setAnimating] = useState(false);
+  const itemEls = useRef(new Map<string, HTMLDivElement>());
+
+  // Zoom the view so the chosen item fills the space right of the panel.
+  // Width/height come from the live element (offset* ignores the ancestor
+  // transform), position from the registry.
+  const zoomToItem = (id: string) => {
+    setSelected(id);
+    const def = CANVAS_ITEMS.find((i) => i.id === id);
+    const el = itemEls.current.get(id);
+    const rect = wrapRef.current?.getBoundingClientRect();
+    if (!def || def.kind === "label" || !el || !rect) return;
+    const w = el.offsetWidth;
+    const h = el.offsetHeight;
+    const panelW = layersOpen ? 260 : 0;
+    const availW = rect.width - panelW - 80;
+    const availH = rect.height - 140;
+    const s = clampS(Math.min(availW / w, availH / h, 1.25) * 0.9);
+    setAnimating(true);
+    setView({
+      s,
+      x: panelW + 40 + (availW - w * s) / 2 - def.x * s,
+      y: 100 + (availH - h * s) / 2 - def.y * s,
+    });
+    setTimeout(() => setAnimating(false), 260);
+  };
+
   const zoomBy = (factor: number) => {
     const rect = wrapRef.current?.getBoundingClientRect();
     const cx = (rect?.width ?? 0) / 2;
@@ -98,6 +128,7 @@ export function CanvasApp() {
         style={{
           transform: `translate(${view.x}px, ${view.y}px) scale(${view.s})`,
           transformOrigin: "0 0",
+          transition: animating ? "transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1)" : "none",
         }}
       >
         {CANVAS_ITEMS.map((item) => {
@@ -114,8 +145,16 @@ export function CanvasApp() {
           }
           if (item.kind === "iframe") {
             return (
-              <div key={item.id} className="absolute" style={{ left: item.x, top: item.y }}>
-                <div className="mb-1.5 font-mono text-[11px] text-fg-subtle">{item.title}</div>
+              <div
+                key={item.id}
+                ref={(el) => {
+                  if (el) itemEls.current.set(item.id, el);
+                }}
+                onClick={() => setSelected(item.id)}
+                className={cn("absolute", selected === item.id && "outline outline-1 outline-brand")}
+                style={{ left: item.x, top: item.y }}
+              >
+                <div className={cn("mb-1.5 font-mono text-[11px]", selected === item.id ? "text-brand" : "text-fg-subtle")}>{item.title}</div>
                 <iframe
                   src={item.src}
                   title={item.title}
@@ -131,10 +170,14 @@ export function CanvasApp() {
           return (
             <div
               key={item.id}
-              className="absolute"
+              ref={(el) => {
+                if (el) itemEls.current.set(item.id, el);
+              }}
+              onClick={() => setSelected(item.id)}
+              className={cn("absolute", selected === item.id && "outline outline-1 outline-brand")}
               style={{ left: item.x, top: item.y, width: item.w }}
             >
-              <div className="mb-1.5 font-mono text-[11px] text-fg-subtle">{item.title}</div>
+              <div className={cn("mb-1.5 font-mono text-[11px]", selected === item.id ? "text-brand" : "text-fg-subtle")}>{item.title}</div>
               <div className="rounded-sm border border-outline-variant bg-surface-page p-4">
                 {Demo ? <Demo /> : null}
               </div>
@@ -165,8 +208,16 @@ export function CanvasApp() {
           </span>
           <HudButton label="+" onClick={() => zoomBy(1.25)} />
           <HudButton label="fit" onClick={() => setView(INITIAL)} wide />
+          <HudButton label="layers" onClick={() => setLayersOpen((v) => !v)} wide />
         </div>
       </div>
+
+      {/* layers panel */}
+      {layersOpen && (
+        <div className="pointer-events-none absolute left-4 top-16 z-10">
+          <LayersPanel selected={selected} onSelect={zoomToItem} />
+        </div>
+      )}
 
       {/* desktop-first note (coarse pointers) */}
       <div className="pointer-events-none absolute bottom-3 left-1/2 z-10 hidden -translate-x-1/2 rounded-sm border border-outline bg-surface-page/95 px-3 py-1.5 font-mono text-[11px] text-fg-muted [@media(pointer:coarse)]:block">
