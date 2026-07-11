@@ -34,4 +34,13 @@ export const FEATURES = {
    * stats. See docs/ideation/nft-edge-data-spike.md.
    */
   NFT_EDGE: true,
+
+  /**
+   * /design — tide design-system gallery (noindex). Renders the
+   * src/design-system/ components in their states so they can be verified
+   * on the Vercel preview. On for branch-preview review; decide before
+   * merging to main whether to keep it as a living styleguide in prod or
+   * flip to false. See src/design-system/CONVENTIONS.md.
+   */
+  DESIGN_GALLERY: true,
 } as const;
