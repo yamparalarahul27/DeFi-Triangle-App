@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { FEATURES } from "@/lib/featureFlags";
 import { Avatar, AvatarGroup, TokenChip, ID_HUES } from "@/design-system";
+import { InteractiveDemos } from "./InteractiveDemos";
 
 export const metadata: Metadata = {
   title: "tide / design",
@@ -123,6 +124,14 @@ export default function DesignGalleryPage() {
           </div>
           <p className="mt-2 text-[11px] text-fg-subtle">
             direction from sign (▲ buy / ▼ sell) · number from magnitude
+          </p>
+        </section>
+
+        <section>
+          <SectionLabel>Motion · interactive</SectionLabel>
+          <InteractiveDemos />
+          <p className="mt-2 text-[11px] text-fg-subtle">
+            tap ♥ = spring-pop · Follow morphs 200ms · Lane fill = state
           </p>
         </section>
       </div>
