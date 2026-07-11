@@ -95,6 +95,37 @@
   --wallet-backdrop-blur: 28px;
 }
 
+/* ── Theme: mono ─────────────────────────────────────────────
+   Monochrome variant — pure-neutral surface ladder for depth and a
+   white "ink" brand. Functional colors (buy/sell/warning/info/error)
+   and identity hues are deliberately KEPT: everything is grayscale
+   except the signal. Activate with <html data-theme="mono">; every
+   component re-skins via the same token names. Values are AA-verified
+   per theme by npm run check:contrast. */
+[data-theme="mono"] {
+  --surface-dim: #050505;
+  --surface-page: #0b0b0b;
+  --surface: #121212;
+  --surface-container: #181818;
+  --surface-container-high: #212121;
+  --surface-bright: #2b2b2b;
+
+  --outline: #3d3d3d;
+  --outline-variant: #262626;
+
+  --fg: #f5f5f5;
+  --fg-muted: #a6a6a6;
+  --fg-subtle: #8a8a8a;
+
+  --brand: #ffffff;
+  --brand-hover: #e6e6e6;
+  --brand-bright: #ffffff;
+  --brand-subtle: #d4d4d4;
+  --on-brand: #0b0b0b;
+
+  --wallet-backdrop-rgb: 5 5 5;
+}
+
 @theme inline {
   --color-background: var(--surface-page);
   --color-foreground: var(--fg);
