@@ -9,6 +9,8 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const COMPONENTS = join(ROOT, "src/components");
+const DESIGN_SYSTEM = join(ROOT, "src/design-system");
+const DESIGN_APP = join(ROOT, "src/app/design");
 const EVILCHARTS = join(COMPONENTS, "evilcharts");
 
 const failures = [];
@@ -42,88 +44,50 @@ function walk(dir, acc = []) {
   return acc;
 }
 
-for (const f of walk(COMPONENTS)) {
-  const src = read(f);
-  if (/\btransition-all\b/.test(src)) fail(f, "forbidden: transition-all (use targeted properties)");
+for (const root of [COMPONENTS, DESIGN_SYSTEM, DESIGN_APP]) {
+  for (const f of walk(root)) {
+    const src = read(f);
+    if (/\btransition-all\b/.test(src)) fail(f, "forbidden: transition-all (use targeted properties)");
+  }
 }
 
-// File-specific rules
+// File-specific rules — current design-system invariants (the previous
+// list guarded app components deleted in the clean-shell pass).
 const checks = [
   {
-    file: "src/components/tabs/TabShell.tsx",
+    file: "src/design-system/ReactionBar/ReactionBar.tsx",
     expect: [
-      [/min-h-\[40px\]/, "tab pill min-h-[40px]"],
-      [/transition-\[background-color,color,box-shadow,transform\]/, "targeted transition"],
-      [/active:scale-\[0\.96\]/, "scale(.96) press"],
-      [/0_12px_24px_rgba\(90,216,196,0\.12\)/, "layered shadow"],
+      [/h-11/, "reaction pill 44px hit area (h-11)"],
+      [/active:scale-\[0\.96\]/, "press scale(.96)"],
+      [/animate-pop/, "spring-pop on tap"],
     ],
   },
   {
-    file: "src/components/layout/TabsRow.tsx",
+    file: "src/design-system/FollowButton/FollowButton.tsx",
     expect: [
-      [/min-h-\[40px\]/, "tab pill min-h-[40px]"],
-      [/transition-\[background-color,color,box-shadow,transform\]/, "targeted transition"],
-      [/active:scale-\[0\.96\]/, "scale(.96) press"],
-      [/0_12px_24px_rgba\(90,216,196,0\.12\)/, "layered shadow"],
+      [/var\(--motion-settle\)/, "fill->outline morph on --motion-settle"],
+      [/active:scale-\[0\.96\]/, "press scale(.96)"],
     ],
   },
   {
-    file: "src/components/token/VariantsSection.tsx",
+    file: "src/design-system/Lane/Lane.tsx",
     expect: [
-      [/min-h-\[40px\]/, "pill min-h-[40px]"],
-      [/active:scale-\[0\.96\]/, "scale(.96) press"],
+      [/var\(--motion-fast\)/, "segment transition on --motion-fast"],
+      [/color-mix\(in srgb, var\(--brand\)/, "glow derives from --brand, not hardcoded mint"],
     ],
   },
   {
-    file: "src/components/token/PriceChartSection.tsx",
+    file: "src/design-system/Sheet/Sheet.tsx",
     expect: [
-      [/min-h-\[40px\]/, "pill min-h-[40px]"],
-      [/active:scale-\[0\.96\]/, "scale(.96) press"],
+      [/var\(--motion-settle\)/, "drag spring-back on --motion-settle"],
+      [/env\(safe-area-inset-bottom\)/, "footer safe-area padding"],
     ],
   },
   {
-    file: "src/components/ui/DexCard.tsx",
+    file: "src/design-system/TokenChip/TokenChip.tsx",
     expect: [
-      [/rounded-\[14px\]/, "concentric outer radius rounded-[14px]"],
-      [/transition-\[border-color,box-shadow,transform\]/, "targeted transition"],
-      [/active:scale-\[0\.98\]/, "card scale(.98) press"],
-    ],
-    refute: [
-      [/rounded-\[10px\]/, "old card radius rounded-[10px]"],
-    ],
-  },
-  {
-    file: "src/components/home/StableCard.tsx",
-    expect: [
-      [/rounded-\[14px\]/, "concentric outer radius rounded-[14px]"],
-      [/transition-\[border-color,box-shadow,transform\]/, "targeted transition on CARD_BASE"],
-      [/active:scale-\[0\.98\]/, "card scale(.98) press"],
-    ],
-    refute: [
-      [/rounded-\[10px\]/, "old card radius rounded-[10px]"],
-    ],
-  },
-  {
-    file: "src/components/home/ParkYourMoneyRail.tsx",
-    expect: [
-      [/\[text-wrap:balance\]/, "h2 text-wrap:balance"],
-      [/\[text-wrap:pretty\]/, "p text-wrap:pretty"],
-      [/rounded-\[14px\]/, "skeleton matches StableCard radius"],
-    ],
-    refute: [
-      [/rounded-\[10px\]/, "old skeleton radius rounded-[10px]"],
-    ],
-  },
-  {
-    file: "src/components/token/AboutSection.tsx",
-    expect: [
-      [/\[text-wrap:pretty\]/, "description text-wrap:pretty"],
-    ],
-  },
-  {
-    file: "src/components/token/MetaStrip.tsx",
-    expect: [
-      [/before:absolute before:inset-\[-14px\] before:content-\['']/, "info dot 40x40 hit-area extension"],
+      [/Math\.abs\(change24h\)/, "magnitude via Math.abs (sign discipline)"],
+      [/change24h >= 0/, "direction from the signed value"],
     ],
   },
 ];

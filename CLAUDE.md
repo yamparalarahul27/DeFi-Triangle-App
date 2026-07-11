@@ -1,6 +1,46 @@
-# CLAUDE.md — DeFi Triangle / Y-Vault
+# CLAUDE.md — CIDS (Crypto Interface Design System)
 
 Rules for Claude Code when working in this repo. Read on every session.
+
+## Product (pivoted 2026-07-11)
+
+**This repo is CIDS — the crypto interface design system.** The product is
+the design system itself: users browse live components on an infinite
+canvas, inspect each component's `.doc.md`, check layers, and flip themes.
+It began as a DeFi trading app (DeFi Triangle / Y-Vault, then the "tide"
+social plan); that app's engine is **dormant, not deleted** — see
+"Dormant engine" below.
+
+| Surface | What |
+|---|---|
+| `/` | Landing (name + CTAs) |
+| `/design/canvas` | Infinite canvas: pan/zoom · layers rail · `.doc.md` inspector · theme toggle. Desktop-first. |
+| `/design` | Component gallery (mobile-friendly) |
+| `/design/feed` | The system composed as a demo screen (mock data) |
+
+Core structure:
+
+- `src/design-system/` — 11 components, each `<Name>/<Name>.tsx` +
+  `<Name>.doc.md` + `index.ts`. **`CONVENTIONS.md` in that folder is the
+  authoring contract** (fixed doc shape: Anatomy · Props · Tokens ·
+  States · Motion · A11y). A component without its doc is not done.
+- `src/app/design/canvas/` — canvas engine (`CanvasApp`), item registry
+  (`items.ts` — NOT `layout.ts`, that name is reserved by Next.js),
+  demos, `LayersPanel`, `Inspector` (renders the real `.doc.md` from
+  disk — never duplicate doc content into a registry).
+- **Themes** are `[data-theme="x"]` blocks in `globals.css` overriding
+  the same token names. Current: `dark` (default) + `mono` (grayscale
+  except buy/sell + identity hues). `npm run check:contrast` verifies
+  every theme. Adding a theme = one CSS block + AA pass.
+- The tide HTML prototypes under `public/Prototypes/` are design
+  references, framed on the canvas as iframes.
+
+## Dormant engine
+
+`src/app/api/*`, wallet auth, watchlist, Supabase, rate-limiting — all
+working but unused by CIDS. **Do not delete without an explicit decision.**
+The Auth & API / User input / External APIs / Supabase sections below
+still apply in full whenever that code is touched or woken.
 
 ---
 
@@ -265,11 +305,27 @@ Rules:
 
 ## Pending followups
 
-- **Search recents → wallet-scoped server-side storage.** V1 shipped with `localStorage` only (per-device) in `src/lib/hooks/useRecentSearches.ts`. When building the next iteration of the Watchlist feature, add a `search_recents` Supabase table and GET/POST/DELETE endpoints under `/api/search-recents` — same JWT / `getSessionWallet` auth pattern as `/api/watchlist`, same rate-limiting, wallet from JWT not client. On wallet connect, migrate any `localStorage` recents to server once and clear the local copy.
+> Audited 2026-07-11 during the CIDS truth pass. Earlier entries referenced
+> app components deleted in the clean-shell commit and a stale lint count.
 
-- **Lint cleanup — real issues (after PR #44 merges).** `npm run lint` reports 37 problems; 13 are mechanical wins worth fixing in one small PR. Branch off `main` only **after PR #44 merges** to avoid file overlap on `TabShell.tsx`, `VariantsSection.tsx`, `DexCard.tsx`. Fixes: (1) **rules-of-hooks bug** in `src/components/token/VariantsSection.tsx` — `useState` is called *after* an early `return null`, can corrupt state if `variants` toggles null↔non-null; move the hook above the early return and use override-pattern for default selection. (2) **2× `no-require-imports`** in `.claude/hooks/scan-secrets.js` — convert `require()` to ESM `import`. (3) **8× `no-explicit-any`** for `pair: any` across `TabShell.tsx`, `WatchlistTab.tsx`, `DexCard.tsx`, `useTabPairs.ts`, `api/watchlist/route.ts` — replace with the DexScreener pair type from `lib/`. (4) **1× impure-function-in-render** in `src/components/ui/PriceChart.tsx:57` — likely `Date.now()` or similar in render body, move to `useMemo` or props. (5) **1× exhaustive-deps** in `src/components/search/SearchModal.tsx:78` — wrap `navigableRows` in `useMemo`. After this PR, lint count drops from 37 → ~24.
+**CIDS (active product):**
 
-- **Lint cleanup — `set-state-in-effect` decision.** The other 17 lint errors all fire on the React 19 `react-hooks/set-state-in-effect` rule across data hooks (`useStablecoins`, `useTokenDetails`, `useWatchlist`, etc.). These are mostly legitimate "fetch on mount" / "reset on prop change" patterns — bulk-fixing in place risks breaking real fetch behavior. Decide before opening the cleanup PR above: (a) disable the rule project-wide in `eslint.config.*` with a CLAUDE.md note explaining why and a separate task to migrate to SWR/React Query, OR (b) keep the rule firing as a TODO marker and migrate the data layer in its own scoped project. **Do not piecemeal-fix.** Defer `<img>` → `<Image />` migration (7 warnings) until LCP scores justify it.
+- **Iframe theme bridge.** Canvas iframe frames (live feed, HTML mocks) don't inherit the parent's `data-theme` — flipping dark/mono leaves them dark. Fix via a URL param or postMessage the embedded pages honor. (Known limitation since the mono-theme PR #68.)
+- **Mobile canvas gestures.** The canvas is desktop-first by decision. Pinch-zoom + touch pan tuning for mobile Safari is deferred to a local-desktop session (needs fast iteration).
+- **More themes.** The `mono` pattern makes each theme one `[data-theme]` block + `check:contrast` pass. Candidates when wanted: light-terminal, high-contrast.
+- **Inspector v2.** Variant matrices per component, px measurements, computed-token readout on hover.
+- **Astryx endgame (only if external consumers appear):** publishable `@cids/core` package + CLI.
+
+**Lint (current reality: 19 errors, none in CIDS code):**
+
+- **16× `set-state-in-effect`** — all in dormant-engine hooks (`src/lib/hooks/use*`, `SessionContext`, `TokenIcon`). Legitimate "fetch on mount / reset on prop change" patterns; **do not piecemeal-fix.** Decide when (if) the engine wakes: disable the rule project-wide with a note, or migrate the data layer to SWR/React Query as its own project.
+- **2× `no-require-imports`** in `.claude/hooks/scan-secrets.js` — mechanical, safe any time.
+- **1× `no-explicit-any`** in `src/app/api/watchlist/route.ts` — dormant engine; fix if touched.
+
+**Dormant engine (only relevant if the app side wakes):**
+
+- **Search recents → wallet-scoped server-side storage.** V1 shipped `localStorage`-only in `src/lib/hooks/useRecentSearches.ts`; server version wants a `search_recents` Supabase table + `/api/search-recents` endpoints on the same JWT/rate-limit pattern as `/api/watchlist`.
+- **Jupiter-v2 data consolidation** (was the blocker on closed draft PR #61) — replaces the fragile 3-source merge in `useTokenDetails`. Prerequisite for any live-data screens.
 
 ## Auth & API
 
@@ -309,10 +365,11 @@ Rules:
 
 ## Design system
 
-- Follow [DESIGN.md](./DESIGN.md) for all UI work — semantic colour tokens in `globals.css` (surface / fg / brand / buy / sell / warning), typography (Geist Mono / IBM Plex / Geist Pixel Square), spacing (8px base), components (rounded-sm 2px, 150ms transitions).
-- The app is **dark-only** (near-black "market-dark" palette). Consume colour via semantic Tailwind utilities (`bg-surface-container`, `text-fg`, `text-brand`) — **never hardcode `bg-[#hex]`**. `npm run check:theme` enforces this.
-- Financial numbers: **Geist Pixel Square** (fallback IBM Plex Mono). Never serif or variable-weight.
-- Identity accent is **mint-teal** `--brand #5ad8c4`. Filled brand surfaces use dark `text-on-brand`, never `text-white`.
+- **The design system IS the product** (see "Product" at the top). Components live in `src/design-system/` under the `CONVENTIONS.md` contract — every component ships its `.doc.md`, consumes tokens only, and appears in the canvas/gallery.
+- Follow [DESIGN.md](./DESIGN.md) for all UI work — semantic colour tokens in `globals.css` (surface / fg / brand / buy / sell / warning / identity hues / motion), typography (Geist Mono / IBM Plex / Geist Pixel Square), spacing (8px base), components (rounded-sm 2px, 150ms transitions).
+- The system is **dark-family, multi-theme**: `:root` = `dark` (market-dark), plus `[data-theme]` overrides (`mono`). No light mode. Consume colour via semantic Tailwind utilities (`bg-surface-container`, `text-fg`, `text-brand`) — **never hardcode `bg-[#hex]`**. `npm run check:theme` enforces this; `npm run check:contrast` verifies AA per theme.
+- Financial numbers: **Geist Pixel Square** via `.data-lg/md/sm` (fallback IBM Plex Mono). Never serif or variable-weight. Sign discipline per guideline #5: direction from the signed value, number from `Math.abs`.
+- Identity accent is **mint-teal** `--brand #5ad8c4` in the default theme; consume the token, never the hex (mono resolves it to white ink). Filled brand surfaces use `text-on-brand`, never `text-white`.
 - When a design decision isn't covered by DESIGN.md, stop and ask.
 
 ## Installed skills
@@ -326,5 +383,5 @@ Rules:
 
 - For UI/frontend changes: after edit, start the dev server and exercise the feature in a browser before reporting done.
 - If browser testing isn't possible in this session, say so explicitly — do not claim success based on a passing type-check alone.
-- **No regressions.** Every ship must preserve existing feature behavior. When testing a new feature, also exercise the surrounding flows (home → search → modal → token detail) and confirm nothing broke. If a regression surfaces, stop and surface it before continuing.
+- **No regressions.** Every ship must preserve existing feature behavior. When testing a new feature, also exercise the surrounding flows (landing → canvas pan/zoom/layers/inspect/theme-flip → gallery → demo feed) and confirm nothing broke. If a regression surfaces, stop and surface it before continuing.
 - **End-user experience is the priority.** When a UX issue surfaces outside the current ship's scope (broken layouts, confusing copy, edge-case failures, slow interactions), **note it as a follow-up — don't fix it in-flight.** Capture it in the roadmap, the commit message, or PR body. Scope creep dilutes ships.
