@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 type Size = "sm" | "md" | "lg";
 
@@ -27,11 +27,10 @@ export function TokenIcon({
   size?: Size;
   className?: string;
 }) {
-  const [errored, setErrored] = useState(false);
-
-  useEffect(() => {
-    setErrored(false);
-  }, [src]);
+  // Track WHICH src errored — a new src is automatically un-errored,
+  // no reset-on-prop-change effect needed.
+  const [erroredSrc, setErroredSrc] = useState<string | null>(null);
+  const errored = erroredSrc === src;
 
   const initials = (symbol ?? "?").slice(0, 2).toUpperCase();
 
@@ -51,7 +50,7 @@ export function TokenIcon({
     <img
       src={src}
       alt={symbol ?? "token"}
-      onError={() => setErrored(true)}
+      onError={() => setErroredSrc(src ?? null)}
       className={`${SIZE_CLS[size]} ${className} rounded-full object-cover shrink-0`}
     />
   );

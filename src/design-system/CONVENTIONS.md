@@ -87,11 +87,16 @@ next human *and* the next agent build against it.
 | `npm run check:theme` | no hardcoded hex utility classes; token layer intact |
 | `npm run check:polish` | concentric radius, targeted transitions, hit areas, text-wrap |
 | `npm run check:contrast` | identity hues pass WCAG AA (glyph + accent) |
+| `npm run check:portable` | imports whitelist (react · radix-ui · @/lib/utils · self) + every component ships .tsx/.doc.md/index.ts |
 | `npx tsc --noEmit` · `npm run lint` | types + lint |
 
 ## Rules of thumb
 
 - **Consume, don't invent.** No hex, no magic durations — reference a token.
+- **Stay portable.** A component folder must work copied into any
+  Tailwind+React app: import only react, radix-ui, `@/lib/utils`, or the
+  design system itself. Never app components/hooks/lib. Enforced by
+  `npm run check:portable`.
 - **Mock is the contract.** Anatomy comes from the HTML mock; if the mock and
   your build disagree, the mock wins (or you propose changing the mock first).
 - **Playfulness is budgeted.** Per DESIGN.md → Identity: spring motion only on

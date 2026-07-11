@@ -3,6 +3,7 @@
 import { useState, type ReactNode } from "react";
 import {
   Avatar,
+  TokenIcon,
   AvatarGroup,
   TokenChip,
   ReactionBar,
@@ -209,6 +210,14 @@ export const DEMOS: Record<string, () => ReactNode> = {
         { name: "ali", seed: "wallet-ali" },
       ]}
     />
+  ),
+  TokenIcon: () => (
+    <div className="flex items-center gap-3">
+      <TokenIcon symbol="SOL" size="sm" />
+      <TokenIcon symbol="JUP" size="md" />
+      <TokenIcon symbol="BONK" size="lg" />
+      <span className="text-[10px] text-fg-subtle">initials fallback · icon CDN default is a follow-up</span>
+    </div>
   ),
   TokenChip: () => (
     <div className="flex flex-col items-start gap-2">

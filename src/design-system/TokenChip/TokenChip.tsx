@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { TokenIcon } from "@/components/ui/TokenIcon";
+import { TokenIcon } from "../TokenIcon";
 
 export function TokenChip({
   symbol,

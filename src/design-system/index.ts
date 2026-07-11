@@ -3,6 +3,7 @@
 export { Avatar, type AvatarSize } from "./Avatar";
 export { AvatarGroup, type AvatarGroupMember } from "./AvatarGroup";
 export { TokenChip } from "./TokenChip";
+export { TokenIcon } from "./TokenIcon";
 export { ReactionBar, type Reaction } from "./ReactionBar";
 export { FollowButton } from "./FollowButton";
 export { Lane, type LaneOption } from "./Lane";

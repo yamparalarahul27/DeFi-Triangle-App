@@ -9,7 +9,8 @@
     "lint": "eslint",
     "check:polish": "node scripts/check-polish.mjs",
     "check:theme": "node scripts/check-theme.mjs",
-    "check:contrast": "node scripts/check-contrast.mjs"
+    "check:contrast": "node scripts/check-contrast.mjs",
+    "check:portable": "node scripts/check-portable.mjs"
   },
   "dependencies": {
     "@jup-ag/wallet-adapter": "^0.2.6",

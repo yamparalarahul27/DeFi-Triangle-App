@@ -39,6 +39,7 @@ export const CANVAS_ITEMS: CanvasItemDef[] = [
   { kind: "demo", id: "PostCard", title: "PostCard", x: CX, y: CY + 780, w: 380 },
   { kind: "demo", id: "CommentThread", title: "CommentThread", x: CX + COL + 40, y: CY + 780, w: 340 },
   { kind: "demo", id: "Onboarding", title: "Onboarding", x: CX + COL * 2 + 40, y: CY + 780, w: 340 },
+  { kind: "demo", id: "TokenIcon", title: "TokenIcon", x: CX + COL * 3 + 40, y: CY + 780, w: 300 },
 
   // ── Zone: Screens (live build vs HTML mock, side by side) ────
   { kind: "label", id: "z-screens", title: "Screens — mock vs build", x: 1780, y: 60 },
