@@ -1,0 +1,1 @@
+export { SocialProofChip } from "./SocialProofChip";

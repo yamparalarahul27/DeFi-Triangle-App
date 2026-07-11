@@ -1,7 +1,14 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { FEATURES } from "@/lib/featureFlags";
-import { Avatar, AvatarGroup, TokenChip, ID_HUES } from "@/design-system";
+import {
+  Avatar,
+  AvatarGroup,
+  TokenChip,
+  SocialProofChip,
+  PostCard,
+  ID_HUES,
+} from "@/design-system";
 import { InteractiveDemos } from "./InteractiveDemos";
 
 export const metadata: Metadata = {
@@ -128,7 +135,34 @@ export default function DesignGalleryPage() {
         </section>
 
         <section>
-          <SectionLabel>Motion · interactive</SectionLabel>
+          <SectionLabel>SocialProofChip</SectionLabel>
+          <Row>
+            <SocialProofChip count={41} />
+            <SocialProofChip count={41} compact />
+            <SocialProofChip count={7} label="holding" />
+          </Row>
+        </section>
+
+        <section>
+          <SectionLabel>PostCard · milestone</SectionLabel>
+          <div className="space-y-3">
+            <PostCard
+              kind="milestone"
+              direction="up"
+              time="1h"
+              body="@kip's JUP watch crossed +25% since they flagged it."
+            />
+            <PostCard
+              kind="milestone"
+              direction="down"
+              time="3h"
+              body="BONK broke below its 24h floor — watchers notified."
+            />
+          </div>
+        </section>
+
+        <section>
+          <SectionLabel>Motion + PostCard · interactive</SectionLabel>
           <InteractiveDemos />
           <p className="mt-2 text-[11px] text-fg-subtle">
             tap ♥ = spring-pop · Follow morphs 200ms · Lane fill = state

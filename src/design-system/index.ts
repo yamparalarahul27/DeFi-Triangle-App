@@ -6,4 +6,6 @@ export { TokenChip } from "./TokenChip";
 export { ReactionBar, type Reaction } from "./ReactionBar";
 export { FollowButton } from "./FollowButton";
 export { Lane, type LaneOption } from "./Lane";
+export { SocialProofChip } from "./SocialProofChip";
+export { PostCard, type PostKind } from "./PostCard";
 export { ID_HUES, hueFor, hueGradient, type IdHue } from "./identity";
