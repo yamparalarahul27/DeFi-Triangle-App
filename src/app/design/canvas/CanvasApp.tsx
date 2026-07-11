@@ -16,7 +16,13 @@ const INITIAL: View = { x: 40, y: 40, s: 0.55 };
 
 const clampS = (s: number) => Math.min(MAX_S, Math.max(MIN_S, s));
 
-export function CanvasApp({ docs }: { docs: Record<string, string> }) {
+export function CanvasApp({
+  docs,
+  sources,
+}: {
+  docs: Record<string, string>;
+  sources: Record<string, string>;
+}) {
   const [view, setView] = useState<View>(INITIAL);
   const wrapRef = useRef<HTMLDivElement>(null);
   const drag = useRef<{ px: number; py: number } | null>(null);
@@ -223,7 +229,7 @@ export function CanvasApp({ docs }: { docs: Record<string, string> }) {
       {/* inspector */}
       {selected && (
         <div className="pointer-events-none absolute right-4 top-16 z-10">
-          <Inspector selected={selected} docs={docs} onClose={() => setSelected(null)} />
+          <Inspector key={selected} selected={selected} docs={docs} sources={sources} onClose={() => setSelected(null)} />
         </div>
       )}
 

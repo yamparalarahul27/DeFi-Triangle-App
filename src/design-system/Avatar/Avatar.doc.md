@@ -3,6 +3,15 @@
 Status: draft
 Per-person identity disc — a hue-gradient circle with the person's initial.
 
+## Usage
+
+```tsx
+import { Avatar } from "@/design-system";
+
+<Avatar name="mira" seed={walletAddress} size={40} />
+<Avatar name="you" you size={28} />  {/* signed-in user: --id-tide */}
+```
+
 ## Anatomy
 
 ```

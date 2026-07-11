@@ -52,6 +52,10 @@ the point — an agent can rely on the layout without re-learning it per file.
 Status: draft | stable        ← draft = API may change; stable = safe to depend on
 One-line purpose.
 
+## Usage
+A copy-pasteable tsx snippet: the import + the canonical call(s). This is
+what the inspector's doc tab and future registry docs surface first.
+
 ## Anatomy
 ASCII wireframe lifted from the mock (docs/tide/06-ui-spec.md or the
 public/Prototypes/tide/ HTML). The picture is the contract.
@@ -87,7 +91,7 @@ next human *and* the next agent build against it.
 | `npm run check:theme` | no hardcoded hex utility classes; token layer intact |
 | `npm run check:polish` | concentric radius, targeted transitions, hit areas, text-wrap |
 | `npm run check:contrast` | identity hues pass WCAG AA (glyph + accent) |
-| `npm run check:portable` | imports whitelist (react · radix-ui · @/lib/utils · self) + every component ships .tsx/.doc.md/index.ts |
+| `npm run check:portable` | imports whitelist (react · radix-ui · @/lib/utils · self) + every component ships .tsx/.doc.md/index.ts with all doc sections (Usage…A11y) |
 | `npx tsc --noEmit` · `npm run lint` | types + lint |
 
 ## Rules of thumb

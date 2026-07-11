@@ -3,6 +3,23 @@
 Status: draft
 Identity-gate sheet: connect wallet → pick a handle (live avatar) → join. Built on `Sheet`.
 
+## Usage
+
+```tsx
+import { Onboarding } from "@/design-system";
+
+<Onboarding
+  open={open}
+  onOpenChange={setOpen}
+  walletAddress={wallet}         // null -> shows Connect
+  onConnectWallet={connect}
+  handle={handle}
+  onHandleChange={setHandle}
+  availability={availability}    // "idle" | "checking" | "available" | "taken"
+  onJoin={join}
+/>
+```
+
 ## Anatomy
 
 ```

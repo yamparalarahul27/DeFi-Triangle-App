@@ -3,6 +3,15 @@
 Status: draft
 Token logo disc with a graceful initials fallback — the base identity mark for assets (as Avatar is for people).
 
+## Usage
+
+```tsx
+import { TokenIcon } from "@/design-system";
+
+<TokenIcon src={logoUrl} symbol="JUP" size="md" />
+<TokenIcon symbol="SOL" />  {/* no src -> initials disc */}
+```
+
 ## Anatomy
 
 ```

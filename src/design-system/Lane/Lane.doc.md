@@ -3,6 +3,23 @@
 Status: draft
 Segmented control (e.g. Following / Everyone). Fill is the state — no underline.
 
+## Usage
+
+```tsx
+import { Lane } from "@/design-system";
+
+const [lane, setLane] = useState("following");
+
+<Lane
+  options={[
+    { value: "following", label: "Following" },
+    { value: "everyone", label: "Everyone" },
+  ]}
+  value={lane}
+  onChange={setLane}
+/>
+```
+
 ## Anatomy
 
 ```
