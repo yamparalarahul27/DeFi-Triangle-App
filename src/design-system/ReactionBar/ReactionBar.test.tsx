@@ -1,0 +1,41 @@
+import { describe, expect, it, vi } from "vitest";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { ReactionBar, type Reaction } from "./ReactionBar";
+
+const RS: Reaction[] = [
+  { emoji: "♥", count: 12, mine: true },
+  { emoji: "🔥", count: 8 },
+];
+
+describe("ReactionBar", () => {
+  it("renders pills with counts", () => {
+    render(<ReactionBar reactions={RS} onReact={() => {}} />);
+    expect(screen.getByText("12")).toBeTruthy();
+    expect(screen.getByText("8")).toBeTruthy();
+  });
+
+  it("own reaction is marked aria-pressed + brand tint", () => {
+    render(<ReactionBar reactions={RS} onReact={() => {}} />);
+    const mine = screen.getByRole("button", { pressed: true });
+    expect(mine.textContent).toContain("♥");
+    expect(mine.className).toContain("bg-brand/10");
+  });
+
+  it("tapping a pill fires onReact with its emoji", async () => {
+    const onReact = vi.fn();
+    render(<ReactionBar reactions={RS} onReact={onReact} />);
+    await userEvent.click(screen.getByText("🔥"));
+    expect(onReact).toHaveBeenCalledWith("🔥");
+  });
+
+  it("+ opens the picker; picking fires onReact and closes it", async () => {
+    const onReact = vi.fn();
+    render(<ReactionBar reactions={RS} onReact={onReact} />);
+    await userEvent.click(screen.getByRole("button", { name: "Add reaction" }));
+    expect(screen.getByRole("menu")).toBeTruthy();
+    await userEvent.click(screen.getByRole("menuitem", { name: "🧠" }));
+    expect(onReact).toHaveBeenCalledWith("🧠");
+    expect(screen.queryByRole("menu")).toBeNull();
+  });
+});

@@ -39,7 +39,7 @@ function walk(dir) {
   for (const e of readdirSync(dir, { withFileTypes: true })) {
     const p = join(dir, e.name);
     if (e.isDirectory()) walk(p);
-    else if (/\.tsx?$/.test(e.name)) {
+    else if (/\.tsx?$/.test(e.name) && !/\.test\.tsx?$/.test(e.name)) {
       const src = readFileSync(p, "utf8");
       for (const m of src.matchAll(/from\s+"([^"]+)"/g)) {
         const spec = m[1];

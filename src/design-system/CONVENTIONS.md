@@ -84,6 +84,23 @@ A component is not done until its `.doc.md` exists and every section is filled
 (or explicitly marked N/A). "Docs later" is not allowed — the doc is how the
 next human *and* the next agent build against it.
 
+## Stability: what `stable` promises
+
+A component is promoted `draft → stable` only when ALL of these hold:
+
+1. **API reviewed & frozen** — after promotion, props are only *added*.
+   Renaming, removing, or retyping a prop requires a `CHANGELOG.md` entry
+   with a migration note.
+2. **Tests pass** — the component's colocated `<Name>.test.tsx` covers
+   render, its key interactions, and its accessibility contract
+   (`npm test`).
+3. **Doc complete** — all seven sections (guard-enforced).
+4. **Both themes verified** — renders correctly in `dark` and `mono`.
+
+Promotions and breaking changes are recorded in [`CHANGELOG.md`](../../CHANGELOG.md).
+Test files are colocated but NOT part of the vendored folder (excluded
+from the portability import whitelist).
+
 ## Guards (run before any UI PR)
 
 | Command | Asserts |
@@ -92,6 +109,7 @@ next human *and* the next agent build against it.
 | `npm run check:polish` | concentric radius, targeted transitions, hit areas, text-wrap |
 | `npm run check:contrast` | identity hues pass WCAG AA (glyph + accent) |
 | `npm run check:portable` | imports whitelist (react · radix-ui · @/lib/utils · self) + every component ships .tsx/.doc.md/index.ts with all doc sections (Usage…A11y) |
+| `npm test` | component behavior suite (vitest + testing-library) |
 | `npx tsc --noEmit` · `npm run lint` | types + lint |
 
 ## Rules of thumb
