@@ -3,6 +3,16 @@
 Status: draft
 "◔ 41 watching" — quiet social-proof count. Never louder than the price it sits by.
 
+## Usage
+
+```tsx
+import { SocialProofChip } from "@/design-system";
+
+<SocialProofChip count={41} />            {/* ◔ 41 watching */}
+<SocialProofChip count={41} compact />    {/* ◔ 41 */}
+<SocialProofChip count={7} label="holding" />
+```
+
 ## Anatomy
 
 ```

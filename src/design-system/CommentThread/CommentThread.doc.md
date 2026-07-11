@@ -3,6 +3,20 @@
 Status: draft
 Comment bottom-sheet: threaded rows + a pinned composer. Built on `Sheet`.
 
+## Usage
+
+```tsx
+import { CommentThread, type Comment } from "@/design-system";
+
+<CommentThread
+  open={open}
+  onOpenChange={setOpen}
+  comments={comments}
+  onLike={(i, replyIndex) => like(i, replyIndex)}
+  onSubmit={(text) => post(text)}
+/>
+```
+
 ## Anatomy
 
 ```

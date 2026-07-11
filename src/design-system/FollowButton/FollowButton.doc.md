@@ -3,6 +3,19 @@
 Status: draft
 Follow / Following toggle. Fill→outline morph; unfollow needs no confirm.
 
+## Usage
+
+```tsx
+import { FollowButton } from "@/design-system";
+
+const [following, setFollowing] = useState(false);
+
+<FollowButton
+  following={following}
+  onToggle={() => setFollowing((v) => !v)}  // flip optimistically; roll back on error
+/>
+```
+
 ## Anatomy
 
 ```

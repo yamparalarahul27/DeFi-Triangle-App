@@ -3,6 +3,17 @@
 Status: draft
 Overlapping row of Avatars with a `+N` overflow disc — "who's here" at a glance.
 
+## Usage
+
+```tsx
+import { AvatarGroup } from "@/design-system";
+
+<AvatarGroup
+  members={watchers.map((w) => ({ name: w.handle, seed: w.wallet }))}
+  max={3}
+/>
+```
+
 ## Anatomy
 
 ```

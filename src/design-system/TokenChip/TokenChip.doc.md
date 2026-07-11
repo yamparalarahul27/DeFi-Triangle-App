@@ -3,6 +3,19 @@
 Status: draft
 Compact inline token reference — icon, symbol, live price, signed 24h change.
 
+## Usage
+
+```tsx
+import { TokenChip } from "@/design-system";
+
+<TokenChip
+  symbol="JUP"
+  iconSrc={logoUrl}
+  price="$0.8123"        // preformatted by the caller
+  change24h={4.2}        // SIGNED — drives arrow/prefix/color
+/>
+```
+
 ## Anatomy
 
 ```

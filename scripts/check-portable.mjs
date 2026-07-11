@@ -54,7 +54,8 @@ function walk(dir) {
 }
 walk(DS);
 
-// P2 — component-folder completeness
+// P2 — component-folder completeness + doc shape (CONVENTIONS.md sections)
+const DOC_SECTIONS = ["## Usage", "## Anatomy", "## Props", "## Tokens", "## States", "## Motion", "## A11y"];
 for (const e of entries) {
   if (!e.isDirectory()) continue;
   const name = e.name;
@@ -62,6 +63,15 @@ for (const e of entries) {
   for (const required of [`${name}.tsx`, `${name}.doc.md`, "index.ts"]) {
     if (!existsSync(join(dir, required))) {
       failures.push(`src/design-system/${name}/: missing ${required}`);
+    }
+  }
+  const docPath = join(dir, `${name}.doc.md`);
+  if (existsSync(docPath)) {
+    const doc = readFileSync(docPath, "utf8");
+    for (const section of DOC_SECTIONS) {
+      if (!doc.includes(section)) {
+        failures.push(`src/design-system/${name}/${name}.doc.md: missing "${section}" section`);
+      }
     }
   }
 }

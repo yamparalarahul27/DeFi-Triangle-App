@@ -3,6 +3,25 @@
 Status: draft
 The feed unit. Composes Avatar + TokenChip + ReactionBar; has a milestone variant.
 
+## Usage
+
+```tsx
+import { PostCard } from "@/design-system";
+
+<PostCard
+  kind="take"
+  author={{ name: "Mira", handle: "mira", seed: wallet }}
+  time="4m"
+  body="JUP printing a clean higher-low."
+  token={{ symbol: "JUP", price: "$0.8123", change24h: 4.2 }}
+  reactions={reactions}
+  onReact={onReact}
+/>
+
+<PostCard kind="milestone" direction="up" time="1h"
+  body="BONK ran +12.4% in 24h." />
+```
+
 ## Anatomy
 
 ```

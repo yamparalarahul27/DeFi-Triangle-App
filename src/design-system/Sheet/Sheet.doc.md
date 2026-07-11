@@ -3,6 +3,19 @@
 Status: draft
 Bottom sheet chrome — backdrop, grab handle, drag-to-dismiss, pinned footer. The base for CommentThread / Onboarding.
 
+## Usage
+
+```tsx
+import { Sheet } from "@/design-system";
+
+const [open, setOpen] = useState(false);
+
+<Sheet open={open} onOpenChange={setOpen} title="Details"
+  footer={<SubmitRow />}>
+  <p>Scrolling body…</p>
+</Sheet>
+```
+
 ## Anatomy
 
 ```

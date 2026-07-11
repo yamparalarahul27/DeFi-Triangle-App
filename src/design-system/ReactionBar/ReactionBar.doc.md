@@ -3,6 +3,21 @@
 Status: draft
 Row of emoji-reaction pills with counts, plus a `+` picker. Tap = spring-pop.
 
+## Usage
+
+```tsx
+import { ReactionBar, type Reaction } from "@/design-system";
+
+const [reactions, setReactions] = useState<Reaction[]>([
+  { emoji: "♥", count: 12, mine: true },
+]);
+
+<ReactionBar
+  reactions={reactions}
+  onReact={(emoji) => toggleAndPersist(emoji)}  // counts are yours to update
+/>
+```
+
 ## Anatomy
 
 ```
