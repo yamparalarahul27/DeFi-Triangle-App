@@ -63,6 +63,12 @@ export default function DesignGalleryPage() {
           Live gallery of <code>src/design-system/</code>. Numbers are the hero;
           identity hues carry people, never data.
         </p>
+        <a
+          href="/design/feed"
+          className="mt-3 inline-flex items-center gap-1 rounded-sm border border-outline bg-surface-container px-3 py-1.5 text-xs font-semibold text-fg"
+        >
+          See it as a screen → /design/feed
+        </a>
       </header>
 
       <div className="space-y-9">
