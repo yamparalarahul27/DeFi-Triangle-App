@@ -83,8 +83,13 @@ export function CanvasApp() {
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
       onPointerCancel={onPointerUp}
-      className="fixed inset-0 touch-none select-none overflow-hidden bg-surface-dim"
-      style={{ cursor: panning ? "grabbing" : "grab" }}
+      className="fixed inset-0 touch-none select-none overflow-hidden bg-surface-dim font-sans"
+      style={{
+        cursor: panning ? "grabbing" : "grab",
+        backgroundImage:
+          "radial-gradient(var(--outline-variant) 1px, transparent 1px)",
+        backgroundSize: "24px 24px",
+      }}
     >
       {/* world */}
       <div
@@ -99,7 +104,7 @@ export function CanvasApp() {
             return (
               <div
                 key={item.id}
-                className="absolute text-[13px] font-semibold uppercase tracking-[0.14em] text-fg-subtle"
+                className="absolute whitespace-nowrap font-mono text-[13px] font-semibold uppercase tracking-[0.14em] text-fg-subtle"
                 style={{ left: item.x, top: item.y }}
               >
                 {item.title}
@@ -115,7 +120,7 @@ export function CanvasApp() {
                   title={item.title}
                   width={item.w}
                   height={item.h}
-                  className="pointer-events-none rounded-lg border border-outline-variant bg-surface-page"
+                  className="pointer-events-none rounded-sm border border-outline-variant bg-surface-page"
                   
                 />
               </div>
@@ -129,7 +134,7 @@ export function CanvasApp() {
               style={{ left: item.x, top: item.y, width: item.w }}
             >
               <div className="mb-1.5 font-mono text-[11px] text-fg-subtle">{item.title}</div>
-              <div className="rounded-lg border border-outline-variant bg-surface-page p-4">
+              <div className="rounded-sm border border-outline-variant bg-surface-page p-4">
                 {Demo ? <Demo /> : null}
               </div>
             </div>
@@ -139,7 +144,7 @@ export function CanvasApp() {
 
       {/* HUD */}
       <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-center justify-between px-4 py-3">
-        <div className="pointer-events-auto flex items-center gap-3 rounded-lg border border-outline-variant bg-surface-page/90 px-3 py-2 backdrop-blur">
+        <div className="pointer-events-auto flex items-center gap-3 rounded-sm border border-outline bg-surface-page/95 px-3 py-2">
           <span
             className="text-sm font-semibold text-fg"
             style={{ fontFamily: "var(--font-geist-mono), monospace" }}
@@ -147,11 +152,11 @@ export function CanvasApp() {
             cids <span className="text-brand">~</span>{" "}
             <span className="text-fg-subtle">canvas</span>
           </span>
-          <a href="/design" className="text-xs text-fg-muted underline-offset-2 hover:underline">
+          <a href="/design" className="font-mono text-xs text-fg-muted underline-offset-2 hover:underline">
             gallery
           </a>
         </div>
-        <div className="pointer-events-auto flex items-center gap-1 rounded-lg border border-outline-variant bg-surface-page/90 p-1 backdrop-blur">
+        <div className="pointer-events-auto flex items-center gap-1 rounded-sm border border-outline bg-surface-page/95 p-1">
           <HudButton label="−" onClick={() => zoomBy(1 / 1.25)} />
           <span className="w-12 text-center font-mono text-[11px] text-fg-muted">
             {Math.round(view.s * 100)}%
@@ -162,7 +167,7 @@ export function CanvasApp() {
       </div>
 
       {/* desktop-first note (coarse pointers) */}
-      <div className="pointer-events-none absolute bottom-3 left-1/2 z-10 hidden -translate-x-1/2 rounded-full border border-outline-variant bg-surface-page/90 px-3 py-1.5 text-[11px] text-fg-muted backdrop-blur [@media(pointer:coarse)]:block">
+      <div className="pointer-events-none absolute bottom-3 left-1/2 z-10 hidden -translate-x-1/2 rounded-sm border border-outline bg-surface-page/95 px-3 py-1.5 font-mono text-[11px] text-fg-muted [@media(pointer:coarse)]:block">
         canvas is desktop-first for now — drag to pan · use + / −
       </div>
     </div>
