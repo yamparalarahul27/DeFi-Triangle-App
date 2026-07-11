@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { CANVAS_ITEMS } from "./items";
+import { ThemeToggle } from "../ThemeToggle";
 import { DEMOS } from "./demos";
 
 type View = { x: number; y: number; s: number };
@@ -155,6 +156,7 @@ export function CanvasApp() {
           <a href="/design" className="font-mono text-xs text-fg-muted underline-offset-2 hover:underline">
             gallery
           </a>
+          <ThemeToggle />
         </div>
         <div className="pointer-events-auto flex items-center gap-1 rounded-sm border border-outline bg-surface-page/95 p-1">
           <HudButton label="−" onClick={() => zoomBy(1 / 1.25)} />

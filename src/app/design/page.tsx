@@ -10,6 +10,7 @@ import {
   ID_HUES,
 } from "@/design-system";
 import { InteractiveDemos } from "./InteractiveDemos";
+import { ThemeToggle } from "./ThemeToggle";
 
 export const metadata: Metadata = {
   title: "tide / design",
@@ -63,6 +64,7 @@ export default function DesignGalleryPage() {
           Live gallery of <code>src/design-system/</code>. Numbers are the hero;
           identity hues carry people, never data.
         </p>
+        <div className="mt-3"><ThemeToggle /></div>
         <div className="mt-3 flex flex-wrap gap-2">
           <a
             href="/design/feed"

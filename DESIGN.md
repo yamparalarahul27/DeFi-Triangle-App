@@ -34,7 +34,18 @@
 > never hardcode hex in classes.** Use `bg-surface-container`, `text-fg`,
 > `text-brand`, `text-buy`, etc. The `npm run check:theme` guard fails CI if a
 > `*-[#hex]` utility class reappears anywhere under `src/` (evilcharts exempt).
-> The whole app is dark; there is no light mode and no runtime theme toggle.
+> The whole app is dark; there is no light mode.
+
+> **Amendment — themes (CIDS pivot).** The system now supports multiple
+> **dark themes** as swappable token sets: `:root` is the default
+> (`market-dark`), and each `[data-theme="x"]` block in `globals.css`
+> overrides the same token names (activated via `<html data-theme="x">`,
+> switchable at runtime from `/design` and the canvas). Current themes:
+> **dark** (market-dark) and **mono** (pure-neutral grayscale surfaces +
+> white-ink brand; buy/sell/warning/info and identity hues deliberately
+> kept — *everything is grayscale except the signal*).
+> `npm run check:contrast` verifies every theme's values, with `:root`
+> as fallback for tokens a theme doesn't override.
 
 ### Surfaces (near-black, layered by elevation)
 

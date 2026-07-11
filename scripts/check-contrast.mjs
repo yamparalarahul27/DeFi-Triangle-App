@@ -39,39 +39,54 @@ const deepEnd = (hex) => {
   return "#" + [(n >> 16) & 255, (n >> 8) & 255, n & 255].map((c) => mix(c).toString(16).padStart(2, "0")).join("");
 };
 
-// --- read the token values straight from globals.css ----------------------
-const readVar = (name) => {
-  const m = css.match(new RegExp(`--${name}:\\s*(#[0-9a-fA-F]{3,8})`));
-  return m ? m[1] : null;
-};
-const hues = Object.fromEntries(
-  [...css.matchAll(/--(id-[a-z]+):\s*(#[0-9a-fA-F]{3,8})/g)].map((m) => [m[1], m[2]])
-);
-const glyph = readVar("fg-inverse");
-const surfaces = {
-  "surface-page": readVar("surface-page"),
-  "surface-container": readVar("surface-container"),
-  "surface-bright": readVar("surface-bright"),
-};
+// --- read token values per theme from globals.css --------------------------
+// :root is the default theme; each [data-theme="x"] block overrides a subset
+// of the same token names. Every theme is verified with root values as the
+// fallback for tokens it doesn't override.
+const parseVars = (block) =>
+  Object.fromEntries(
+    [...block.matchAll(/--([a-z-]+):\s*(#[0-9a-fA-F]{3,8})/g)].map((m) => [m[1], m[2]])
+  );
+const rootBlock = css.match(/:root\s*\{([\s\S]*?)\n\}/);
+const rootVars = rootBlock ? parseVars(rootBlock[1]) : {};
+const themes = { dark: rootVars };
+for (const m of css.matchAll(/\[data-theme="([a-z-]+)"\]\s*\{([\s\S]*?)\n\}/g)) {
+  themes[m[1]] = { ...rootVars, ...parseVars(m[2]) };
+}
 
 const failures = [];
-if (Object.keys(hues).length === 0) failures.push("no --id-* hues found in globals.css");
-if (!glyph) failures.push("--fg-inverse (avatar glyph color) not found in globals.css");
-for (const [k, v] of Object.entries(surfaces)) if (!v) failures.push(`--${k} not found in globals.css`);
+if (Object.keys(rootVars).length === 0) failures.push("no :root token block found in globals.css");
 
-if (failures.length === 0) {
+for (const [themeName, vars] of Object.entries(themes)) {
+  const hues = Object.fromEntries(
+    Object.entries(vars).filter(([k]) => k.startsWith("id-"))
+  );
+  const glyph = vars["fg-inverse"];
+  const surfaces = {
+    "surface-page": vars["surface-page"],
+    "surface-container": vars["surface-container"],
+    "surface-bright": vars["surface-bright"],
+  };
+  if (Object.keys(hues).length === 0) failures.push(`[${themeName}] no --id-* hues found`);
+  if (!glyph) failures.push(`[${themeName}] --fg-inverse (avatar glyph color) not found`);
+  for (const [k, v] of Object.entries(surfaces)) if (!v) failures.push(`[${themeName}] --${k} not found`);
+  if (failures.length) continue;
+
   for (const [name, hex] of Object.entries(hues)) {
     // Rule C1: dark glyph on the flat hue fill.
     const g = ratio(glyph, hex);
-    if (g < AA) failures.push(`glyph ${glyph} on --${name} ${hex} = ${g.toFixed(2)}:1 (< ${AA})`);
+    if (g < AA) failures.push(`[${themeName}] glyph ${glyph} on --${name} ${hex} = ${g.toFixed(2)}:1 (< ${AA})`);
 
     // Rule C2: hue as accent text on every surface it can land on.
     for (const [sName, sHex] of Object.entries(surfaces)) {
       const t = ratio(hex, sHex);
-      if (t < AA) failures.push(`--${name} text on --${sName} = ${t.toFixed(2)}:1 (< ${AA})`);
+      if (t < AA) failures.push(`[${themeName}] --${name} text on --${sName} = ${t.toFixed(2)}:1 (< ${AA})`);
     }
   }
 }
+// values reused by the summary output below
+const hues = Object.fromEntries(Object.entries(rootVars).filter(([k]) => k.startsWith("id-")));
+const glyph = rootVars["fg-inverse"];
 
 if (failures.length) {
   console.error("✗ check:contrast — identity hues below WCAG AA:\n");
@@ -80,7 +95,7 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log(`✓ check:contrast — ${Object.keys(hues).length} identity hues pass WCAG AA (${AA}:1)`);
+console.log(`✓ check:contrast — ${Object.keys(hues).length} identity hues pass WCAG AA (${AA}:1) across ${Object.keys(themes).length} theme(s): ${Object.keys(themes).join(", ")}`);
 console.log("  glyph-on-hue and hue-on-surface (page/container/bright) all verified.");
 console.log("\n  note — avatar radial-gradient dark end (color-mix 60% + black) is informational:");
 for (const [name, hex] of Object.entries(hues)) {
