@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { FEATURES } from "@/lib/featureFlags";
 import {
   Avatar,
   AvatarGroup,
@@ -48,7 +46,6 @@ const WATCHERS = [
 ];
 
 export default function DesignGalleryPage() {
-  if (!FEATURES.DESIGN_GALLERY) notFound();
 
   return (
     <main className="mx-auto min-h-dvh max-w-[430px] bg-surface-page px-4 pb-24 pt-6 text-fg">

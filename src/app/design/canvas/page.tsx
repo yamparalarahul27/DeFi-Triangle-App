@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import { FEATURES } from "@/lib/featureFlags";
 import { CanvasApp } from "./CanvasApp";
 
 export const metadata: Metadata = {
@@ -25,6 +23,5 @@ function readDocs(): Record<string, string> {
 }
 
 export default function CanvasPage() {
-  if (!FEATURES.DESIGN_GALLERY) notFound();
   return <CanvasApp docs={readDocs()} />;
 }
