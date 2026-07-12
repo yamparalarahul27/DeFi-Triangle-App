@@ -228,12 +228,17 @@ Used on the full-bleed landing hero section only.
 | 6 | 32px | Spacious | Between major sections |
 | 7 | 48px | Generous | Hero section padding, page-level |
 
-**Border radius scale:**
-- `4px` — icon boxes, segmented control segments
-- `6px` — state notice, inner segments
-- `8px` — cards, buttons, inputs, pills (default)
-- `12px` — large modals, connect-wallet button
-- `9999px` — filter pills, badges
+**Border radius scale** — token-driven since the Theme Studio work; a
+theme (or the canvas token panel) can reshape every component by
+overriding these:
+
+| Token | Default | Utility | Use |
+|---|---|---|---|
+| `--radius-control` | `2px` | `rounded-control` | buttons, pills, inputs, segments, badges |
+| `--radius-chip` | `4px` | `rounded-chip` | token chips, icon boxes |
+| `--radius-card` | `8px` | `rounded-card` | cards, CTAs, list rows |
+| `--radius-sheet` | `12px` | `rounded-sheet` (`rounded-t-sheet`) | sheets, large modals |
+| — | `9999px` | `rounded-full` | discs, avatars (deliberately not a token) |
 
 ---
 

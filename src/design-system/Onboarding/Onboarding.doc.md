@@ -50,6 +50,7 @@ import { Onboarding } from "@/design-system";
 - `--color-surface-container` fields · `--color-outline` connect button.
 - `--color-buy` (checked / available) · `--color-sell` (taken).
 - `--color-brand` / `--color-on-brand` CTA · `--id-*` via the live `Avatar`.
+- `--radius-card` / `--radius-control` — rows/CTA and inputs.
 
 ## States
 

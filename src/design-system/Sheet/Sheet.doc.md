@@ -46,6 +46,7 @@ const [open, setOpen] = useState(false);
 - `--color-surface` panel · `--color-outline-variant` hairlines · `--color-outline` grab handle.
 - `--motion-settle` — drag spring-back transition.
 - Enter/exit slide via `tw-animate-css` (`slide-in-from-bottom` / `fade`).
+- `--radius-sheet` (`rounded-t-sheet`) — top corners; `--radius-control` close button.
 
 ## States
 

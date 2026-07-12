@@ -44,6 +44,7 @@ import { TokenChip } from "@/design-system";
 - `--color-fg` — symbol + price text.
 - `--color-buy` / `--color-sell` — 24h direction only (never identity hues for data).
 - `.data-sm` — Geist Pixel Square number ramp.
+- `--radius-chip` (`rounded-chip`) — chip corner.
 
 ## States
 

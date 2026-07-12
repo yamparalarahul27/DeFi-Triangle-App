@@ -27,7 +27,7 @@ export function TokenChip({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-2 rounded border border-outline-variant bg-surface px-2.5 py-1.5",
+        "inline-flex items-center gap-2 rounded-chip border border-outline-variant bg-surface px-2.5 py-1.5",
         className,
       )}
     >

@@ -57,7 +57,7 @@ export function Sheet({
             transition: dragging ? "none" : "transform var(--motion-settle)",
           }}
           className={cn(
-            "fixed inset-x-0 bottom-0 z-50 mx-auto flex max-h-[85dvh] max-w-[430px] flex-col rounded-t-xl border border-b-0 border-outline-variant bg-surface shadow-2xl",
+            "fixed inset-x-0 bottom-0 z-50 mx-auto flex max-h-[85dvh] max-w-[430px] flex-col rounded-t-sheet border border-b-0 border-outline-variant bg-surface shadow-2xl",
             "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:slide-in-from-bottom data-[state=closed]:slide-out-to-bottom",
             className,
           )}
@@ -76,7 +76,7 @@ export function Sheet({
               </RadixDialog.Title>
               <RadixDialog.Close
                 aria-label="Close"
-                className="inline-flex h-7 w-7 items-center justify-center rounded-sm text-fg-muted transition-colors hover:bg-surface-container-high hover:text-fg"
+                className="inline-flex h-7 w-7 items-center justify-center rounded-control text-fg-muted transition-colors hover:bg-surface-container-high hover:text-fg"
               >
                 ×
               </RadixDialog.Close>

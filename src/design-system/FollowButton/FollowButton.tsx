@@ -23,7 +23,7 @@ export function FollowButton({
       aria-pressed={following}
       style={{ transition: MORPH }}
       className={cn(
-        "inline-flex h-7 items-center rounded-sm border px-3 text-xs font-semibold active:scale-[0.96]",
+        "inline-flex h-7 items-center rounded-control border px-3 text-xs font-semibold active:scale-[0.96]",
         following
           ? "border-outline bg-transparent text-fg-muted"
           : "border-transparent bg-brand text-on-brand",

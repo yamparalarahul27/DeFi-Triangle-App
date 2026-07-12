@@ -46,6 +46,7 @@ import { CommentThread, type Comment } from "@/design-system";
 - `--color-surface-container` composer field · `--color-brand`/`--color-on-brand` send disc.
 - `--color-outline-variant` row dividers + reply border · `--color-sell` over-limit counter.
 - `.data-sm` like counts.
+- `--radius-control` (`rounded-control`) — composer field corner.
 
 ## States
 

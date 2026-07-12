@@ -26,7 +26,7 @@ export function Lane<T extends string>({
     <div
       role="tablist"
       className={cn(
-        "inline-flex gap-1 rounded-sm border border-outline-variant bg-surface-container p-[3px]",
+        "inline-flex gap-1 rounded-control border border-outline-variant bg-surface-container p-[3px]",
         className,
       )}
     >
@@ -44,7 +44,7 @@ export function Lane<T extends string>({
               boxShadow: active ? ACTIVE_SHADOW : "none",
             }}
             className={cn(
-              "inline-flex h-9 items-center rounded-sm px-3.5 text-xs font-medium active:scale-[0.98]",
+              "inline-flex h-9 items-center rounded-control px-3.5 text-xs font-medium active:scale-[0.98]",
               active ? "bg-brand text-on-brand" : "text-fg-muted",
             )}
           >

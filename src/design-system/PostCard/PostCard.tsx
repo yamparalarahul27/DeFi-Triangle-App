@@ -27,7 +27,7 @@ function KindBadge({ kind }: { kind: PostKind }) {
   return (
     <span
       className={cn(
-        "rounded-sm px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide",
+        "rounded-control px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide",
         KIND_BADGE[kind],
       )}
     >
@@ -66,7 +66,7 @@ export function PostCard({
   return (
     <article
       className={cn(
-        "rounded-lg border border-outline-variant bg-surface-container p-4",
+        "rounded-card border border-outline-variant bg-surface-container p-4",
         isMilestone && (up ? "border-l-2 border-l-buy" : "border-l-2 border-l-sell"),
         className,
       )}

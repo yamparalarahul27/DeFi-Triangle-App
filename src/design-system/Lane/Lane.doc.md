@@ -47,6 +47,7 @@ const [lane, setLane] = useState("following");
 - `--color-fg-muted` — inactive label.
 - `--motion-fast` — bg / color / shadow transition.
 - Active glow derives from `--brand` via `color-mix` (no hardcoded mint rgb).
+- `--radius-control` (`rounded-control`) — track + segment corners.
 
 ## States
 

@@ -102,7 +102,7 @@ export function CommentThread({
           onChange={(e) => setText(e.target.value.slice(0, MAX))}
           rows={1}
           placeholder="Add a comment…"
-          className="w-full resize-none rounded-sm bg-surface-container px-3 py-2.5 text-sm text-fg placeholder:text-fg-subtle focus:outline-none"
+          className="w-full resize-none rounded-control bg-surface-container px-3 py-2.5 text-sm text-fg placeholder:text-fg-subtle focus:outline-none"
         />
         {remaining <= COUNTER_AT && (
           <div

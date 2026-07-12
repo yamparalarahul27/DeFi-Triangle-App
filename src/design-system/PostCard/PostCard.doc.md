@@ -53,6 +53,7 @@ Standard (watched / take)          Milestone
 - Kind badge: `--color-brand` / `--color-fg-muted` / `--color-info` (+ their surfaces).
 - `--color-buy` / `--color-sell` — milestone glyph + left border (direction).
 - Composes the tokens of `Avatar`, `TokenChip`, `ReactionBar`.
+- `--radius-card` / `--radius-control` — card and badge corners.
 
 ## States
 
