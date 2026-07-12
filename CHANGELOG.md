@@ -31,6 +31,13 @@ a synthetic version number until v1.0.
 > Currently on `stage`, not yet released to `main`.
 
 ### Added
+
+- **Design-system stability program (Phase D).** Behavior test suite for all
+  12 CIDS components — 50 tests via vitest + testing-library (render,
+  interactions, a11y contracts, sign-discipline cases). New `npm test`
+  script; `stable` promotion contract documented in
+  `src/design-system/CONVENTIONS.md`; test files colocated but excluded
+  from the vendored/portability surface. (#75)
 - **Watchlist v1 live** — single watchlist per wallet, JWT-gated CRUD via `/api/watchlist`, optimistic add/remove with rollback. Sign-in via Solana wallet message-signing through `@jup-ag/wallet-adapter`. Plumbing was previously gated by `FEATURES.WATCHLIST` + `FEATURES.WALLET_CONNECT`; both now `true`.
 - Multi-watchlist backlog captured at [docs/ideation/multi-watchlist.md](./docs/ideation/multi-watchlist.md) — named folders per wallet, planned as the next major Watchlist iteration after v1 sees usage signal.
 - Static polish guard — `npm run check:polish` Node script asserting the 6 [make-interfaces-feel-better](https://github.com/jakubkrehel/make-interfaces-feel-better) rules stay in place. (#44)
