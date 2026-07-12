@@ -1,6 +1,6 @@
 # Sheet
 
-Status: draft
+Status: stable
 Bottom sheet chrome — backdrop, grab handle, drag-to-dismiss, pinned footer. The base for CommentThread / Onboarding.
 
 ## Usage

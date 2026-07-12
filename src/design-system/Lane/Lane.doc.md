@@ -1,6 +1,6 @@
 # Lane
 
-Status: draft
+Status: stable
 Segmented control (e.g. Following / Everyone). Fill is the state — no underline.
 
 ## Usage

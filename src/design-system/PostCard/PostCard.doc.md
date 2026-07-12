@@ -1,6 +1,6 @@
 # PostCard
 
-Status: draft
+Status: stable
 The feed unit. Composes Avatar + TokenChip + ReactionBar; has a milestone variant.
 
 ## Usage

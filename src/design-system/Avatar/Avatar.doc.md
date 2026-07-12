@@ -1,6 +1,6 @@
 # Avatar
 
-Status: draft
+Status: stable
 Per-person identity disc — a hue-gradient circle with the person's initial.
 
 ## Usage

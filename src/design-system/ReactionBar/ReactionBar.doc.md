@@ -1,6 +1,6 @@
 # ReactionBar
 
-Status: draft
+Status: stable
 Row of emoji-reaction pills with counts, plus a `+` picker. Tap = spring-pop.
 
 ## Usage

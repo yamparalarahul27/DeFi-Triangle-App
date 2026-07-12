@@ -1,6 +1,6 @@
 # FollowButton
 
-Status: draft
+Status: stable
 Follow / Following toggle. Fill→outline morph; unfollow needs no confirm.
 
 ## Usage

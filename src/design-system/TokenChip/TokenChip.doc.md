@@ -1,6 +1,6 @@
 # TokenChip
 
-Status: draft
+Status: stable
 Compact inline token reference — icon, symbol, live price, signed 24h change.
 
 ## Usage
