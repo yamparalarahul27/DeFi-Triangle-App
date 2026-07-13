@@ -32,10 +32,11 @@ human and an AI agent both build from, and flip themes live.
 - **Tokens** live in [`src/app/globals.css`](src/app/globals.css) and are
   the only way components get color/motion values
   ([DESIGN.md](DESIGN.md) is the spec).
-- **Themes** are `[data-theme]` blocks overriding the same token names.
-  Current: `dark` (market-dark, default) and `mono` (grayscale surfaces +
-  white-ink brand; buy/sell and identity hues kept — *everything is
-  grayscale except the signal*).
+- **Themes** are `[data-theme]` blocks overriding the same token names —
+  `dark` (default), `mono` (grayscale except the signal), `light` (full
+  re-valuation: white canvas, dark-jewel hues), and `violet` (white-label
+  demo: accent swapped in one block). Adding one = one CSS block + an AA
+  pass (`check:contrast` auto-discovers it); recipe in DESIGN.md.
 
 ## Guards
 

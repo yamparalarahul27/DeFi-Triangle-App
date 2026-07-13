@@ -192,6 +192,88 @@
   --wallet-backdrop-rgb: 5 5 5;
 }
 
+/* ── Theme: light ────────────────────────────────────────────
+   The adaptability proof (cids-roadmap Phase 3): the same token names,
+   re-valued for a white canvas. Cards are white on a cool-gray page;
+   depth still comes from tonal layering. Identity hues shift to their
+   dark-jewel equivalents (light surfaces force text-dark hues — both
+   contrast rules point the same way); the avatar glyph inverts to
+   near-white via --fg-inverse. Brand becomes deep teal so text-brand
+   holds AA on white; on-brand flips to near-white accordingly.
+   AA-verified per theme by npm run check:contrast. */
+[data-theme="light"] {
+  --surface-dim: #e7e9ee;
+  --surface-page: #f5f6f8;
+  --surface: #fbfcfd;
+  --surface-container: #ffffff;
+  --surface-container-high: #f1f3f6;
+  --surface-bright: #eef0f4;
+
+  --outline: #c3c9d3;
+  --outline-variant: #e3e6eb;
+
+  --fg: #15181d;
+  --fg-muted: #4d5560;
+  --fg-subtle: #69707c;
+  --fg-inverse: #fbfcfe;
+
+  --brand: #0c6e63;
+  --brand-hover: #0a5d54;
+  --brand-bright: #084f47;
+  --brand-subtle: #baded7;
+  --on-brand: #f4fbf9;
+
+  --buy: #047857;
+  --buy-strong: #065f46;
+  --sell: #b91c1c;
+  --sell-strong: #991b1b;
+  --warning: #92610a;
+  --warning-strong: #78500a;
+  --error: #be123c;
+  --error-strong: #9f1239;
+  --info: #1d4ed8;
+  --info-strong: #1e40af;
+  --success: #047857;
+  --success-strong: #065f46;
+
+  --buy-surface: #e2f5ec;
+  --sell-surface: #fde7e7;
+  --warning-surface: #faf0d8;
+  --info-surface: #e6edfc;
+  --error-surface: #fbe7ed;
+  --success-surface: #e2f5ec;
+
+  --id-tide: #0c6e63;
+  --id-coral: #a83a10;
+  --id-sand: #7d5405;
+  --id-lilac: #6747a8;
+  --id-sky: #14618f;
+  --id-moss: #3d6636;
+  --id-rose: #a03354;
+  --id-slate: #45536b;
+
+  --elevation-1: 0 1px 3px rgba(23, 30, 40, 0.1), 0 1px 2px rgba(23, 30, 40, 0.08);
+  --elevation-2: 0 4px 12px rgba(23, 30, 40, 0.12), 0 2px 4px rgba(23, 30, 40, 0.08);
+  --elevation-3: 0 24px 80px rgba(23, 30, 40, 0.25);
+
+  --wallet-backdrop-rgb: 231 233 238;
+}
+
+/* ── Theme: violet ───────────────────────────────────────────
+   White-label demo (cids-roadmap Phase 3): proves re-branding is ONE
+   block — swap the accent family (+ the reserved "you" hue, which
+   follows brand) and touch nothing else. Everything else falls back
+   to :root (market-dark). */
+[data-theme="violet"] {
+  --brand: #a78bfa;
+  --brand-hover: #bfa7fc;
+  --brand-bright: #d8c9ff;
+  --brand-subtle: #e9dfff;
+  --on-brand: #17102b;
+
+  --id-tide: #a78bfa;
+}
+
 @theme inline {
   --color-background: var(--surface-page);
   --color-foreground: var(--fg);

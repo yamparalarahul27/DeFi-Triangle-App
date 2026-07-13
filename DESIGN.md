@@ -46,16 +46,36 @@
 > utilities and are what components consume. Never point a component at
 > a raw value a theme can't retune.
 
-> **Amendment — themes (CIDS pivot).** The system now supports multiple
-> **dark themes** as swappable token sets: `:root` is the default
-> (`market-dark`), and each `[data-theme="x"]` block in `globals.css`
-> overrides the same token names (activated via `<html data-theme="x">`,
-> switchable at runtime from `/design` and the canvas). Current themes:
-> **dark** (market-dark) and **mono** (pure-neutral grayscale surfaces +
-> white-ink brand; buy/sell/warning/info and identity hues deliberately
-> kept — *everything is grayscale except the signal*).
-> `npm run check:contrast` verifies every theme's values, with `:root`
-> as fallback for tokens a theme doesn't override.
+> **Amendment — themes (CIDS pivot; light added Phase 3).** Themes are
+> swappable token value-sets: `:root` is the default (`market-dark`),
+> and each `[data-theme="x"]` block in `globals.css` overrides the same
+> token names (activated via `<html data-theme="x">`, switchable at
+> runtime from `/design` and the canvas). Current themes:
+>
+> | Theme | What it proves |
+> |---|---|
+> | **dark** | the default market-dark terminal |
+> | **mono** | grayscale except the signal (buy/sell + hues kept) |
+> | **light** | full re-valuation — white canvas, dark-jewel identity hues, deep-teal brand, inverted glyphs, softened elevations |
+> | **violet** | white-labeling — the accent family (+ reserved "you" hue) swapped in ONE block, everything else inherited |
+>
+> `npm run check:contrast` verifies every theme (with `:root` fallback
+> for tokens a theme doesn't override). The dark-only rule above is
+> therefore historical: **dark remains the default and design target**,
+> and every component must render correctly under all themes.
+
+### Adding a theme (the recipe)
+
+1. Add one `[data-theme="<name>"]` block to `globals.css`, overriding
+   only the raw tokens that change (see `light` for a full re-valuation,
+   `violet` for a minimal accent swap). Never introduce new token names.
+2. Check the two forced pairs: if surfaces flip polarity, `--fg-inverse`
+   (avatar glyph) and `--on-brand` must flip with them; identity hues
+   must go dark-jewel on light surfaces.
+3. Run `npm run check:contrast` — it auto-discovers the block and fails
+   any hue/glyph/surface pair below WCAG AA. Adjust until green.
+4. Add the name to `THEMES` in `src/app/design/ThemeToggle.tsx`.
+   That's the whole integration — components need zero changes.
 
 ### Surfaces (near-black, layered by elevation)
 

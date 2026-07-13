@@ -27,7 +27,7 @@ import {
   Tooltip,
 } from "./index";
 
-const THEMES = ["dark", "mono"] as const;
+const THEMES = ["dark", "mono", "light", "violet"] as const;
 
 const CASES: Record<string, () => React.ReactElement> = {
   Avatar: () => <Avatar name="mira" seed="wallet-mira" />,
