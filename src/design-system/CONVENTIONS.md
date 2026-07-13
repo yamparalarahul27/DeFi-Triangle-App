@@ -84,6 +84,30 @@ A component is not done until its `.doc.md` exists and every section is filled
 (or explicitly marked N/A). "Docs later" is not allowed — the doc is how the
 next human *and* the next agent build against it.
 
+## Component API contract
+
+Uniform prop conventions — every component follows all of these (Phase-2
+of the roadmap unified the older ad-hoc APIs; future components must
+comply from their first commit):
+
+1. **`className` on every component**, merged with `cn()` (never string
+   concatenation — concatenation breaks tailwind-merge dedup). Sheet-based
+   components (CommentThread, Onboarding) forward it to the Sheet panel.
+2. **`size` is a string union from the shared scale** — a subset of
+   `"xs" | "sm" | "md" | "lg" | "xl"`, never raw numbers. Each component
+   documents its px mapping in its doc's Props table (Avatar: xs 20 ·
+   sm 28 · md 40 · lg 64; TokenIcon: sm 20 · md 24 · lg 32). Components
+   without a size prop are fixed-size by design — say so in the doc.
+3. **Controlled callbacks are `on<Event>`** (`onChange`, `onReact`,
+   `onOpenChange`…) and state is the caller's: components never own the
+   domain value, only ephemeral UI state (open pickers, drag offsets).
+4. **Behavior comes from Radix** for anything with focus/dismiss/keyboard
+   semantics (Sheet → Dialog, ReactionBar picker → Popover). Hand-rolled
+   keyboard handling is allowed only for patterns Radix doesn't ship
+   (Lane's roving tabindex) and must implement the full WAI-ARIA pattern.
+5. **Server-safe by default** — `"use client"` only where state/handlers
+   require it; the doc notes which.
+
 ## Stability: what `stable` promises
 
 A component is promoted `draft → stable` only when ALL of these hold:

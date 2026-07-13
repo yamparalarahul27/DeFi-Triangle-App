@@ -91,7 +91,7 @@ export function PostCard({
                 name={author.name}
                 seed={author.seed}
                 you={author.you}
-                size={28}
+                size="sm"
               />
             )}
             <span className="font-mono text-[13px] font-medium text-fg">

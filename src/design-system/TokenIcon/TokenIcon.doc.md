@@ -1,6 +1,6 @@
 # TokenIcon
 
-Status: draft
+Status: stable
 Token logo disc with a graceful initials fallback — the base identity mark for assets (as Avatar is for people).
 
 ## Usage

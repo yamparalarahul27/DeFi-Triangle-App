@@ -255,7 +255,7 @@ Current inventory (12):
 | FollowButton | stable | | Sheet | stable |
 | Lane | stable | | SocialProofChip | stable |
 | TokenChip | stable | | CommentThread | draft |
-| TokenIcon | draft | | Onboarding | draft |
+| TokenIcon | stable | | Onboarding | draft |
 
 Components consume tokens from this file's foundations — they never
 define color/spacing/motion values of their own (`check:theme`).

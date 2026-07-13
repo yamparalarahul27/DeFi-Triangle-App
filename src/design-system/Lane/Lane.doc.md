@@ -62,5 +62,8 @@ const [lane, setLane] = useState("following");
 ## A11y
 
 - `role="tablist"` + `role="tab"` + `aria-selected` per segment.
+- **Keyboard** (roving tabindex — only the active segment is tabbable):
+  `←`/`→` move selection and focus (wrapping) · `Home`/`End` jump to
+  first/last.
 - Segment height 36px; the 6px padded track gives a ~42px tap target.
 - State is conveyed by fill + text color together, not color alone.

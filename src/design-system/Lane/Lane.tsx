@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import { cn } from "@/lib/utils";
 
 export type LaneOption<T extends string> = { value: T; label: string };
@@ -22,9 +23,29 @@ export function Lane<T extends string>({
   onChange: (value: T) => void;
   className?: string;
 }) {
+  const listRef = useRef<HTMLDivElement | null>(null);
+
+  // Roving tabindex (WAI-ARIA tabs pattern): only the active segment is
+  // tabbable; Arrow/Home/End move selection AND focus.
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    const idx = options.findIndex((o) => o.value === value);
+    let next = -1;
+    if (e.key === "ArrowRight") next = (idx + 1) % options.length;
+    else if (e.key === "ArrowLeft") next = (idx - 1 + options.length) % options.length;
+    else if (e.key === "Home") next = 0;
+    else if (e.key === "End") next = options.length - 1;
+    if (next === -1) return;
+    e.preventDefault();
+    onChange(options[next].value);
+    const tabs = listRef.current?.querySelectorAll<HTMLButtonElement>('[role="tab"]');
+    tabs?.[next]?.focus();
+  };
+
   return (
     <div
       role="tablist"
+      ref={listRef}
+      onKeyDown={onKeyDown}
       className={cn(
         "inline-flex gap-1 rounded-control border border-outline-variant bg-surface-container p-[3px]",
         className,
@@ -38,6 +59,7 @@ export function Lane<T extends string>({
             type="button"
             role="tab"
             aria-selected={active}
+            tabIndex={active ? 0 : -1}
             onClick={() => onChange(opt.value)}
             style={{
               transition: SEGMENT_TRANSITION,

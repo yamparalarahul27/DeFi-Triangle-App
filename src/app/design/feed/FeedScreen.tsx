@@ -159,7 +159,7 @@ export function FeedScreen() {
         >
           tide <span className="text-brand">~</span>
         </span>
-        <Avatar name="You" you size={28} />
+        <Avatar name="You" you size="sm" />
       </header>
 
       <main className="flex-1 px-4 pb-28 pt-3">
@@ -296,7 +296,7 @@ function SuggestRow({
   const [f, setF] = useState(following);
   return (
     <div className="flex items-center gap-2">
-      <Avatar name={name} seed={seed} size={28} />
+      <Avatar name={name} seed={seed} size="sm" />
       <div className="min-w-0">
         <div className="font-mono text-[13px] text-fg">@{name}</div>
         <div className="truncate text-[11px] text-fg-subtle">{note}</div>

@@ -99,7 +99,7 @@ export default function DesignGalleryPage() {
           <Row>
             {ID_HUES.map((hue) => (
               <div key={hue} className="text-center">
-                <Avatar name={hue} hue={hue} size={40} />
+                <Avatar name={hue} hue={hue} size="md" />
                 <div className="mt-1 text-[10px] text-fg-subtle">{hue}</div>
               </div>
             ))}
@@ -113,11 +113,11 @@ export default function DesignGalleryPage() {
         <section>
           <SectionLabel>Avatar · sizes</SectionLabel>
           <Row>
-            <Avatar name="Mira" seed="wallet-mira" size={20} />
-            <Avatar name="Mira" seed="wallet-mira" size={28} />
-            <Avatar name="Mira" seed="wallet-mira" size={40} />
-            <Avatar name="Mira" seed="wallet-mira" size={64} />
-            <Avatar name="You" you size={40} />
+            <Avatar name="Mira" seed="wallet-mira" size="xs" />
+            <Avatar name="Mira" seed="wallet-mira" size="sm" />
+            <Avatar name="Mira" seed="wallet-mira" size="md" />
+            <Avatar name="Mira" seed="wallet-mira" size="lg" />
+            <Avatar name="You" you size="md" />
           </Row>
           <p className="mt-2 text-[11px] text-fg-subtle">
             20 · 28 · 40 · 64 · you (tide)
@@ -128,7 +128,7 @@ export default function DesignGalleryPage() {
           <SectionLabel>AvatarGroup</SectionLabel>
           <div className="space-y-3">
             <AvatarGroup members={WATCHERS} />
-            <AvatarGroup members={WATCHERS} max={5} size={28} />
+            <AvatarGroup members={WATCHERS} max={5} size="sm" />
           </div>
           <p className="mt-2 text-[11px] text-fg-subtle">
             −8px overlap · +N overflow · 2px ring
