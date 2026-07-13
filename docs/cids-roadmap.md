@@ -251,11 +251,12 @@ CI; CONVENTIONS "accessibility contract" is enforced, not promised.
       softened elevations) — AA-verified; axe matrix runs 14×4 themes.
 - [x] **`violet` demo theme**: accent family + reserved "you" hue
       swapped in ONE block — the white-labeling proof (R3).
-- [ ] **Theme Studio step 2**: canvas panel with live token editing
-      (radius now; spacing/type once Phase 1 lands) + theme export
-      (copy the `[data-theme]` block). Reown's model is the target
-      ergonomics: **a few master knobs** (accent, color-mix, radius
-      master, font-size master) that retune the entire kit.
+- [x] **Theme Studio step 2** shipped: canvas "studio" panel with the
+      Reown-style master knobs — accent (derives hover/bright/subtle +
+      luminance-picked on-brand + the reserved "you" hue), radius
+      master, spacing-scale master, data-type master — applied live as
+      inline token overrides on <html>, layering over the active theme;
+      **export css** copies a recipe-compatible `[data-theme]` block.
 - [x] Adopter recipe documented in DESIGN.md (4-step: block → forced
       pairs → check:contrast → ThemeToggle list).
 
