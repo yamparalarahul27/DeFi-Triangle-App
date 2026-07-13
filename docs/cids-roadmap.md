@@ -300,16 +300,20 @@ domain generic systems lack.
       zero layout shift), PriceChange (sign discipline hard-coded +
       polish-guard-pinned), StatCell (density-responsive), Sparkline
       (direction-toned SVG). Numeric skeleton = Skeleton + tabular box.
-- [ ] **Crypto verticals**: `AddressChip` (truncate/copy/explorer),
-      `PegBadge`, `NetworkBadge`, `TxStatus` (pending/confirmed/
-      failed with ethereum.org tx-clarity heuristics), `AmountInput`
-      (token/fiat dual display).
-- [ ] **Order-book demo frame** on the canvas: depth rows + spread +
-      streaming ticks — the exchange-density showcase, in mock data.
+- [x] **Crypto verticals shipped** — the whitespace column:
+      AddressChip (full address always accessible), PegBadge (bps
+      thresholds, guideline-#5 pinned by the polish guard),
+      NetworkBadge (heuristic #3), TxStatus (lifecycle live-region,
+      heuristics #1/#2), AmountInput (decimal-string, fiat echo, Max).
+- [x] **Order-book demo** on the canvas Crypto zone: bids/asks depth
+      bars + spread, streaming ticks every 900ms.
 
-**Gate:** the order-book frame renders at compact density with
-0 layout shift on tick updates; every vertical component passes the
-sign-discipline + a11y test suites.
+**Gate — MET (2026-07-13):** the order-book rows are fixed to the
+density tokens (`--row-h`/`--cell-px`) with tabular numerals — ticks
+change text and bar widths only, zero layout shift, and the studio's
+compact switch tightens it live. PegBadge/PriceChange sign discipline
+is guard-pinned; all five verticals pass the axe×4-themes matrix
+(37 × 4 = 148 checks).
 
 ### Phase 6 — Patterns & templates <sub>(W3/W4/R4 · composition)</sub>
 

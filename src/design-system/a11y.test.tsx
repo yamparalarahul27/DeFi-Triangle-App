@@ -11,6 +11,11 @@ import { cleanup, render } from "@testing-library/react";
 import { useState } from "react";
 import { axe } from "vitest-axe";
 import {
+  AddressChip,
+  PegBadge,
+  NetworkBadge,
+  TxStatus,
+  AmountInput,
   DataTable,
   RollingNumber,
   PriceChange,
@@ -159,6 +164,21 @@ const CASES: Record<string, () => React.ReactElement> = {
         { key: "px", header: "Price", align: "right", cell: (r: { px: number }) => `$${r.px}` },
       ]}
     />
+  ),
+  AddressChip: () => (
+    <AddressChip address="7xKtF3aB9cD2eF4gH6jK8mN1pQ5rS7tU9vW2xY4z9fQ2" href="https://solscan.io/x" />
+  ),
+  PegBadge: () => (
+    <div className="flex gap-2">
+      <PegBadge deviationBps={4} />
+      <PegBadge deviationBps={-38} />
+      <PegBadge deviationBps={-230} />
+    </div>
+  ),
+  NetworkBadge: () => <NetworkBadge name="Solana" />,
+  TxStatus: () => <TxStatus state="pending" detail="5D3k…Wq" />,
+  AmountInput: () => (
+    <AmountInput value="1.25" onValueChange={() => {}} symbol="SOL" fiatValue="≈ $231.40" onMax={() => {}} />
   ),
   // Portal components rendered OPEN so axe sees the real overlay DOM.
   Select: () => (

@@ -112,6 +112,13 @@ const checks = [
     ],
   },
   {
+    file: "src/design-system/PegBadge/PegBadge.tsx",
+    expect: [
+      [/Math\.abs\(deviationBps\)/, "health tone from magnitude (guideline #5)"],
+      [/deviationBps >= 0/, "sign kept visible in the readout"],
+    ],
+  },
+  {
     file: "src/design-system/TokenChip/TokenChip.tsx",
     expect: [
       [/Math\.abs\(change24h\)/, "magnitude via Math.abs (sign discipline)"],
@@ -156,6 +163,10 @@ const NO_SPECIFIC_RULES = new Set([
   "StatCell", // static display; density via tokens
   "Sparkline", // static SVG; data surfaces never bounce
   "DataTable", // hover/sort color 150ms; ticks never animate (zero layout shift)
+  "AddressChip", // copy/link color 150ms; confirmation is a label change
+  "NetworkBadge", // static fact chip
+  "AmountInput", // border transition only; Max is a text affordance
+  "TxStatus", // pulse on in-flight dot only (status, not data); terminal states still
 ]);
 const covered = new Set(
   checks.map((c) => c.file.split("/")[2]) // src/design-system/<Name>/…
