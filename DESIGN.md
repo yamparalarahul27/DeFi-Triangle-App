@@ -1,15 +1,17 @@
-# Design System — DeFi Triangle / Y-Vault
+# Design System — CIDS (Crypto Interface Design System)
 
-> Single source of truth for the DeFi Triangle product design language.
-> Authored to the [Stitch Design.md specification](https://stitch.withgoogle.com/docs/design-md/specification).
-> All AI agents, Stitch prompts, and code generation must follow these specifications.
-> Last audited against: `globals.css`, `Button.tsx`, `Card.tsx`, `Pill.tsx`, `Navbar.tsx`, `BottomBar.tsx`, `StatusDot.tsx`, `TokenIcon.tsx`
+> Single source of truth for the CIDS design language: foundations
+> (color, type, spacing, radius, motion) live here; component specs
+> live in `src/design-system/<Name>/<Name>.doc.md` (see Components).
+> All agents and code generation must follow these specifications.
+> Token values are authoritative in `src/app/globals.css`; this file
+> explains the roles and rules.
 
 ---
 
 ## Identity
 
-**Product name:** TBD (Y-Vault)
+**Product name:** CIDS — the design system is the product (pivoted 2026-07-11)
 **Visual theme:** Near-Black Financial Terminal — "Fey Dark Wealth" / market-dark
 **Aesthetic:** A premium, data-dense trading interface that communicates competence and authority. A cinematic near-black canvas with soft charcoal elevation; mint-teal is the single identity accent. Numbers are the hero, decoration is the enemy — depth comes from tonal layering and soft shadows, not borders.
 
@@ -147,70 +149,38 @@ corner value as an informational note.
 
 <sub>Sign vs. magnitude (guideline #5): magnitude drives tone via `Math.abs()`, direction drives the signed `+`/`−` and ▲/▼. Two concerns, two computations. Peg-health colour reflects health, not price direction.</sub>
 
-### Hero Gradient
-
-```css
-background: linear-gradient(
-  #000003,
-  #000036 37.9%,
-  #143f79 81.7%,
-  #496d93 110%,
-  #8cacc6 152.7%,
-  #b6d0dc 196.7%,
-  #fcffff 285%
-);
-```
-
-Used on the full-bleed landing hero section only.
-
----
-
 ## Typography
 
 ### Font Stack
 
-| Family | Source | Role |
-|---|---|---|
-| **Geist Mono** | Google Fonts | Hero display headings |
-| **Geist Pixel Square** | Self-hosted `/fonts/GeistPixel-Square.woff2` | Financial data (prices, APY, PnL) |
-| **IBM Plex Mono** | Google Fonts | Fallback data font, addresses |
-| **IBM Plex Sans** | Google Fonts | All UI labels, buttons, descriptions |
-| **Instrument Sans** | Google Fonts | Alternative UI sans |
-| **Inter** | Google Fonts | Body copy fallback |
+What is actually loaded (nothing else may be referenced):
+
+| Family | Source | Token / class | Role |
+|---|---|---|---|
+| **Geist** | `next/font/google` (`layout.tsx`) | `--font-sans` → `font-sans` | All UI text: labels, buttons, body |
+| **Geist Mono** | `next/font/google` (`layout.tsx`) | `--font-mono` → `font-mono` | Code, addresses, handles |
+| **GeistPixelSquare** | Self-hosted `/fonts/GeistPixelSquare.woff2` (`@font-face` in globals) | `.data-lg/md/sm` | Financial data (prices, %, PnL) |
+| IBM Plex Mono | *not loaded* — CSS fallback only | inside `.data-*` stacks | Fallback if pixel font fails |
 
 **Font smoothing:** `antialiased` on all body text.
 
-### CSS Utility Classes
-
-```css
-.font-satoshi        /* Geist Mono → IBM Plex Mono fallback */
-.font-ibm-plex-sans  /* IBM Plex Sans → Inter fallback */
-.font-instrument     /* Instrument Sans → Inter fallback */
-```
-
 ### Type Scale
 
-| Class / Level | Font | Weight | Size (mobile → desktop) | Line-height | Letter-spacing | Use |
-|---|---|---|---|---|---|---|
-| Hero Display | Geist Mono | 700 | 2rem → 3rem | 1.2 | −0.02em | Landing headline |
-| Page Title (H1) | Geist Mono | 700 | 1.5rem → 2rem | 1.2 | −0.01em | Page headings |
-| `.label-section` | IBM Plex Sans | 600 | 0.6875rem | 1 | 0.1em | Dark-bg section dividers (uppercase) |
-| `.label-section-light` | IBM Plex Sans | 600 | 0.6875rem | 1 | 0.1em | Light-bg section dividers (uppercase) |
-| Nav Item | IBM Plex Sans | 500 | 0.875rem | 1.35 | 0 | Navigation links |
-| Body | Inter / IBM Plex Sans | 400 | 0.875rem | 1.5 | 0 | Descriptions, general UI |
-| Button | IBM Plex Sans | 600 | 0.875rem | 1 | 0.01em | Button labels |
-| `.data-lg` | Geist Pixel Square | 400 | 1.125rem → 1.875rem | 1.2 | 0 | Hero financial figures |
-| `.data-md` | Geist Pixel Square | 400 | 0.875rem | 1.2 | 0 | Table values, prices |
-| `.data-sm` | Geist Pixel Square | 400 | 0.75rem | 1.2 | 0 | Secondary data, timestamps |
-| State notice text | IBM Plex Sans | 500 | 0.75rem | 1.333 | 0 | State/alert messages |
-| State severity label | IBM Plex Sans | 600 | 0.625rem | 1.2 | 0.02em | Alert severity badge |
+| Class / Level | Font | Weight | Size | Use |
+|---|---|---|---|---|
+| Page title | Geist | 600–700 | 1.25–1.5rem | Page/section headings |
+| Section label | Geist | 600 | 0.6875rem, uppercase, tracking 0.1em, `text-fg-subtle` | Section dividers (pattern, not a CSS class — see `SectionLabel` in `design/page.tsx`) |
+| Body | Geist | 400–500 | 0.875rem | Descriptions, general UI |
+| `.data-lg` | GeistPixelSquare | 400 | 1.5rem (1.875 ≥768px) | Hero financial figures |
+| `.data-md` | GeistPixelSquare | 400 | 0.875rem | Table values, prices |
+| `.data-sm` | GeistPixelSquare | 400 | 0.75rem | Secondary data, timestamps |
 
 ### Rules
 
-- All financial numbers use **Geist Pixel Square** (fallback: IBM Plex Mono). Never a serif or variable-weight font.
-- Section labels are always **uppercase with letter-spacing ≥ 0.08em**.
-- Section labels use `text-fg-subtle` (or `rgba(255,255,255,0.4)` on glass surfaces).
+- All financial numbers use **GeistPixelSquare** (fallback: IBM Plex Mono) with `tabular-nums`. Never a serif or variable-weight font.
+- Section labels are always **uppercase with letter-spacing ≥ 0.08em**, `text-fg-subtle`.
 - Never use serif fonts anywhere in the UI.
+- A tokenized type ramp (sizes/leading as `--text-*` tokens) is a roadmap Phase 1 deliverable; until then this table is the scale.
 
 ---
 
@@ -244,320 +214,28 @@ overriding these:
 
 ## Components
 
-### Button
-
-> Source: `src/components/ui/Button.tsx`
-> Base classes: `font-instrument font-semibold rounded-sm transition-all duration-150 inline-flex items-center justify-center gap-2`
-> Disabled: `opacity-40 cursor-not-allowed`
-
-**⚠️ Important:** Buttons use `rounded-sm` (2px radius) and `Instrument Sans` — NOT `rounded` (8px) or IBM Plex Sans.
-
-| Variant | Background | Text | Hover |
-|---|---|---|---|
-| `primary` | `bg-brand` | `text-on-brand` (dark) | `bg-brand-hover` |
-| `execute` | `bg-brand` | `text-on-brand` (dark) | `bg-brand-hover` |
-| `secondary` | `bg-surface-container` + `border border-outline-variant` | `text-fg` | `bg-surface-container-high` |
-| `ghost` | transparent or `bg-white/10` (on glass) | `text-fg` / `text-fg-muted` | `bg-surface-container` / `bg-white/20` |
-
-| Size | Padding | Font size |
-|---|---|---|
-| `sm` | `6px 12px` | 12px |
-| `md` | `8px 16px` | 14px |
-| `lg` | `10px 20px` | 14px |
-
-**Transition:** `all 150ms` (not 200ms)
-
-**Connect Wallet button (navbar):**
-- Uses `ghost-light` variant + explicit `border border-outline-variant bg-surface-container hover:bg-surface-container-high`
-- Height: `28px` (h-7), padding: `0 12px`
-
----
-
-### Pills / Filter Tabs
-
-> Source: `src/components/ui/Pill.tsx`
-> Base: `rounded-sm` (2px) — NOT fully rounded pills
-> Font: IBM Plex Sans medium
-> Transition: `all 150ms`
-
-**Active:**
-- Background: `bg-brand`
-- Text: `text-on-brand` (dark)
-- Shadow: layered mint glow → `0 1px 2px rgba(4,17,15,0.40), 0 4px 8px rgba(90,216,196,0.20), 0 12px 24px rgba(90,216,196,0.12)`
-
-**Inactive:**
-- Background: transparent (or `bg-surface-container`)
-- Text: `text-fg-muted`
-- Border: `border-outline-variant`
-- Hover text: `text-fg`
-
-| Size | Height | Padding | Font size |
-|---|---|---|---|
-| Mobile | `36px` (h-9) | `6px 16px` | 12px |
-| Desktop (lg+) | `40px` (h-10) | `8px 18px` | 14px |
-
-**Leverage / Status Badge (inline):**
-- Background: `bg-surface-container` (or `bg-brand/10` tint)
-- Text: `text-fg-muted` (or `text-brand` on tint), 9px, uppercase, `tracking-wider`
-- Border-radius: `rounded-sm`
-- Padding: `2px 6px`
-- Example: "Soon" badge in navbar disabled items
-
----
-
-### Cards & Containers
-
-**Card surface:**
-- Background: `bg-surface-container`
-- Border: `border border-outline-variant`
-- Border-radius: `8px`
-- Padding: `16–24px`
-- Shadow (rest): `0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3)`
-- Hover: lift to `bg-surface-container-high`
-- Shadow (active/selected): layered mint → `0 12px 24px rgba(90,216,196,0.12)`
-
-**Flat variant (dense panels):**
-- Background: `bg-surface-container`
-- Border: `border-outline-variant`
-- No shadow — depth via background shift only
-- Hover border: `border-outline`, `200ms ease`
-
-**Gradient card (e.g. featured StableCard):**
-```
-bg-gradient-to-br from-surface-container to-surface-container-high
-```
-
-**Card footer tint:**
-```css
-background-color: rgba(255,255,255,0.03); /* subtle dark tint */
-```
-
----
-
-### Inputs & Form Controls
-
-**Text / Search Input:**
-- Background: `transparent` or `rgba(255,255,255,0.03)`
-- Border: `1px solid rgba(255,255,255,0.12)`
-- Border-radius: `8px`
-- Padding: `10px 14px`
-- Text: white, IBM Plex Sans 400, 14px
-- Placeholder: `fg-subtle`
-- Focus border: `rgba(255,255,255,0.25)`
-
-**Segmented Control (e.g. Slippage):**
-- Container: `rgba(255,255,255,0.05)`, border-radius `8px`
-- Active segment: `surface-container`, text white
-- Inactive segment: transparent, text `fg-muted`
-- Segment border-radius: `6px`
-- Padding per segment: `8px 12px`
-
-**Slider (Leverage 1x–9x):**
-- Track: `rgba(255,255,255,0.1)`, height `4px`
-- Filled: `bg-brand`
-- Thumb: white circle, `16px`
-
-**Toggle Switch:**
-- Active: `--brand` or teal track
-- Inactive: gray track
-- Thumb: white circle, height `20px`
-
----
-
-### State Notice
-
-```
-.state-notice           padding: 10px 12px; border-radius: 6px; border: 1px solid;
-.state-info             bg #EFF6FF, border #BFDBFE
-.state-warning          bg #FFFBEB, border #FDE68A
-.state-error            bg #FEF2F2, border #FECACA
-.state-notice-text      IBM Plex Sans 500, 12px/16px
-.state-severity-label   IBM Plex Sans 600, 10px/12px, tracking 0.02em
-.state-stale-badge      pill, warning colours, 10px/12px 600
-.state-action-btn       brand (#5ad8c4), IBM Plex Sans 500, 12px; hover #143F78
-```
-
----
-
-### Navigation (Top Bar)
-
-> Source: `src/components/layout/Navbar.tsx`
-
-**Container:**
-- `sticky top-0 z-20`
-- Background: `rgba(241,245,249,0.95)` (`bg-surface-page/95`) + `backdrop-blur-lg`
-- Border: `border-b border-outline-variant`
-- Height: **48px** (h-12) — not 56–64px
-- Max-width: `1400px`, centered
-- Padding: `0 16px` mobile, `0 24px` desktop (lg+)
-
-**Logo area (left):**
-- Logo `/logo.svg` — `24×24px`
-- Wordmark: Geist Mono (`.font-satoshi`) bold 14px `text-fg` — hidden on mobile, visible `lg+`
-
-**Nav items (desktop, hidden on mobile):**
-- Font: IBM Plex Sans, `12px`, weight `400`
-- Inactive: `text-fg-muted` → `text-fg` on hover
-- Active: `text-fg`
-- Transition: `colors 150ms`
-- Gap between items: `24px`
-
-**Nav items (mobile):**
-- Horizontal scroll row below main bar (`pb-2`, `overflow-x-auto scrollbar-hide`)
-- Same font as desktop but no hover (touch)
-- Visible only below `lg` breakpoint
-
-**Right side controls:**
-
-| Control | Style |
-|---|---|
-| Settings button | `h-7 px-2 rounded-sm bg-surface-container border border-outline-variant text-fg hover:bg-surface-container-high` |
-| Connect Wallet | `Button ghost-light sm` + `border border-outline-variant bg-surface-container hover:bg-surface-container-high` |
-| Hamburger | Same as settings button, `lg:hidden` |
-| Wallet chip (connected) | `h-7 px-3 bg-surface-container border border-outline-variant rounded-sm text-xs IBM Plex Sans hover:bg-surface-container-high` |
-
----
-
-### Dropdown Menus
-
-> Used in: Settings menu, Wallet menu (Navbar)
-
-- Background: `#FFFFFF`
-- Border: `1px solid #cbd5e1`
-- Border-radius: `rounded-sm` (2px)
-- Shadow: `raised-frosted`
-- `z-30`, `min-w-[180px]` (settings) / `min-w-[240px]` (wallet)
-- Position: `absolute right-0 top-8`
-- Padding: `py-1`
-
-**Menu item:**
-- `w-full flex items-center gap-2 px-3 py-2`
-- Font: IBM Plex Sans, 12px, `text-fg`
-- Hover: `bg-surface-page`, transition `colors`
-- Icon: 12px, `text-fg-muted`
-
-**Wallet chip (connected state):**
-- Green dot (`w-1.5 h-1.5 rounded-full bg-buy`) + truncated address (`0x1234...5678`) + `ChevronDown` icon
-- Address label: `font-mono text-xs text-fg`
-- "Connected" badge header inside dropdown: `text-[10px] uppercase tracking-wider text-fg-muted`
-- Full address: `font-mono text-[11px] text-fg break-all`
-
-**Dismiss:** Click outside or `Escape` key
-
----
-
-### Tables
-
-**Dark background:**
-- Header: `fg-subtle`, uppercase, IBM Plex Sans 500, 12px, `letter-spacing: 0.05em`
-- Row border: `1px solid rgba(255,255,255,0.08)`
-- Row hover: `rgba(255,255,255,0.02)`
-- Cell padding: `12–16px` vertical, `16px` horizontal
-- Numbers: Geist Pixel Square / IBM Plex Mono
-- Text cells: IBM Plex Sans
-
-**Light modal:**
-- Header: `fg-subtle`, uppercase, 12px
-- Row border: `1px solid #E5E7EB`
-- Row hover: `rgba(0,0,0,0.02)`
-
----
-
-### Modals & Overlays
-
-- Background: `#FFFFFF`
-- Border-radius: `12–16px`
-- Padding: `24px`
-- Max-width: `480px` (settings), `640px` (pair selector)
-- Shadow: `0 25px 50px rgba(0,0,0,0.5)`
-- Backdrop: `rgba(0,0,0,0.6)`, `backdrop-filter: blur(4px)`
-- Title: `#111827`, IBM Plex Sans 600, 18px
-- Body text: `#111827` primary, `fg-subtle` secondary
-- Dividers: `#E5E7EB`
-- Mobile: full-width bottom-sheet, border-radius top only
-
----
-
-### Frosted Icon Box
-
-```css
-.frosted-icon-box {
-  width: 2rem; height: 2rem; border-radius: 0.25rem;
-  background: rgba(255,255,255,0.10);
-  border: 1px solid rgba(255,255,255,0.15);
-  color: rgba(255,255,255,0.70);
-}
-```
-Icon size: `1rem`.
-
----
-
-### Token Icons
-
-> Source: `src/components/ui/TokenIcon.tsx`
-
-| Size prop | Class | Pixels |
-|---|---|---|
-| `sm` | `w-5 h-5` | 20×20 |
-| `md` (default) | `w-6 h-6` | 24×24 |
-| `lg` | `w-8 h-8` | 32×32 |
-
-- Shape: `rounded-full object-cover shrink-0`
-- Source: Solana token-list CDN via `getTokenIcon(mint, symbol)`
-- Fallback: `handleIconError` replaces with avatar URL
-
-**Token Pair (`TokenPairIcons`):**
-- Wrapper: `flex -space-x-1` (4px overlap)
-- Each icon: `border-2 border-white` (white separator ring)
-
-### StatusDot
-
-> Source: `src/components/ui/StatusDot.tsx`
-
-- Size: `w-1.5 h-1.5` (6×6px), `rounded-full`
-- Wrapper: `relative inline-flex`
-
-| Variant | Color |
-|---|---|
-| `live` | `text-buy` |
-| `success` | `text-buy` |
-| `danger` | `#ef4444` |
-| `warning` | `#f59e0b` |
-
-**Pulse mode** (`pulse={true}`):
-- Adds `absolute` behind-dot ring: `animate-ping opacity-75` in same color
-- Use sparingly — only for "live" real-time indicators
-
----
-
-### Bottom Status Bar
-
-> Source: `src/components/layout/BottomBar.tsx`
-
-**⚠️ Correction:** Bottom bar is **light**, not dark.
-
-- `fixed bottom-0 left-0 right-0 z-40`
-- Background: `rgba(255,255,255,0.95)` + `backdrop-blur`
-- Border: `border-t border-outline-variant`
-- Height: `36px` (h-9)
-- Max-width: `1400px`, centered, padding `0 16px` / `0 24px` desktop
-
-**Left side:**
-- `StatusDot` (live, no pulse) + "Live" label — IBM Plex Sans 12px `text-fg-muted`
-- SOL price — `font-mono text-xs text-fg-muted`, fetched from Binance every 30s, shows `...` while loading
-
-**Right side:**
-- "Design & Engineered by Yamparala Rahul" — IBM Plex Sans 12px `#94a3b8`
-
----
-
-### Banner / CTA Strip
-
-- Background: `linear-gradient(#0D9373, <darker>)`
-- Text: white, IBM Plex Sans 500, 14px
-- Border-radius: `8px`
-- Padding: `12px 16px`
-- Left: emoji or icon
+> **Source of truth: [`src/design-system/`](./src/design-system/).**
+> Every component is a folder of `<Name>.tsx` + `<Name>.doc.md` +
+> `index.ts`; the `.doc.md` (fixed shape: Usage · Anatomy · Props ·
+> Tokens · States · Motion · A11y) is the component's spec, enforced by
+> `npm run check:portable` and rendered live by the canvas Inspector.
+> **This file never duplicates component specs** — that's how docs
+> stayed truthful. Authoring rules: [`src/design-system/CONVENTIONS.md`](./src/design-system/CONVENTIONS.md).
+
+Current inventory (12):
+
+| Component | Status | | Component | Status |
+|---|---|---|---|---|
+| Avatar | stable | | PostCard | stable |
+| AvatarGroup | stable | | ReactionBar | stable |
+| FollowButton | stable | | Sheet | stable |
+| Lane | stable | | SocialProofChip | stable |
+| TokenChip | stable | | CommentThread | draft |
+| TokenIcon | draft | | Onboarding | draft |
+
+Components consume tokens from this file's foundations — they never
+define color/spacing/motion values of their own (`check:theme`).
+Evolution plan: [docs/cids-roadmap.md](./docs/cids-roadmap.md).
 
 ---
 
@@ -565,10 +243,11 @@ Icon size: `1rem`.
 
 ### Page Structure
 
-- **Split layout:** dark gradient hero header → light `#f1f5f9` body
-- **Max content width:** `1400px`, centered
-- **Page padding:** `24px` desktop · `16px` tablet · `12px` mobile
-- **Trade terminal:** `70/30` split — chart left, order panel right
+- **Dark-only**: every surface sits on the near-black ladder — there is
+  no light body (light theme is a roadmap Phase 3 deliverable).
+- **Canvas** (`/design/canvas`): full-viewport, desktop-first.
+- **Gallery / feed demo / landing**: single centered column, `max-w`
+  ~28rem (mobile-first), gutters on `bg-surface-dim`.
 
 ### Breakpoints
 
@@ -598,14 +277,17 @@ Icon size: `1rem`.
 
 ### Surface Hierarchy (dark-first)
 
-| Layer | Token / Value | Role |
+Tokens only — values live in `globals.css` per theme:
+
+| Layer | Token | Role |
 |---|---|---|
-| 0 | `surface-dim` | Bottom status bar (floor) |
-| 1 | `surface-page` / `#030f1a` | Page background |
-| 2 | `surface-container` / `#1d2836` | Cards, side panels |
-| 3 | `rgba(255,255,255,0.05)` | Hovered cards, active inputs |
-| 4 | `rgba(0,0,0,0.6) + blur(4px)` | Modal backdrop |
-| 5 | `#FFFFFF` | Modals, overlays |
+| 0 | `surface-dim` | Deepest frame, gutters (floor) |
+| 1 | `surface-page` | Page background |
+| 2 | `surface` | Panel body |
+| 3 | `surface-container` | Cards, rows, inputs |
+| 4 | `surface-container-high` | Hover, dropdowns, raised controls |
+| 5 | `surface-bright` | Selected, popovers, tooltips |
+| — | `surface-dim/60 + backdrop-blur` | Modal/sheet backdrop |
 
 ### Shadow Rules
 
@@ -765,18 +447,19 @@ Buttons or links with no visible text label require an **`aria-label`** describi
 
 ## Font Loading
 
-```html
-<!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&family=Instrument+Sans:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+```tsx
+// src/app/layout.tsx — next/font (self-hosted by Next, no external <link>)
+import { Geist, Geist_Mono } from "next/font/google";
+// exposed as --font-geist-sans / --font-geist-mono,
+// mapped to --font-sans / --font-mono in globals @theme
 ```
 
 ```css
-/* Self-hosted: place .woff2 in /public/fonts/ */
+/* src/app/globals.css — the pixel data font */
 @font-face {
-  font-family: 'Geist Pixel Square';
-  src: url('/fonts/GeistPixel-Square.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
+  font-family: "GeistPixelSquare";
+  src: url("/fonts/GeistPixelSquare.woff2") format("woff2");
+  font-weight: 400 700;
   font-display: swap;
 }
 ```
@@ -819,38 +502,32 @@ border-white/15              /* subtle glass rim on hero/glass only */
 ### Font Tokens
 
 ```
-/* Hero numbers */
-font-['Geist_Pixel_Square','IBM_Plex_Mono',monospace]
+/* Financial numbers (hero → secondary) */
+.data-lg  .data-md  .data-sm      /* GeistPixelSquare ramp */
 
-/* Headings */
-font-['Geist_Mono','IBM_Plex_Mono',monospace] font-bold
+/* UI / labels / body */
+font-sans                          /* Geist */
 
-/* UI / Labels */
-font-['IBM_Plex_Sans','Inter',sans-serif]
+/* Code, addresses, handles */
+font-mono                          /* Geist Mono */
 
-/* Section labels */
-font-['IBM_Plex_Sans'] font-semibold text-[11px] uppercase tracking-[0.1em]
+/* Section labels (pattern) */
+font-sans font-semibold text-[0.6875rem] uppercase tracking-[0.1em] text-fg-subtle
 ```
 
 ### Component Prompt Recipes
 
 **Data table:**
-> "`bg-surface-container`. Headers: IBM Plex Sans 600, 12px, uppercase, `tracking-[0.05em]`, `text-fg-subtle`. Numbers: Geist Pixel Square, `text-fg`. Row rule: `border-outline-variant`. Row hover: `bg-surface-container-high`. `text-buy` positive, `text-sell` negative."
+> "`bg-surface-container`. Headers: `font-sans` 600, 12px, uppercase, `tracking-[0.05em]`, `text-fg-subtle`. Numbers: `.data-md` + `tabular-nums`, `text-fg`. Row rule: `border-outline-variant`. Row hover: `bg-surface-container-high`. `text-buy` positive, `text-sell` negative — magnitude via `Math.abs`, direction via sign."
 
 **Card:**
-> "`bg-surface-container`, `border border-outline-variant`, `rounded-sm` (5–8px), `16–24px` padding. Layered shadow; hover lifts to `bg-surface-container-high`. Text `text-fg` / `text-fg-muted`."
+> "`bg-surface-container`, `border border-outline-variant`, `rounded-card`, `16–24px` padding. Layered shadow; hover lifts to `bg-surface-container-high`. Text `text-fg` / `text-fg-muted`."
 
-**Modal:**
-> "`bg-surface` panel, `rounded-xl` (12px), `24px` padding, deep shadow `0 24px 80px rgba(0,0,0,0.7)`, over `bg-surface-dim/60` backdrop with `backdrop-blur`. Title: `text-fg`, IBM Plex Sans 600, 18px."
+**Sheet / modal:**
+> "`bg-surface` panel, `rounded-t-sheet`, `24px` padding, deep shadow, over `bg-surface-dim/60` backdrop with `backdrop-blur`. Title: `text-fg`, `font-sans` 600. Behavior via the DS `Sheet` (Radix Dialog)."
 
 **Primary button:**
-> "`bg-brand text-on-brand` (DARK text on mint), IBM Plex Sans 600 14px, `10px 20px` padding, `rounded-sm`. Hover `bg-brand-hover`, targeted `transition-[background-color,color,box-shadow,transform]`, `active:scale-[0.96]`."
+> "`bg-brand text-on-brand` (DARK text on mint), `font-sans` 600 14px, `rounded-control`. Hover `bg-brand-hover`, targeted `transition-[background-color,color,box-shadow,transform]` (never `transition-all`), `active:scale-[0.96]`."
 
-**Filter pills:**
-> "Fully-rounded (`9999px`), `min-h-[40px]`. Active: `bg-brand text-on-brand` + layered mint shadow. Inactive: transparent, `border-outline-variant`, `text-fg-muted`. Hover: brighten border + text."
-
-**Trade layout:**
-> "70/30 CSS Grid. Left: chart, `bg-surface`. Right: order panel, `bg-surface-container`, `border-outline-variant` left border. Stack vertically below `1024px`."
-
-**Hero section:**
-> "Full-bleed gradient: `#000003 → #000036 (37.9%) → #143f79 (81.7%) → #fcffff (285%)` (the one place a literal gradient is allowed — it's a `style` background, not a utility class). Geist Mono bold display heading. Fade-up on entry (`400ms ease-out`)."
+**Segmented control:**
+> "Use the DS `Lane`. Active: `bg-brand text-on-brand` + layered mint shadow. Inactive: transparent, `text-fg-muted`."

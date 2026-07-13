@@ -173,16 +173,16 @@ one-PR-at-a-time rhythm.
 
 The cheapest phase, and the one that makes "well-maintained" honest.
 
-- [ ] **DESIGN.md truth pass**: delete/rewrite the stale Components
+- [x] **DESIGN.md truth pass**: delete/rewrite the stale Components
       section (dead Button, Instrument Sans, `transition-all`, old
       hex, old title). DESIGN.md must only describe what exists.
-- [ ] **README truth**: 12 components, TokenIcon listed.
-- [ ] **CI**: GitHub Actions workflow — `tsc` + lint + all 4 guards +
+- [x] **README truth**: 12 components, TokenIcon listed.
+- [x] **CI**: GitHub Actions workflow — `tsc` + lint + all 4 guards +
       vitest on every PR. The contract stops depending on memory.
 - [ ] **Orphan policy**: decide Skeleton/Tooltip (migrate → DS in
       Phase 2), `agent-elements` (delete or label), `evilcharts`
       (label as vendored, out-of-system).
-- [ ] **`check:polish` de-brittling**: rules keyed to component
+- [x] **`check:polish` de-brittling**: rules keyed to component
       *pattern* (every DS folder) instead of literal paths.
 
 **Gate:** CI green on a no-op PR; grep DESIGN.md for `Button.tsx`,

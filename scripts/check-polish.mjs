@@ -100,6 +100,33 @@ for (const c of checks) {
   for (const [pat, rule] of c.refute ?? []) refute(p, src, pat, rule);
 }
 
+// Rule G2 (coverage): every component folder under src/design-system must
+// either carry specific polish assertions above, or be listed here as a
+// conscious "no interaction polish to pin" decision. A new component that
+// is in neither place fails — polish coverage can't be skipped silently.
+const NO_SPECIFIC_RULES = new Set([
+  "Avatar", // static disc — no interaction states
+  "AvatarGroup", // static composition of Avatar
+  "TokenIcon", // static image w/ initials fallback
+  "SocialProofChip", // static text chip
+  "PostCard", // composes covered parts (ReactionBar, TokenChip)
+  "CommentThread", // draft — assertions land with its stable promotion
+  "Onboarding", // draft — assertions land with its stable promotion
+]);
+const covered = new Set(
+  checks.map((c) => c.file.split("/")[2]) // src/design-system/<Name>/…
+);
+for (const name of readdirSync(DESIGN_SYSTEM)) {
+  const p = join(DESIGN_SYSTEM, name);
+  if (!statSync(p).isDirectory()) continue;
+  if (!covered.has(name) && !NO_SPECIFIC_RULES.has(name)) {
+    fail(
+      p,
+      "uncovered: add polish assertions to scripts/check-polish.mjs (or list it in NO_SPECIFIC_RULES with a reason)"
+    );
+  }
+}
+
 if (failures.length > 0) {
   console.error("✗ polish-check failed:\n");
   for (const { file, rule } of failures) console.error(`  ${file}: ${rule}`);
