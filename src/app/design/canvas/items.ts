@@ -67,6 +67,15 @@ export const CANVAS_ITEMS: CanvasItemDef[] = [
   { kind: "demo", id: "Sparkline", title: "Sparkline", x: CX + COL * 3 + 40, y: CY + 2280, w: 300 },
   { kind: "demo", id: "DataTable", title: "DataTable", x: CX, y: CY + 2520, w: 560 },
 
+  // ── Zone: Crypto (the whitespace no reference system ships) ──
+  { kind: "label", id: "z-crypto", title: "Crypto — the vertical", x: CX, y: CY + 2900 },
+  { kind: "demo", id: "AddressChip", title: "AddressChip", x: CX, y: CY + 2960, w: 340 },
+  { kind: "demo", id: "PegBadge", title: "PegBadge", x: CX + COL, y: CY + 2960, w: 340 },
+  { kind: "demo", id: "NetworkBadge", title: "NetworkBadge", x: CX + COL * 2, y: CY + 2960, w: 300 },
+  { kind: "demo", id: "TxStatus", title: "TxStatus", x: CX + COL * 3, y: CY + 2960, w: 340 },
+  { kind: "demo", id: "AmountInput", title: "AmountInput", x: CX, y: CY + 3200, w: 340 },
+  { kind: "demo", id: "OrderBook", title: "Order book — exchange density (demo)", x: CX + COL, y: CY + 3200, w: 460 },
+
   // ── Zone: Screens (live build vs HTML mock, side by side) ────
   { kind: "label", id: "z-screens", title: "Screens — mock vs build", x: 1780, y: 60 },
   {
