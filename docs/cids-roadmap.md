@@ -231,11 +231,13 @@ One breaking-change window, done once, announced in CHANGELOG.
 - [x] **A11y repairs**: ReactionBar picker → Radix Popover (Escape,
       outside-click, focus return — tested); Lane → roving tabindex +
       Arrow/Home/End (tested).
-- [ ] **Test depth**: add vitest-axe (every component, every theme);
-      keyboard-nav tests for interactive components; theme-render
-      tests (dark + mono); reduced-motion assertion helpers.
-- [ ] **Migrate Skeleton + Tooltip into the DS** (+docs +tests) —
-      instant +2 inventory, Tooltip already Radix-based.
+- [x] **Test depth**: axe matrix — every component × dark/mono, zero
+      violations (caught + fixed a real aria-prohibited-attr in
+      SocialProofChip); keyboard tests (Lane arrows, popover/sheet
+      Escape + focus-return); motion/reduced-motion contract test.
+- [x] **Skeleton + Tooltip migrated into the DS** (docs, tests, canvas
+      demos; Tooltip re-tokenized: z-ladder, elevation, text-fg) —
+      14 components, 12 stable.
 - [x] TokenIcon promoted draft → stable under the new contract
       (10 stable / 2 draft).
 

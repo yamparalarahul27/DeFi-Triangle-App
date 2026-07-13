@@ -48,5 +48,5 @@ None.
 
 ## A11y
 
-- The whole chip carries `aria-label` ("41 watching"); glyph/count/label are `aria-hidden` so AT reads one clean phrase (and compact stays meaningful).
+- Accessible name is real text — count + label are readable (compact renders the label `sr-only`), only the ◔ glyph is `aria-hidden`. No `aria-label` on the generic span (axe `aria-prohibited-attr`).
 - Weight stays at `text-xs`/muted so it never out-shouts adjacent price data.

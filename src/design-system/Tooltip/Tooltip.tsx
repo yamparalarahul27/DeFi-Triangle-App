@@ -2,6 +2,7 @@
 
 import { Dialog as RadixDialog, Tooltip as RadixTooltip } from "radix-ui";
 import { useSyncExternalStore, type ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 const COARSE_POINTER_QUERY = "(pointer: coarse)";
 const HOVER_NONE_QUERY = "(hover: none)";
@@ -36,16 +37,25 @@ function useIsTouchDevice(): boolean {
   return useSyncExternalStore(subscribeTouch, readTouch, readTouchServer);
 }
 
+/**
+ * Hover tooltip that adapts to input: pointer devices get a Radix Tooltip;
+ * touch devices (no hover) get a bottom-sheet Radix Dialog instead, so the
+ * content is actually reachable.
+ */
 export function Tooltip({
   content,
   children,
   side = "top",
   title = "Details",
+  className,
 }: {
   content: ReactNode;
   children: ReactNode;
   side?: "top" | "right" | "bottom" | "left";
+  /** Sheet heading on touch devices (tooltips have no title on pointer). */
   title?: string;
+  /** Merged onto the floating content (tooltip bubble / touch sheet). */
+  className?: string;
 }) {
   const isTouch = useIsTouchDevice();
 
@@ -54,21 +64,22 @@ export function Tooltip({
       <RadixDialog.Root>
         <RadixDialog.Trigger asChild>{children}</RadixDialog.Trigger>
         <RadixDialog.Portal>
-          <RadixDialog.Overlay className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0" />
+          <RadixDialog.Overlay className="fixed inset-0 z-[var(--z-modal)] bg-black/40 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0" />
           <RadixDialog.Content
             aria-describedby={undefined}
-            className="fixed bottom-0 left-0 right-0 z-50 max-h-[80vh] overflow-y-auto rounded-t-lg bg-surface-container p-5 pb-7 shadow-xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:slide-in-from-bottom data-[state=closed]:slide-out-to-bottom"
+            className={cn(
+              "fixed bottom-0 left-0 right-0 z-[var(--z-modal)] max-h-[80vh] overflow-y-auto rounded-t-sheet bg-surface-container p-5 pb-7 shadow-overlay data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:slide-in-from-bottom data-[state=closed]:slide-out-to-bottom",
+              className,
+            )}
           >
             <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-surface-bright" />
             <RadixDialog.Title className="mb-3 pr-8 text-sm font-semibold text-fg">
               {title}
             </RadixDialog.Title>
-            <div className="text-sm leading-relaxed text-fg">
-              {content}
-            </div>
+            <div className="text-sm leading-relaxed text-fg">{content}</div>
             <RadixDialog.Close
               aria-label="Close"
-              className="absolute top-3 right-3 inline-flex h-7 w-7 items-center justify-center rounded-sm text-fg-muted hover:bg-surface-page hover:text-fg transition-colors"
+              className="absolute right-3 top-3 inline-flex h-7 w-7 items-center justify-center rounded-control text-fg-muted transition-colors hover:bg-surface-page hover:text-fg"
             >
               ×
             </RadixDialog.Close>
@@ -86,10 +97,13 @@ export function Tooltip({
           <RadixTooltip.Content
             side={side}
             sideOffset={4}
-            className="z-50 max-w-[260px] rounded-sm bg-surface-bright px-2.5 py-1.5 text-[11px] leading-snug text-white shadow-md data-[state=delayed-open]:animate-in data-[state=closed]:animate-out data-[state=delayed-open]:fade-in-0 data-[state=closed]:fade-out-0"
+            className={cn(
+              "z-[var(--z-toast)] max-w-[260px] rounded-control bg-surface-bright px-2.5 py-1.5 text-[11px] leading-snug text-fg shadow-raised data-[state=delayed-open]:animate-in data-[state=closed]:animate-out data-[state=delayed-open]:fade-in-0 data-[state=closed]:fade-out-0",
+              className,
+            )}
           >
             {content}
-            <RadixTooltip.Arrow className="fill-fg" />
+            <RadixTooltip.Arrow className="fill-surface-bright" />
           </RadixTooltip.Content>
         </RadixTooltip.Portal>
       </RadixTooltip.Root>

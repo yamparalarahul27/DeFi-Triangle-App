@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/utils";
 
+/** Shimmering placeholder block. Shape it with className (w-*, h-*). */
 export function Skeleton({
   className,
   style,
@@ -13,30 +14,36 @@ export function Skeleton({
     <div
       aria-hidden
       className={cn(
-        "animate-pulse bg-surface-container-high rounded-sm",
-        className
+        "animate-pulse rounded-control bg-surface-container-high",
+        className,
       )}
       style={style}
     />
   );
 }
 
+/** Card-shaped loading region: labelled, aria-busy, three shimmer rows. */
 export function SectionSkeleton({
   height,
   label,
+  className,
 }: {
   height: number;
   label?: string;
+  className?: string;
 }) {
   return (
     <section
       aria-busy="true"
       aria-label={label ? `${label} loading` : "Loading"}
-      className="bg-surface-container rounded-sm border border-outline-variant p-4 sm:p-6"
+      className={cn(
+        "rounded-card border border-outline-variant bg-surface-container p-4",
+        className,
+      )}
       style={{ minHeight: height }}
     >
       {label ? (
-        <div className="text-[10px] uppercase tracking-wider text-fg-muted mb-3">
+        <div className="mb-3 text-[10px] uppercase tracking-wider text-fg-muted">
           {label}
         </div>
       ) : null}

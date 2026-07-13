@@ -292,16 +292,28 @@ This is the same shape of bug as guideline #5 — *local environment lying to yo
 
 ### Accepted upstream vulnerabilities
 
-The following `npm audit` findings are **pre-existing Solana ecosystem issues** with no patched upstream release. They arrived via the `@jup-ag/wallet-adapter` → `@solana-mobile/*` transitive chain and are accepted risk pending a Jupiter wallet-adapter major upgrade tracked as a separate task.
+> Re-baselined 2026-07-13 (Phase 2b). The previously documented
+> `bigint-buffer` chain (GHSA-3gc7-fjrx-p6mg) is **no longer reported** —
+> fixed upstream and verified absent per this section's own removal rule.
+> `npm audit fix` (non-breaking) was applied the same day: 18 → 7 findings.
 
-- [GHSA-3gc7-fjrx-p6mg](https://github.com/advisories/GHSA-3gc7-fjrx-p6mg) — `bigint-buffer` buffer overflow via `toBigIntLE()` (CVSS 7.5)
-  - Transitive via `@solana/buffer-layout-utils` → `@solana/spl-token`
-  - Surfaces as 3 high-severity audit entries: `bigint-buffer`, `@solana/buffer-layout-utils`, `@solana/spl-token`
+Current accepted state:
+
+- **1 high — `next@16.2.4`** (multiple advisories incl. middleware bypass
+  GHSA-26hh-7cqf-hhc6, cache poisoning GHSA-3g8h-86w9-wvmq). Fix requires a
+  framework version bump (`npm audit fix --force` → next 16.3.x) — tracked
+  as its own follow-up PR with full build/CI verification, not mixed into
+  feature PRs.
+- **6 moderate** — transitive via the dormant engine's Solana chain and the
+  `shadcn` CLI's `@modelcontextprotocol/sdk` (dev-only, not shipped).
+  Accepted pending upstream releases.
 
 Rules:
 - Do **not** add new high or critical vulnerabilities beyond the above.
-- Do **not** remove this section without first upgrading `@jup-ag/wallet-adapter` and verifying the audit no longer reports these advisories.
-- The audit hook will fire on these — that is expected and documented. Verify the reported vulns match this list before proceeding.
+- Do **not** remove this section without re-running `npm audit` and
+  verifying the findings above are resolved.
+- The audit hook will fire on these — that is expected and documented.
+  Verify the reported vulns match this list before proceeding.
 
 ## Pending followups
 

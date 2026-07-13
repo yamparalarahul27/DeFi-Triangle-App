@@ -112,6 +112,8 @@ const NO_SPECIFIC_RULES = new Set([
   "PostCard", // composes covered parts (ReactionBar, TokenChip)
   "CommentThread", // draft — assertions land with its stable promotion
   "Onboarding", // draft — assertions land with its stable promotion
+  "Skeleton", // static shimmer; reduced-motion via the global reset
+  "Tooltip", // behavior is Radix Tooltip/Dialog; motion via data-[state] presets
 ]);
 const covered = new Set(
   checks.map((c) => c.file.split("/")[2]) // src/design-system/<Name>/…
