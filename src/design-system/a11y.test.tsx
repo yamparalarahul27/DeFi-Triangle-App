@@ -11,6 +11,11 @@ import { cleanup, render } from "@testing-library/react";
 import { useState } from "react";
 import { axe } from "vitest-axe";
 import {
+  DataTable,
+  RollingNumber,
+  PriceChange,
+  StatCell,
+  Sparkline,
   Switch,
   Checkbox,
   Select,
@@ -132,6 +137,28 @@ const CASES: Record<string, () => React.ReactElement> = {
     <ToastProvider>
       <ToastFirer />
     </ToastProvider>
+  ),
+  RollingNumber: () => <RollingNumber value="$184.26" />,
+  PriceChange: () => (
+    <div className="flex gap-3">
+      <PriceChange value={4.2} />
+      <PriceChange value={-4.2} />
+    </div>
+  ),
+  StatCell: () => (
+    <StatCell label="Market cap" value="$1.09B" change={<PriceChange value={2.1} />} />
+  ),
+  Sparkline: () => <Sparkline data={[1, 3, 2, 5]} label="7-day trend" />,
+  DataTable: () => (
+    <DataTable
+      caption="Markets"
+      rowKey={(r: { sym: string }) => r.sym}
+      rows={[{ sym: "JUP", px: 0.81 }, { sym: "SOL", px: 184.26 }]}
+      columns={[
+        { key: "sym", header: "Token", cell: (r: { sym: string }) => r.sym, sortable: true },
+        { key: "px", header: "Price", align: "right", cell: (r: { px: number }) => `$${r.px}` },
+      ]}
+    />
   ),
   // Portal components rendered OPEN so axe sees the real overlay DOM.
   Select: () => (

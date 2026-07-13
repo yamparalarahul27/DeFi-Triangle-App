@@ -78,6 +78,8 @@ const REQUIRED = [
   "--text-data-md",
   "--text-data-sm",
   "--font-pixel",
+  "--row-h",
+  "--cell-px",
 ];
 for (const tok of REQUIRED) {
   if (!globals.includes(tok)) fail(GLOBALS, `missing token ${tok} in @theme`);

@@ -101,6 +101,13 @@
   --space-7: 56px;
   --space-8: 64px;
 
+  /* Data-surface density tokens — the row grid DataTable/StatCell
+     consume. The density axis re-values THESE (plus spacing + the data
+     type ramp), so "comfortable" and "compact" are two values of one
+     variable set, never two component forks. */
+  --row-h: 44px;
+  --cell-px: 12px;
+
   /* Z-index scale — one ladder for the whole system; consume via
      z-[var(--z-*)] (numeric z-10/20/… utilities are guard-banned in the
      DS). base < raised (popovers, HUD) < sticky (headers, bars) <
@@ -274,6 +281,32 @@
   --id-tide: #a78bfa;
 }
 
+/* ── Density: compact ────────────────────────────────────────
+   The terminal axis (cids-roadmap Phase 5). Activate with
+   <html data-density="compact"> (canvas Theme Studio has the switch).
+   Orthogonal to themes — it re-values the spacing scale, the financial
+   type ramp, and the row grid; token-consuming components follow with
+   zero component changes. Touch targets: interactive controls keep
+   their own heights (Button/IconButton do not shrink below 28px). */
+[data-density="compact"] {
+  --space-1: 6px;
+  --space-2: 12px;
+  --space-3: 18px;
+  --space-4: 24px;
+  --space-5: 30px;
+  --space-6: 36px;
+  --space-7: 42px;
+  --space-8: 48px;
+
+  --text-data-lg-size: 1rem;
+  --text-data-lg-size-desktop: 1.5rem;
+  --text-data-md-size: 0.8125rem;
+  --text-data-sm-size: 0.6875rem;
+
+  --row-h: 32px;
+  --cell-px: 8px;
+}
+
 @theme inline {
   --color-background: var(--surface-page);
   --color-foreground: var(--fg);
@@ -426,6 +459,23 @@ html {
 /* Spring-pop — reaction feedback on human actions (DESIGN.md → Motion,
    budgeted playfulness). Uses --motion-spring (250ms overshoot bezier).
    Neutralized by the prefers-reduced-motion reset below. */
+/* Digit roll — RollingNumber's on-change transition (discrete, never
+   looping; data surfaces stay calm). Neutralized by the reduced-motion
+   reset below. */
+@keyframes roll-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.45em);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-roll-in {
+  animation: roll-in var(--motion-settle);
+}
+
 @keyframes pop {
   0% {
     transform: scale(1);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import {
   Avatar,
   TokenIcon,
@@ -34,6 +34,12 @@ import {
   useToast,
   Divider,
   EmptyState,
+  DataTable,
+  type Column,
+  RollingNumber,
+  PriceChange,
+  StatCell,
+  Sparkline,
 } from "@/design-system";
 
 const SURFACES = [
@@ -263,6 +269,38 @@ function ToastInner() {
   );
 }
 
+function RollingDemo() {
+  const [px, setPx] = useState(184.26);
+  useEffect(() => {
+    const id = setInterval(
+      () => setPx((v) => +(v + (Math.random() - 0.5) * 0.4).toFixed(2)),
+      1200,
+    );
+    return () => clearInterval(id);
+  }, []);
+  return (
+    <div className="flex items-baseline gap-3">
+      <RollingNumber value={`$${px.toFixed(2)}`} className="data-lg" />
+      <PriceChange value={+(px - 184.26).toFixed(2)} suffix="" />
+    </div>
+  );
+}
+
+type MarketRow = { sym: string; px: number; ch: number; vol: string; trend: number[] };
+const MARKET_ROWS: MarketRow[] = [
+  { sym: "SOL", px: 184.26, ch: 3.6, vol: "$3.18B", trend: [3, 4, 3, 5, 6, 7] },
+  { sym: "JUP", px: 0.8123, ch: -1.7, vol: "$142.6M", trend: [5, 4, 4, 3, 3, 2] },
+  { sym: "BONK", px: 0.00002314, ch: 6.9, vol: "$318.4M", trend: [2, 2, 3, 4, 4, 6] },
+  { sym: "JTO", px: 2.448, ch: -2.1, vol: "$38.2M", trend: [5, 5, 4, 4, 3, 3] },
+];
+const MARKET_COLS: Column<MarketRow>[] = [
+  { key: "sym", header: "Token", cell: (r) => r.sym, sortable: true, sortValue: (r) => r.sym },
+  { key: "px", header: "Price", align: "right", sortable: true, cell: (r) => `$${r.px}`, sortValue: (r) => r.px },
+  { key: "ch", header: "24h", align: "right", sortable: true, cell: (r) => <PriceChange value={r.ch} />, sortValue: (r) => r.ch },
+  { key: "vol", header: "Volume", align: "right", cell: (r) => r.vol },
+  { key: "trend", header: "7d", align: "right", cell: (r) => <Sparkline data={r.trend} width={64} height={20} /> },
+];
+
 export const DEMOS: Record<string, () => ReactNode> = {
   surfaces: () => (
     <div className="grid grid-cols-3 gap-2">
@@ -376,6 +414,31 @@ export const DEMOS: Record<string, () => ReactNode> = {
     </div>
   ),
   Dialog: DialogDemo,
+  RollingNumber: RollingDemo,
+  PriceChange: () => (
+    <div className="flex items-center gap-4">
+      <PriceChange value={9.4} />
+      <PriceChange value={-4.2} />
+      <PriceChange value={0.04} suffix=" bps" precision={2} />
+    </div>
+  ),
+  StatCell: () => (
+    <div className="grid grid-cols-3 divide-x divide-outline-variant rounded-card border border-outline-variant bg-surface-container">
+      <StatCell label="Market cap" value="$1.09B" />
+      <StatCell label="24h volume" value="$84.2M" change={<PriceChange value={12.4} />} />
+      <StatCell label="Liquidity" value="$18.7M" change={<PriceChange value={-0.8} />} />
+    </div>
+  ),
+  Sparkline: () => (
+    <div className="flex items-center gap-4">
+      <Sparkline data={[2, 3, 2, 5, 6, 8]} label="up trend" />
+      <Sparkline data={[8, 7, 7, 5, 4, 3]} label="down trend" />
+      <Sparkline data={[4, 5, 4, 5, 4, 5]} tone="neutral" label="flat" />
+    </div>
+  ),
+  DataTable: () => (
+    <DataTable columns={MARKET_COLS} rows={MARKET_ROWS} rowKey={(r) => r.sym} caption="Markets" />
+  ),
   Switch: SwitchDemo,
   Checkbox: CheckboxDemo,
   Select: SelectDemo,
