@@ -194,7 +194,7 @@ export function CanvasApp({
       </div>
 
       {/* HUD */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-center justify-between px-4 py-3">
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-[var(--z-raised)] flex items-center justify-between px-4 py-3">
         <div className="pointer-events-auto flex items-center gap-3 rounded-sm border border-outline bg-surface-page/95 px-3 py-2">
           <span
             className="text-sm font-semibold text-fg"
@@ -221,20 +221,20 @@ export function CanvasApp({
 
       {/* layers panel */}
       {layersOpen && (
-        <div className="pointer-events-none absolute left-4 top-16 z-10">
+        <div className="pointer-events-none absolute left-4 top-16 z-[var(--z-raised)]">
           <LayersPanel selected={selected} onSelect={zoomToItem} />
         </div>
       )}
 
       {/* inspector */}
       {selected && (
-        <div className="pointer-events-none absolute right-4 top-16 z-10">
+        <div className="pointer-events-none absolute right-4 top-16 z-[var(--z-raised)]">
           <Inspector key={selected} selected={selected} docs={docs} sources={sources} onClose={() => setSelected(null)} />
         </div>
       )}
 
       {/* desktop-first note (coarse pointers) */}
-      <div className="pointer-events-none absolute bottom-3 left-1/2 z-10 hidden -translate-x-1/2 rounded-sm border border-outline bg-surface-page/95 px-3 py-1.5 font-mono text-[11px] text-fg-muted [@media(pointer:coarse)]:block">
+      <div className="pointer-events-none absolute bottom-3 left-1/2 z-[var(--z-raised)] hidden -translate-x-1/2 rounded-sm border border-outline bg-surface-page/95 px-3 py-1.5 font-mono text-[11px] text-fg-muted [@media(pointer:coarse)]:block">
         canvas is desktop-first for now — drag to pan · use + / −
       </div>
     </div>

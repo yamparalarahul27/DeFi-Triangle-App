@@ -193,19 +193,27 @@ The cheapest phase, and the one that makes "well-maintained" honest.
 Tokenize what DESIGN.md already promises. Theme Studio needs these
 axes to be impressive; density (R2) is impossible without them.
 
-- [ ] **Spacing tokens** (`--space-1…8`, 8px base) + adopt in DS
-      components (replace raw Tailwind spacing where semantic).
-- [ ] **Type scale tokens** (`--text-*` size/leading pairs incl. the
-      financial `data-lg/md/sm` ramp as tokens, not classes).
-- [ ] **Elevation tokens** (`--elevation-0…3` layered shadows) —
-      un-hardcode the 4 inline shadows.
-- [ ] **Z-index scale** (`--z-base/raised/overlay/toast`).
-- [ ] **Motion into `@theme`** (currently raw-var only).
-- [ ] **State-surface completeness**: add `error-surface`,
-      `success-surface` (buy/sell/warning/info have them; these don't).
-- [ ] **Alias hygiene**: document the two-layer token naming
-      (raw → `--color-*`) in DESIGN.md as the ref→sys story.
-- [ ] Extend `check:theme`/`check:contrast` to the new categories.
+- [x] **Spacing tokens** (`--space-1…8`, 8px base). Shipped as raw
+      vars + usage rules (deliberately not remapping Tailwind's scale);
+      component-wide adoption rides with the Phase-5 density axis,
+      where it becomes load-bearing.
+- [x] **Type scale tokens** — financial ramp tokenized
+      (`--text-data-*` + `font-pixel` utilities; `.data-*` classes now
+      consume the vars). General UI sizes stay on Tailwind's ramp until
+      density work needs them.
+- [x] **Elevation tokens** (`--elevation-1…3` + `--glow-brand`/`-strong`
+      → `shadow-card/raised/overlay/glow-brand*`) — all 4 hardcoded
+      shadows replaced.
+- [x] **Z-index scale** (`--z-base/raised/sticky/overlay/modal/toast`),
+      adopted across DS + design app.
+- [x] **Motion into `@theme`** — durations/easings split into tokens;
+      `ease-settle`/`ease-spring` utilities.
+- [x] **State-surface completeness**: `error-surface` +
+      `success-surface` added.
+- [x] **Alias hygiene**: raw → system tiers documented in DESIGN.md
+      (Material ref→sys analogue).
+- [x] Extended `check:theme`: T3 requires every new category; new T4
+      bans raw shadows / numeric z / literal boxShadow in DS + design app.
 
 **Gate:** zero hardcoded shadows/z-index in DS (`grep` guard added);
 every token category has a DESIGN.md table + guard coverage.

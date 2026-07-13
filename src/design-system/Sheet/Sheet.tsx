@@ -49,7 +49,7 @@ export function Sheet({
   return (
     <RadixDialog.Root open={open} onOpenChange={onOpenChange}>
       <RadixDialog.Portal>
-        <RadixDialog.Overlay className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0" />
+        <RadixDialog.Overlay className="fixed inset-0 z-[var(--z-modal)] bg-black/50 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0" />
         <RadixDialog.Content
           aria-describedby={undefined}
           style={{
@@ -57,7 +57,7 @@ export function Sheet({
             transition: dragging ? "none" : "transform var(--motion-settle)",
           }}
           className={cn(
-            "fixed inset-x-0 bottom-0 z-50 mx-auto flex max-h-[85dvh] max-w-[430px] flex-col rounded-t-sheet border border-b-0 border-outline-variant bg-surface shadow-2xl",
+            "fixed inset-x-0 bottom-0 z-[var(--z-modal)] mx-auto flex max-h-[85dvh] max-w-[430px] flex-col rounded-t-sheet border border-b-0 border-outline-variant bg-surface shadow-overlay",
             "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:slide-in-from-bottom data-[state=closed]:slide-out-to-bottom",
             className,
           )}

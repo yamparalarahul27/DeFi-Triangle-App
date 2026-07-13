@@ -73,7 +73,7 @@ const checks = [
     file: "src/design-system/Lane/Lane.tsx",
     expect: [
       [/var\(--motion-fast\)/, "segment transition on --motion-fast"],
-      [/color-mix\(in srgb, var\(--brand\)/, "glow derives from --brand, not hardcoded mint"],
+      [/var\(--glow-brand\)/, "glow via the --glow-brand token (brand-derived in globals)"],
     ],
   },
   {

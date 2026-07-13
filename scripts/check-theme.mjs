@@ -60,9 +60,49 @@ const REQUIRED = [
   "--color-buy",
   "--color-sell",
   "--color-warning",
+  // Phase-1 foundations (cids-roadmap §5): every category tokenized.
+  "--color-error-surface",
+  "--color-success-surface",
+  "--space-1",
+  "--space-8",
+  "--z-raised",
+  "--z-modal",
+  "--shadow-card",
+  "--shadow-raised",
+  "--shadow-overlay",
+  "--glow-brand",
+  "--duration-fast",
+  "--ease-settle",
+  "--ease-spring",
+  "--text-data-lg",
+  "--text-data-md",
+  "--text-data-sm",
+  "--font-pixel",
 ];
 for (const tok of REQUIRED) {
   if (!globals.includes(tok)) fail(GLOBALS, `missing token ${tok} in @theme`);
+}
+
+// Rule T4 (Phase-1 gate): inside the design system and the design app,
+// elevation and stacking must flow through tokens — no Tailwind default
+// shadow utilities, no numeric z-index utilities, no literal box-shadow
+// values. Use shadow-card/raised/overlay/glow-brand* and z-[var(--z-*)].
+const TOKENED_DIRS = [join(SRC, "design-system"), join(SRC, "app/design")];
+const RAW_SHADOW = /\bshadow-(sm|md|lg|xl|2xl)\b/;
+const RAW_Z = /\bz-(10|20|30|40|50)\b/;
+const RAW_BOXSHADOW = /boxShadow:\s*["'`][^"'`]*rgba?\(/;
+for (const dir of TOKENED_DIRS) {
+  for (const f of walk(dir)) {
+    if (/\.test\.tsx?$/.test(f)) continue;
+    const src = readFileSync(f, "utf8");
+    let m;
+    if ((m = src.match(RAW_SHADOW)))
+      fail(f, `raw Tailwind shadow "${m[0]}" — use shadow-card/raised/overlay (elevation tokens)`);
+    if ((m = src.match(RAW_Z)))
+      fail(f, `raw z-index "${m[0]}" — use z-[var(--z-*)] (stacking tokens)`);
+    if ((m = src.match(RAW_BOXSHADOW)))
+      fail(f, `literal boxShadow value — use an elevation/glow token`);
+  }
 }
 
 if (failures.length === 0) {

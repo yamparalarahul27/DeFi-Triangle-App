@@ -4,10 +4,10 @@ import { cn } from "@/lib/utils";
 
 export type LaneOption<T extends string> = { value: T; label: string };
 
-// Active-segment glow: dark drop + brand halo derived from --brand (color-mix,
-// not a hardcoded mint rgb), per the tide LaneToggle spec.
-const ACTIVE_SHADOW =
-  "0 1px 2px rgba(4,17,15,0.4), 0 4px 8px color-mix(in srgb, var(--brand) 20%, transparent)";
+// Active-segment glow: the tokenized brand halo (--glow-brand, defined in
+// globals.css where it derives from --brand via color-mix — never a
+// hardcoded mint rgb), per the tide LaneToggle spec.
+const ACTIVE_SHADOW = "var(--glow-brand)";
 const SEGMENT_TRANSITION =
   "background-color var(--motion-fast), color var(--motion-fast), box-shadow var(--motion-fast)";
 
