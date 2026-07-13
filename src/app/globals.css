@@ -58,6 +58,8 @@
   --sell-surface: #211214;
   --warning-surface: #211d10;
   --info-surface: #111827;
+  --error-surface: #221114;
+  --success-surface: #0f1f1a;
 
   /* Identity hues — tide social layer. Per-person color for avatars,
      handle accents, and presence ONLY — never for data or state.
@@ -85,14 +87,69 @@
   --radius-card: 8px;
   --radius-sheet: 12px;
 
-  /* Motion primitives — duration + easing pairs. Consume via CSS
-     (transition: transform var(--motion-fast)) or an arbitrary-value
-     utility. fast = state/hover; settle = enter/morph; spring = playful
-     feedback on human actions only (react, follow). Honors
-     prefers-reduced-motion via the global reset below. */
-  --motion-fast: 150ms ease-out;
-  --motion-settle: 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
-  --motion-spring: 250ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* Spacing scale — 8px base grid (DESIGN.md → Spacing). Raw vars only,
+     deliberately NOT mapped into Tailwind's --spacing-* namespace (that
+     would silently retune p-1/p-2 site-wide). Consume via var() in
+     component styles; this scale is the density lever (roadmap Phase 5:
+     compact mode retunes these values, every consumer follows). */
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+
+  /* Z-index scale — one ladder for the whole system; consume via
+     z-[var(--z-*)] (numeric z-10/20/… utilities are guard-banned in the
+     DS). base < raised (popovers, HUD) < sticky (headers, bars) <
+     overlay (FABs, floating layers) < modal (sheets, dialogs) < toast. */
+  --z-base: 0;
+  --z-raised: 10;
+  --z-sticky: 20;
+  --z-overlay: 30;
+  --z-modal: 50;
+  --z-toast: 60;
+
+  /* Elevation — layered dark shadows (DESIGN.md → Depth). Depth comes
+     from tonal layering first; shadows are secondary and deep/black.
+     Consumed via shadow-card / shadow-raised / shadow-overlay utilities
+     (@theme below). The brand glows are the ONLY coloured shadows the
+     system allows, and they derive from --brand via color-mix — never a
+     hardcoded mint. */
+  --elevation-1: 0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
+  --elevation-2: 0 4px 12px rgba(0, 0, 0, 0.45), 0 2px 4px rgba(0, 0, 0, 0.35);
+  --elevation-3: 0 24px 80px rgba(0, 0, 0, 0.7);
+  --glow-brand: 0 1px 2px rgba(4, 17, 15, 0.4),
+    0 4px 8px color-mix(in srgb, var(--brand) 20%, transparent);
+  --glow-brand-strong: 0 4px 8px
+      color-mix(in srgb, var(--brand) 20%, transparent),
+    0 12px 24px color-mix(in srgb, var(--brand) 12%, transparent);
+
+  /* Motion primitives — durations and easings as separate tokens, plus
+     the composite duration+easing pairs components consume via CSS
+     (transition: transform var(--motion-fast)). fast = state/hover;
+     settle = enter/morph; spring = playful feedback on human actions
+     only (react, follow). Honors prefers-reduced-motion via the global
+     reset below. */
+  --duration-fast: 150ms;
+  --duration-settle: 200ms;
+  --duration-spring: 250ms;
+  --ease-settle: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --motion-fast: var(--duration-fast) ease-out;
+  --motion-settle: var(--duration-settle) var(--ease-settle);
+  --motion-spring: var(--duration-spring) var(--ease-spring);
+
+  /* Financial type ramp — sizes as tokens (utilities text-data-* via
+     @theme; the .data-* classes below consume the same vars). */
+  --text-data-lg-size: 1.125rem;
+  --text-data-lg-size-desktop: 1.875rem;
+  --text-data-md-size: 0.875rem;
+  --text-data-sm-size: 0.75rem;
+  --font-pixel-stack: "GeistPixelSquare", "IBM Plex Mono", ui-monospace,
+    monospace;
 
   /* Back-compat aliases (kept so legacy var reads still resolve) */
   --background: var(--surface-page);
@@ -177,6 +234,8 @@
   --color-sell-surface: var(--sell-surface);
   --color-warning-surface: var(--warning-surface);
   --color-info-surface: var(--info-surface);
+  --color-error-surface: var(--error-surface);
+  --color-success-surface: var(--success-surface);
 
   /* Identity hues — flat-fill / text-accent utilities (text-id-lilac,
      bg-id-coral). Avatar gradients reference the raw var() instead. */
@@ -198,6 +257,29 @@
   --radius-chip: var(--radius-chip);
   --radius-card: var(--radius-card);
   --radius-sheet: var(--radius-sheet);
+
+  /* Elevation utilities: shadow-card / shadow-raised / shadow-overlay +
+     the two brand glows (the only coloured shadows allowed). */
+  --shadow-card: var(--elevation-1);
+  --shadow-raised: var(--elevation-2);
+  --shadow-overlay: var(--elevation-3);
+  --shadow-glow-brand: var(--glow-brand);
+  --shadow-glow-brand-strong: var(--glow-brand-strong);
+
+  /* Easing utilities: ease-settle / ease-spring (durations are consumed
+     via the composite --motion-* vars or duration-[var(--duration-*)]). */
+  --ease-settle: var(--ease-settle);
+  --ease-spring: var(--ease-spring);
+
+  /* Financial type ramp utilities: text-data-lg / -md / -sm (pair with
+     font-pixel + tabular-nums, or use the .data-* composite classes). */
+  --text-data-lg: var(--text-data-lg-size);
+  --text-data-lg--line-height: 1.2;
+  --text-data-md: var(--text-data-md-size);
+  --text-data-md--line-height: 1.2;
+  --text-data-sm: var(--text-data-sm-size);
+  --text-data-sm--line-height: 1.2;
+  --font-pixel: var(--font-pixel-stack);
 }
 
 body {
@@ -228,23 +310,23 @@ html {
 .data-lg,
 .data-md,
 .data-sm {
-  font-family: "GeistPixelSquare", "IBM Plex Mono", ui-monospace, monospace;
+  font-family: var(--font-pixel-stack);
   font-weight: 400;
   line-height: 1.2;
   font-variant-numeric: tabular-nums;
 }
 .data-lg {
-  font-size: 1.125rem;
+  font-size: var(--text-data-lg-size);
 }
 .data-md {
-  font-size: 0.875rem;
+  font-size: var(--text-data-md-size);
 }
 .data-sm {
-  font-size: 0.75rem;
+  font-size: var(--text-data-sm-size);
 }
 @media (min-width: 768px) {
   .data-lg {
-    font-size: 1.875rem;
+    font-size: var(--text-data-lg-size-desktop);
   }
 }
 

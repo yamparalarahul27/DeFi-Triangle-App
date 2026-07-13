@@ -37,6 +37,14 @@
 > `text-brand`, `text-buy`, etc. The `npm run check:theme` guard fails CI if a
 > `*-[#hex]` utility class reappears anywhere under `src/` (evilcharts exempt).
 > The whole app is dark; there is no light mode.
+>
+> **Token tiers (the naming grammar).** Two deliberate layers, analogous
+> to Material's `ref → sys` tiers: **raw tokens** in `:root`
+> (`--brand`, `--surface-container`, `--elevation-1`) hold values and are
+> what themes override; **system aliases** in `@theme inline`
+> (`--color-brand`, `--shadow-card`) map raw tokens to Tailwind
+> utilities and are what components consume. Never point a component at
+> a raw value a theme can't retune.
 
 > **Amendment — themes (CIDS pivot).** The system now supports multiple
 > **dark themes** as swappable token sets: `:root` is the default
@@ -146,6 +154,8 @@ corner value as an informational note.
 | `--sell-surface` | `#211214` | `bg-sell-surface` | Subtle error background |
 | `--warning-surface` | `#211d10` | `bg-warning-surface` | Subtle warning background |
 | `--info-surface` | `#111827` | `bg-info-surface` | Subtle info background |
+| `--error-surface` | `#221114` | `bg-error-surface` | Subtle destructive background |
+| `--success-surface` | `#0f1f1a` | `bg-success-surface` | Subtle success background (same value as buy — distinct token so they can diverge) |
 
 <sub>Sign vs. magnitude (guideline #5): magnitude drives tone via `Math.abs()`, direction drives the signed `+`/`−` and ▲/▼. Two concerns, two computations. Peg-health colour reflects health, not price direction.</sub>
 
@@ -171,32 +181,46 @@ What is actually loaded (nothing else may be referenced):
 | Page title | Geist | 600–700 | 1.25–1.5rem | Page/section headings |
 | Section label | Geist | 600 | 0.6875rem, uppercase, tracking 0.1em, `text-fg-subtle` | Section dividers (pattern, not a CSS class — see `SectionLabel` in `design/page.tsx`) |
 | Body | Geist | 400–500 | 0.875rem | Descriptions, general UI |
-| `.data-lg` | GeistPixelSquare | 400 | 1.5rem (1.875 ≥768px) | Hero financial figures |
-| `.data-md` | GeistPixelSquare | 400 | 0.875rem | Table values, prices |
-| `.data-sm` | GeistPixelSquare | 400 | 0.75rem | Secondary data, timestamps |
+| `.data-lg` | GeistPixelSquare | 400 | `--text-data-lg-size` 1.125rem (1.875 ≥768px) | Hero financial figures |
+| `.data-md` | GeistPixelSquare | 400 | `--text-data-md-size` 0.875rem | Table values, prices |
+| `.data-sm` | GeistPixelSquare | 400 | `--text-data-sm-size` 0.75rem | Secondary data, timestamps |
+
+The financial ramp is **tokenized**: sizes live as `--text-data-*-size`
+vars (the density lever), consumed by both the `.data-*` composite
+classes and the `text-data-lg/md/sm` utilities (pair those with
+`font-pixel` + `tabular-nums`).
 
 ### Rules
 
 - All financial numbers use **GeistPixelSquare** (fallback: IBM Plex Mono) with `tabular-nums`. Never a serif or variable-weight font.
 - Section labels are always **uppercase with letter-spacing ≥ 0.08em**, `text-fg-subtle`.
 - Never use serif fonts anywhere in the UI.
-- A tokenized type ramp (sizes/leading as `--text-*` tokens) is a roadmap Phase 1 deliverable; until then this table is the scale.
 
 ---
 
 ## Spacing
 
-**Base unit:** 8px
+**Base unit: 8px**, tokenized as `--space-1…8` (the density lever — a
+compact mode retunes these values and every consumer follows):
 
-| Step | Value | Name | Use |
+| Token | Value | Name | Use |
 |---|---|---|---|
-| 1 | 4px | Micro | Icon-to-text gap, inline |
-| 2 | 8px | Tight | Related elements within a group |
-| 3 | 12px | Compact | Form field gaps, tight card padding |
-| 4 | 16px | Standard | Component spacing, card padding |
-| 5 | 24px | Comfortable | Section padding, modal padding |
-| 6 | 32px | Spacious | Between major sections |
-| 7 | 48px | Generous | Hero section padding, page-level |
+| `--space-1` | 8px | Tight | Related elements within a group |
+| `--space-2` | 16px | Standard | Component spacing, card padding |
+| `--space-3` | 24px | Comfortable | Section padding, sheet padding |
+| `--space-4` | 32px | Spacious | Between major sections |
+| `--space-5` | 40px | — | Large section gaps |
+| `--space-6` | 48px | Generous | Hero/page-level padding |
+| `--space-7` | 56px | — | Rare, page-level |
+| `--space-8` | 64px | Maximal | Rare, page-level |
+
+Rules:
+- The scale is deliberately **not** mapped into Tailwind's `--spacing-*`
+  namespace (that would silently retune `p-1/p-2` everywhere). Consume
+  via `var(--space-*)` in styles, or `p-[var(--space-2)]` utilities,
+  when the value is *semantic* (a card inset, a section gap).
+- Tailwind's fine-grained default scale (`gap-1` = 4px, `px-2.5` = 10px…)
+  remains allowed for micro-adjustments inside a component.
 
 **Border radius scale** — token-driven since the Theme Studio work; a
 theme (or the canvas token panel) can reshape every component by
@@ -289,16 +313,35 @@ Tokens only — values live in `globals.css` per theme:
 | 5 | `surface-bright` | Selected, popovers, tooltips |
 | — | `surface-dim/60 + backdrop-blur` | Modal/sheet backdrop |
 
-### Shadow Rules
+### Elevation tokens
 
-| Class | Value | Use |
+Shadows are tokens — components never write literal `box-shadow` values
+(guard-enforced by `check:theme` T4 inside the DS + design app):
+
+| Token | Utility | Use |
 |---|---|---|
-| Card (rest) | `0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3)` | Default dark card |
-| Active/selected pill | `0 1px 2px rgba(4,17,15,0.40), 0 4px 8px rgba(90,216,196,0.20), 0 12px 24px rgba(90,216,196,0.12)` | Layered mint glow on `bg-brand` selection |
-| Modal / floating | `0 24px 80px rgba(0,0,0,0.7)` | Deep shadow over `bg-surface-dim/60` backdrop |
+| `--elevation-1` | `shadow-card` | Card at rest |
+| `--elevation-2` | `shadow-raised` | Popovers, raised controls, FABs |
+| `--elevation-3` | `shadow-overlay` | Sheets, modals (over `surface-dim/60` backdrop) |
+| `--glow-brand` | `shadow-glow-brand` | Active `bg-brand` segment/pill — the mint halo |
+| `--glow-brand-strong` | `shadow-glow-brand-strong` | Brand FAB / hero CTA |
 
 - **Depth comes from tonal layering** (surface → container → container-high → bright) first; shadows are secondary and deep/black.
-- The **only** coloured shadow allowed is the subtle mint glow on an active `bg-brand` pill. No other neon glows.
+- The **only** coloured shadows allowed are the two brand glows — and they derive from `--brand` via `color-mix` inside the token, so they re-tint per theme. No other neon glows.
+
+### Z-index scale
+
+One stacking ladder for the whole system, consumed via `z-[var(--z-*)]`
+(numeric `z-10/20/…` utilities are guard-banned in the DS + design app):
+
+| Token | Value | Use |
+|---|---|---|
+| `--z-base` | 0 | Normal flow |
+| `--z-raised` | 10 | Popovers, canvas HUD |
+| `--z-sticky` | 20 | Sticky headers, bottom bars |
+| `--z-overlay` | 30 | FABs, floating layers |
+| `--z-modal` | 50 | Sheets, dialogs (+ their backdrops) |
+| `--z-toast` | 60 | Toasts / notifications (reserved) |
 
 ---
 
@@ -325,11 +368,16 @@ Tokens only — values live in `globals.css` per theme:
 > an arbitrary-value utility. All honor `prefers-reduced-motion` through
 > the global reset.
 
-| Token | Value | Use |
+Durations and easings are also split into their own tokens so they can
+be consumed (and re-tuned) independently — `--duration-fast/settle/spring`
+and `--ease-settle` / `--ease-spring` (the latter two also exist as
+`ease-settle` / `ease-spring` utilities):
+
+| Composite token | Value | Use |
 |---|---|---|
-| `--motion-fast` | `150ms ease-out` | state / hover / press — the `150ms` base above, as a token |
-| `--motion-settle` | `200ms cubic-bezier(0.2, 0.8, 0.2, 1)` | enter / morph (e.g. FollowButton fill→outline) |
-| `--motion-spring` | `250ms cubic-bezier(0.34, 1.56, 0.64, 1)` | playful feedback on human actions only (react-pop) — the "budgeted playfulness" from Identity |
+| `--motion-fast` | `var(--duration-fast) ease-out` = 150ms | state / hover / press — the `150ms` base above, as a token |
+| `--motion-settle` | `var(--duration-settle) var(--ease-settle)` = 200ms | enter / morph (e.g. FollowButton fill→outline) |
+| `--motion-spring` | `var(--duration-spring) var(--ease-spring)` = 250ms overshoot | playful feedback on human actions only (react-pop) — the "budgeted playfulness" from Identity |
 
 ### `fade-up` keyframe
 ```css

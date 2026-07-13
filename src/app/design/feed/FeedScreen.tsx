@@ -152,7 +152,7 @@ export function FeedScreen() {
   return (
     <div className="relative mx-auto flex min-h-dvh max-w-[430px] flex-col bg-surface-page text-fg">
       {/* header */}
-      <header className="sticky top-0 z-20 flex h-12 items-center justify-between border-b border-outline-variant bg-surface-page/90 px-4 backdrop-blur">
+      <header className="sticky top-0 z-[var(--z-sticky)] flex h-12 items-center justify-between border-b border-outline-variant bg-surface-page/90 px-4 backdrop-blur">
         <span
           className="text-sm font-semibold text-fg"
           style={{ fontFamily: "var(--font-geist-mono), monospace" }}
@@ -233,17 +233,13 @@ export function FeedScreen() {
         type="button"
         aria-label="Compose"
         onClick={() => setJoinOpen(true)}
-        style={{
-          boxShadow:
-            "0 4px 8px color-mix(in srgb, var(--brand) 20%, transparent), 0 12px 24px color-mix(in srgb, var(--brand) 12%, transparent)",
-        }}
-        className="sticky bottom-20 z-30 ml-auto mr-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-brand text-xl text-on-brand transition-transform active:scale-[0.96]"
+        className="sticky bottom-20 z-[var(--z-overlay)] ml-auto mr-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-brand text-xl text-on-brand shadow-glow-brand-strong transition-transform active:scale-[0.96]"
       >
         ✎
       </button>
 
       {/* bottom bar */}
-      <nav className="sticky bottom-0 z-20 grid h-16 grid-cols-4 border-t border-outline-variant bg-surface-page/90 backdrop-blur">
+      <nav className="sticky bottom-0 z-[var(--z-sticky)] grid h-16 grid-cols-4 border-t border-outline-variant bg-surface-page/90 backdrop-blur">
         {[
           { ic: "~", label: "Feed", active: true },
           { ic: "◍", label: "Markets" },

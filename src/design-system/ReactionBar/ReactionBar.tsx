@@ -66,7 +66,7 @@ export function ReactionBar({
       {pickerOpen && (
         <div
           role="menu"
-          className="absolute left-0 top-full z-10 mt-1 inline-flex items-center gap-1 rounded-control border border-outline-variant bg-surface-bright px-1.5 py-1 shadow-lg"
+          className="absolute left-0 top-full z-[var(--z-raised)] mt-1 inline-flex items-center gap-1 rounded-control border border-outline-variant bg-surface-bright px-1.5 py-1 shadow-raised"
         >
           {pickerEmojis.map((e) => (
             <button
