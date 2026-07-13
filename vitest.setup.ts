@@ -20,3 +20,19 @@ if (typeof globalThis.ResizeObserver === "undefined") {
     disconnect() {}
   };
 }
+if (typeof window !== "undefined" && !window.matchMedia) {
+  // matches:false everywhere → pointer (non-touch) branch in components,
+  // and prefers-reduced-motion off. Tests that need touch behavior can
+  // override per-test.
+  window.matchMedia = (query: string) =>
+    ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      addListener: () => {},
+      removeListener: () => {},
+      dispatchEvent: () => false,
+    }) as MediaQueryList;
+}

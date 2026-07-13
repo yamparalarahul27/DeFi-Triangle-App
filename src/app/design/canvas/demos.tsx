@@ -17,6 +17,9 @@ import {
   ID_HUES,
   type Reaction,
   type Comment,
+  Skeleton,
+  SectionSkeleton,
+  Tooltip,
 } from "@/design-system";
 
 const SURFACES = [
@@ -239,4 +242,33 @@ export const DEMOS: Record<string, () => ReactNode> = {
   Sheet: SheetDemo,
   CommentThread: CommentsDemo,
   Onboarding: OnboardingDemo,
+  Skeleton: () => (
+    <div className="space-y-3">
+      <div className="flex items-center gap-3">
+        <Skeleton className="h-10 w-10 rounded-full" />
+        <div className="flex-1 space-y-2">
+          <Skeleton className="h-3 w-1/2" />
+          <Skeleton className="h-3 w-1/3" />
+        </div>
+      </div>
+      <SectionSkeleton height={96} label="Stats" />
+    </div>
+  ),
+  Tooltip: () => (
+    <div className="flex items-center gap-2 text-sm text-fg-muted">
+      Organic score
+      <Tooltip
+        content="Jupiter's 0–100 estimate of how much volume is real-human."
+        title="Organic score"
+      >
+        <button
+          type="button"
+          aria-label="About organic score"
+          className="inline-flex h-6 w-6 items-center justify-center rounded-control bg-surface-container-high text-[11px] text-fg-muted"
+        >
+          ?
+        </button>
+      </Tooltip>
+    </div>
+  ),
 };
