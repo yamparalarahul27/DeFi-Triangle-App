@@ -10,6 +10,12 @@ import { afterEach, describe, expect, it } from "vitest";
 import { cleanup, render } from "@testing-library/react";
 import { axe } from "vitest-axe";
 import {
+  Button,
+  IconButton,
+  Badge,
+  Input,
+  Dialog,
+  Menu,
   Avatar,
   AvatarGroup,
   TokenChip,
@@ -77,7 +83,22 @@ const CASES: Record<string, () => React.ReactElement> = {
       <button type="button">info</button>
     </Tooltip>
   ),
+  Button: () => <Button variant="primary">Confirm</Button>,
+  IconButton: () => <IconButton aria-label="Settings">⚙</IconButton>,
+  Badge: () => <Badge tone="buy">on peg</Badge>,
+  Input: () => <Input aria-label="Handle" placeholder="@handle" />,
   // Portal components rendered OPEN so axe sees the real overlay DOM.
+  Dialog: () => (
+    <Dialog open onOpenChange={() => {}} title="Remove wallet?" description="Confirm below.">
+      body
+    </Dialog>
+  ),
+  Menu: () => (
+    <Menu
+      trigger={<IconButton aria-label="Actions">⋯</IconButton>}
+      items={[{ label: "Copy link", onSelect: () => {} }]}
+    />
+  ),
   Sheet: () => (
     <Sheet open onOpenChange={() => {}} title="Sheet title">
       <p>Sheet body</p>
