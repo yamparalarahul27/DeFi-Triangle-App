@@ -246,17 +246,18 @@ CI; CONVENTIONS "accessibility contract" is enforced, not promised.
 
 ### Phase 3 — Light theme + Theme Studio 2 <sub>(W1/R3 · the adaptability proof)</sub>
 
-- [ ] **`light` theme**: full token value-set; `check:contrast` AA
-      across all three themes; identity hues re-verified on light.
-- [ ] **`brand` demo theme**: swap mint for a second accent — proves
-      white-labeling (R3) in one CSS block.
+- [x] **`light` theme** shipped: full re-valuation (white canvas,
+      dark-jewel identity hues, deep-teal brand, inverted glyph,
+      softened elevations) — AA-verified; axe matrix runs 14×4 themes.
+- [x] **`violet` demo theme**: accent family + reserved "you" hue
+      swapped in ONE block — the white-labeling proof (R3).
 - [ ] **Theme Studio step 2**: canvas panel with live token editing
       (radius now; spacing/type once Phase 1 lands) + theme export
       (copy the `[data-theme]` block). Reown's model is the target
       ergonomics: **a few master knobs** (accent, color-mix, radius
       master, font-size master) that retune the entire kit.
-- [ ] Document "adding a theme = one CSS block + AA pass" as an
-      adopter recipe.
+- [x] Adopter recipe documented in DESIGN.md (4-step: block → forced
+      pairs → check:contrast → ThemeToggle list).
 
 **Gate:** all themes pass `check:contrast` in CI; a theme authored
 by following the recipe alone (no code reading) renders correctly.

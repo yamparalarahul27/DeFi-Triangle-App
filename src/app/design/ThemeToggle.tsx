@@ -3,7 +3,7 @@
 import { useEffect, useSyncExternalStore } from "react";
 import { cn } from "@/lib/utils";
 
-const THEMES = ["dark", "mono"] as const;
+const THEMES = ["dark", "mono", "light", "violet"] as const;
 type Theme = (typeof THEMES)[number];
 const STORAGE_KEY = "cids-theme";
 
@@ -20,8 +20,12 @@ const subscribe = (cb: () => void) => {
     window.removeEventListener("storage", cb);
   };
 };
-const getSnapshot = (): Theme =>
-  localStorage.getItem(STORAGE_KEY) === "mono" ? "mono" : "dark";
+const getSnapshot = (): Theme => {
+  const stored = localStorage.getItem(STORAGE_KEY);
+  return (THEMES as readonly string[]).includes(stored ?? "")
+    ? (stored as Theme)
+    : "dark";
+};
 const getServerSnapshot = (): Theme => "dark";
 
 const setStoredTheme = (t: Theme) => {
@@ -29,7 +33,7 @@ const setStoredTheme = (t: Theme) => {
   emit();
 };
 
-/** Segmented dark/mono switch. Stamps <html data-theme> and persists. */
+/** Segmented theme switch (all [data-theme] value-sets). Stamps <html data-theme> and persists. */
 export function ThemeToggle({ className }: { className?: string }) {
   const theme = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
