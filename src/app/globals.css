@@ -76,6 +76,15 @@
   --id-rose: #cf8ca3;
   --id-slate: #93a1b8;
 
+  /* Shape primitives — the radius family (DESIGN.md scale) as tokens, so
+     themes and the canvas Theme Studio can reshape every component live.
+     Consumed via the rounded-control/chip/card/sheet utilities mapped in
+     @theme below. rounded-full (discs) is intentionally not a token. */
+  --radius-control: 2px;
+  --radius-chip: 4px;
+  --radius-card: 8px;
+  --radius-sheet: 12px;
+
   /* Motion primitives — duration + easing pairs. Consume via CSS
      (transition: transform var(--motion-fast)) or an arbitrary-value
      utility. fast = state/hover; settle = enter/morph; spring = playful
@@ -182,6 +191,13 @@
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Shape utilities: rounded-control / rounded-chip / rounded-card /
+     rounded-sheet (+ side variants like rounded-t-sheet) */
+  --radius-control: var(--radius-control);
+  --radius-chip: var(--radius-chip);
+  --radius-card: var(--radius-card);
+  --radius-sheet: var(--radius-sheet);
 }
 
 body {

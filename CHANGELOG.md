@@ -32,6 +32,23 @@ a synthetic version number until v1.0.
 
 ### Added
 
+- **Shape tokens (Theme Studio step 1).** The radius family is now
+  token-driven: `--radius-control/chip/card/sheet` in `globals.css`,
+  consumed via `rounded-control/chip/card/sheet` utilities across all
+  design-system components. Defaults identical to before (2/4/8/12px) —
+  zero visual change — but themes and the upcoming canvas token panel can
+  reshape every component live. Stroke + spacing tokens deferred. (#76)
+
+- **9 components promoted `draft → stable`** under the new stability
+  contract: Avatar, AvatarGroup, TokenChip, SocialProofChip, ReactionBar,
+  FollowButton, Lane, Sheet, PostCard. Their prop APIs are now frozen
+  (adds-only; breaking changes require a migration note here). Held at
+  `draft`: TokenIcon (icon-CDN default pending), CommentThread and
+  Onboarding (APIs expected to churn when live data lands). (#76)
+- **Agentic-kit ideation doc** (`docs/ideation/agentic-kit.md`) — the
+  AI-native crypto pattern families (intent, explanation, agent
+  permission, proactive insight, trust primitives) parked for Phase E. (#76)
+
 - **Design-system stability program (Phase D).** Behavior test suite for all
   12 CIDS components — 50 tests via vitest + testing-library (render,
   interactions, a11y contracts, sign-discipline cases). New `npm test`

@@ -1,6 +1,6 @@
 # AvatarGroup
 
-Status: draft
+Status: stable
 Overlapping row of Avatars with a `+N` overflow disc — "who's here" at a glance.
 
 ## Usage

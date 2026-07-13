@@ -37,7 +37,7 @@ export function ReactionBar({
           onClick={() => react(r.emoji)}
           aria-pressed={r.mine ?? false}
           className={cn(
-            "inline-flex h-11 items-center gap-1.5 rounded-sm px-2 text-[15px] transition-transform active:scale-[0.96]",
+            "inline-flex h-11 items-center gap-1.5 rounded-control px-2 text-[15px] transition-transform active:scale-[0.96]",
             r.mine ? "bg-brand/10" : "bg-transparent",
           )}
         >
@@ -58,7 +58,7 @@ export function ReactionBar({
         onClick={() => setPickerOpen((v) => !v)}
         aria-label="Add reaction"
         aria-expanded={pickerOpen}
-        className="inline-flex h-11 w-11 items-center justify-center rounded-sm text-[15px] text-fg-muted transition-transform active:scale-[0.96]"
+        className="inline-flex h-11 w-11 items-center justify-center rounded-control text-[15px] text-fg-muted transition-transform active:scale-[0.96]"
       >
         +
       </button>
@@ -66,7 +66,7 @@ export function ReactionBar({
       {pickerOpen && (
         <div
           role="menu"
-          className="absolute left-0 top-full z-10 mt-1 inline-flex items-center gap-1 rounded-sm border border-outline-variant bg-surface-bright px-1.5 py-1 shadow-lg"
+          className="absolute left-0 top-full z-10 mt-1 inline-flex items-center gap-1 rounded-control border border-outline-variant bg-surface-bright px-1.5 py-1 shadow-lg"
         >
           {pickerEmojis.map((e) => (
             <button
@@ -77,7 +77,7 @@ export function ReactionBar({
                 react(e);
                 setPickerOpen(false);
               }}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-sm text-[15px] transition-transform active:scale-[0.9]"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-control text-[15px] transition-transform active:scale-[0.9]"
             >
               {e}
             </button>

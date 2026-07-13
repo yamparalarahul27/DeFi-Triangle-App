@@ -1,6 +1,6 @@
 # Lane
 
-Status: draft
+Status: stable
 Segmented control (e.g. Following / Everyone). Fill is the state — no underline.
 
 ## Usage
@@ -47,6 +47,7 @@ const [lane, setLane] = useState("following");
 - `--color-fg-muted` — inactive label.
 - `--motion-fast` — bg / color / shadow transition.
 - Active glow derives from `--brand` via `color-mix` (no hardcoded mint rgb).
+- `--radius-control` (`rounded-control`) — track + segment corners.
 
 ## States
 

@@ -1,6 +1,6 @@
 # SocialProofChip
 
-Status: draft
+Status: stable
 "◔ 41 watching" — quiet social-proof count. Never louder than the price it sits by.
 
 ## Usage

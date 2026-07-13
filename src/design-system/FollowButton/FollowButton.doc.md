@@ -1,6 +1,6 @@
 # FollowButton
 
-Status: draft
+Status: stable
 Follow / Following toggle. Fill→outline morph; unfollow needs no confirm.
 
 ## Usage
@@ -40,6 +40,7 @@ const [following, setFollowing] = useState(false);
 - `--color-brand`, `--color-on-brand` — the Follow (filled) state.
 - `--color-outline`, `--color-fg-muted` — the Following (outline) state.
 - `--motion-settle` — the fill→outline morph; `--motion-fast` — press scale.
+- `--radius-control` (`rounded-control`) — button corner.
 
 ## States
 

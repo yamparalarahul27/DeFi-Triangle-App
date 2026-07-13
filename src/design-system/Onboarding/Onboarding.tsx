@@ -46,7 +46,7 @@ export function Onboarding({
       <div className="space-y-4 pt-1">
         {/* Step 1 — wallet */}
         {connected ? (
-          <div className="flex items-center gap-2 rounded-lg bg-surface-container px-3 py-2.5 text-sm">
+          <div className="flex items-center gap-2 rounded-card bg-surface-container px-3 py-2.5 text-sm">
             <span className="text-buy" aria-hidden="true">
               ✓
             </span>
@@ -59,7 +59,7 @@ export function Onboarding({
           <button
             type="button"
             onClick={onConnectWallet}
-            className="w-full rounded-sm border border-outline bg-transparent px-3 py-2.5 text-sm font-semibold text-fg transition-transform active:scale-[0.98]"
+            className="w-full rounded-control border border-outline bg-transparent px-3 py-2.5 text-sm font-semibold text-fg transition-transform active:scale-[0.98]"
           >
             Connect wallet
           </button>
@@ -69,7 +69,7 @@ export function Onboarding({
         <div className={cn("space-y-2", !connected && "pointer-events-none opacity-40")}>
           <div className="flex items-center gap-3">
             <Avatar name={handle || "?"} seed={handle || "preview"} size={40} />
-            <div className="flex min-w-0 flex-1 items-center gap-1 rounded-sm bg-surface-container px-3 py-2.5">
+            <div className="flex min-w-0 flex-1 items-center gap-1 rounded-control bg-surface-container px-3 py-2.5">
               <span className="font-mono text-sm text-fg-subtle">@</span>
               <input
                 value={handle}
@@ -95,7 +95,7 @@ export function Onboarding({
           type="button"
           onClick={onJoin}
           disabled={!canJoin}
-          className="w-full rounded-lg bg-brand px-4 py-3 text-sm font-semibold text-on-brand transition-transform active:scale-[0.98] disabled:opacity-40"
+          className="w-full rounded-card bg-brand px-4 py-3 text-sm font-semibold text-on-brand transition-transform active:scale-[0.98] disabled:opacity-40"
         >
           Join the tide
         </button>

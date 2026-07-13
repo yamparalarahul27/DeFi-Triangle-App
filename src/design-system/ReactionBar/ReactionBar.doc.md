@@ -1,6 +1,6 @@
 # ReactionBar
 
-Status: draft
+Status: stable
 Row of emoji-reaction pills with counts, plus a `+` picker. Tap = spring-pop.
 
 ## Usage
@@ -44,6 +44,7 @@ const [reactions, setReactions] = useState<Reaction[]>([
 - `--color-surface-bright`, `--color-outline-variant` — picker popover.
 - `--motion-spring` (via `.animate-pop`) — the tap bounce; `--motion-fast` — press scale.
 - `.data-sm` — the count numerals.
+- `--radius-control` (`rounded-control`) — pill + picker corners.
 
 ## States
 
