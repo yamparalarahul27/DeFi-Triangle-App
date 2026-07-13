@@ -1,6 +1,6 @@
 # Menu
 
-Status: draft
+Status: stable
 Dropdown action menu on Radix DropdownMenu — items as data, behavior (keyboard, typeahead, dismiss) from the primitive.
 
 ## Usage

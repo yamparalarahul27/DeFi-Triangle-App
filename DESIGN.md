@@ -266,7 +266,7 @@ overriding these:
 > **This file never duplicates component specs** — that's how docs
 > stayed truthful. Authoring rules: [`src/design-system/CONVENTIONS.md`](./src/design-system/CONVENTIONS.md).
 
-Current inventory (20):
+Current inventory (27):
 
 | Component | Status | | Component | Status |
 |---|---|---|---|---|
@@ -277,9 +277,13 @@ Current inventory (20):
 | TokenChip | stable | | CommentThread | draft |
 | TokenIcon | stable | | Onboarding | draft |
 | Skeleton | stable | | Tooltip | stable |
-| Button | draft | | IconButton | draft |
-| Badge | draft | | Input | draft |
-| Dialog | draft | | Menu | draft |
+| Button | stable | | IconButton | stable |
+| Badge | stable | | Input | stable |
+| Dialog | stable | | Menu | stable |
+| Switch | draft | | Checkbox | draft |
+| Select | draft | | Tabs | draft |
+| Toast | draft | | Divider | draft |
+| EmptyState | draft | | | |
 
 Components consume tokens from this file's foundations — they never
 define color/spacing/motion values of their own (`check:theme`).

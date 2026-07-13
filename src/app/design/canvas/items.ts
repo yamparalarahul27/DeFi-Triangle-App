@@ -51,6 +51,13 @@ export const CANVAS_ITEMS: CanvasItemDef[] = [
   { kind: "demo", id: "Input", title: "Input", x: CX, y: CY + 1520, w: 340 },
   { kind: "demo", id: "Dialog", title: "Dialog", x: CX + COL, y: CY + 1520, w: 340 },
   { kind: "demo", id: "Menu", title: "Menu", x: CX + COL * 2 + 40, y: CY + 1520, w: 300 },
+  { kind: "demo", id: "Select", title: "Select", x: CX + COL * 3 + 40, y: CY + 1520, w: 300 },
+  { kind: "demo", id: "Switch", title: "Switch", x: CX, y: CY + 1740, w: 300 },
+  { kind: "demo", id: "Checkbox", title: "Checkbox", x: CX + COL - 40, y: CY + 1740, w: 300 },
+  { kind: "demo", id: "Tabs", title: "Tabs", x: CX + COL * 2 - 40, y: CY + 1740, w: 380 },
+  { kind: "demo", id: "Toast", title: "Toast", x: CX, y: CY + 1980, w: 340 },
+  { kind: "demo", id: "Divider", title: "Divider", x: CX + COL, y: CY + 1980, w: 300 },
+  { kind: "demo", id: "EmptyState", title: "EmptyState", x: CX + COL * 2, y: CY + 1980, w: 380 },
 
   // ── Zone: Screens (live build vs HTML mock, side by side) ────
   { kind: "label", id: "z-screens", title: "Screens — mock vs build", x: 1780, y: 60 },

@@ -1,6 +1,6 @@
 # Input
 
-Status: draft
+Status: stable
 Single-line text field on the container surface; `invalid` wires the error state.
 
 ## Usage

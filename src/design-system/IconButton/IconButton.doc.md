@@ -1,6 +1,6 @@
 # IconButton
 
-Status: draft
+Status: stable
 Square icon-only action — `aria-label` is a **required prop**, so an unnamed icon button is a compile error.
 
 ## Usage
