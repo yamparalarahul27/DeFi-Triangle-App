@@ -113,11 +113,14 @@ export function ThemeStudio({ onClose }: { onClose: () => void }) {
         (document.documentElement.dataset.density as "compact")) ||
       "comfortable",
   );
-  const setDensity = (d: "comfortable" | "compact") => {
-    setDensityState(d);
-    if (d === "compact") document.documentElement.dataset.density = d;
+  // Sync the DOM (external system) from state in an effect — the React
+  // Compiler forbids mutating document inside an event handler closure.
+  useEffect(() => {
+    if (density === "compact")
+      document.documentElement.dataset.density = density;
     else delete document.documentElement.dataset.density;
-  };
+  }, [density]);
+  const setDensity = setDensityState;
 
   const overrides = computeOverrides(accent, radius, space, type);
 
