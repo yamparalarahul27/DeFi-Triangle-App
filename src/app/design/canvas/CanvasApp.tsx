@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { CANVAS_ITEMS } from "./items";
 import { ThemeToggle } from "../ThemeToggle";
+import { ThemeStudio } from "./ThemeStudio";
 import { LayersPanel } from "./LayersPanel";
 import { Inspector } from "./Inspector";
 import { DEMOS } from "./demos";
@@ -76,6 +77,7 @@ export function CanvasApp({
 
   const [selected, setSelected] = useState<string | null>(null);
   const [layersOpen, setLayersOpen] = useState(true);
+  const [studioOpen, setStudioOpen] = useState(false);
   const [animating, setAnimating] = useState(false);
   const itemEls = useRef(new Map<string, HTMLDivElement>());
 
@@ -215,7 +217,8 @@ export function CanvasApp({
           </span>
           <HudButton label="+" onClick={() => zoomBy(1.25)} />
           <HudButton label="fit" onClick={() => setView(INITIAL)} wide />
-          <HudButton label="layers" onClick={() => setLayersOpen((v) => !v)} wide />
+          <HudButton label="layers" onClick={() => { setLayersOpen((v) => !v); setStudioOpen(false); }} wide />
+          <HudButton label="studio" onClick={() => { setStudioOpen((v) => !v); setLayersOpen(false); }} wide />
         </div>
       </div>
 
@@ -223,6 +226,13 @@ export function CanvasApp({
       {layersOpen && (
         <div className="pointer-events-none absolute left-4 top-16 z-[var(--z-raised)]">
           <LayersPanel selected={selected} onSelect={zoomToItem} />
+        </div>
+      )}
+
+      {/* theme studio */}
+      {studioOpen && (
+        <div className="pointer-events-none absolute left-4 top-16 z-[var(--z-raised)]">
+          <ThemeStudio onClose={() => setStudioOpen(false)} />
         </div>
       )}
 
