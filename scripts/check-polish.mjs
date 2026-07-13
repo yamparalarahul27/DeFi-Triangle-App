@@ -98,6 +98,13 @@ const checks = [
     ],
   },
   {
+    file: "src/design-system/Tabs/Tabs.tsx",
+    expect: [
+      [/var\(--motion-fast\)/, "segment transition on --motion-fast"],
+      [/var\(--glow-brand\)/, "active glow via the --glow-brand token"],
+    ],
+  },
+  {
     file: "src/design-system/TokenChip/TokenChip.tsx",
     expect: [
       [/Math\.abs\(change24h\)/, "magnitude via Math.abs (sign discipline)"],
@@ -132,6 +139,12 @@ const NO_SPECIFIC_RULES = new Set([
   "Input", // border transition only; focus ring is the global :focus-visible
   "Dialog", // behavior + motion via Radix data-[state] presets
   "Menu", // behavior via Radix DropdownMenu; instant highlight by design
+  "Switch", // track/thumb 150ms targeted; behavior via Radix
+  "Checkbox", // fill/border 150ms targeted; behavior via Radix
+  "Select", // Radix Select; panel fade via presets
+  "Toast", // Radix Toast presets; viewport only
+  "Divider", // static rule
+  "EmptyState", // static composition; action carries interaction
 ]);
 const covered = new Set(
   checks.map((c) => c.file.split("/")[2]) // src/design-system/<Name>/…

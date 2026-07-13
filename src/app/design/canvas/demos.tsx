@@ -26,6 +26,14 @@ import {
   Input,
   Dialog,
   Menu,
+  Switch,
+  Checkbox,
+  Select,
+  Tabs,
+  ToastProvider,
+  useToast,
+  Divider,
+  EmptyState,
 } from "@/design-system";
 
 const SURFACES = [
@@ -191,6 +199,70 @@ function DialogDemo() {
   );
 }
 
+function SwitchDemo() {
+  const [on, setOn] = useState(true);
+  return (
+    <label className="flex items-center gap-3 text-sm text-fg">
+      <Switch checked={on} onCheckedChange={setOn} aria-label="Public watchlist" />
+      Public watchlist
+    </label>
+  );
+}
+
+function CheckboxDemo() {
+  const [checked, setChecked] = useState(true);
+  return (
+    <label className="flex items-center gap-2.5 text-sm text-fg">
+      <Checkbox checked={checked} onCheckedChange={setChecked} aria-label="Show depegged" />
+      Show depegged assets
+    </label>
+  );
+}
+
+function SelectDemo() {
+  const [net, setNet] = useState<string | undefined>("sol");
+  return (
+    <Select
+      aria-label="Network"
+      value={net}
+      onValueChange={setNet}
+      options={[
+        { value: "sol", label: "Solana" },
+        { value: "eth", label: "Ethereum" },
+        { value: "base", label: "Base", disabled: true },
+      ]}
+    />
+  );
+}
+
+function TabsDemo() {
+  const [tab, setTab] = useState("news");
+  return (
+    <Tabs
+      value={tab}
+      onValueChange={setTab}
+      tabs={[
+        { value: "news", label: "News", content: <p className="text-xs text-fg-muted">NVDAx leads tokenized-equity volume…</p> },
+        { value: "kpis", label: "KPIs", content: <p className="data-md text-fg">$1.09B mcap · $84.2M vol</p> },
+      ]}
+    />
+  );
+}
+
+function ToastInner() {
+  const toast = useToast();
+  return (
+    <div className="flex flex-wrap gap-2">
+      <Button size="sm" onClick={() => toast({ title: "Watchlist updated", description: "JUP added", tone: "buy" })}>
+        success toast
+      </Button>
+      <Button size="sm" variant="ghost" onClick={() => toast({ title: "Couldn't reach the network", tone: "sell" })}>
+        error toast
+      </Button>
+    </div>
+  );
+}
+
 export const DEMOS: Record<string, () => ReactNode> = {
   surfaces: () => (
     <div className="grid grid-cols-3 gap-2">
@@ -304,6 +376,29 @@ export const DEMOS: Record<string, () => ReactNode> = {
     </div>
   ),
   Dialog: DialogDemo,
+  Switch: SwitchDemo,
+  Checkbox: CheckboxDemo,
+  Select: SelectDemo,
+  Tabs: TabsDemo,
+  Toast: () => (
+    <ToastProvider>
+      <ToastInner />
+    </ToastProvider>
+  ),
+  Divider: () => (
+    <div className="text-xs text-fg-muted">
+      section one
+      <Divider className="my-2" />
+      section two
+    </div>
+  ),
+  EmptyState: () => (
+    <EmptyState
+      title="No watchers yet"
+      hint="Quiet tide. First one in sets the current."
+      action={<Button variant="primary" size="sm">Watch JUP</Button>}
+    />
+  ),
   Menu: () => (
     <Menu
       trigger={<IconButton aria-label="Post actions" variant="secondary">⋯</IconButton>}

@@ -1,6 +1,6 @@
 # Button
 
-Status: draft
+Status: stable
 The action primitive — four variants on the semantic tokens, three heights on the shared scale.
 
 ## Usage

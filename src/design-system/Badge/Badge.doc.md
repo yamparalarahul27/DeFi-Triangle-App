@@ -1,6 +1,6 @@
 # Badge
 
-Status: draft
+Status: stable
 Small status label on the tinted-surface pairs — tone conveys state category, never price direction on its own.
 
 ## Usage

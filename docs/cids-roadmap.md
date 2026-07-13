@@ -271,14 +271,17 @@ full doc shape + axe/keyboard tests (Phase 2 program applies).
 - [x] Tier 1 shipped: **Button, IconButton, Input, Badge, Dialog,
       Menu** — contract API, 7-section docs, tests, axe×4-themes,
       canvas Primitives zone. Draft status; promote after baking.
-- [ ] Tier 2: **Select, Switch, Checkbox, Toast, Tabs** (generalize
-      Lane), **Divider, EmptyState**
+- [x] Tier 2 shipped: **Select, Switch, Checkbox, Toast (provider +
+      useToast, first --z-toast consumer), Tabs (Lane generalized via
+      Radix), Divider, EmptyState** — full program each.
 - [x] Canvas "Primitives" zone live (6 demos incl. stateful Dialog).
       Gallery/feed adoption + promotions ride with Tier 2 (4b).
 
-**Gate:** the standard-inventory categories (actions, forms,
-feedback, containment, navigation, selection) each have ≥1 stable
-component; count ≥ 25.
+**Gate — MET (2026-07-13):** 27 components (≥25 ✓); every category
+≥1 stable ✓ — actions: Button/IconButton · forms: Input · feedback:
+Badge/Skeleton · containment: Sheet/Dialog · navigation: Lane ·
+selection: Menu. Tier-1 promoted to stable after one bake cycle;
+Tier-2 enters draft.
 
 ### Phase 5 — Terminal-grade layer <sub>(W3/R1+R2 · the exchange claim)</sub>
 

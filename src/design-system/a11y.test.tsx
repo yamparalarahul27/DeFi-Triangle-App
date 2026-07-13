@@ -8,8 +8,17 @@
 // excluded because components are fragments, not full pages.
 import { afterEach, describe, expect, it } from "vitest";
 import { cleanup, render } from "@testing-library/react";
+import { useState } from "react";
 import { axe } from "vitest-axe";
 import {
+  Switch,
+  Checkbox,
+  Select,
+  Tabs,
+  ToastProvider,
+  useToast,
+  Divider,
+  EmptyState,
   Button,
   IconButton,
   Badge,
@@ -34,6 +43,16 @@ import {
 } from "./index";
 
 const THEMES = ["dark", "mono", "light", "violet"] as const;
+
+function ToastFirer() {
+  const toast = useToast();
+  // fire once on mount so the matrix axes a visible toast
+  useState(() => {
+    toast({ title: "Watchlist updated", description: "JUP added", tone: "buy" });
+    return true;
+  });
+  return <p>app</p>;
+}
 
 const CASES: Record<string, () => React.ReactElement> = {
   Avatar: () => <Avatar name="mira" seed="wallet-mira" />,
@@ -87,7 +106,42 @@ const CASES: Record<string, () => React.ReactElement> = {
   IconButton: () => <IconButton aria-label="Settings">⚙</IconButton>,
   Badge: () => <Badge tone="buy">on peg</Badge>,
   Input: () => <Input aria-label="Handle" placeholder="@handle" />,
+  Switch: () => <Switch checked onCheckedChange={() => {}} aria-label="Public watchlist" />,
+  Checkbox: () => <Checkbox checked onCheckedChange={() => {}} aria-label="Agree" />,
+  Divider: () => (
+    <div>
+      above
+      <Divider />
+      below
+    </div>
+  ),
+  EmptyState: () => (
+    <EmptyState title="No watchers yet" hint="Quiet tide." action={<Button>Watch</Button>} />
+  ),
+  Tabs: () => (
+    <Tabs
+      value="a"
+      onValueChange={() => {}}
+      tabs={[
+        { value: "a", label: "News", content: <p>panel</p> },
+        { value: "b", label: "KPIs", content: <p>panel b</p> },
+      ]}
+    />
+  ),
+  Toast: () => (
+    <ToastProvider>
+      <ToastFirer />
+    </ToastProvider>
+  ),
   // Portal components rendered OPEN so axe sees the real overlay DOM.
+  Select: () => (
+    <Select
+      aria-label="Network"
+      options={[{ value: "sol", label: "Solana" }]}
+      value={"sol"}
+      onValueChange={() => {}}
+    />
+  ),
   Dialog: () => (
     <Dialog open onOpenChange={() => {}} title="Remove wallet?" description="Confirm below.">
       body
