@@ -234,6 +234,15 @@ compact mode retunes these values and every consumer follows):
 | `--space-7` | 56px | — | Rare, page-level |
 | `--space-8` | 64px | Maximal | Rare, page-level |
 
+### Density (the terminal axis)
+
+`<html data-density="compact">` re-values the spacing scale, the
+financial type ramp, and the row grid (`--row-h` 44→32, `--cell-px`
+12→8) — one attribute, zero component changes. Orthogonal to themes;
+switchable live from the canvas Theme Studio. Interactive controls
+(Button/IconButton) keep their own heights — density compresses data
+surfaces, never tap targets.
+
 Rules:
 - The scale is deliberately **not** mapped into Tailwind's `--spacing-*`
   namespace (that would silently retune `p-1/p-2` everywhere). Consume
@@ -266,7 +275,7 @@ overriding these:
 > **This file never duplicates component specs** — that's how docs
 > stayed truthful. Authoring rules: [`src/design-system/CONVENTIONS.md`](./src/design-system/CONVENTIONS.md).
 
-Current inventory (27):
+Current inventory (32):
 
 | Component | Status | | Component | Status |
 |---|---|---|---|---|
@@ -283,7 +292,9 @@ Current inventory (27):
 | Switch | draft | | Checkbox | draft |
 | Select | draft | | Tabs | draft |
 | Toast | draft | | Divider | draft |
-| EmptyState | draft | | | |
+| EmptyState | draft | | DataTable | draft |
+| RollingNumber | draft | | PriceChange | draft |
+| StatCell | draft | | Sparkline | draft |
 
 Components consume tokens from this file's foundations — they never
 define color/spacing/motion values of their own (`check:theme`).

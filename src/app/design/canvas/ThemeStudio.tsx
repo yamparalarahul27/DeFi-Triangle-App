@@ -107,6 +107,20 @@ export function ThemeStudio({ onClose }: { onClose: () => void }) {
   const [space, setSpace] = useState(100);
   const [type, setType] = useState(100);
   const [copied, setCopied] = useState(false);
+  const [density, setDensityState] = useState<"comfortable" | "compact">(
+    () =>
+      (typeof document !== "undefined" &&
+        (document.documentElement.dataset.density as "compact")) ||
+      "comfortable",
+  );
+  // Sync the DOM (external system) from state in an effect — the React
+  // Compiler forbids mutating document inside an event handler closure.
+  useEffect(() => {
+    if (density === "compact")
+      document.documentElement.dataset.density = density;
+    else delete document.documentElement.dataset.density;
+  }, [density]);
+  const setDensity = setDensityState;
 
   const overrides = computeOverrides(accent, radius, space, type);
 
@@ -180,6 +194,28 @@ export function ThemeStudio({ onClose }: { onClose: () => void }) {
         <Knob label="Radius" value={radius} onChange={setRadius} min={0} />
         <Knob label="Spacing scale" value={space} onChange={setSpace} min={75} max={150} />
         <Knob label="Data type scale" value={type} onChange={setType} min={75} max={150} />
+      </div>
+
+      <div className="mt-3">
+        <span className="text-[11px] text-fg-muted">Density</span>
+        <div className="mt-1 flex gap-1" role="radiogroup" aria-label="Density">
+          {(["comfortable", "compact"] as const).map((d) => (
+            <button
+              key={d}
+              type="button"
+              role="radio"
+              aria-checked={density === d}
+              onClick={() => setDensity(d)}
+              className={
+                density === d
+                  ? "flex-1 rounded-control bg-brand px-2 py-1 font-mono text-[10px] font-semibold text-on-brand"
+                  : "flex-1 rounded-control border border-outline-variant px-2 py-1 font-mono text-[10px] text-fg-muted hover:text-fg"
+              }
+            >
+              {d}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="mt-4 flex items-center gap-2">

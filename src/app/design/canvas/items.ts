@@ -59,6 +59,14 @@ export const CANVAS_ITEMS: CanvasItemDef[] = [
   { kind: "demo", id: "Divider", title: "Divider", x: CX + COL, y: CY + 1980, w: 300 },
   { kind: "demo", id: "EmptyState", title: "EmptyState", x: CX + COL * 2, y: CY + 1980, w: 380 },
 
+  // ── Zone: Data (Phase 5 terminal-grade layer) ────────────────
+  { kind: "label", id: "z-data", title: "Data — terminal grade", x: CX, y: CY + 2220 },
+  { kind: "demo", id: "RollingNumber", title: "RollingNumber", x: CX, y: CY + 2280, w: 340 },
+  { kind: "demo", id: "PriceChange", title: "PriceChange", x: CX + COL, y: CY + 2280, w: 300 },
+  { kind: "demo", id: "StatCell", title: "StatCell", x: CX + COL * 2, y: CY + 2280, w: 380 },
+  { kind: "demo", id: "Sparkline", title: "Sparkline", x: CX + COL * 3 + 40, y: CY + 2280, w: 300 },
+  { kind: "demo", id: "DataTable", title: "DataTable", x: CX, y: CY + 2520, w: 560 },
+
   // ── Zone: Screens (live build vs HTML mock, side by side) ────
   { kind: "label", id: "z-screens", title: "Screens — mock vs build", x: 1780, y: 60 },
   {

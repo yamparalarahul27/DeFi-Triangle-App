@@ -105,6 +105,13 @@ const checks = [
     ],
   },
   {
+    file: "src/design-system/PriceChange/PriceChange.tsx",
+    expect: [
+      [/Math\.abs\(value\)/, "magnitude via Math.abs (sign discipline)"],
+      [/value >= 0/, "direction from the signed value"],
+    ],
+  },
+  {
     file: "src/design-system/TokenChip/TokenChip.tsx",
     expect: [
       [/Math\.abs\(change24h\)/, "magnitude via Math.abs (sign discipline)"],
@@ -145,6 +152,10 @@ const NO_SPECIFIC_RULES = new Set([
   "Toast", // Radix Toast presets; viewport only
   "Divider", // static rule
   "EmptyState", // static composition; action carries interaction
+  "RollingNumber", // discrete roll-in via --motion-settle; global reduced-motion
+  "StatCell", // static display; density via tokens
+  "Sparkline", // static SVG; data surfaces never bounce
+  "DataTable", // hover/sort color 150ms; ticks never animate (zero layout shift)
 ]);
 const covered = new Set(
   checks.map((c) => c.file.split("/")[2]) // src/design-system/<Name>/…

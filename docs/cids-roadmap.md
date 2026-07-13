@@ -289,17 +289,17 @@ The phase that makes "complex financial exchanges" honest. Carbon
 proves dense data UIs belong in a system; CIDS adds the crypto
 domain generic systems lack.
 
-- [ ] **Density axis**: `data-density="comfortable|compact"` driven
-      by Phase-1 spacing/type tokens — components respond, no forks.
-- [ ] **DataTable** (sortable, sticky header, numeric alignment,
-      tabular-nums, Carbon-style row-height variants). **Explicit
-      decision recorded here:** no reference system ships row
-      virtualization (even Carbon delegates it) — CIDS documents the
-      TanStack Virtual pairing as a recipe rather than shipping it.
-- [ ] **Streaming-number kit**: `RollingNumber` (animated streaming
-      numerals, per CDS), `PriceChange` (signed direction,
-      flash-on-change, `Math.abs` discipline), `StatCell`,
-      numeric `Skeleton`, `Sparkline`.
+- [x] **Density axis** shipped: `[data-density="compact"]` re-values
+      spacing + data-type ramp + the new `--row-h`/`--cell-px` row
+      grid; Theme Studio gained the switch. Zero component forks.
+- [x] **DataTable** shipped: real table semantics, sticky header,
+      aria-sort cycle, numeric alignment discipline, density-token row
+      grid. Virtualization = TanStack pairing recipe in the doc (as
+      decided — no reference ships it).
+- [x] **Streaming-number kit** shipped: RollingNumber (per-slot roll,
+      zero layout shift), PriceChange (sign discipline hard-coded +
+      polish-guard-pinned), StatCell (density-responsive), Sparkline
+      (direction-toned SVG). Numeric skeleton = Skeleton + tabular box.
 - [ ] **Crypto verticals**: `AddressChip` (truncate/copy/explorer),
       `PegBadge`, `NetworkBadge`, `TxStatus` (pending/confirmed/
       failed with ethereum.org tx-clarity heuristics), `AmountInput`
