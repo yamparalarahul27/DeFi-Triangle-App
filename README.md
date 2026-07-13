@@ -20,11 +20,12 @@ human and an AI agent both build from, and flip themes live.
 
 ## The system
 
-- **14 components** under [`src/design-system/`](src/design-system/) —
+- **20 components** under [`src/design-system/`](src/design-system/) —
   Avatar, AvatarGroup, TokenIcon, TokenChip, ReactionBar, FollowButton,
   Lane, SocialProofChip, PostCard, Sheet, CommentThread, Onboarding,
-  Skeleton, Tooltip
-  (12 stable · 2 draft, per each doc's `Status:` header). Every one
+  Skeleton, Tooltip, and the Phase-4 atoms — Button, IconButton, Badge,
+  Input, Dialog, Menu (12 stable · 8 draft, per each doc's `Status:`
+  header; atoms promote after baking). Every one
   ships a colocated `.doc.md` in the fixed shape defined by
   [`CONVENTIONS.md`](src/design-system/CONVENTIONS.md) (Anatomy · Props ·
   Tokens · States · Motion · A11y). The canvas inspector renders those

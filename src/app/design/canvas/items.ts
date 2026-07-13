@@ -43,6 +43,15 @@ export const CANVAS_ITEMS: CanvasItemDef[] = [
   { kind: "demo", id: "Skeleton", title: "Skeleton", x: CX, y: CY + 1040, w: 340 },
   { kind: "demo", id: "Tooltip", title: "Tooltip", x: CX + COL, y: CY + 1040, w: 300 },
 
+  // ── Zone: Primitives (Phase 4 core atoms) ────────────────────
+  { kind: "label", id: "z-primitives", title: "Primitives — core atoms", x: CX, y: CY + 1240 },
+  { kind: "demo", id: "Button", title: "Button", x: CX, y: CY + 1300, w: 380 },
+  { kind: "demo", id: "IconButton", title: "IconButton", x: CX + COL + 40, y: CY + 1300, w: 300 },
+  { kind: "demo", id: "Badge", title: "Badge", x: CX + COL * 2 + 40, y: CY + 1300, w: 340 },
+  { kind: "demo", id: "Input", title: "Input", x: CX, y: CY + 1520, w: 340 },
+  { kind: "demo", id: "Dialog", title: "Dialog", x: CX + COL, y: CY + 1520, w: 340 },
+  { kind: "demo", id: "Menu", title: "Menu", x: CX + COL * 2 + 40, y: CY + 1520, w: 300 },
+
   // ── Zone: Screens (live build vs HTML mock, side by side) ────
   { kind: "label", id: "z-screens", title: "Screens — mock vs build", x: 1780, y: 60 },
   {

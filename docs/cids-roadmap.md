@@ -268,10 +268,13 @@ by following the recipe alone (no code reading) renders correctly.
 Radix-backed where behavior is nontrivial; every component ships the
 full doc shape + axe/keyboard tests (Phase 2 program applies).
 
-- [ ] Tier 1: **Button, IconButton, Input, Badge, Dialog, Menu**
+- [x] Tier 1 shipped: **Button, IconButton, Input, Badge, Dialog,
+      Menu** — contract API, 7-section docs, tests, axe×4-themes,
+      canvas Primitives zone. Draft status; promote after baking.
 - [ ] Tier 2: **Select, Switch, Checkbox, Toast, Tabs** (generalize
       Lane), **Divider, EmptyState**
-- [ ] Canvas: new "Primitives" zone; gallery + feed demo adopt them.
+- [x] Canvas "Primitives" zone live (6 demos incl. stateful Dialog).
+      Gallery/feed adoption + promotions ride with Tier 2 (4b).
 
 **Gate:** the standard-inventory categories (actions, forms,
 feedback, containment, navigation, selection) each have ≥1 stable

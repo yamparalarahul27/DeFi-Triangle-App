@@ -84,6 +84,20 @@ const checks = [
     ],
   },
   {
+    file: "src/design-system/Button/Button.tsx",
+    expect: [
+      [/active:scale-\[0\.96\]/, "press scale(.96)"],
+      [/transition-\[background-color,color,box-shadow,transform\]/, "targeted transition (never transition-all)"],
+    ],
+  },
+  {
+    file: "src/design-system/IconButton/IconButton.tsx",
+    expect: [
+      [/active:scale-\[0\.96\]/, "press scale(.96)"],
+      [/"aria-label": string/, "aria-label required in the props type"],
+    ],
+  },
+  {
     file: "src/design-system/TokenChip/TokenChip.tsx",
     expect: [
       [/Math\.abs\(change24h\)/, "magnitude via Math.abs (sign discipline)"],
@@ -114,6 +128,10 @@ const NO_SPECIFIC_RULES = new Set([
   "Onboarding", // draft — assertions land with its stable promotion
   "Skeleton", // static shimmer; reduced-motion via the global reset
   "Tooltip", // behavior is Radix Tooltip/Dialog; motion via data-[state] presets
+  "Badge", // static label — no interaction states
+  "Input", // border transition only; focus ring is the global :focus-visible
+  "Dialog", // behavior + motion via Radix data-[state] presets
+  "Menu", // behavior via Radix DropdownMenu; instant highlight by design
 ]);
 const covered = new Set(
   checks.map((c) => c.file.split("/")[2]) // src/design-system/<Name>/…

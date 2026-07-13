@@ -20,6 +20,12 @@ import {
   Skeleton,
   SectionSkeleton,
   Tooltip,
+  Button,
+  IconButton,
+  Badge,
+  Input,
+  Dialog,
+  Menu,
 } from "@/design-system";
 
 const SURFACES = [
@@ -162,6 +168,29 @@ function OnboardingDemo() {
   );
 }
 
+function DialogDemo() {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <Button onClick={() => setOpen(true)}>Remove wallet…</Button>
+      <Dialog
+        open={open}
+        onOpenChange={setOpen}
+        title="Remove wallet?"
+        description="This disconnects @mira from this device."
+        footer={
+          <>
+            <Button onClick={() => setOpen(false)}>Cancel</Button>
+            <Button variant="destructive" onClick={() => setOpen(false)}>
+              Remove
+            </Button>
+          </>
+        }
+      />
+    </>
+  );
+}
+
 export const DEMOS: Record<string, () => ReactNode> = {
   surfaces: () => (
     <div className="grid grid-cols-3 gap-2">
@@ -242,6 +271,50 @@ export const DEMOS: Record<string, () => ReactNode> = {
   Sheet: SheetDemo,
   CommentThread: CommentsDemo,
   Onboarding: OnboardingDemo,
+  Button: () => (
+    <div className="flex flex-wrap items-center gap-2">
+      <Button variant="primary">Confirm</Button>
+      <Button>Cancel</Button>
+      <Button variant="ghost">Skip</Button>
+      <Button variant="destructive" size="sm">Remove</Button>
+      <Button disabled>Disabled</Button>
+    </div>
+  ),
+  IconButton: () => (
+    <div className="flex items-center gap-2">
+      <IconButton aria-label="Settings" variant="secondary">⚙</IconButton>
+      <IconButton aria-label="Close">×</IconButton>
+      <IconButton aria-label="Add" variant="primary" size="lg">+</IconButton>
+    </div>
+  ),
+  Badge: () => (
+    <div className="flex flex-wrap items-center gap-2">
+      <Badge>neutral</Badge>
+      <Badge tone="brand">new</Badge>
+      <Badge tone="buy">on peg</Badge>
+      <Badge tone="sell">depegged</Badge>
+      <Badge tone="warning">pending</Badge>
+      <Badge tone="info">bridged</Badge>
+    </div>
+  ),
+  Input: () => (
+    <div className="space-y-2">
+      <Input aria-label="Search" placeholder="Search tokens…" />
+      <Input aria-label="Handle" invalid defaultValue="taken_handle" />
+    </div>
+  ),
+  Dialog: DialogDemo,
+  Menu: () => (
+    <Menu
+      trigger={<IconButton aria-label="Post actions" variant="secondary">⋯</IconButton>}
+      items={[
+        { label: "Copy link", onSelect: () => {} },
+        { label: "Mute @deg", onSelect: () => {} },
+        { kind: "separator" },
+        { label: "Delete", onSelect: () => {}, destructive: true },
+      ]}
+    />
+  ),
   Skeleton: () => (
     <div className="space-y-3">
       <div className="flex items-center gap-3">
