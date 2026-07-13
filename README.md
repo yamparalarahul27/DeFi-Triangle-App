@@ -20,9 +20,10 @@ human and an AI agent both build from, and flip themes live.
 
 ## The system
 
-- **11 components** under [`src/design-system/`](src/design-system/) —
-  Avatar, AvatarGroup, TokenChip, ReactionBar, FollowButton, Lane,
-  SocialProofChip, PostCard, Sheet, CommentThread, Onboarding. Every one
+- **12 components** under [`src/design-system/`](src/design-system/) —
+  Avatar, AvatarGroup, TokenIcon, TokenChip, ReactionBar, FollowButton,
+  Lane, SocialProofChip, PostCard, Sheet, CommentThread, Onboarding
+  (9 stable · 3 draft, per each doc's `Status:` header). Every one
   ships a colocated `.doc.md` in the fixed shape defined by
   [`CONVENTIONS.md`](src/design-system/CONVENTIONS.md) (Anatomy · Props ·
   Tokens · States · Motion · A11y). The canvas inspector renders those
@@ -41,8 +42,19 @@ human and an AI agent both build from, and flip themes live.
 npm run check:theme      # no hardcoded hex utility classes
 npm run check:contrast   # WCAG AA per theme (identity hues)
 npm run check:polish     # interaction polish rules
+npm run check:portable   # DS import allowlist + doc completeness
+npm test                 # vitest — component behavior + sign discipline
 npx tsc --noEmit && npm run lint
 ```
+
+All of the above run in CI on every PR (`.github/workflows/ci.yml`).
+
+## Roadmap
+
+The end-to-end evolution plan — foundations, API contract, light theme,
+core atoms, terminal-grade density, registry distribution — lives in
+[docs/cids-roadmap.md](docs/cids-roadmap.md) with per-phase gates and an
+M0→M4 maturity scorecard.
 
 ## Develop
 

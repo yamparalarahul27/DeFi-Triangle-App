@@ -1,0 +1,44 @@
+# CIDS CI — the contract, enforced on every push/PR.
+# Mirrors the local gate: types, lint, all four guards, tests.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Types
+        run: npx tsc --noEmit
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Guard — theme (no hardcoded hex utilities)
+        run: npm run check:theme
+
+      - name: Guard — contrast (WCAG AA per theme)
+        run: npm run check:contrast
+
+      - name: Guard — polish (interaction rules)
+        run: npm run check:polish
+
+      - name: Guard — portable (DS imports + doc completeness)
+        run: npm run check:portable
+
+      - name: Tests
+        run: npm test
