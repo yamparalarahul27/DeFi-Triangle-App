@@ -8,8 +8,8 @@ Per-person identity disc — a hue-gradient circle with the person's initial.
 ```tsx
 import { Avatar } from "@/design-system";
 
-<Avatar name="mira" seed={walletAddress} size={40} />
-<Avatar name="you" you size={28} />  {/* signed-in user: --id-tide */}
+<Avatar name="mira" seed={walletAddress} size="md" />
+<Avatar name="you" you size="sm" />  {/* signed-in user: --id-tide */}
 ```
 
 ## Anatomy
@@ -32,7 +32,7 @@ import { Avatar } from "@/design-system";
 | `name` | `string` | — | First character → glyph; also the `aria-label`. |
 | `seed` | `string` | `name` | Value hashed to pick the hue. Pass the wallet address for stable per-person color. |
 | `hue` | `IdHue` | — | Explicit override; skips hashing. |
-| `size` | `20 \| 28 \| 40 \| 64` | `40` | Diameter in px; glyph scales with it. |
+| `size` | `"xs" \| "sm" \| "md" \| "lg"` | `"md"` | xs 20 · sm 28 · md 40 · lg 64 px; glyph scales with the disc. |
 | `you` | `boolean` | `false` | Forces the reserved `--id-tide` hue (the signed-in user). |
 | `className` | `string` | — | Merged via `cn` (e.g. group ring/overlap). |
 

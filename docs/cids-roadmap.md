@@ -222,20 +222,22 @@ every token category has a DESIGN.md table + guard coverage.
 
 One breaking-change window, done once, announced in CHANGELOG.
 
-- [ ] **Prop conventions** in CONVENTIONS.md: every component takes
-      `className` (cn-merged); `size` is a string union from one
-      shared scale; controlled-callback naming (`onX`) codified.
-- [ ] Fix the three offenders: TokenIcon (cn-merge), CommentThread +
-      Onboarding (accept `className`).
-- [ ] **A11y repairs**: ReactionBar picker → Radix Popover (focus
-      trap, Escape, outside-click); Lane → roving tabindex arrows
-      (or Radix Tabs).
+- [x] **Prop conventions** codified in CONVENTIONS.md ("Component API
+      contract"): className everywhere (cn-merged), shared string size
+      scale, on<Event> callbacks, Radix-for-behavior, server-safe default.
+- [x] Offenders fixed: TokenIcon cn-merges; CommentThread + Onboarding
+      take className (forwarded to Sheet); Avatar/AvatarGroup sizes
+      moved to the string scale (xs/sm/md/lg) — the declared break.
+- [x] **A11y repairs**: ReactionBar picker → Radix Popover (Escape,
+      outside-click, focus return — tested); Lane → roving tabindex +
+      Arrow/Home/End (tested).
 - [ ] **Test depth**: add vitest-axe (every component, every theme);
       keyboard-nav tests for interactive components; theme-render
       tests (dark + mono); reduced-motion assertion helpers.
 - [ ] **Migrate Skeleton + Tooltip into the DS** (+docs +tests) —
       instant +2 inventory, Tooltip already Radix-based.
-- [ ] Promote TokenIcon draft → stable under the new contract.
+- [x] TokenIcon promoted draft → stable under the new contract
+      (10 stable / 2 draft).
 
 **Gate:** axe zero violations across all components × all themes in
 CI; CONVENTIONS "accessibility contract" is enforced, not promised.

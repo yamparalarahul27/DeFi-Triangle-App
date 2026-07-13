@@ -1,21 +1,23 @@
 import { cn } from "@/lib/utils";
 import { hueFor, hueGradient, type IdHue } from "../identity";
 
-export type AvatarSize = 20 | 28 | 40 | 64;
+// Shared size scale (CONVENTIONS → Component API contract): string
+// unions, never raw numbers. Diameters per DESIGN.md avatar spec —
+// xs 20px · sm 28px · md 40px · lg 64px; glyph scales with the disc.
+export type AvatarSize = "xs" | "sm" | "md" | "lg";
 
-// Diameter + glyph size per DESIGN.md avatar spec. Font size scales with the disc.
 const SIZE: Record<AvatarSize, string> = {
-  20: "w-5 h-5 text-[9px]",
-  28: "w-7 h-7 text-xs",
-  40: "w-10 h-10 text-[17px]",
-  64: "w-16 h-16 text-[26px]",
+  xs: "w-5 h-5 text-[9px]",
+  sm: "w-7 h-7 text-xs",
+  md: "w-10 h-10 text-[17px]",
+  lg: "w-16 h-16 text-[26px]",
 };
 
 export function Avatar({
   name,
   seed,
   hue,
-  size = 40,
+  size = "md",
   you = false,
   className,
 }: {
@@ -25,7 +27,7 @@ export function Avatar({
   seed?: string;
   /** Explicit hue override; skips hashing. */
   hue?: IdHue;
-  /** Diameter in px. */
+  /** xs 20px · sm 28px · md 40px · lg 64px. */
   size?: AvatarSize;
   /** Signed-in user — forces the reserved --id-tide hue. */
   you?: boolean;

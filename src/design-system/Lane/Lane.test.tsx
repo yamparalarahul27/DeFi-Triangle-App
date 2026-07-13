@@ -33,4 +33,25 @@ describe("Lane", () => {
     await userEvent.click(screen.getByRole("tab", { name: "Everyone" }));
     expect(onChange).toHaveBeenCalledWith("everyone");
   });
+
+  it("roving tabindex: only the active tab is tabbable", () => {
+    render(<Lane options={OPTIONS} value="following" onChange={() => {}} />);
+    expect(screen.getByRole("tab", { name: "Following" }).tabIndex).toBe(0);
+    expect(screen.getByRole("tab", { name: "Everyone" }).tabIndex).toBe(-1);
+  });
+
+  it("ArrowRight/Left move selection and wrap; Home/End jump", async () => {
+    const onChange = vi.fn();
+    render(<Lane options={OPTIONS} value="following" onChange={onChange} />);
+    const first = screen.getByRole("tab", { name: "Following" });
+    first.focus();
+    await userEvent.keyboard("{ArrowRight}");
+    expect(onChange).toHaveBeenLastCalledWith("everyone");
+    await userEvent.keyboard("{ArrowLeft}"); // wraps from index 0
+    expect(onChange).toHaveBeenLastCalledWith("everyone");
+    await userEvent.keyboard("{End}");
+    expect(onChange).toHaveBeenLastCalledWith("everyone");
+    await userEvent.keyboard("{Home}");
+    expect(onChange).toHaveBeenLastCalledWith("following");
+  });
 });

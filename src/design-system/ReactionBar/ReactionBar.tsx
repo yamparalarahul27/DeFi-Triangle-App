@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Popover as RadixPopover } from "radix-ui";
 import { cn } from "@/lib/utils";
 
 export type Reaction = { emoji: string; count: number; mine?: boolean };
@@ -53,37 +54,39 @@ export function ReactionBar({
         </button>
       ))}
 
-      <button
-        type="button"
-        onClick={() => setPickerOpen((v) => !v)}
-        aria-label="Add reaction"
-        aria-expanded={pickerOpen}
-        className="inline-flex h-11 w-11 items-center justify-center rounded-control text-[15px] text-fg-muted transition-transform active:scale-[0.96]"
-      >
-        +
-      </button>
-
-      {pickerOpen && (
-        <div
-          role="menu"
-          className="absolute left-0 top-full z-[var(--z-raised)] mt-1 inline-flex items-center gap-1 rounded-control border border-outline-variant bg-surface-bright px-1.5 py-1 shadow-raised"
+      {/* Picker behavior via Radix Popover: focus moves into the panel,
+          Escape and outside-click dismiss, focus returns to the trigger
+          (the a11y contract a hand-rolled div can't keep). */}
+      <RadixPopover.Root open={pickerOpen} onOpenChange={setPickerOpen}>
+        <RadixPopover.Trigger
+          aria-label="Add reaction"
+          className="inline-flex h-11 w-11 items-center justify-center rounded-control text-[15px] text-fg-muted transition-transform active:scale-[0.96]"
         >
-          {pickerEmojis.map((e) => (
-            <button
-              key={e}
-              type="button"
-              role="menuitem"
-              onClick={() => {
-                react(e);
-                setPickerOpen(false);
-              }}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-control text-[15px] transition-transform active:scale-[0.9]"
-            >
-              {e}
-            </button>
-          ))}
-        </div>
-      )}
+          +
+        </RadixPopover.Trigger>
+        <RadixPopover.Portal>
+          <RadixPopover.Content
+            align="start"
+            sideOffset={4}
+            className="z-[var(--z-raised)] inline-flex items-center gap-1 rounded-control border border-outline-variant bg-surface-bright px-1.5 py-1 shadow-raised"
+          >
+            {pickerEmojis.map((e) => (
+              <button
+                key={e}
+                type="button"
+                onClick={() => {
+                  react(e);
+                  setPickerOpen(false);
+                }}
+                aria-label={`React ${e}`}
+                className="inline-flex h-10 w-10 items-center justify-center rounded-control text-[15px] transition-transform active:scale-[0.9]"
+              >
+                {e}
+              </button>
+            ))}
+          </RadixPopover.Content>
+        </RadixPopover.Portal>
+      </RadixPopover.Root>
     </div>
   );
 }

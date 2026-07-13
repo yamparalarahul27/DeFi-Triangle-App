@@ -29,7 +29,7 @@ import { AvatarGroup } from "@/design-system";
 |---|---|---|---|
 | `members` | `AvatarGroupMember[]` | — | `{ name, seed?, hue?, you? }`. Render order is the caller's concern — spec wants followed-by-you first. |
 | `max` | `number` | `3` | Avatars shown before collapsing to `+N`. |
-| `size` | `20 \| 28` | `20` | Avatar diameter. |
+| `size` | `"xs" \| "sm"` | `"xs"` | Avatar diameter (xs 20 · sm 28 px). |
 | `className` | `string` | — | Merged via `cn`. |
 
 ## Tokens

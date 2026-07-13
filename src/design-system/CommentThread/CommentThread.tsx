@@ -37,7 +37,7 @@ function CommentRow({
         name={comment.author.name}
         seed={comment.author.seed}
         you={comment.author.you}
-        size={28}
+        size="sm"
       />
       <div className="min-w-0 flex-1">
         <div className="flex items-baseline gap-2">
@@ -76,6 +76,7 @@ export function CommentThread({
   comments,
   onLike,
   onSubmit,
+  className,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -83,6 +84,8 @@ export function CommentThread({
   /** (topLevelIndex, replyIndex?) — replyIndex present when a reply is liked. */
   onLike?: (index: number, replyIndex?: number) => void;
   onSubmit?: (text: string) => void;
+  /** Merged onto the underlying Sheet panel (API contract: every component takes className). */
+  className?: string;
 }) {
   const [text, setText] = useState("");
   const remaining = MAX - text.length;
@@ -135,6 +138,7 @@ export function CommentThread({
       onOpenChange={onOpenChange}
       title={`${count} ${count === 1 ? "comment" : "comments"}`}
       footer={footer}
+      className={className}
     >
       <div className="divide-y divide-outline-variant">
         {comments.map((c, i) => (

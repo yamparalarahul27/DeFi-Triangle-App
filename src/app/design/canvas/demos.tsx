@@ -174,7 +174,7 @@ export const DEMOS: Record<string, () => ReactNode> = {
     <div className="flex flex-wrap gap-2">
       {ID_HUES.map((hue) => (
         <div key={hue} className="text-center">
-          <Avatar name={hue} hue={hue} size={40} />
+          <Avatar name={hue} hue={hue} size="md" />
           <div className="mt-1 text-[10px] text-fg-subtle">{hue}</div>
         </div>
       ))}
@@ -193,11 +193,11 @@ export const DEMOS: Record<string, () => ReactNode> = {
   ),
   Avatar: () => (
     <div className="flex items-center gap-3">
-      <Avatar name="Mira" seed="wallet-mira" size={20} />
-      <Avatar name="Mira" seed="wallet-mira" size={28} />
-      <Avatar name="Mira" seed="wallet-mira" size={40} />
-      <Avatar name="Mira" seed="wallet-mira" size={64} />
-      <Avatar name="You" you size={40} />
+      <Avatar name="Mira" seed="wallet-mira" size="xs" />
+      <Avatar name="Mira" seed="wallet-mira" size="sm" />
+      <Avatar name="Mira" seed="wallet-mira" size="md" />
+      <Avatar name="Mira" seed="wallet-mira" size="lg" />
+      <Avatar name="You" you size="md" />
     </div>
   ),
   AvatarGroup: () => (

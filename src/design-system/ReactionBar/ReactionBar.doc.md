@@ -61,4 +61,4 @@ const [reactions, setReactions] = useState<Reaction[]>([
 
 - Pills expose `aria-pressed` (own-reaction); `+` exposes `aria-label` + `aria-expanded`.
 - Pill hit area 44px; picker items 40px; `+` is 44×44.
-- Picker is `role="menu"` / `role="menuitem"`.
+- Picker is a Radix Popover: focus moves into the panel on open, **Escape and outside-click dismiss**, and focus returns to the `+` trigger on close. Each option is a labelled button (`React ♥`).

@@ -16,19 +16,20 @@ const RING = "ring-2 ring-surface-container";
 export function AvatarGroup({
   members,
   max = 3,
-  size = 20,
+  size = "xs",
   className,
 }: {
   /** Render order is the caller's concern (spec: followed-by-you first). */
   members: AvatarGroupMember[];
   /** Max avatars before collapsing to a +N disc. */
   max?: number;
-  size?: 20 | 28;
+  /** xs 20px · sm 28px (shared scale — see CONVENTIONS API contract). */
+  size?: "xs" | "sm";
   className?: string;
 }) {
   const shown = members.slice(0, max);
   const extra = members.length - shown.length;
-  const discSize = size === 20 ? "w-5 h-5 text-[9px]" : "w-7 h-7 text-[10px]";
+  const discSize = size === "xs" ? "w-5 h-5 text-[9px]" : "w-7 h-7 text-[10px]";
 
   return (
     <span

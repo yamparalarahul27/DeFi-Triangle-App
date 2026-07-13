@@ -30,7 +30,7 @@ describe("Avatar", () => {
   });
 
   it("sizes map to their diameter classes", () => {
-    const el = render(<Avatar name="M" size={64} />).getByRole("img");
+    const el = render(<Avatar name="M" size="lg" />).getByRole("img");
     expect(el.className).toContain("w-16");
   });
 

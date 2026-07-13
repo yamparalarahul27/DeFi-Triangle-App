@@ -26,6 +26,7 @@ export function Onboarding({
   onHandleChange,
   availability = "idle",
   onJoin,
+  className,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -36,13 +37,15 @@ export function Onboarding({
   onHandleChange: (value: string) => void;
   availability?: HandleAvailability;
   onJoin: () => void;
+  /** Merged onto the underlying Sheet panel (API contract: every component takes className). */
+  className?: string;
 }) {
   const connected = Boolean(walletAddress);
   const avail = AVAILABILITY_COPY[availability];
   const canJoin = connected && availability === "available";
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange} title="Join the tide">
+    <Sheet open={open} onOpenChange={onOpenChange} title="Join the tide" className={className}>
       <div className="space-y-4 pt-1">
         {/* Step 1 — wallet */}
         {connected ? (
@@ -68,7 +71,7 @@ export function Onboarding({
         {/* Step 2 — handle + live avatar preview */}
         <div className={cn("space-y-2", !connected && "pointer-events-none opacity-40")}>
           <div className="flex items-center gap-3">
-            <Avatar name={handle || "?"} seed={handle || "preview"} size={40} />
+            <Avatar name={handle || "?"} seed={handle || "preview"} size="md" />
             <div className="flex min-w-0 flex-1 items-center gap-1 rounded-control bg-surface-container px-3 py-2.5">
               <span className="font-mono text-sm text-fg-subtle">@</span>
               <input

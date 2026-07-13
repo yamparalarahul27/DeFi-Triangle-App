@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 type Size = "sm" | "md" | "lg";
 
@@ -20,7 +21,7 @@ export function TokenIcon({
   src,
   symbol,
   size = "md",
-  className = "",
+  className,
 }: {
   src?: string;
   symbol?: string;
@@ -37,7 +38,12 @@ export function TokenIcon({
   if (!src || errored) {
     return (
       <div
-        className={`${SIZE_CLS[size]} ${TEXT_CLS[size]} ${className} rounded-full bg-surface-bright text-fg flex items-center justify-center font-semibold shrink-0`}
+        className={cn(
+          SIZE_CLS[size],
+          TEXT_CLS[size],
+          "flex shrink-0 items-center justify-center rounded-full bg-surface-bright font-semibold text-fg",
+          className,
+        )}
         aria-label={symbol ?? "token"}
       >
         {initials}
@@ -51,7 +57,7 @@ export function TokenIcon({
       src={src}
       alt={symbol ?? "token"}
       onError={() => setErroredSrc(src ?? null)}
-      className={`${SIZE_CLS[size]} ${className} rounded-full object-cover shrink-0`}
+      className={cn(SIZE_CLS[size], "shrink-0 rounded-full object-cover", className)}
     />
   );
 }
