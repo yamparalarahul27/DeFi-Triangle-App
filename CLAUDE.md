@@ -292,13 +292,23 @@ This is the same shape of bug as guideline #5 — *local environment lying to yo
 
 ### Accepted upstream vulnerabilities
 
-> Re-baselined 2026-07-13 (Phase 2b). The previously documented
-> `bigint-buffer` chain (GHSA-3gc7-fjrx-p6mg) is **no longer reported** —
-> fixed upstream and verified absent per this section's own removal rule.
-> `npm audit fix` (non-breaking) was applied the same day: 18 → 7 findings.
+> Re-baselined 2026-07-13 (Phase 2b). Correction from the same day: the
+> `bigint-buffer` chain briefly appeared "fixed upstream" only because the
+> machine-local `legacy-peer-deps=true` npm config had pruned the peer-dep
+> subtree from the lockfile entirely. The lockfile is now generated with
+> strict peer resolution (the full, honest graph — required for `npm ci`
+> to work on CI and any contributor machine), which restores that chain.
+> `npm audit fix` (non-breaking) was also applied: 18 → 7 findings before
+> the graph restore.
 
 Current accepted state:
 
+- **3 high — the original `bigint-buffer` chain**
+  ([GHSA-3gc7-fjrx-p6mg](https://github.com/advisories/GHSA-3gc7-fjrx-p6mg),
+  CVSS 7.5): transitive via `@jup-ag/wallet-adapter` →
+  `@solana/spl-token` → `@solana/buffer-layout-utils` — the **dormant
+  engine's** chain, unused by CIDS at runtime. Accepted pending a
+  wallet-adapter major upgrade (or engine retirement decision).
 - **1 high — `next@16.2.4`** (multiple advisories incl. middleware bypass
   GHSA-26hh-7cqf-hhc6, cache poisoning GHSA-3g8h-86w9-wvmq). Fix requires a
   framework version bump (`npm audit fix --force` → next 16.3.x) — tracked
