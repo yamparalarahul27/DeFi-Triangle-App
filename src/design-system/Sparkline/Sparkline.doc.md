@@ -1,6 +1,6 @@
 # Sparkline
 
-Status: draft
+Status: stable
 Inline SVG trend line; tone follows series direction (sign discipline) unless overridden.
 
 ## Usage

@@ -1,6 +1,6 @@
 # StatCell
 
-Status: draft
+Status: stable
 Label-over-value stat block; padding and type ride the density tokens.
 
 ## Usage

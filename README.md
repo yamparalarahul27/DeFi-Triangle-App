@@ -17,6 +17,8 @@ human and an AI agent both build from, and flip themes live.
 | `/design/canvas` | **Infinite canvas** — pan/zoom the whole system; layers rail; select any component to inspect its real `.doc.md` | desktop |
 | `/design` | Component gallery | mobile-friendly |
 | `/design/feed` | The system composed as a real screen (mock data) | mobile-friendly |
+| `/design/templates/simple-dapp` | **Template** — the consumer end (connect, balances, send flow) | mobile-friendly |
+| `/design/templates/exchange` | **Template** — the terminal end (markets, order book, trade form) at compact density | desktop |
 
 ## The system
 
@@ -28,7 +30,7 @@ human and an AI agent both build from, and flip themes live.
   Toast, Divider, EmptyState, the Phase-5 data layer — DataTable,
   RollingNumber, PriceChange, StatCell, Sparkline — and the crypto
   verticals nobody else ships: AddressChip, PegBadge, NetworkBadge,
-  TxStatus, AmountInput (18 stable · 19 draft, per each doc's
+  TxStatus, AmountInput (**35 stable · 2 draft**, per each doc's
   `Status:` header). Every one
   ships a colocated `.doc.md` in the fixed shape defined by
   [`CONVENTIONS.md`](src/design-system/CONVENTIONS.md) (Anatomy · Props ·

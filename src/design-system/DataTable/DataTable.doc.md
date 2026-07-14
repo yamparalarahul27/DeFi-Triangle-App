@@ -1,6 +1,6 @@
 # DataTable
 
-Status: draft
+Status: stable
 Terminal-grade table: real table semantics, sticky header, aria-sort client sorting, density-token row grid.
 
 ## Usage

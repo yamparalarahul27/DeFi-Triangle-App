@@ -289,15 +289,15 @@ Current inventory (37):
 | Button | stable | | IconButton | stable |
 | Badge | stable | | Input | stable |
 | Dialog | stable | | Menu | stable |
-| Switch | draft | | Checkbox | draft |
-| Select | draft | | Tabs | draft |
-| Toast | draft | | Divider | draft |
-| EmptyState | draft | | DataTable | draft |
-| RollingNumber | draft | | PriceChange | draft |
-| StatCell | draft | | Sparkline | draft |
-| AddressChip | draft | | PegBadge | draft |
-| NetworkBadge | draft | | TxStatus | draft |
-| AmountInput | draft | | | |
+| Switch | stable | | Checkbox | stable |
+| Select | stable | | Tabs | stable |
+| Toast | stable | | Divider | stable |
+| EmptyState | stable | | DataTable | stable |
+| RollingNumber | stable | | PriceChange | stable |
+| StatCell | stable | | Sparkline | stable |
+| AddressChip | stable | | PegBadge | stable |
+| NetworkBadge | stable | | TxStatus | stable |
+| AmountInput | stable | | | |
 
 Components consume tokens from this file's foundations — they never
 define color/spacing/motion values of their own (`check:theme`).

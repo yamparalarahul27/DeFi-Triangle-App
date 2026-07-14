@@ -1,6 +1,6 @@
 # PegBadge
 
-Status: draft
+Status: stable
 Stablecoin peg health from the SIGNED bps deviation -- tone by magnitude, sign kept visible.
 
 ## Usage

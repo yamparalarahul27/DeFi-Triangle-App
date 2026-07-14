@@ -1,6 +1,6 @@
 # Divider
 
-Status: draft
+Status: stable
 Hairline rule on the outline-variant token.
 
 ## Usage

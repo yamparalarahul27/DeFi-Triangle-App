@@ -1,6 +1,6 @@
 # NetworkBadge
 
-Status: draft
+Status: stable
 Chain indicator -- always show the network (ethereum.org heuristic #3). Neutral: chains are facts, not states.
 
 ## Usage

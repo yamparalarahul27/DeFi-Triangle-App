@@ -1,6 +1,6 @@
 # PriceChange
 
-Status: draft
+Status: stable
 The sign-discipline primitive: direction from the signed value, magnitude always Math.abs -- a green loss is impossible.
 
 ## Usage

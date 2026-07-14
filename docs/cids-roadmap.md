@@ -327,12 +327,18 @@ is guard-pinned; all five verticals pass the axe×4-themes matrix
       (Connect/Sign/Approve/Confirm/Cancel-vs-Reject — one verb per
       meaning) + voice rules; the ethereum.org heuristics live inside
       the tx-flow pattern's rules.
-- [ ] **Two starter templates**: `simple-dapp` (wallet connect +
-      balances + send) and `exchange-shell` (markets table + order
-      book + trade form) — both built *only* from the DS.
+- [x] **Two starter templates shipped**: `/design/templates/simple-dapp`
+      (connect session, balances, full send flow w/ review + lifecycle)
+      and `/design/templates/exchange` (markets table, streaming order
+      book, trade form, RollingNumber header — **compact density,
+      element-scoped**) — both DS-components-only, framed live on the
+      canvas, linked from the landing.
 
-**Gate:** both templates build from documented components/patterns
-with zero one-off styles (guards pass on template code).
+**Gate — MET (2026-07-13):** both templates are DS-exports-only with
+zero one-off styles (guards pass on template code); the exchange runs
+at compact density and streams with zero layout shift. Promotions
+batched here: 17 drafts → stable (**35 stable / 2 draft** — only
+CommentThread + Onboarding stay draft pending real product use).
 
 ### Phase 7 — Distribution & governance <sub>(W5/R4+R5 · adoptable)</sub>
 

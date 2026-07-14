@@ -1,6 +1,6 @@
 # Select
 
-Status: draft
+Status: stable
 Single-value select on Radix Select; trigger matches Input's md height.
 
 ## Usage
