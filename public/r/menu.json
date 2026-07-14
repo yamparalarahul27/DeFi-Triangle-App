@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "menu",
+  "type": "registry:ui",
+  "title": "Menu",
+  "description": "CIDS Menu (stable) — docs ship with the code (Menu.doc.md).",
+  "dependencies": [
+    "radix-ui"
+  ],
+  "registryDependencies": [
+    "@cids/tokens"
+  ],
+  "files": [
+    {
+      "path": "cids/Menu/Menu.tsx",
+      "type": "registry:ui",
+      "target": "components/cids/Menu/Menu.tsx",
+      "content": "\"use client\";\n\nimport { DropdownMenu as RadixMenu } from \"radix-ui\";\nimport type { ReactNode } from \"react\";\nimport { cn } from \"@/lib/utils\";\n\nexport type MenuItem =\n  | { kind?: \"item\"; label: string; onSelect: () => void; destructive?: boolean; disabled?: boolean }\n  | { kind: \"separator\" };\n\n/**\n * Dropdown menu. Behavior is Radix DropdownMenu: typeahead, arrow-key\n * navigation, Escape/outside-click dismiss, focus return to the trigger.\n * Trigger renders asChild — pass a focusable element (e.g. IconButton).\n */\nexport function Menu({\n  trigger,\n  items,\n  align = \"start\",\n  className,\n}: {\n  trigger: ReactNode;\n  items: MenuItem[];\n  align?: \"start\" | \"center\" | \"end\";\n  /** Merged onto the menu panel. */\n  className?: string;\n}) {\n  return (\n    <RadixMenu.Root>\n      <RadixMenu.Trigger asChild>{trigger}</RadixMenu.Trigger>\n      <RadixMenu.Portal>\n        <RadixMenu.Content\n          align={align}\n          sideOffset={4}\n          className={cn(\n            \"z-[var(--z-raised)] min-w-40 rounded-chip border border-outline-variant bg-surface-bright p-1 shadow-raised\",\n            \"data-[state=open]:animate-in data-[state=open]:fade-in-0\",\n            className,\n          )}\n        >\n          {items.map((item, i) =>\n            item.kind === \"separator\" ? (\n              <RadixMenu.Separator\n                key={i}\n                className=\"mx-1 my-1 h-px bg-outline-variant\"\n              />\n            ) : (\n              <RadixMenu.Item\n                key={i}\n                disabled={item.disabled}\n                onSelect={item.onSelect}\n                className={cn(\n                  \"flex cursor-default select-none items-center rounded-control px-2.5 py-1.5 text-xs outline-none\",\n                  \"data-[highlighted]:bg-surface-container-high data-[disabled]:pointer-events-none data-[disabled]:opacity-40\",\n                  item.destructive ? \"text-sell\" : \"text-fg\",\n                )}\n              >\n                {item.label}\n              </RadixMenu.Item>\n            ),\n          )}\n        </RadixMenu.Content>\n      </RadixMenu.Portal>\n    </RadixMenu.Root>\n  );\n}\n"
+    },
+    {
+      "path": "cids/Menu/Menu.doc.md",
+      "type": "registry:file",
+      "target": "components/cids/Menu/Menu.doc.md",
+      "content": "# Menu\n\nStatus: stable\nDropdown action menu on Radix DropdownMenu — items as data, behavior (keyboard, typeahead, dismiss) from the primitive.\n\n## Usage\n\n```tsx\nimport { Menu, IconButton } from \"@/design-system\";\n\n<Menu\n  trigger={<IconButton aria-label=\"Post actions\">⋯</IconButton>}\n  items={[\n    { label: \"Copy link\", onSelect: copy },\n    { kind: \"separator\" },\n    { label: \"Delete\", onSelect: del, destructive: true },\n  ]}\n/>\n```\n\n## Anatomy\n\n```\n[trigger]\n   ┌ Copy link      ┐ ← surface-bright panel, shadow-raised\n   │ ───────────────│ ← separator\n   │ Delete         │ ← destructive: sell text\n   └────────────────┘\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `trigger` | `ReactNode` | **required** | Rendered `asChild` — must be focusable (IconButton/Button). |\n| `items` | `MenuItem[]` | **required** | `{label, onSelect, destructive?, disabled?}` or `{kind:\"separator\"}`. |\n| `align` | `\"start\" \\| \"center\" \\| \"end\"` | `\"start\"` | Panel alignment to the trigger. |\n| `className` | `string` | — | cn-merged onto the panel. |\n\n## Tokens\n\n- `--surface-bright` panel · `--surface-container-high` highlight · `--outline-variant` · `--sell` (destructive item) · `--radius-chip`/`--radius-control` · `--elevation-2` via `shadow-raised` · `--z-raised`\n\n## States\n\nclosed · open · item highlighted (pointer or arrows) · item disabled · destructive item.\n\n## Motion\n\nfade-in preset on open; highlight moves instantly (no per-item animation). Reduced-motion via global reset.\n\n## A11y\n\n- Radix DropdownMenu: arrow-key navigation, Home/End, typeahead, Escape + outside-click dismiss, focus returns to the trigger.\n- Destructive items get sell text — pair genuinely destructive actions with a Dialog confirm.\n"
+    }
+  ]
+}

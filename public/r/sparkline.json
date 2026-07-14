@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sparkline",
+  "type": "registry:ui",
+  "title": "Sparkline",
+  "description": "CIDS Sparkline (stable) — docs ship with the code (Sparkline.doc.md).",
+  "dependencies": [],
+  "registryDependencies": [
+    "@cids/tokens"
+  ],
+  "files": [
+    {
+      "path": "cids/Sparkline/Sparkline.tsx",
+      "type": "registry:ui",
+      "target": "components/cids/Sparkline/Sparkline.tsx",
+      "content": "import { cn } from \"@/lib/utils\";\n\n/**\n * Inline trend line — pure SVG, no chart library. Tone follows the\n * series direction by default (first vs last, sign discipline), or set\n * it explicitly. Decorative unless a label is given.\n */\nexport function Sparkline({\n  data,\n  tone,\n  label,\n  width = 84,\n  height = 28,\n  className,\n}: {\n  /** The series, oldest → newest. Needs ≥ 2 points to draw. */\n  data: number[];\n  /** Default: buy when last ≥ first, sell otherwise. */\n  tone?: \"buy\" | \"sell\" | \"neutral\";\n  /** Accessible name; omitted = decorative (aria-hidden). */\n  label?: string;\n  width?: number;\n  height?: number;\n  className?: string;\n}) {\n  if (data.length < 2) return null;\n\n  const min = Math.min(...data);\n  const max = Math.max(...data);\n  const span = max - min || 1;\n  const pts = data\n    .map((v, i) => {\n      const x = (i / (data.length - 1)) * width;\n      const y = 2 + (1 - (v - min) / span) * (height - 4);\n      return `${x.toFixed(1)},${y.toFixed(1)}`;\n    })\n    .join(\" \");\n\n  const resolved =\n    tone ?? (data[data.length - 1] >= data[0] ? \"buy\" : \"sell\");\n  const STROKE = {\n    buy: \"var(--buy)\",\n    sell: \"var(--sell)\",\n    neutral: \"var(--fg-muted)\",\n  }[resolved];\n\n  return (\n    <svg\n      viewBox={`0 0 ${width} ${height}`}\n      width={width}\n      height={height}\n      className={cn(\"shrink-0\", className)}\n      role={label ? \"img\" : undefined}\n      aria-label={label}\n      aria-hidden={label ? undefined : true}\n    >\n      <polyline\n        points={pts}\n        fill=\"none\"\n        stroke={STROKE}\n        strokeWidth=\"1.25\"\n        strokeLinejoin=\"round\"\n        strokeLinecap=\"round\"\n      />\n    </svg>\n  );\n}\n"
+    },
+    {
+      "path": "cids/Sparkline/Sparkline.doc.md",
+      "type": "registry:file",
+      "target": "components/cids/Sparkline/Sparkline.doc.md",
+      "content": "# Sparkline\n\nStatus: stable\nInline SVG trend line; tone follows series direction (sign discipline) unless overridden.\n\n## Usage\n\n```tsx\nimport { Sparkline } from \"@/design-system\";\n\n<Sparkline data={closes} />\n<Sparkline data={closes} label=\"7-day price trend\" tone=\"neutral\" />\n```\n\n## Anatomy\n\n```\n/\\_/\\__/  <- polyline, 1.25 stroke, buy/sell by direction\n84 x 28 default box\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `data` | `number[]` | -- | Oldest -> newest; needs >= 2 points (else renders nothing). |\n| `tone` | `\"buy\" \\| \"sell\" \\| \"neutral\"` | direction | Default: last >= first -> buy. |\n| `label` | `string` | -- | Sets `role=\"img\"` + name; omitted = `aria-hidden` decorative. |\n| `width` / `height` | `number` | 84 / 28 | Viewbox + rendered size. |\n| `className` | `string` | -- | cn-merged. |\n\n## Tokens\n\n- `--buy` / `--sell` / `--fg-muted` via `var()` strokes\n\n## States\n\nStatic; re-renders with data.\n\n## Motion\n\nNone (data surfaces never bounce).\n\n## A11y\n\n- Decorative by default (`aria-hidden`); pass `label` to name it as an image.\n- Never the only carrier of direction -- pair with a signed value.\n"
+    }
+  ]
+}

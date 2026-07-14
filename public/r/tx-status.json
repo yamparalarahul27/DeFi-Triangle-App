@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tx-status",
+  "type": "registry:ui",
+  "title": "TxStatus",
+  "description": "CIDS TxStatus (stable) — docs ship with the code (TxStatus.doc.md).",
+  "dependencies": [],
+  "registryDependencies": [
+    "@cids/tokens"
+  ],
+  "files": [
+    {
+      "path": "cids/TxStatus/TxStatus.tsx",
+      "type": "registry:ui",
+      "target": "components/cids/TxStatus/TxStatus.tsx",
+      "content": "import { cn } from \"@/lib/utils\";\n\nexport type TxState = \"idle\" | \"signing\" | \"pending\" | \"confirmed\" | \"failed\";\n\n// The transaction lifecycle, visible at every step (ethereum.org\n// heuristic #1) — the component no reference library ships.\nconst COPY: Record<TxState, string> = {\n  idle: \"Ready\",\n  signing: \"Waiting for wallet…\",\n  pending: \"Pending confirmation…\",\n  confirmed: \"Confirmed\",\n  failed: \"Failed\",\n};\n\nconst DOT: Record<TxState, string> = {\n  idle: \"bg-fg-subtle\",\n  signing: \"bg-warning animate-pulse\",\n  pending: \"bg-info animate-pulse\",\n  confirmed: \"bg-buy\",\n  failed: \"bg-sell\",\n};\n\nconst TEXT: Record<TxState, string> = {\n  idle: \"text-fg-muted\",\n  signing: \"text-warning\",\n  pending: \"text-info\",\n  confirmed: \"text-buy\",\n  failed: \"text-sell\",\n};\n\nexport function TxStatus({\n  state,\n  detail,\n  className,\n}: {\n  state: TxState;\n  /** Optional line under the label (signature, error hint…). */\n  detail?: string;\n  className?: string;\n}) {\n  return (\n    // Live region: state changes are announced without stealing focus —\n    // the user acts in the wallet while the UI reports (heuristic #2).\n    <div role=\"status\" aria-live=\"polite\" className={cn(\"inline-flex items-start gap-2\", className)}>\n      <span\n        aria-hidden=\"true\"\n        className={cn(\"mt-1 h-2 w-2 flex-none rounded-full\", DOT[state])}\n      />\n      <span className=\"min-w-0\">\n        <span className={cn(\"block text-sm font-medium\", TEXT[state])}>\n          {state === \"confirmed\" ? \"✓ \" : state === \"failed\" ? \"✕ \" : \"\"}\n          {COPY[state]}\n        </span>\n        {detail && (\n          <span className=\"block truncate font-mono text-[11px] text-fg-subtle\">\n            {detail}\n          </span>\n        )}\n      </span>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "cids/TxStatus/TxStatus.doc.md",
+      "type": "registry:file",
+      "target": "components/cids/TxStatus/TxStatus.doc.md",
+      "content": "# TxStatus\n\nStatus: stable\nThe transaction lifecycle, always visible (heuristic #1) -- the component no reference library ships.\n\n## Usage\n\n```tsx\nimport { TxStatus } from \"@/design-system\";\n\n<TxStatus state=\"pending\" detail=\"5D3k...Wq signature\" />\n<TxStatus state=\"confirmed\" />\n```\n\n## Anatomy\n\n```\no  Waiting for wallet...   signing: warning pulse\no  Pending confirmation... pending: info pulse\n✓  Confirmed               buy   |  ✕ Failed  sell\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `state` | `\"idle\" \\| \"signing\" \\| \"pending\" \\| \"confirmed\" \\| \"failed\"` | -- | The lifecycle. |\n| `detail` | `string` | -- | Mono line under the label (signature, error hint). |\n| `className` | `string` | -- | cn-merged. |\n\n## Tokens\n\n- `--warning` (signing) - `--info` (pending) - `--buy`/`--sell` (terminal states) - `--fg-subtle` dot at idle\n\n## States\n\nidle - signing - pending - confirmed - failed. Copy per state is the component contract.\n\n## Motion\n\nPulse on the in-flight dot only (status indicator, not data; collapses under reduced-motion). Terminal states are still.\n\n## A11y\n\n- `role=\"status\"` + `aria-live=\"polite\"`: transitions are announced without stealing focus -- the user acts in the wallet while the UI reports (heuristic #2).\n- Terminal states carry ✓/✕ glyphs + words, never color alone.\n"
+    }
+  ]
+}

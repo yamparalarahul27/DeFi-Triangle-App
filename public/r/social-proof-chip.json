@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "social-proof-chip",
+  "type": "registry:ui",
+  "title": "SocialProofChip",
+  "description": "CIDS SocialProofChip (stable) — docs ship with the code (SocialProofChip.doc.md).",
+  "dependencies": [],
+  "registryDependencies": [
+    "@cids/tokens"
+  ],
+  "files": [
+    {
+      "path": "cids/SocialProofChip/SocialProofChip.tsx",
+      "type": "registry:ui",
+      "target": "components/cids/SocialProofChip/SocialProofChip.tsx",
+      "content": "import { cn } from \"@/lib/utils\";\n\nexport function SocialProofChip({\n  count,\n  label = \"watching\",\n  compact = false,\n  className,\n}: {\n  count: number;\n  label?: string;\n  /** On dense cards, drop the label and show just the count. */\n  compact?: boolean;\n  className?: string;\n}) {\n  return (\n    // Accessible name comes from real text (aria-label is prohibited on a\n    // generic span — axe aria-prohibited-attr). Compact mode keeps the\n    // label for screen readers via sr-only.\n    <span\n      className={cn(\"inline-flex items-center gap-1 text-xs text-fg-muted\", className)}\n    >\n      <span className=\"text-brand/60\" aria-hidden=\"true\">\n        ◔\n      </span>\n      <span className=\"data-sm\">{count}</span>\n      {compact ? <span className=\"sr-only\">{label}</span> : <span>{label}</span>}\n    </span>\n  );\n}\n"
+    },
+    {
+      "path": "cids/SocialProofChip/SocialProofChip.doc.md",
+      "type": "registry:file",
+      "target": "components/cids/SocialProofChip/SocialProofChip.doc.md",
+      "content": "# SocialProofChip\n\nStatus: stable\n\"◔ 41 watching\" — quiet social-proof count. Never louder than the price it sits by.\n\n## Usage\n\n```tsx\nimport { SocialProofChip } from \"@/design-system\";\n\n<SocialProofChip count={41} />            {/* ◔ 41 watching */}\n<SocialProofChip count={41} compact />    {/* ◔ 41 */}\n<SocialProofChip count={7} label=\"holding\" />\n```\n\n## Anatomy\n\n```\n ◔ 41 watching        ◔ 41      ← compact (on cards)\n │  │  └ label, fg-muted        └ label dropped\n │  └ count, .data-sm\n └ dotted-ring glyph, brand @60%\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `count` | `number` | — | The proof count. |\n| `label` | `string` | `\"watching\"` | Trailing word. |\n| `compact` | `boolean` | `false` | Drop the label; show glyph + count only. |\n| `className` | `string` | — | Merged via `cn`. |\n\n## Tokens\n\n- `--color-brand` at 60% (`text-brand/60`) — the dotted-ring glyph only.\n- `--color-fg-muted` — count + label.\n- `.data-sm` — the numeral.\n\n## States\n\n- **Full** — glyph + count + label.\n- **Compact** — glyph + count.\n\n## Motion\n\nNone.\n\n## A11y\n\n- Accessible name is real text — count + label are readable (compact renders the label `sr-only`), only the ◔ glyph is `aria-hidden`. No `aria-label` on the generic span (axe `aria-prohibited-attr`).\n- Weight stays at `text-xs`/muted so it never out-shouts adjacent price data.\n"
+    }
+  ]
+}

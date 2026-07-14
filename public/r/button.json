@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "button",
+  "type": "registry:ui",
+  "title": "Button",
+  "description": "CIDS Button (stable) — docs ship with the code (Button.doc.md).",
+  "dependencies": [],
+  "registryDependencies": [
+    "@cids/tokens"
+  ],
+  "files": [
+    {
+      "path": "cids/Button/Button.tsx",
+      "type": "registry:ui",
+      "target": "components/cids/Button/Button.tsx",
+      "content": "import { cn } from \"@/lib/utils\";\n\nexport type ButtonVariant = \"primary\" | \"secondary\" | \"ghost\" | \"destructive\";\nexport type ButtonSize = \"sm\" | \"md\" | \"lg\";\n\n// Heights per the shared scale (sm 28 · md 36 · lg 44). md matches Lane's\n// segment; lg is the 44px comfortable tap target.\nconst SIZE: Record<ButtonSize, string> = {\n  sm: \"h-7 px-2.5 text-xs\",\n  md: \"h-9 px-3.5 text-sm\",\n  lg: \"h-11 px-5 text-sm\",\n};\n\nconst VARIANT: Record<ButtonVariant, string> = {\n  primary: \"bg-brand text-on-brand hover:bg-brand-hover\",\n  secondary:\n    \"border border-outline-variant bg-surface-container text-fg hover:bg-surface-container-high\",\n  ghost: \"text-fg-muted hover:bg-surface-container hover:text-fg\",\n  destructive: \"bg-sell-strong text-white hover:bg-sell\",\n};\n\nexport function Button({\n  variant = \"secondary\",\n  size = \"md\",\n  type = \"button\",\n  className,\n  ...rest\n}: React.ButtonHTMLAttributes<HTMLButtonElement> & {\n  variant?: ButtonVariant;\n  /** sm 28 · md 36 · lg 44 px height (shared scale). */\n  size?: ButtonSize;\n}) {\n  return (\n    <button\n      type={type}\n      className={cn(\n        \"inline-flex items-center justify-center gap-2 rounded-control font-medium\",\n        \"transition-[background-color,color,box-shadow,transform] duration-150 active:scale-[0.96]\",\n        \"disabled:pointer-events-none disabled:opacity-40\",\n        SIZE[size],\n        VARIANT[variant],\n        className,\n      )}\n      {...rest}\n    />\n  );\n}\n"
+    },
+    {
+      "path": "cids/Button/Button.doc.md",
+      "type": "registry:file",
+      "target": "components/cids/Button/Button.doc.md",
+      "content": "# Button\n\nStatus: stable\nThe action primitive — four variants on the semantic tokens, three heights on the shared scale.\n\n## Usage\n\n```tsx\nimport { Button } from \"@/design-system\";\n\n<Button variant=\"primary\" onClick={confirm}>Confirm</Button>\n<Button variant=\"destructive\" size=\"sm\">Remove</Button>\n```\n\n## Anatomy\n\n```\n┌──────────────────────┐\n│ [icon]  Label        │ ← inline-flex, gap-2, rounded-control\n└──────────────────────┘\n  primary: brand fill · secondary: container+border ·\n  ghost: text only · destructive: sell fill\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `variant` | `\"primary\" \\| \"secondary\" \\| \"ghost\" \\| \"destructive\"` | `\"secondary\"` | Destructive pairs with a confirm step (Dialog). |\n| `size` | `\"sm\" \\| \"md\" \\| \"lg\"` | `\"md\"` | Heights 28 / 36 / 44 px (shared scale). |\n| `className` | `string` | — | cn-merged. |\n| …rest | `ButtonHTMLAttributes` | `type=\"button\"` | Native pass-through (onClick, disabled…). |\n\n## Tokens\n\n- `--brand` / `--on-brand` / `--brand-hover` (primary) · `--surface-container(-high)` + `--outline-variant` (secondary) · `--sell(-strong)` (destructive)\n- `--radius-control` · `--motion-fast` timing via the 150ms transition\n\n## States\n\n- default · hover (fill shift) · active (`scale 0.96`) · focus-visible (global brand ring) · disabled (`opacity-40`, no events)\n\n## Motion\n\n- Targeted `transition-[background-color,color,box-shadow,transform]` 150ms (never `transition-all`); press scale 0.96. Reduced-motion: global reset.\n\n## A11y\n\n- Native `<button type=\"button\">` — space/enter, focusability for free.\n- Disabled uses the native attribute (removed from tab order).\n- `text-white` on destructive is deliberate: sell-strong is dark in every theme.\n- Label is the accessible name — icon-only use belongs to IconButton.\n"
+    }
+  ]
+}

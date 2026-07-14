@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "token-chip",
+  "type": "registry:ui",
+  "title": "TokenChip",
+  "description": "CIDS TokenChip (stable) — docs ship with the code (TokenChip.doc.md).",
+  "dependencies": [],
+  "registryDependencies": [
+    "@cids/tokens",
+    "@cids/token-icon"
+  ],
+  "files": [
+    {
+      "path": "cids/TokenChip/TokenChip.tsx",
+      "type": "registry:ui",
+      "target": "components/cids/TokenChip/TokenChip.tsx",
+      "content": "import { cn } from \"@/lib/utils\";\nimport { TokenIcon } from \"../TokenIcon\";\n\nexport function TokenChip({\n  symbol,\n  iconSrc,\n  price,\n  change24h,\n  className,\n}: {\n  symbol: string;\n  iconSrc?: string;\n  /** Preformatted price string, e.g. \"$0.8123\" — formatting is the caller's concern. */\n  price: string;\n  /** Signed 24h change, percent. Sign drives direction; magnitude drives the number. */\n  change24h: number;\n  className?: string;\n}) {\n  // Guideline #5 — sign vs magnitude are two computations:\n  //   direction (icon + prefix + color) reads the SIGNED value;\n  //   the number reads the MAGNITUDE via Math.abs.\n  const up = change24h >= 0;\n  const arrow = up ? \"▲\" : \"▼\";\n  const prefix = up ? \"+\" : \"−\"; // U+2212 minus, per DESIGN.md\n  const magnitude = Math.abs(change24h).toFixed(2);\n\n  return (\n    <span\n      className={cn(\n        \"inline-flex items-center gap-2 rounded-chip border border-outline-variant bg-surface px-2.5 py-1.5\",\n        className,\n      )}\n    >\n      <TokenIcon src={iconSrc} symbol={symbol} size=\"sm\" />\n      <span className=\"font-mono text-[13px] font-medium text-fg\">{symbol}</span>\n      <span className=\"data-sm text-fg\">{price}</span>\n      <span className={cn(\"data-sm\", up ? \"text-buy\" : \"text-sell\")}>\n        {arrow} {prefix}\n        {magnitude}%\n      </span>\n    </span>\n  );\n}\n"
+    },
+    {
+      "path": "cids/TokenChip/TokenChip.doc.md",
+      "type": "registry:file",
+      "target": "components/cids/TokenChip/TokenChip.doc.md",
+      "content": "# TokenChip\n\nStatus: stable\nCompact inline token reference — icon, symbol, live price, signed 24h change.\n\n## Usage\n\n```tsx\nimport { TokenChip } from \"@/design-system\";\n\n<TokenChip\n  symbol=\"JUP\"\n  iconSrc={logoUrl}\n  price=\"$0.8123\"        // preformatted by the caller\n  change24h={4.2}        // SIGNED — drives arrow/prefix/color\n/>\n```\n\n## Anatomy\n\n```\n┌ surface, r-4, border outline-variant, p-6×10 ┐\n│ ○20  JUP   $0.8123   ▲ +4.2%                  │\n│  │    │      │         └ signed 24h: color +   │\n│  │    │      └ price, .data-sm                  │   arrow + prefix from SIGN,\n│  │    └ symbol, mono 13/medium                  │   number from MAGNITUDE\n│  └ TokenIcon sm (20px)                          │\n└─────────────────────────────────────────────────┘\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `symbol` | `string` | — | Ticker; also the icon fallback initials. |\n| `iconSrc` | `string?` | — | Token logo; falls back to initials disc. |\n| `price` | `string` | — | Preformatted (e.g. `\"$0.8123\"`) — formatting is the caller's job. |\n| `change24h` | `number` | — | **Signed** percent. Positive/zero → ▲ `+` buy; negative → ▼ `−` sell. |\n| `className` | `string` | — | Merged via `cn`. |\n\n## Tokens\n\n- `--color-surface`, `--color-outline-variant` — chip surface + hairline border.\n- `--color-fg` — symbol + price text.\n- `--color-buy` / `--color-sell` — 24h direction only (never identity hues for data).\n- `.data-sm` — Geist Pixel Square number ramp.\n- `--radius-chip` (`rounded-chip`) — chip corner.\n\n## States\n\n- **Up / flat** (`change24h >= 0`) — `▲ +N%` in `text-buy`.\n- **Down** (`change24h < 0`) — `▼ −N%` in `text-sell`.\n- **No icon** — `TokenIcon` renders the initials disc.\n\n## Motion\n\nNone. Prices update by value, not animation — terminal calm (DESIGN.md → Motion).\n\n## A11y\n\n- Direction is encoded by **arrow + sign + color**, not color alone, so it survives color-blindness and grayscale.\n- Sign discipline (guideline #5): `up` is computed once from the signed value and drives icon/prefix/color together; the number uses `Math.abs`. No `Math.abs` leaks into the direction path, so a genuine −value can never render as `+`.\n"
+    }
+  ]
+}

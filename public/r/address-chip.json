@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "address-chip",
+  "type": "registry:ui",
+  "title": "AddressChip",
+  "description": "CIDS AddressChip (stable) — docs ship with the code (AddressChip.doc.md).",
+  "dependencies": [],
+  "registryDependencies": [
+    "@cids/tokens"
+  ],
+  "files": [
+    {
+      "path": "cids/AddressChip/AddressChip.tsx",
+      "type": "registry:ui",
+      "target": "components/cids/AddressChip/AddressChip.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { cn } from \"@/lib/utils\";\n\nconst truncate = (addr: string) =>\n  addr.length <= 10 ? addr : `${addr.slice(0, 4)}…${addr.slice(-4)}`;\n\n/**\n * Wallet/mint address: truncated mono display, one-tap copy with\n * confirmation, optional explorer link. The full address is always the\n * accessible name — truncation is visual only.\n */\nexport function AddressChip({\n  address,\n  href,\n  className,\n}: {\n  address: string;\n  /** Explorer URL — renders a ↗ link when present. */\n  href?: string;\n  className?: string;\n}) {\n  const [copied, setCopied] = useState(false);\n\n  const copy = () => {\n    navigator.clipboard.writeText(address).then(() => {\n      setCopied(true);\n      setTimeout(() => setCopied(false), 1500);\n    });\n  };\n\n  return (\n    <span\n      className={cn(\n        \"inline-flex items-center gap-1 rounded-chip border border-outline-variant bg-surface-container px-1.5 py-0.5\",\n        className,\n      )}\n    >\n      <span className=\"font-mono text-xs text-fg\" aria-label={address}>\n        {truncate(address)}\n      </span>\n      <button\n        type=\"button\"\n        onClick={copy}\n        aria-label={copied ? \"Copied\" : `Copy address ${address}`}\n        className={cn(\n          \"inline-flex h-6 w-6 items-center justify-center rounded-control text-xs transition-colors duration-150\",\n          copied ? \"text-buy\" : \"text-fg-muted hover:text-fg\",\n        )}\n      >\n        {copied ? \"✓\" : \"⧉\"}\n      </button>\n      {href && (\n        <a\n          href={href}\n          target=\"_blank\"\n          rel=\"noreferrer\"\n          aria-label=\"View on explorer\"\n          className=\"inline-flex h-6 w-6 items-center justify-center rounded-control text-xs text-fg-muted transition-colors duration-150 hover:text-fg\"\n        >\n          ↗\n        </a>\n      )}\n    </span>\n  );\n}\n"
+    },
+    {
+      "path": "cids/AddressChip/AddressChip.doc.md",
+      "type": "registry:file",
+      "target": "components/cids/AddressChip/AddressChip.doc.md",
+      "content": "# AddressChip\n\nStatus: stable\nTruncated address with one-tap copy + optional explorer link; the full address is always the accessible name.\n\n## Usage\n\n```tsx\nimport { AddressChip } from \"@/design-system\";\n\n<AddressChip address={mint} href={`https://solscan.io/token/${mint}`} />\n```\n\n## Anatomy\n\n```\n[ 7xKt...9fQ2  ⧉  ↗ ]  <- mono truncate - copy (✓ on success) - explorer\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `address` | `string` | -- | Full address; truncated visually (4...4). |\n| `href` | `string` | -- | Explorer URL; renders the link when present. |\n| `className` | `string` | -- | cn-merged. |\n\n## Tokens\n\n- `--surface-container` + `--outline-variant` - `--radius-chip/control` - `--buy` (copied tick) - `font-mono`\n\n## States\n\nrest - copy hover - copied (1.5s ✓ confirmation) - with/without explorer.\n\n## Motion\n\nColor transition 150ms on the affordances; nothing else.\n\n## A11y\n\n- Truncation is visual only: the text span carries the full address as `aria-label`, and the copy button names it (\"Copy address <full>\").\n- Copy confirmation is a label change (\"Copied\"), not color alone.\n"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "identity",
+  "type": "registry:ui",
+  "title": "identity",
+  "description": "CIDS identity-hue helpers — deterministic per-wallet hue (hash % 8) + avatar gradient. Dependency of Avatar/AvatarGroup.",
+  "files": [
+    {
+      "path": "cids/identity.ts",
+      "type": "registry:ui",
+      "target": "components/cids/identity.ts",
+      "content": "// Identity-hue assignment for the tide social layer.\n// Maps a person (wallet address / handle) to one of the 8 --id-* hues\n// defined in globals.css. Deterministic and stable — no user picker in v1.\n// Consumed by Avatar / AvatarGroup only; never for data or state.\n\nexport const ID_HUES = [\n  \"tide\",\n  \"coral\",\n  \"sand\",\n  \"lilac\",\n  \"sky\",\n  \"moss\",\n  \"rose\",\n  \"slate\",\n] as const;\n\nexport type IdHue = (typeof ID_HUES)[number];\n\n/** Deterministic hash(seed) % 8 → hue. djb2; stable across sessions. */\nexport function hueFor(seed: string): IdHue {\n  let h = 5381;\n  for (let i = 0; i < seed.length; i++) {\n    h = ((h << 5) + h + seed.charCodeAt(i)) >>> 0;\n  }\n  return ID_HUES[h % ID_HUES.length];\n}\n\n/**\n * Avatar radial-gradient fill for a hue. References the --id-* token and\n * derives the dark end via color-mix — never a hardcoded hex. Mirrors\n * DESIGN.md → Identity hues.\n */\nexport function hueGradient(hue: IdHue): string {\n  const v = `var(--id-${hue})`;\n  return `radial-gradient(120% 120% at 30% 20%, ${v}, color-mix(in srgb, ${v} 60%, black))`;\n}\n"
+    }
+  ]
+}

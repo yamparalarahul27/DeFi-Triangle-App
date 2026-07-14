@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-button",
+  "type": "registry:ui",
+  "title": "IconButton",
+  "description": "CIDS IconButton (stable) — docs ship with the code (IconButton.doc.md).",
+  "dependencies": [],
+  "registryDependencies": [
+    "@cids/tokens"
+  ],
+  "files": [
+    {
+      "path": "cids/IconButton/IconButton.tsx",
+      "type": "registry:ui",
+      "target": "components/cids/IconButton/IconButton.tsx",
+      "content": "import { cn } from \"@/lib/utils\";\nimport type { ButtonVariant } from \"../Button/Button\";\n\nexport type IconButtonSize = \"sm\" | \"md\" | \"lg\";\n\n// Square hit areas: sm 28 (dense rows only) · md 36 · lg 44. Icon-only\n// controls at ≥40px are the DESIGN.md touch-target rule — prefer lg on\n// primary surfaces.\nconst SIZE: Record<IconButtonSize, string> = {\n  sm: \"h-7 w-7 text-sm\",\n  md: \"h-9 w-9 text-base\",\n  lg: \"h-11 w-11 text-lg\",\n};\n\nconst VARIANT: Record<ButtonVariant, string> = {\n  primary: \"bg-brand text-on-brand hover:bg-brand-hover\",\n  secondary:\n    \"border border-outline-variant bg-surface-container text-fg hover:bg-surface-container-high\",\n  ghost: \"text-fg-muted hover:bg-surface-container hover:text-fg\",\n  destructive: \"bg-sell-strong text-white hover:bg-sell\",\n};\n\nexport function IconButton({\n  \"aria-label\": ariaLabel,\n  variant = \"ghost\",\n  size = \"md\",\n  type = \"button\",\n  className,\n  ...rest\n}: React.ButtonHTMLAttributes<HTMLButtonElement> & {\n  /** Required — icon-only controls must name themselves. */\n  \"aria-label\": string;\n  variant?: ButtonVariant;\n  /** sm 28 · md 36 · lg 44 px square (shared scale). */\n  size?: IconButtonSize;\n}) {\n  return (\n    <button\n      type={type}\n      aria-label={ariaLabel}\n      className={cn(\n        \"inline-flex items-center justify-center rounded-control\",\n        \"transition-[background-color,color,transform] duration-150 active:scale-[0.96]\",\n        \"disabled:pointer-events-none disabled:opacity-40\",\n        SIZE[size],\n        VARIANT[variant],\n        className,\n      )}\n      {...rest}\n    />\n  );\n}\n"
+    },
+    {
+      "path": "cids/IconButton/IconButton.doc.md",
+      "type": "registry:file",
+      "target": "components/cids/IconButton/IconButton.doc.md",
+      "content": "# IconButton\n\nStatus: stable\nSquare icon-only action — `aria-label` is a **required prop**, so an unnamed icon button is a compile error.\n\n## Usage\n\n```tsx\nimport { IconButton } from \"@/design-system\";\n\n<IconButton aria-label=\"Close\" onClick={close}>×</IconButton>\n<IconButton aria-label=\"Settings\" variant=\"secondary\" size=\"lg\">⚙</IconButton>\n```\n\n## Anatomy\n\n```\n┌────┐\n│ ✕  │ ← square (28/36/44), icon centered\n└────┘\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `aria-label` | `string` | **required** | The accessible name — enforced by the type. |\n| `variant` | `ButtonVariant` | `\"ghost\"` | Same four variants as Button. |\n| `size` | `\"sm\" \\| \"md\" \\| \"lg\"` | `\"md\"` | 28 / 36 / 44 px square. `sm` only inside dense rows; prefer `lg` (44px target) on primary surfaces. |\n| `className` | `string` | — | cn-merged. |\n| …rest | `ButtonHTMLAttributes` | `type=\"button\"` | Native pass-through. |\n\n## Tokens\n\nSame as Button (variant map) · `--radius-control`.\n\n## States\n\ndefault · hover · active (`scale 0.96`) · focus-visible (global ring) · disabled.\n\n## Motion\n\nTargeted transition 150ms + press scale, as Button. Reduced-motion via global reset.\n\n## A11y\n\n- The required `aria-label` prop is the point of the component.\n- 44px (`lg`) meets the DESIGN.md touch-target floor; `md` (36) relies on surrounding spacing; document dense-row use.\n"
+    }
+  ]
+}

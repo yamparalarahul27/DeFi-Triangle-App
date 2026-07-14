@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "select",
+  "type": "registry:ui",
+  "title": "Select",
+  "description": "CIDS Select (stable) — docs ship with the code (Select.doc.md).",
+  "dependencies": [
+    "radix-ui"
+  ],
+  "registryDependencies": [
+    "@cids/tokens"
+  ],
+  "files": [
+    {
+      "path": "cids/Select/Select.tsx",
+      "type": "registry:ui",
+      "target": "components/cids/Select/Select.tsx",
+      "content": "\"use client\";\n\nimport { Select as RadixSelect } from \"radix-ui\";\nimport { cn } from \"@/lib/utils\";\n\nexport type SelectOption<T extends string> = {\n  value: T;\n  label: string;\n  disabled?: boolean;\n};\n\n/**\n * Single-value select on Radix Select: typeahead, arrow keys, form-safe.\n * Trigger matches Input's md height; label it from the caller.\n */\nexport function Select<T extends string>({\n  options,\n  value,\n  onValueChange,\n  placeholder = \"Select…\",\n  disabled,\n  className,\n  \"aria-label\": ariaLabel,\n}: {\n  options: SelectOption<T>[];\n  value: T | undefined;\n  onValueChange: (value: T) => void;\n  placeholder?: string;\n  disabled?: boolean;\n  /** Merged onto the trigger. */\n  className?: string;\n  \"aria-label\"?: string;\n}) {\n  return (\n    <RadixSelect.Root value={value} onValueChange={onValueChange} disabled={disabled}>\n      <RadixSelect.Trigger\n        aria-label={ariaLabel}\n        className={cn(\n          \"flex h-9 w-full items-center justify-between gap-2 rounded-control border border-outline-variant bg-surface-container px-3 text-sm text-fg\",\n          \"transition-[border-color] duration-150 data-[placeholder]:text-fg-subtle\",\n          \"disabled:pointer-events-none disabled:opacity-40\",\n          className,\n        )}\n      >\n        <RadixSelect.Value placeholder={placeholder} />\n        <RadixSelect.Icon className=\"text-fg-subtle\">▾</RadixSelect.Icon>\n      </RadixSelect.Trigger>\n      <RadixSelect.Portal>\n        <RadixSelect.Content\n          position=\"popper\"\n          sideOffset={4}\n          className=\"z-[var(--z-raised)] min-w-[var(--radix-select-trigger-width)] rounded-chip border border-outline-variant bg-surface-bright p-1 shadow-raised\"\n        >\n          <RadixSelect.Viewport>\n            {options.map((o) => (\n              <RadixSelect.Item\n                key={o.value}\n                value={o.value}\n                disabled={o.disabled}\n                className={cn(\n                  \"flex cursor-default select-none items-center justify-between rounded-control px-2.5 py-1.5 text-xs text-fg outline-none\",\n                  \"data-[highlighted]:bg-surface-container-high data-[disabled]:pointer-events-none data-[disabled]:opacity-40\",\n                )}\n              >\n                <RadixSelect.ItemText>{o.label}</RadixSelect.ItemText>\n                <RadixSelect.ItemIndicator className=\"text-brand\">✓</RadixSelect.ItemIndicator>\n              </RadixSelect.Item>\n            ))}\n          </RadixSelect.Viewport>\n        </RadixSelect.Content>\n      </RadixSelect.Portal>\n    </RadixSelect.Root>\n  );\n}\n"
+    },
+    {
+      "path": "cids/Select/Select.doc.md",
+      "type": "registry:file",
+      "target": "components/cids/Select/Select.doc.md",
+      "content": "# Select\n\nStatus: stable\nSingle-value select on Radix Select; trigger matches Input's md height.\n\n## Usage\n\n```tsx\nimport { Select } from \"@/design-system\";\n\n<Select aria-label=\"Network\" options={[{value:\"sol\",label:\"Solana\"}]} value={net} onValueChange={setNet} />\n```\n\n## Anatomy\n\n```\n+ value            v +  <- trigger (h-9, container)\n| Solana          ok |  <- popper panel, surface-bright\n| Ethereum           |     highlight: container-high\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `options` | `SelectOption<T>[]` | -- | `{value,label,disabled?}`. |\n| `value` / `onValueChange` | controlled pair | -- | |\n| `placeholder` | `string` | `\"Select...\"` | Shown via `data-placeholder`. |\n| `disabled` | `boolean` | -- | |\n| `className` | `string` | -- | cn-merged onto the trigger. |\n| `aria-label` | `string` | -- | Name the control when no visible label. |\n\n## Tokens\n\n- `--surface-container` trigger - `--surface-bright` panel - `--surface-container-high` highlight - `--radius-control/chip` - `--elevation-2` - `--z-raised`\n\n## States\n\nclosed - open - item highlighted - item selected (brand check) - disabled (control or item).\n\n## Motion\n\nPanel fade via Radix presets; highlight moves instantly.\n\n## A11y\n\n- Radix Select: full listbox semantics, arrow keys, typeahead, Escape.\n- Label via `aria-label` or an external `<label>`.\n"
+    }
+  ]
+}

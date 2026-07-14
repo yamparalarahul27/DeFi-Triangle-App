@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "stat-cell",
+  "type": "registry:ui",
+  "title": "StatCell",
+  "description": "CIDS StatCell (stable) — docs ship with the code (StatCell.doc.md).",
+  "dependencies": [],
+  "registryDependencies": [
+    "@cids/tokens"
+  ],
+  "files": [
+    {
+      "path": "cids/StatCell/StatCell.tsx",
+      "type": "registry:ui",
+      "target": "components/cids/StatCell/StatCell.tsx",
+      "content": "import { cn } from \"@/lib/utils\";\nimport type { ReactNode } from \"react\";\n\n/**\n * Label-over-value stat block for stat strips and dashboards.\n * Density-responsive: padding rides the spacing tokens, the value rides\n * the financial type ramp — compact mode tightens both automatically.\n */\nexport function StatCell({\n  label,\n  value,\n  change,\n  className,\n}: {\n  label: string;\n  /** Pre-formatted figure (\"$1.09B\") or a RollingNumber. */\n  value: ReactNode;\n  /** Optional delta — pass a <PriceChange /> to keep sign discipline. */\n  change?: ReactNode;\n  className?: string;\n}) {\n  return (\n    <div\n      className={cn(\"min-w-0\", className)}\n      style={{ padding: \"var(--space-1) var(--cell-px)\" }}\n    >\n      <div className=\"truncate text-[10px] uppercase tracking-wider text-fg-muted\">\n        {label}\n      </div>\n      <div className=\"data-md mt-0.5 flex items-baseline gap-2 text-fg\">\n        {value}\n        {change}\n      </div>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "cids/StatCell/StatCell.doc.md",
+      "type": "registry:file",
+      "target": "components/cids/StatCell/StatCell.doc.md",
+      "content": "# StatCell\n\nStatus: stable\nLabel-over-value stat block; padding and type ride the density tokens.\n\n## Usage\n\n```tsx\nimport { StatCell, PriceChange, RollingNumber } from \"@/design-system\";\n\n<StatCell label=\"Market cap\" value=\"$1.09B\" />\n<StatCell label=\"Price\" value={<RollingNumber value=\"$184.26\" />} change={<PriceChange value={3.6} />} />\n```\n\n## Anatomy\n\n```\nMARKET CAP          <- 10px uppercase fg-muted\n$1.09B  ▲ +3.60%    <- data-md value + optional delta\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `label` | `string` | -- | Uppercase micro-label. |\n| `value` | `ReactNode` | -- | Pre-formatted figure or RollingNumber. |\n| `change` | `ReactNode` | -- | Pass a PriceChange to keep sign discipline. |\n| `className` | `string` | -- | cn-merged. |\n\n## Tokens\n\n- `--space-1` + `--cell-px` (density-responsive padding) - data ramp - fg ladder\n\n## States\n\nStatic display; compact density tightens it automatically.\n\n## Motion\n\nNone.\n\n## A11y\n\n- Label + value are real text in source order (\"Market cap $1.09B\").\n"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "peg-badge",
+  "type": "registry:ui",
+  "title": "PegBadge",
+  "description": "CIDS PegBadge (stable) — docs ship with the code (PegBadge.doc.md).",
+  "dependencies": [],
+  "registryDependencies": [
+    "@cids/tokens"
+  ],
+  "files": [
+    {
+      "path": "cids/PegBadge/PegBadge.tsx",
+      "type": "registry:ui",
+      "target": "components/cids/PegBadge/PegBadge.tsx",
+      "content": "import { cn } from \"@/lib/utils\";\n\n/**\n * Stablecoin peg health from the SIGNED deviation in bps. Health tone\n * comes from the magnitude (Math.abs — guideline #5), the readout keeps\n * the sign so above/below peg stays visible. Thresholds: <25bps on peg ·\n * 25–200 drifting · ≥200 depegged (≈ the old 0.98 break).\n */\nexport function PegBadge({\n  deviationBps,\n  className,\n}: {\n  /** Signed peg deviation in basis points (+ above, − below). */\n  deviationBps: number;\n  className?: string;\n}) {\n  const magnitude = Math.abs(deviationBps);\n  const state =\n    magnitude < 25 ? \"on peg\" : magnitude < 200 ? \"drifting\" : \"depegged\";\n  const tone =\n    state === \"on peg\"\n      ? \"bg-buy-surface text-buy\"\n      : state === \"drifting\"\n        ? \"bg-warning-surface text-warning\"\n        : \"bg-sell-surface text-sell\";\n  const sign = deviationBps >= 0 ? \"+\" : \"−\";\n\n  return (\n    <span\n      className={cn(\n        \"inline-flex items-center gap-1.5 rounded-chip px-1.5 py-0.5 text-[11px] font-medium\",\n        tone,\n        className,\n      )}\n    >\n      {state}\n      <span className=\"data-sm tabular-nums opacity-80\">\n        {sign}\n        {magnitude}bps\n      </span>\n    </span>\n  );\n}\n"
+    },
+    {
+      "path": "cids/PegBadge/PegBadge.doc.md",
+      "type": "registry:file",
+      "target": "components/cids/PegBadge/PegBadge.doc.md",
+      "content": "# PegBadge\n\nStatus: stable\nStablecoin peg health from the SIGNED bps deviation -- tone by magnitude, sign kept visible.\n\n## Usage\n\n```tsx\nimport { PegBadge } from \"@/design-system\";\n\n<PegBadge deviationBps={4} />     // on peg +4bps\n<PegBadge deviationBps={-38} />   // drifting −38bps\n<PegBadge deviationBps={-230} />  // depegged −230bps\n```\n\n## Anatomy\n\n```\n( on peg +4bps )     buy tint,  |bps| < 25\n( drifting −38bps )  warning,   25 <= |bps| < 200\n( depegged −230bps ) sell tint, |bps| >= 200\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `deviationBps` | `number` | -- | SIGNED deviation (+ above / − below peg). |\n| `className` | `string` | -- | cn-merged. |\n\n## Tokens\n\n- `--buy/warning/sell(-surface)` pairs - `--radius-chip` - data ramp for the bps figure\n\n## States\n\non peg - drifting - depegged. Thresholds are the component contract (25 / 200 bps).\n\n## Motion\n\nNone (peg state is data).\n\n## A11y\n\n- State word + signed figure are real text -- health is never color alone.\n- Guideline #5 encoded: magnitude drives tone (Math.abs), the sign stays in the readout.\n"
+    }
+  ]
+}

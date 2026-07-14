@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "avatar",
+  "type": "registry:ui",
+  "title": "Avatar",
+  "description": "CIDS Avatar (stable) — docs ship with the code (Avatar.doc.md).",
+  "dependencies": [],
+  "registryDependencies": [
+    "@cids/tokens",
+    "@cids/identity"
+  ],
+  "files": [
+    {
+      "path": "cids/Avatar/Avatar.tsx",
+      "type": "registry:ui",
+      "target": "components/cids/Avatar/Avatar.tsx",
+      "content": "import { cn } from \"@/lib/utils\";\nimport { hueFor, hueGradient, type IdHue } from \"../identity\";\n\n// Shared size scale (CONVENTIONS → Component API contract): string\n// unions, never raw numbers. Diameters per DESIGN.md avatar spec —\n// xs 20px · sm 28px · md 40px · lg 64px; glyph scales with the disc.\nexport type AvatarSize = \"xs\" | \"sm\" | \"md\" | \"lg\";\n\nconst SIZE: Record<AvatarSize, string> = {\n  xs: \"w-5 h-5 text-[9px]\",\n  sm: \"w-7 h-7 text-xs\",\n  md: \"w-10 h-10 text-[17px]\",\n  lg: \"w-16 h-16 text-[26px]\",\n};\n\nexport function Avatar({\n  name,\n  seed,\n  hue,\n  size = \"md\",\n  you = false,\n  className,\n}: {\n  /** Handle or display name; its first character becomes the glyph. */\n  name: string;\n  /** Value hashed to pick a hue. Defaults to `name`; pass the wallet address for stable per-person color. */\n  seed?: string;\n  /** Explicit hue override; skips hashing. */\n  hue?: IdHue;\n  /** xs 20px · sm 28px · md 40px · lg 64px. */\n  size?: AvatarSize;\n  /** Signed-in user — forces the reserved --id-tide hue. */\n  you?: boolean;\n  className?: string;\n}) {\n  const resolved: IdHue = you ? \"tide\" : (hue ?? hueFor(seed ?? name));\n  const glyph = (name.trim()[0] ?? \"?\").toUpperCase();\n\n  return (\n    <span\n      role=\"img\"\n      aria-label={name}\n      className={cn(\n        \"inline-flex flex-none items-center justify-center rounded-full font-mono font-semibold text-fg-inverse antialiased\",\n        SIZE[size],\n        className,\n      )}\n      style={{ backgroundImage: hueGradient(resolved) }}\n    >\n      {glyph}\n    </span>\n  );\n}\n"
+    },
+    {
+      "path": "cids/Avatar/Avatar.doc.md",
+      "type": "registry:file",
+      "target": "components/cids/Avatar/Avatar.doc.md",
+      "content": "# Avatar\n\nStatus: stable\nPer-person identity disc — a hue-gradient circle with the person's initial.\n\n## Usage\n\n```tsx\nimport { Avatar } from \"@/design-system\";\n\n<Avatar name=\"mira\" seed={walletAddress} size=\"md\" />\n<Avatar name=\"you\" you size=\"sm\" />  {/* signed-in user: --id-tide */}\n```\n\n## Anatomy\n\n```\n   ┌─────────┐\n   │    M    │  ← glyph: first letter of `name`,\n   │ (hue    │    --fg-inverse on the hue gradient,\n   │  disc)  │    font-mono 600\n   └─────────┘\n   radial-gradient(120% 120% at 30% 20%,\n     var(--id-<hue>),\n     color-mix(in srgb, var(--id-<hue>) 60%, black))\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `name` | `string` | — | First character → glyph; also the `aria-label`. |\n| `seed` | `string` | `name` | Value hashed to pick the hue. Pass the wallet address for stable per-person color. |\n| `hue` | `IdHue` | — | Explicit override; skips hashing. |\n| `size` | `\"xs\" \\| \"sm\" \\| \"md\" \\| \"lg\"` | `\"md\"` | xs 20 · sm 28 · md 40 · lg 64 px; glyph scales with the disc. |\n| `you` | `boolean` | `false` | Forces the reserved `--id-tide` hue (the signed-in user). |\n| `className` | `string` | — | Merged via `cn` (e.g. group ring/overlap). |\n\n## Tokens\n\n- `--id-*` (via `hueGradient`) — the 8 identity hues. Consumed as the fill only.\n- `--color-fg-inverse` (`text-fg-inverse`) — the dark glyph color the contrast guard verifies.\n\n## States\n\nSingle visual state (identity is not interactive). Press/hover feedback belongs to the wrapping control (link/card), not the Avatar.\n\n## Motion\n\nNone. Static identity surface — playfulness is budgeted to feedback, not to identity chrome.\n\n## A11y\n\n- `role=\"img\"` + `aria-label={name}` so AT reads the person, not the letter.\n- Glyph contrast: dark `--fg-inverse` on every hue is **7.6–11.5:1** (AA), enforced by `npm run check:contrast`. The gradient's darkest corner is lower but the centered glyph never lands there.\n- Decorative-only usage next to a visible handle: pass an empty label at the call site if the name is already announced.\n"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tabs",
+  "type": "registry:ui",
+  "title": "Tabs",
+  "description": "CIDS Tabs (stable) — docs ship with the code (Tabs.doc.md).",
+  "dependencies": [
+    "radix-ui"
+  ],
+  "registryDependencies": [
+    "@cids/tokens"
+  ],
+  "files": [
+    {
+      "path": "cids/Tabs/Tabs.tsx",
+      "type": "registry:ui",
+      "target": "components/cids/Tabs/Tabs.tsx",
+      "content": "\"use client\";\n\nimport { Tabs as RadixTabs } from \"radix-ui\";\nimport type { ReactNode } from \"react\";\nimport { cn } from \"@/lib/utils\";\n\nexport type Tab<T extends string> = {\n  value: T;\n  label: string;\n  content: ReactNode;\n};\n\n// Lane, generalized (roadmap Phase 4): the same segmented control visual,\n// with Radix Tabs supplying panels, aria wiring, and roving-tabindex\n// keyboard behavior. Use Lane when there are no panels (a pure value\n// switch); use Tabs when each segment owns content.\nconst ACTIVE_SHADOW = \"var(--glow-brand)\";\n\nexport function Tabs<T extends string>({\n  tabs,\n  value,\n  onValueChange,\n  className,\n}: {\n  tabs: Tab<T>[];\n  value: T;\n  onValueChange: (value: T) => void;\n  /** Merged onto the root (list + panels wrapper). */\n  className?: string;\n}) {\n  return (\n    <RadixTabs.Root\n      value={value}\n      onValueChange={(v) => onValueChange(v as T)}\n      className={className}\n    >\n      <RadixTabs.List className=\"inline-flex gap-1 rounded-control border border-outline-variant bg-surface-container p-[3px]\">\n        {tabs.map((t) => (\n          <RadixTabs.Trigger\n            key={t.value}\n            value={t.value}\n            style={{\n              transition:\n                \"background-color var(--motion-fast), color var(--motion-fast), box-shadow var(--motion-fast)\",\n              boxShadow: t.value === value ? ACTIVE_SHADOW : \"none\",\n            }}\n            className={cn(\n              \"inline-flex h-9 items-center rounded-control px-3.5 text-xs font-medium active:scale-[0.98]\",\n              \"data-[state=active]:bg-brand data-[state=active]:text-on-brand\",\n              \"data-[state=inactive]:text-fg-muted\",\n            )}\n          >\n            {t.label}\n          </RadixTabs.Trigger>\n        ))}\n      </RadixTabs.List>\n      {tabs.map((t) => (\n        <RadixTabs.Content\n          key={t.value}\n          value={t.value}\n          className=\"pt-3 outline-none\"\n        >\n          {t.content}\n        </RadixTabs.Content>\n      ))}\n    </RadixTabs.Root>\n  );\n}\n"
+    },
+    {
+      "path": "cids/Tabs/Tabs.doc.md",
+      "type": "registry:file",
+      "target": "components/cids/Tabs/Tabs.doc.md",
+      "content": "# Tabs\n\nStatus: stable\nLane generalized: the same segmented control, with Radix Tabs panels + keyboard.\n\n## Usage\n\n```tsx\nimport { Tabs } from \"@/design-system\";\n\n<Tabs value={tab} onValueChange={setTab} tabs={[\n  { value: \"news\", label: \"News\", content: <NewsList /> },\n  { value: \"kpis\", label: \"KPIs\", content: <KpiGrid /> },\n]} />\n```\n\n## Anatomy\n\n```\n[ News ][ KPIs ]   <- Lane-style segmented list\n+----------------+\n| active panel   | <- Radix Content, pt-3\n+----------------+\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `tabs` | `Tab<T>[]` | -- | `{value,label,content}`. |\n| `value` / `onValueChange` | controlled pair | -- | |\n| `className` | `string` | -- | cn-merged onto the root. |\n\nUse **Lane** for a pure value switch (no panels); **Tabs** when segments own content.\n\n## Tokens\n\n- Same as Lane: `--brand`/`--on-brand` active, `--glow-brand`, `--surface-container` track, `--radius-control`, `--motion-fast`\n\n## States\n\nactive/inactive segment - focus-visible - panel switches with value.\n\n## Motion\n\nSegment transition on `--motion-fast` (bg/color/shadow); panels swap instantly.\n\n## A11y\n\n- Radix Tabs: `tablist`/`tab`/`tabpanel` wiring, roving tabindex, arrow keys, `aria-controls` for free.\n"
+    }
+  ]
+}

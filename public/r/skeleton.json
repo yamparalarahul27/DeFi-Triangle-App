@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "skeleton",
+  "type": "registry:ui",
+  "title": "Skeleton",
+  "description": "CIDS Skeleton (stable) — docs ship with the code (Skeleton.doc.md).",
+  "dependencies": [],
+  "registryDependencies": [
+    "@cids/tokens"
+  ],
+  "files": [
+    {
+      "path": "cids/Skeleton/Skeleton.tsx",
+      "type": "registry:ui",
+      "target": "components/cids/Skeleton/Skeleton.tsx",
+      "content": "\"use client\";\n\nimport { cn } from \"@/lib/utils\";\n\n/** Shimmering placeholder block. Shape it with className (w-*, h-*). */\nexport function Skeleton({\n  className,\n  style,\n}: {\n  className?: string;\n  style?: React.CSSProperties;\n}) {\n  return (\n    <div\n      aria-hidden\n      className={cn(\n        \"animate-pulse rounded-control bg-surface-container-high\",\n        className,\n      )}\n      style={style}\n    />\n  );\n}\n\n/** Card-shaped loading region: labelled, aria-busy, three shimmer rows. */\nexport function SectionSkeleton({\n  height,\n  label,\n  className,\n}: {\n  height: number;\n  label?: string;\n  className?: string;\n}) {\n  return (\n    <section\n      aria-busy=\"true\"\n      aria-label={label ? `${label} loading` : \"Loading\"}\n      className={cn(\n        \"rounded-card border border-outline-variant bg-surface-container p-4\",\n        className,\n      )}\n      style={{ minHeight: height }}\n    >\n      {label ? (\n        <div className=\"mb-3 text-[10px] uppercase tracking-wider text-fg-muted\">\n          {label}\n        </div>\n      ) : null}\n      <div className=\"space-y-2\">\n        <Skeleton className=\"h-4 w-2/3\" />\n        <Skeleton className=\"h-4 w-1/2\" />\n        <Skeleton className=\"h-4 w-3/4\" />\n      </div>\n    </section>\n  );\n}\n"
+    },
+    {
+      "path": "cids/Skeleton/Skeleton.doc.md",
+      "type": "registry:file",
+      "target": "components/cids/Skeleton/Skeleton.doc.md",
+      "content": "# Skeleton\n\nStatus: stable\nShimmering placeholder for content that is still loading — a block (`Skeleton`) and a labelled card-shaped region (`SectionSkeleton`).\n\n## Usage\n\n```tsx\nimport { Skeleton, SectionSkeleton } from \"@/design-system\";\n\n<Skeleton className=\"h-4 w-2/3\" />\n<SectionSkeleton height={160} label=\"Stats\" />\n```\n\n## Anatomy\n\n```\n┌ SectionSkeleton (rounded-card) ─┐\n│ LABEL (uppercase, fg-muted)     │\n│ ▬▬▬▬▬▬▬▬▬▬▬  ← Skeleton rows   │\n│ ▬▬▬▬▬▬▬                        │\n│ ▬▬▬▬▬▬▬▬▬                      │\n└─────────────────────────────────┘\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `className` | `string` | — | cn-merged; shape the block with `w-*`/`h-*`. |\n| `style` | `CSSProperties` | — | Escape hatch for computed dimensions. |\n| `height` | `number` | — | SectionSkeleton only — `minHeight` in px, matches the loaded card to prevent layout shift. |\n| `label` | `string` | — | SectionSkeleton only — section name; becomes the aria-label. |\n\n## Tokens\n\n- `--surface-container-high` (shimmer block) · `--surface-container` + `--outline-variant` (section card)\n- `--radius-control` (block) · `--radius-card` (section)\n\n## States\n\n- Static shimmer via `animate-pulse` — there is no interactive state.\n- SectionSkeleton announces itself with `aria-busy=\"true\"`.\n\n## Motion\n\n- `animate-pulse` opacity shimmer only; collapses under\n  `prefers-reduced-motion` via the global reset (no per-component code).\n\n## A11y\n\n- `Skeleton` is `aria-hidden` — screen readers skip decorative shimmer.\n- `SectionSkeleton` carries `aria-busy` + an `aria-label` (\"<label> loading\")\n  so the loading region is announced once, not per row.\n"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "network-badge",
+  "type": "registry:ui",
+  "title": "NetworkBadge",
+  "description": "CIDS NetworkBadge (stable) — docs ship with the code (NetworkBadge.doc.md).",
+  "dependencies": [],
+  "registryDependencies": [
+    "@cids/tokens"
+  ],
+  "files": [
+    {
+      "path": "cids/NetworkBadge/NetworkBadge.tsx",
+      "type": "registry:ui",
+      "target": "components/cids/NetworkBadge/NetworkBadge.tsx",
+      "content": "import { cn } from \"@/lib/utils\";\n\n/**\n * Chain indicator — ethereum.org heuristic #3: always show the connected\n * network. Neutral by design (chains are facts, not states); pass an\n * icon URL (e.g. Logobase network/<slug>) or it renders a dot.\n */\nexport function NetworkBadge({\n  name,\n  iconSrc,\n  className,\n}: {\n  name: string;\n  iconSrc?: string;\n  className?: string;\n}) {\n  return (\n    <span\n      className={cn(\n        \"inline-flex items-center gap-1.5 rounded-chip bg-surface-container-high px-1.5 py-0.5 text-[11px] font-medium text-fg-muted\",\n        className,\n      )}\n    >\n      {iconSrc ? (\n        /* eslint-disable-next-line @next/next/no-img-element */\n        <img src={iconSrc} alt=\"\" className=\"h-3 w-3 rounded-full\" />\n      ) : (\n        <span aria-hidden=\"true\" className=\"h-1.5 w-1.5 rounded-full bg-fg-subtle\" />\n      )}\n      {name}\n    </span>\n  );\n}\n"
+    },
+    {
+      "path": "cids/NetworkBadge/NetworkBadge.doc.md",
+      "type": "registry:file",
+      "target": "components/cids/NetworkBadge/NetworkBadge.doc.md",
+      "content": "# NetworkBadge\n\nStatus: stable\nChain indicator -- always show the network (ethereum.org heuristic #3). Neutral: chains are facts, not states.\n\n## Usage\n\n```tsx\nimport { NetworkBadge } from \"@/design-system\";\n\n<NetworkBadge name=\"Solana\" iconSrc=\"https://cdn.defitriangle.xyz/logos/network/solana/32.png\" />\n```\n\n## Anatomy\n\n```\n( o Solana )  <- icon (or dot) + name, container-high tint\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `name` | `string` | -- | Chain name. |\n| `iconSrc` | `string` | -- | e.g. Logobase `network/<slug>`; falls back to a dot. |\n| `className` | `string` | -- | cn-merged. |\n\n## Tokens\n\n- `--surface-container-high` - `--fg-muted` - `--radius-chip`\n\n## States\n\nStatic; with/without icon.\n\n## Motion\n\nNone.\n\n## A11y\n\n- Name is real text; icon is decorative (`alt=\"\"`).\n"
+    }
+  ]
+}

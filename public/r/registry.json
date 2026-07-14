@@ -1,0 +1,241 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "cids",
+  "homepage": "https://github.com/yamparalarahul27/DeFi-Triangle-App",
+  "items": [
+    {
+      "name": "identity",
+      "type": "registry:ui",
+      "title": "identity",
+      "description": "CIDS identity-hue helpers — deterministic per-wallet hue (hash % 8) + avatar gradient. Dependency of Avatar/AvatarGroup."
+    },
+    {
+      "name": "tokens",
+      "type": "registry:item",
+      "title": "tokens",
+      "description": "The CIDS token layer: surfaces/fg/brand/semantic/identity hues, spacing, z, elevation, motion, financial type ramp, 4 themes (dark/mono/light/violet) + the compact density axis. Import from your root layout AFTER tailwindcss."
+    },
+    {
+      "name": "address-chip",
+      "type": "registry:ui",
+      "title": "AddressChip",
+      "description": "CIDS AddressChip (stable) — docs ship with the code (AddressChip.doc.md)."
+    },
+    {
+      "name": "amount-input",
+      "type": "registry:ui",
+      "title": "AmountInput",
+      "description": "CIDS AmountInput (stable) — docs ship with the code (AmountInput.doc.md)."
+    },
+    {
+      "name": "avatar",
+      "type": "registry:ui",
+      "title": "Avatar",
+      "description": "CIDS Avatar (stable) — docs ship with the code (Avatar.doc.md)."
+    },
+    {
+      "name": "avatar-group",
+      "type": "registry:ui",
+      "title": "AvatarGroup",
+      "description": "CIDS AvatarGroup (stable) — docs ship with the code (AvatarGroup.doc.md)."
+    },
+    {
+      "name": "badge",
+      "type": "registry:ui",
+      "title": "Badge",
+      "description": "CIDS Badge (stable) — docs ship with the code (Badge.doc.md)."
+    },
+    {
+      "name": "button",
+      "type": "registry:ui",
+      "title": "Button",
+      "description": "CIDS Button (stable) — docs ship with the code (Button.doc.md)."
+    },
+    {
+      "name": "checkbox",
+      "type": "registry:ui",
+      "title": "Checkbox",
+      "description": "CIDS Checkbox (stable) — docs ship with the code (Checkbox.doc.md)."
+    },
+    {
+      "name": "comment-thread",
+      "type": "registry:ui",
+      "title": "CommentThread",
+      "description": "CIDS CommentThread (draft) — docs ship with the code (CommentThread.doc.md)."
+    },
+    {
+      "name": "data-table",
+      "type": "registry:ui",
+      "title": "DataTable",
+      "description": "CIDS DataTable (stable) — docs ship with the code (DataTable.doc.md)."
+    },
+    {
+      "name": "dialog",
+      "type": "registry:ui",
+      "title": "Dialog",
+      "description": "CIDS Dialog (stable) — docs ship with the code (Dialog.doc.md)."
+    },
+    {
+      "name": "divider",
+      "type": "registry:ui",
+      "title": "Divider",
+      "description": "CIDS Divider (stable) — docs ship with the code (Divider.doc.md)."
+    },
+    {
+      "name": "empty-state",
+      "type": "registry:ui",
+      "title": "EmptyState",
+      "description": "CIDS EmptyState (stable) — docs ship with the code (EmptyState.doc.md)."
+    },
+    {
+      "name": "follow-button",
+      "type": "registry:ui",
+      "title": "FollowButton",
+      "description": "CIDS FollowButton (stable) — docs ship with the code (FollowButton.doc.md)."
+    },
+    {
+      "name": "icon-button",
+      "type": "registry:ui",
+      "title": "IconButton",
+      "description": "CIDS IconButton (stable) — docs ship with the code (IconButton.doc.md)."
+    },
+    {
+      "name": "input",
+      "type": "registry:ui",
+      "title": "Input",
+      "description": "CIDS Input (stable) — docs ship with the code (Input.doc.md)."
+    },
+    {
+      "name": "lane",
+      "type": "registry:ui",
+      "title": "Lane",
+      "description": "CIDS Lane (stable) — docs ship with the code (Lane.doc.md)."
+    },
+    {
+      "name": "menu",
+      "type": "registry:ui",
+      "title": "Menu",
+      "description": "CIDS Menu (stable) — docs ship with the code (Menu.doc.md)."
+    },
+    {
+      "name": "network-badge",
+      "type": "registry:ui",
+      "title": "NetworkBadge",
+      "description": "CIDS NetworkBadge (stable) — docs ship with the code (NetworkBadge.doc.md)."
+    },
+    {
+      "name": "onboarding",
+      "type": "registry:ui",
+      "title": "Onboarding",
+      "description": "CIDS Onboarding (draft) — docs ship with the code (Onboarding.doc.md)."
+    },
+    {
+      "name": "peg-badge",
+      "type": "registry:ui",
+      "title": "PegBadge",
+      "description": "CIDS PegBadge (stable) — docs ship with the code (PegBadge.doc.md)."
+    },
+    {
+      "name": "post-card",
+      "type": "registry:ui",
+      "title": "PostCard",
+      "description": "CIDS PostCard (stable) — docs ship with the code (PostCard.doc.md)."
+    },
+    {
+      "name": "price-change",
+      "type": "registry:ui",
+      "title": "PriceChange",
+      "description": "CIDS PriceChange (stable) — docs ship with the code (PriceChange.doc.md)."
+    },
+    {
+      "name": "reaction-bar",
+      "type": "registry:ui",
+      "title": "ReactionBar",
+      "description": "CIDS ReactionBar (stable) — docs ship with the code (ReactionBar.doc.md)."
+    },
+    {
+      "name": "rolling-number",
+      "type": "registry:ui",
+      "title": "RollingNumber",
+      "description": "CIDS RollingNumber (stable) — docs ship with the code (RollingNumber.doc.md)."
+    },
+    {
+      "name": "select",
+      "type": "registry:ui",
+      "title": "Select",
+      "description": "CIDS Select (stable) — docs ship with the code (Select.doc.md)."
+    },
+    {
+      "name": "sheet",
+      "type": "registry:ui",
+      "title": "Sheet",
+      "description": "CIDS Sheet (stable) — docs ship with the code (Sheet.doc.md)."
+    },
+    {
+      "name": "skeleton",
+      "type": "registry:ui",
+      "title": "Skeleton",
+      "description": "CIDS Skeleton (stable) — docs ship with the code (Skeleton.doc.md)."
+    },
+    {
+      "name": "social-proof-chip",
+      "type": "registry:ui",
+      "title": "SocialProofChip",
+      "description": "CIDS SocialProofChip (stable) — docs ship with the code (SocialProofChip.doc.md)."
+    },
+    {
+      "name": "sparkline",
+      "type": "registry:ui",
+      "title": "Sparkline",
+      "description": "CIDS Sparkline (stable) — docs ship with the code (Sparkline.doc.md)."
+    },
+    {
+      "name": "stat-cell",
+      "type": "registry:ui",
+      "title": "StatCell",
+      "description": "CIDS StatCell (stable) — docs ship with the code (StatCell.doc.md)."
+    },
+    {
+      "name": "switch",
+      "type": "registry:ui",
+      "title": "Switch",
+      "description": "CIDS Switch (stable) — docs ship with the code (Switch.doc.md)."
+    },
+    {
+      "name": "tabs",
+      "type": "registry:ui",
+      "title": "Tabs",
+      "description": "CIDS Tabs (stable) — docs ship with the code (Tabs.doc.md)."
+    },
+    {
+      "name": "toast",
+      "type": "registry:ui",
+      "title": "Toast",
+      "description": "CIDS Toast (stable) — docs ship with the code (Toast.doc.md)."
+    },
+    {
+      "name": "token-chip",
+      "type": "registry:ui",
+      "title": "TokenChip",
+      "description": "CIDS TokenChip (stable) — docs ship with the code (TokenChip.doc.md)."
+    },
+    {
+      "name": "token-icon",
+      "type": "registry:ui",
+      "title": "TokenIcon",
+      "description": "CIDS TokenIcon (stable) — docs ship with the code (TokenIcon.doc.md)."
+    },
+    {
+      "name": "tooltip",
+      "type": "registry:ui",
+      "title": "Tooltip",
+      "description": "CIDS Tooltip (stable) — docs ship with the code (Tooltip.doc.md)."
+    },
+    {
+      "name": "tx-status",
+      "type": "registry:ui",
+      "title": "TxStatus",
+      "description": "CIDS TxStatus (stable) — docs ship with the code (TxStatus.doc.md)."
+    }
+  ]
+}

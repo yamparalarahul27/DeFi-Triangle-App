@@ -342,9 +342,11 @@ CommentThread + Onboarding stay draft pending real product use).
 
 ### Phase 7 — Distribution & governance <sub>(W5/R4+R5 · adoptable)</sub>
 
-- [ ] **Registry**: shadcn-compatible `registry.json` + item files so
-      `npx shadcn add <cids-url>/button` works — the copy-in model
-      `check:portable` was built for.
+- [x] **Registry shipped**: `scripts/build-registry.mjs` generates 39
+      shadcn-compatible items into `public/r/` (37 components + tokens
+      + identity) — cross-imports become `@cids/*` registryDependencies,
+      docs ship beside the code, radix declared per item; the new
+      `check:registry` CI guard fails on any drift from source.
 - [ ] **Versioning & lifecycle**: adopt Primer's criteria-gated
       ladder (`experimental → alpha → beta → stable → deprecated`,
       published entry criteria per rung) extending the current
@@ -354,9 +356,10 @@ CommentThread + Onboarding stay draft pending real product use).
 - [ ] **Agent adoption**: expose the registry via an MCP server
       (shadcn CLI 3.0 precedent) — CIDS docs are already agent-
       readable by design; this makes them agent-*installable*.
-- [ ] **Adopter docs**: quickstart (install → themed component in
-      <5 min), theming guide, contribution guide (CONVENTIONS +
-      promotion criteria → public).
+- [x] **Quickstart shipped** (`docs/cids-quickstart.md`): namespace →
+      tokens → components → theme, with the dependency/guarantee list.
+      Theming guide = the DESIGN.md recipe (linked). Contribution guide
+      rides with 7b governance.
 - [ ] Decide npm (`@cids/react`) *after* registry traction — copy-in
       first, package if pulled.
 
