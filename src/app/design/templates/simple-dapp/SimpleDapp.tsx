@@ -4,6 +4,7 @@
 // consumer end of the range claim. Mobile-first, comfortable density,
 // built ONLY from design-system exports. Mock data, mock wallet.
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import {
   AddressChip,
@@ -132,7 +133,7 @@ function Dapp() {
 
       <footer className="mt-auto pt-2 text-center font-mono text-[10px] text-fg-subtle">
         cids template · DS components only ·{" "}
-        <a href="/design/canvas" className="underline-offset-2 hover:underline">canvas</a>
+        <Link href="/design/canvas" className="underline-offset-2 hover:underline">canvas</Link>
       </footer>
     </div>
   );

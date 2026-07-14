@@ -5,6 +5,7 @@
 // Runs at COMPACT density by default (scoped via data-density on the
 // root — the density axis is element-scoped, not global).
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
   AmountInput,
@@ -110,9 +111,9 @@ export function Exchange() {
               exchange <span className="text-brand">~</span>{" "}
               <span className="font-normal text-fg-subtle">template · compact density · DS components only</span>
             </h1>
-            <a href="/design/canvas" className="font-mono text-xs text-fg-muted underline-offset-2 hover:underline">
+            <Link href="/design/canvas" className="font-mono text-xs text-fg-muted underline-offset-2 hover:underline">
               canvas
-            </a>
+            </Link>
           </header>
           <Header />
           <div className="grid gap-4 lg:grid-cols-[1fr_minmax(280px,340px)]">

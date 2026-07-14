@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { CANVAS_ITEMS } from "./items";
@@ -205,9 +206,9 @@ export function CanvasApp({
             cids <span className="text-brand">~</span>{" "}
             <span className="text-fg-subtle">canvas</span>
           </span>
-          <a href="/design" className="font-mono text-xs text-fg-muted underline-offset-2 hover:underline">
+          <Link href="/design" className="font-mono text-xs text-fg-muted underline-offset-2 hover:underline">
             gallery
-          </a>
+          </Link>
           <ThemeToggle />
         </div>
         <div className="pointer-events-auto flex items-center gap-1 rounded-sm border border-outline bg-surface-page/95 p-1">
