@@ -1,6 +1,7 @@
 # TxStatus
 
 Status: stable
+Version: 1.0.0
 The transaction lifecycle, always visible (heuristic #1) -- the component no reference library ships.
 
 ## Usage

@@ -108,6 +108,32 @@ comply from their first commit):
 5. **Server-safe by default** — `"use client"` only where state/handlers
    require it; the doc notes which.
 
+## Lifecycle: the ladder
+
+Every component carries `Status:` + `Version:` in its doc header
+(guard-enforced). The ladder, criteria-gated Primer-style:
+
+| Rung | Means | Entry criteria | Version range |
+|---|---|---|---|
+| `draft` | API may change without notice; ships in the registry marked as such | folder contract met (tsx + doc + tests + canvas demo) | `0.x` |
+| `stable` | safe to depend on; props are only *added* | the four promotion criteria below | `1.0.0+` |
+| `deprecated` | still works; scheduled for removal | replacement exists and is named in the doc + CHANGELOG migration note | frozen |
+
+**Versioning (SemVer per component, CDS-style visual policy):**
+- **patch** — bug fix, no visible change.
+- **minor** — additive props **and/or visual refinements** (visual
+  changes are allowed in minors; note them in the CHANGELOG so
+  adopters can review before re-pulling from the registry).
+- **major** — renamed/removed/retyped props or behavior breaks; only
+  on `stable`, always with a migration note. Deprecation precedes
+  removal by at least one dated release.
+- Copy-in means upgrades are pull-based: adopters re-add from the
+  registry when they choose. Versions exist so the CHANGELOG and item
+  descriptions tell them *whether* to.
+
+**npm decision (recorded):** copy-in registry first; an `@cids/react`
+package only if adopter demand pulls for it. Never both as defaults.
+
 ## Stability: what `stable` promises
 
 A component is promoted `draft → stable` only when ALL of these hold:

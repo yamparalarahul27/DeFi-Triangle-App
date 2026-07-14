@@ -1,6 +1,7 @@
 # Badge
 
 Status: stable
+Version: 1.0.0
 Small status label on the tinted-surface pairs — tone conveys state category, never price direction on its own.
 
 ## Usage

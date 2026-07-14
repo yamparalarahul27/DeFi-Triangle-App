@@ -1,6 +1,7 @@
 # AvatarGroup
 
 Status: stable
+Version: 1.0.0
 Overlapping row of Avatars with a `+N` overflow disc — "who's here" at a glance.
 
 ## Usage

@@ -1,6 +1,7 @@
 # Tabs
 
 Status: stable
+Version: 1.0.0
 Lane generalized: the same segmented control, with Radix Tabs panels + keyboard.
 
 ## Usage

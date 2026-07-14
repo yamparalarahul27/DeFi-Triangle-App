@@ -3,7 +3,7 @@
   "name": "switch",
   "type": "registry:ui",
   "title": "Switch",
-  "description": "CIDS Switch (stable) — docs ship with the code (Switch.doc.md).",
+  "description": "CIDS Switch v1.0.0 (stable) — docs ship with the code (Switch.doc.md).",
   "dependencies": [
     "radix-ui"
   ],
@@ -21,7 +21,7 @@
       "path": "cids/Switch/Switch.doc.md",
       "type": "registry:file",
       "target": "components/cids/Switch/Switch.doc.md",
-      "content": "# Switch\n\nStatus: stable\nOn/off toggle on Radix Switch.\n\n## Usage\n\n```tsx\nimport { Switch } from \"@/design-system\";\n\n<Switch checked={on} onCheckedChange={setOn} aria-label=\"Public watchlist\" />\n```\n\n## Anatomy\n\n```\n(o---)  off: surface-bright track\n(---o)  on: brand track, on-brand thumb\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `checked` / `onCheckedChange` | controlled pair | -- | Caller owns state. |\n| `disabled` | `boolean` | -- | Native semantics via Radix. |\n| `className` | `string` | -- | cn-merged onto the track. |\n| ...rest | Radix Switch props | -- | e.g. `aria-label`, `name`. |\n\n## Tokens\n\n- `--brand` / `--on-brand` (on) - `--surface-bright` + `--outline-variant` (off) - `--elevation-1` thumb\n\n## States\n\noff - on - focus-visible (global ring) - disabled.\n\n## Motion\n\nTrack color + thumb translate, 150ms targeted; reduced-motion via global reset.\n\n## A11y\n\n- Radix Switch: `role=\"switch\"`, `aria-checked`, Space/Enter toggle.\n- Label from the caller (`aria-label` or an associated `<label>`).\n"
+      "content": "# Switch\n\nStatus: stable\nVersion: 1.0.0\nOn/off toggle on Radix Switch.\n\n## Usage\n\n```tsx\nimport { Switch } from \"@/design-system\";\n\n<Switch checked={on} onCheckedChange={setOn} aria-label=\"Public watchlist\" />\n```\n\n## Anatomy\n\n```\n(o---)  off: surface-bright track\n(---o)  on: brand track, on-brand thumb\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `checked` / `onCheckedChange` | controlled pair | -- | Caller owns state. |\n| `disabled` | `boolean` | -- | Native semantics via Radix. |\n| `className` | `string` | -- | cn-merged onto the track. |\n| ...rest | Radix Switch props | -- | e.g. `aria-label`, `name`. |\n\n## Tokens\n\n- `--brand` / `--on-brand` (on) - `--surface-bright` + `--outline-variant` (off) - `--elevation-1` thumb\n\n## States\n\noff - on - focus-visible (global ring) - disabled.\n\n## Motion\n\nTrack color + thumb translate, 150ms targeted; reduced-motion via global reset.\n\n## A11y\n\n- Radix Switch: `role=\"switch\"`, `aria-checked`, Space/Enter toggle.\n- Label from the caller (`aria-label` or an associated `<label>`).\n"
     }
   ]
 }

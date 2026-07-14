@@ -3,7 +3,7 @@
   "name": "tabs",
   "type": "registry:ui",
   "title": "Tabs",
-  "description": "CIDS Tabs (stable) — docs ship with the code (Tabs.doc.md).",
+  "description": "CIDS Tabs v1.0.0 (stable) — docs ship with the code (Tabs.doc.md).",
   "dependencies": [
     "radix-ui"
   ],
@@ -21,7 +21,7 @@
       "path": "cids/Tabs/Tabs.doc.md",
       "type": "registry:file",
       "target": "components/cids/Tabs/Tabs.doc.md",
-      "content": "# Tabs\n\nStatus: stable\nLane generalized: the same segmented control, with Radix Tabs panels + keyboard.\n\n## Usage\n\n```tsx\nimport { Tabs } from \"@/design-system\";\n\n<Tabs value={tab} onValueChange={setTab} tabs={[\n  { value: \"news\", label: \"News\", content: <NewsList /> },\n  { value: \"kpis\", label: \"KPIs\", content: <KpiGrid /> },\n]} />\n```\n\n## Anatomy\n\n```\n[ News ][ KPIs ]   <- Lane-style segmented list\n+----------------+\n| active panel   | <- Radix Content, pt-3\n+----------------+\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `tabs` | `Tab<T>[]` | -- | `{value,label,content}`. |\n| `value` / `onValueChange` | controlled pair | -- | |\n| `className` | `string` | -- | cn-merged onto the root. |\n\nUse **Lane** for a pure value switch (no panels); **Tabs** when segments own content.\n\n## Tokens\n\n- Same as Lane: `--brand`/`--on-brand` active, `--glow-brand`, `--surface-container` track, `--radius-control`, `--motion-fast`\n\n## States\n\nactive/inactive segment - focus-visible - panel switches with value.\n\n## Motion\n\nSegment transition on `--motion-fast` (bg/color/shadow); panels swap instantly.\n\n## A11y\n\n- Radix Tabs: `tablist`/`tab`/`tabpanel` wiring, roving tabindex, arrow keys, `aria-controls` for free.\n"
+      "content": "# Tabs\n\nStatus: stable\nVersion: 1.0.0\nLane generalized: the same segmented control, with Radix Tabs panels + keyboard.\n\n## Usage\n\n```tsx\nimport { Tabs } from \"@/design-system\";\n\n<Tabs value={tab} onValueChange={setTab} tabs={[\n  { value: \"news\", label: \"News\", content: <NewsList /> },\n  { value: \"kpis\", label: \"KPIs\", content: <KpiGrid /> },\n]} />\n```\n\n## Anatomy\n\n```\n[ News ][ KPIs ]   <- Lane-style segmented list\n+----------------+\n| active panel   | <- Radix Content, pt-3\n+----------------+\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `tabs` | `Tab<T>[]` | -- | `{value,label,content}`. |\n| `value` / `onValueChange` | controlled pair | -- | |\n| `className` | `string` | -- | cn-merged onto the root. |\n\nUse **Lane** for a pure value switch (no panels); **Tabs** when segments own content.\n\n## Tokens\n\n- Same as Lane: `--brand`/`--on-brand` active, `--glow-brand`, `--surface-container` track, `--radius-control`, `--motion-fast`\n\n## States\n\nactive/inactive segment - focus-visible - panel switches with value.\n\n## Motion\n\nSegment transition on `--motion-fast` (bg/color/shadow); panels swap instantly.\n\n## A11y\n\n- Radix Tabs: `tablist`/`tab`/`tabpanel` wiring, roving tabindex, arrow keys, `aria-controls` for free.\n"
     }
   ]
 }

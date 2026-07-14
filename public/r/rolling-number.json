@@ -3,7 +3,7 @@
   "name": "rolling-number",
   "type": "registry:ui",
   "title": "RollingNumber",
-  "description": "CIDS RollingNumber (stable) — docs ship with the code (RollingNumber.doc.md).",
+  "description": "CIDS RollingNumber v1.0.0 (stable) — docs ship with the code (RollingNumber.doc.md).",
   "dependencies": [],
   "registryDependencies": [
     "@cids/tokens"
@@ -19,7 +19,7 @@
       "path": "cids/RollingNumber/RollingNumber.doc.md",
       "type": "registry:file",
       "target": "components/cids/RollingNumber/RollingNumber.doc.md",
-      "content": "# RollingNumber\n\nStatus: stable\nStreaming numeral: only the characters that change roll in -- zero layout shift, calm by design.\n\n## Usage\n\n```tsx\nimport { RollingNumber } from \"@/design-system\";\n\n<RollingNumber value={fmtUsd(price)} className=\"data-lg\" />\n```\n\n## Anatomy\n\n```\n$ 1 8 4 . 2 6\n          ^-^-- changed slots re-mount and roll in\n(unchanged slots keep their DOM nodes still)\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `value` | `string` | -- | Pre-formatted figure -- formatting is the caller's (keep unrounded terminal DNA). |\n| `className` | `string` | -- | cn-merged; defaults to `data-md`, override with `data-lg` etc. |\n\n## Tokens\n\n- `--motion-settle` (the roll) - financial ramp via `.data-*`\n\n## States\n\nsteady - per-slot roll on change. No hover/press (display only).\n\n## Motion\n\n`roll-in` keyframe (0.45em rise + fade) on changed slots only; discrete, never looping; reduced-motion collapses globally.\n\n## A11y\n\n- One `aria-label` with the full figure; per-character spans are `aria-hidden` so screen readers hear \"184.26\", not spelled-out chaos.\n- `tabular-nums` via the data ramp -- zero layout shift on ticks.\n"
+      "content": "# RollingNumber\n\nStatus: stable\nVersion: 1.0.0\nStreaming numeral: only the characters that change roll in -- zero layout shift, calm by design.\n\n## Usage\n\n```tsx\nimport { RollingNumber } from \"@/design-system\";\n\n<RollingNumber value={fmtUsd(price)} className=\"data-lg\" />\n```\n\n## Anatomy\n\n```\n$ 1 8 4 . 2 6\n          ^-^-- changed slots re-mount and roll in\n(unchanged slots keep their DOM nodes still)\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `value` | `string` | -- | Pre-formatted figure -- formatting is the caller's (keep unrounded terminal DNA). |\n| `className` | `string` | -- | cn-merged; defaults to `data-md`, override with `data-lg` etc. |\n\n## Tokens\n\n- `--motion-settle` (the roll) - financial ramp via `.data-*`\n\n## States\n\nsteady - per-slot roll on change. No hover/press (display only).\n\n## Motion\n\n`roll-in` keyframe (0.45em rise + fade) on changed slots only; discrete, never looping; reduced-motion collapses globally.\n\n## A11y\n\n- One `aria-label` with the full figure; per-character spans are `aria-hidden` so screen readers hear \"184.26\", not spelled-out chaos.\n- `tabular-nums` via the data ramp -- zero layout shift on ticks.\n"
     }
   ]
 }

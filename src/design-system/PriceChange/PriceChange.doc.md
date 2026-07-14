@@ -1,6 +1,7 @@
 # PriceChange
 
 Status: stable
+Version: 1.0.0
 The sign-discipline primitive: direction from the signed value, magnitude always Math.abs -- a green loss is impossible.
 
 ## Usage

@@ -1,6 +1,7 @@
 # Lane
 
 Status: stable
+Version: 1.0.0
 Segmented control (e.g. Following / Everyone). Fill is the state — no underline.
 
 ## Usage

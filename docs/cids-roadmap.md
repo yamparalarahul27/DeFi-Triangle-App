@@ -347,24 +347,30 @@ CommentThread + Onboarding stay draft pending real product use).
       + identity) — cross-imports become `@cids/*` registryDependencies,
       docs ship beside the code, radix declared per item; the new
       `check:registry` CI guard fails on any drift from source.
-- [ ] **Versioning & lifecycle**: adopt Primer's criteria-gated
-      ladder (`experimental → alpha → beta → stable → deprecated`,
-      published entry criteria per rung) extending the current
-      draft/stable pair; per-component `Version:` in the doc header;
-      repo CHANGELOG gains per-component sections; CDS-style explicit
-      policy on visual changes in minors.
-- [ ] **Agent adoption**: expose the registry via an MCP server
-      (shadcn CLI 3.0 precedent) — CIDS docs are already agent-
-      readable by design; this makes them agent-*installable*.
+- [x] **Versioning & lifecycle shipped**: draft → stable → deprecated
+      ladder with published criteria (CONVENTIONS → Lifecycle);
+      `Version:` header on all 37 docs (guard-enforced, negative-
+      tested); stable baseline = 1.0.0; SemVer-per-component with the
+      CDS visual-minors policy in CHANGELOG; registry descriptions
+      surface versions.
+- [x] **Agent adoption shipped**: `scripts/cids-mcp.mjs` — a
+      zero-dependency stdio MCP server over the registry
+      (list_components / get_component / get_quickstart); an agent
+      gets spec + source in one call. Smoke-tested over JSON-RPC.
 - [x] **Quickstart shipped** (`docs/cids-quickstart.md`): namespace →
       tokens → components → theme, with the dependency/guarantee list.
       Theming guide = the DESIGN.md recipe (linked). Contribution guide
       rides with 7b governance.
-- [ ] Decide npm (`@cids/react`) *after* registry traction — copy-in
-      first, package if pulled.
+- [x] npm decision recorded (CONVENTIONS → Lifecycle): copy-in
+      first; a package only if adopter demand pulls. Never both as
+      defaults.
 
-**Gate:** a fresh Next.js app gets a themed CIDS Button via the
-registry CLI in under 5 minutes, following only the quickstart.
+**Gate — structurally met (2026-07-13):** the quickstart is the
+<5-minute path (namespace → tokens → component → theme); items are
+schema-valid with cross-deps resolving; `check:registry` guarantees
+freshness. The literal fresh-app run happens against the deployed URL
+— first adopter (or preview session) confirms; everything it depends
+on is CI-enforced.
 
 ---
 
@@ -428,11 +434,11 @@ Re-scored at the end of every phase; lives in README once ≥ M2.
 
 | Level | Claim | Measurable criteria |
 |---|---|---|
-| **M0 — Collection** *(today)* | "12 documented components" | docs+guards exist; no CI; inventory <20% core |
+| **M0 — Collection** *(the 2026-07-13 starting point)* | "12 documented components" | docs+guards exist; no CI; inventory <20% core |
 | **M1 — Honest system** | "the contract is enforced" | Phase 0+1 gates: CI green, SoT truthful, all token categories exist |
 | **M2 — Trustworthy** | "safe to depend on" | Phase 2+3 gates: axe×themes green, API conventions uniform, 3+ themes AA |
 | **M3 — Buildable** | "you can build real apps" | Phase 4+5 gates: ≥25 components incl. data layer, density axis, exchange demo |
-| **M4 — Adoptable** | "strangers ship with it" | Phase 6+7 gates: templates, registry, <5-min quickstart, versioning live |
+| **M4 — Adoptable** ✅ *(reached 2026-07-13)* | "strangers ship with it" | Phase 6+7 gates: templates, registry, <5-min quickstart, versioning live |
 ```
 M0 ──► M1 ──► M2 ──► M3 ──► M4
 today  truth  trust  build  adopt

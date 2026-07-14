@@ -1,6 +1,7 @@
 # Sheet
 
 Status: stable
+Version: 1.0.0
 Bottom sheet chrome — backdrop, grab handle, drag-to-dismiss, pinned footer. The base for CommentThread / Onboarding.
 
 ## Usage

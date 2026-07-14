@@ -1,6 +1,7 @@
 # Sparkline
 
 Status: stable
+Version: 1.0.0
 Inline SVG trend line; tone follows series direction (sign discipline) unless overridden.
 
 ## Usage

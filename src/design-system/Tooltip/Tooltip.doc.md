@@ -1,6 +1,7 @@
 # Tooltip
 
 Status: stable
+Version: 1.0.0
 Input-adaptive help bubble: hover tooltip on pointer devices, bottom-sheet dialog on touch (where hover doesn't exist, so a plain tooltip would be unreachable).
 
 ## Usage

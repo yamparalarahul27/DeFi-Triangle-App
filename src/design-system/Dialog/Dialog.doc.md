@@ -1,6 +1,7 @@
 # Dialog
 
 Status: stable
+Version: 1.0.0
 Centered modal — Sheet's desktop-centered sibling. Behavior is Radix Dialog; the title prop is required because a dialog must name itself.
 
 ## Usage

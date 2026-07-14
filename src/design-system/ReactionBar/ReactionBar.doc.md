@@ -1,6 +1,7 @@
 # ReactionBar
 
 Status: stable
+Version: 1.0.0
 Row of emoji-reaction pills with counts, plus a `+` picker. Tap = spring-pop.
 
 ## Usage

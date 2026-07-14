@@ -1,6 +1,7 @@
 # RollingNumber
 
 Status: stable
+Version: 1.0.0
 Streaming numeral: only the characters that change roll in -- zero layout shift, calm by design.
 
 ## Usage

@@ -1,6 +1,7 @@
 # NetworkBadge
 
 Status: stable
+Version: 1.0.0
 Chain indicator -- always show the network (ethereum.org heuristic #3). Neutral: chains are facts, not states.
 
 ## Usage

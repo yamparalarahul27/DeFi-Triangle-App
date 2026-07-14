@@ -1,6 +1,7 @@
 # PegBadge
 
 Status: stable
+Version: 1.0.0
 Stablecoin peg health from the SIGNED bps deviation -- tone by magnitude, sign kept visible.
 
 ## Usage

@@ -3,7 +3,7 @@
   "name": "sparkline",
   "type": "registry:ui",
   "title": "Sparkline",
-  "description": "CIDS Sparkline (stable) — docs ship with the code (Sparkline.doc.md).",
+  "description": "CIDS Sparkline v1.0.0 (stable) — docs ship with the code (Sparkline.doc.md).",
   "dependencies": [],
   "registryDependencies": [
     "@cids/tokens"
@@ -19,7 +19,7 @@
       "path": "cids/Sparkline/Sparkline.doc.md",
       "type": "registry:file",
       "target": "components/cids/Sparkline/Sparkline.doc.md",
-      "content": "# Sparkline\n\nStatus: stable\nInline SVG trend line; tone follows series direction (sign discipline) unless overridden.\n\n## Usage\n\n```tsx\nimport { Sparkline } from \"@/design-system\";\n\n<Sparkline data={closes} />\n<Sparkline data={closes} label=\"7-day price trend\" tone=\"neutral\" />\n```\n\n## Anatomy\n\n```\n/\\_/\\__/  <- polyline, 1.25 stroke, buy/sell by direction\n84 x 28 default box\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `data` | `number[]` | -- | Oldest -> newest; needs >= 2 points (else renders nothing). |\n| `tone` | `\"buy\" \\| \"sell\" \\| \"neutral\"` | direction | Default: last >= first -> buy. |\n| `label` | `string` | -- | Sets `role=\"img\"` + name; omitted = `aria-hidden` decorative. |\n| `width` / `height` | `number` | 84 / 28 | Viewbox + rendered size. |\n| `className` | `string` | -- | cn-merged. |\n\n## Tokens\n\n- `--buy` / `--sell` / `--fg-muted` via `var()` strokes\n\n## States\n\nStatic; re-renders with data.\n\n## Motion\n\nNone (data surfaces never bounce).\n\n## A11y\n\n- Decorative by default (`aria-hidden`); pass `label` to name it as an image.\n- Never the only carrier of direction -- pair with a signed value.\n"
+      "content": "# Sparkline\n\nStatus: stable\nVersion: 1.0.0\nInline SVG trend line; tone follows series direction (sign discipline) unless overridden.\n\n## Usage\n\n```tsx\nimport { Sparkline } from \"@/design-system\";\n\n<Sparkline data={closes} />\n<Sparkline data={closes} label=\"7-day price trend\" tone=\"neutral\" />\n```\n\n## Anatomy\n\n```\n/\\_/\\__/  <- polyline, 1.25 stroke, buy/sell by direction\n84 x 28 default box\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `data` | `number[]` | -- | Oldest -> newest; needs >= 2 points (else renders nothing). |\n| `tone` | `\"buy\" \\| \"sell\" \\| \"neutral\"` | direction | Default: last >= first -> buy. |\n| `label` | `string` | -- | Sets `role=\"img\"` + name; omitted = `aria-hidden` decorative. |\n| `width` / `height` | `number` | 84 / 28 | Viewbox + rendered size. |\n| `className` | `string` | -- | cn-merged. |\n\n## Tokens\n\n- `--buy` / `--sell` / `--fg-muted` via `var()` strokes\n\n## States\n\nStatic; re-renders with data.\n\n## Motion\n\nNone (data surfaces never bounce).\n\n## A11y\n\n- Decorative by default (`aria-hidden`); pass `label` to name it as an image.\n- Never the only carrier of direction -- pair with a signed value.\n"
     }
   ]
 }

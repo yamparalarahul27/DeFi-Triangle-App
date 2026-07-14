@@ -1,6 +1,7 @@
 # Checkbox
 
 Status: stable
+Version: 1.0.0
 Checkbox on Radix -- brand fill when checked.
 
 ## Usage

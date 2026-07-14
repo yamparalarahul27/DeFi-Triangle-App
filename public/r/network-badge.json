@@ -3,7 +3,7 @@
   "name": "network-badge",
   "type": "registry:ui",
   "title": "NetworkBadge",
-  "description": "CIDS NetworkBadge (stable) — docs ship with the code (NetworkBadge.doc.md).",
+  "description": "CIDS NetworkBadge v1.0.0 (stable) — docs ship with the code (NetworkBadge.doc.md).",
   "dependencies": [],
   "registryDependencies": [
     "@cids/tokens"
@@ -19,7 +19,7 @@
       "path": "cids/NetworkBadge/NetworkBadge.doc.md",
       "type": "registry:file",
       "target": "components/cids/NetworkBadge/NetworkBadge.doc.md",
-      "content": "# NetworkBadge\n\nStatus: stable\nChain indicator -- always show the network (ethereum.org heuristic #3). Neutral: chains are facts, not states.\n\n## Usage\n\n```tsx\nimport { NetworkBadge } from \"@/design-system\";\n\n<NetworkBadge name=\"Solana\" iconSrc=\"https://cdn.defitriangle.xyz/logos/network/solana/32.png\" />\n```\n\n## Anatomy\n\n```\n( o Solana )  <- icon (or dot) + name, container-high tint\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `name` | `string` | -- | Chain name. |\n| `iconSrc` | `string` | -- | e.g. Logobase `network/<slug>`; falls back to a dot. |\n| `className` | `string` | -- | cn-merged. |\n\n## Tokens\n\n- `--surface-container-high` - `--fg-muted` - `--radius-chip`\n\n## States\n\nStatic; with/without icon.\n\n## Motion\n\nNone.\n\n## A11y\n\n- Name is real text; icon is decorative (`alt=\"\"`).\n"
+      "content": "# NetworkBadge\n\nStatus: stable\nVersion: 1.0.0\nChain indicator -- always show the network (ethereum.org heuristic #3). Neutral: chains are facts, not states.\n\n## Usage\n\n```tsx\nimport { NetworkBadge } from \"@/design-system\";\n\n<NetworkBadge name=\"Solana\" iconSrc=\"https://cdn.defitriangle.xyz/logos/network/solana/32.png\" />\n```\n\n## Anatomy\n\n```\n( o Solana )  <- icon (or dot) + name, container-high tint\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `name` | `string` | -- | Chain name. |\n| `iconSrc` | `string` | -- | e.g. Logobase `network/<slug>`; falls back to a dot. |\n| `className` | `string` | -- | cn-merged. |\n\n## Tokens\n\n- `--surface-container-high` - `--fg-muted` - `--radius-chip`\n\n## States\n\nStatic; with/without icon.\n\n## Motion\n\nNone.\n\n## A11y\n\n- Name is real text; icon is decorative (`alt=\"\"`).\n"
     }
   ]
 }

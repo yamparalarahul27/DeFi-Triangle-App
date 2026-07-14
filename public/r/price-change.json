@@ -3,7 +3,7 @@
   "name": "price-change",
   "type": "registry:ui",
   "title": "PriceChange",
-  "description": "CIDS PriceChange (stable) — docs ship with the code (PriceChange.doc.md).",
+  "description": "CIDS PriceChange v1.0.0 (stable) — docs ship with the code (PriceChange.doc.md).",
   "dependencies": [],
   "registryDependencies": [
     "@cids/tokens"
@@ -19,7 +19,7 @@
       "path": "cids/PriceChange/PriceChange.doc.md",
       "type": "registry:file",
       "target": "components/cids/PriceChange/PriceChange.doc.md",
-      "content": "# PriceChange\n\nStatus: stable\nThe sign-discipline primitive: direction from the signed value, magnitude always Math.abs -- a green loss is impossible.\n\n## Usage\n\n```tsx\nimport { PriceChange } from \"@/design-system\";\n\n<PriceChange value={-4.2} />        // ▼ −4.20%  (sell tone)\n<PriceChange value={9.4} suffix=\"%\" /> // ▲ +9.40%  (buy tone)\n```\n\n## Anatomy\n\n```\n▲ +4.20%   value >= 0: buy tone\n▼ −4.20%   value <  0: sell tone, magnitude via Math.abs\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `value` | `number` | -- | SIGNED change. The component derives everything else. |\n| `suffix` | `string` | `\"%\"` | Unit after the magnitude. |\n| `precision` | `number` | `2` | toFixed digits. |\n| `className` | `string` | -- | cn-merged. |\n\n## Tokens\n\n- `--buy` / `--sell` - data ramp (`.data-sm`) + `tabular-nums`\n\n## States\n\nup - down. That is the whole state space, on purpose.\n\n## Motion\n\nNone of its own (flash-on-change belongs to the row/cell, not the number).\n\n## A11y\n\n- Direction is conveyed by BOTH the glyph and the +/− sign, never color alone.\n- Glyph is `aria-hidden`; the signed text reads naturally.\n"
+      "content": "# PriceChange\n\nStatus: stable\nVersion: 1.0.0\nThe sign-discipline primitive: direction from the signed value, magnitude always Math.abs -- a green loss is impossible.\n\n## Usage\n\n```tsx\nimport { PriceChange } from \"@/design-system\";\n\n<PriceChange value={-4.2} />        // ▼ −4.20%  (sell tone)\n<PriceChange value={9.4} suffix=\"%\" /> // ▲ +9.40%  (buy tone)\n```\n\n## Anatomy\n\n```\n▲ +4.20%   value >= 0: buy tone\n▼ −4.20%   value <  0: sell tone, magnitude via Math.abs\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `value` | `number` | -- | SIGNED change. The component derives everything else. |\n| `suffix` | `string` | `\"%\"` | Unit after the magnitude. |\n| `precision` | `number` | `2` | toFixed digits. |\n| `className` | `string` | -- | cn-merged. |\n\n## Tokens\n\n- `--buy` / `--sell` - data ramp (`.data-sm`) + `tabular-nums`\n\n## States\n\nup - down. That is the whole state space, on purpose.\n\n## Motion\n\nNone of its own (flash-on-change belongs to the row/cell, not the number).\n\n## A11y\n\n- Direction is conveyed by BOTH the glyph and the +/− sign, never color alone.\n- Glyph is `aria-hidden`; the signed text reads naturally.\n"
     }
   ]
 }

@@ -1,6 +1,7 @@
 # Avatar
 
 Status: stable
+Version: 1.0.0
 Per-person identity disc — a hue-gradient circle with the person's initial.
 
 ## Usage

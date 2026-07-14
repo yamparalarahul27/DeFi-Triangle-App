@@ -3,7 +3,7 @@
   "name": "toast",
   "type": "registry:ui",
   "title": "Toast",
-  "description": "CIDS Toast (stable) — docs ship with the code (Toast.doc.md).",
+  "description": "CIDS Toast v1.0.0 (stable) — docs ship with the code (Toast.doc.md).",
   "dependencies": [
     "radix-ui"
   ],
@@ -21,7 +21,7 @@
       "path": "cids/Toast/Toast.doc.md",
       "type": "registry:file",
       "target": "components/cids/Toast/Toast.doc.md",
-      "content": "# Toast\n\nStatus: stable\nApp-level notifications: ToastProvider + useToast(), on Radix Toast.\n\n## Usage\n\n```tsx\nimport { ToastProvider, useToast } from \"@/design-system\";\n\n// app root: <ToastProvider>{children}</ToastProvider>\nconst toast = useToast();\ntoast({ title: \"Watchlist updated\", tone: \"buy\" });\n```\n\n## Anatomy\n\n```\n+| Title                x +  <- tone bar (buy/sell/warning/neutral)\n|  description            |     surface-bright, shadow-raised\n+-------------------------+     viewport: bottom-center, z-toast\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `ToastProvider` | wraps the app | -- | Renders the Radix provider + viewport. |\n| `useToast()` | `(t) => void` | -- | `{title, description?, tone?}`; throws outside the provider. |\n| `tone` | `\"neutral\" \\| \"buy\" \\| \"sell\" \\| \"warning\"` | `\"neutral\"` | Tone bar only -- text stays fg. |\n\n## Tokens\n\n- `--surface-bright` - `--elevation-2` - `--z-toast` (the ladder's top, first consumer) - tone tokens for the bar\n\n## States\n\nenter - visible (5s) - dismiss (auto / x / swipe-down).\n\n## Motion\n\nslide-in-from-bottom + fade on enter, fade on exit (Radix presets); reduced-motion collapses.\n\n## A11y\n\n- Radix Toast: polite live-region announcements, F8 reaches the viewport, swipe + Escape dismiss.\n- Tone is reinforced by the title text, never color alone.\n"
+      "content": "# Toast\n\nStatus: stable\nVersion: 1.0.0\nApp-level notifications: ToastProvider + useToast(), on Radix Toast.\n\n## Usage\n\n```tsx\nimport { ToastProvider, useToast } from \"@/design-system\";\n\n// app root: <ToastProvider>{children}</ToastProvider>\nconst toast = useToast();\ntoast({ title: \"Watchlist updated\", tone: \"buy\" });\n```\n\n## Anatomy\n\n```\n+| Title                x +  <- tone bar (buy/sell/warning/neutral)\n|  description            |     surface-bright, shadow-raised\n+-------------------------+     viewport: bottom-center, z-toast\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `ToastProvider` | wraps the app | -- | Renders the Radix provider + viewport. |\n| `useToast()` | `(t) => void` | -- | `{title, description?, tone?}`; throws outside the provider. |\n| `tone` | `\"neutral\" \\| \"buy\" \\| \"sell\" \\| \"warning\"` | `\"neutral\"` | Tone bar only -- text stays fg. |\n\n## Tokens\n\n- `--surface-bright` - `--elevation-2` - `--z-toast` (the ladder's top, first consumer) - tone tokens for the bar\n\n## States\n\nenter - visible (5s) - dismiss (auto / x / swipe-down).\n\n## Motion\n\nslide-in-from-bottom + fade on enter, fade on exit (Radix presets); reduced-motion collapses.\n\n## A11y\n\n- Radix Toast: polite live-region announcements, F8 reaches the viewport, swipe + Escape dismiss.\n- Tone is reinforced by the title text, never color alone.\n"
     }
   ]
 }

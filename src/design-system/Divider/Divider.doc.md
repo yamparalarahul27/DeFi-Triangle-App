@@ -1,6 +1,7 @@
 # Divider
 
 Status: stable
+Version: 1.0.0
 Hairline rule on the outline-variant token.
 
 ## Usage
