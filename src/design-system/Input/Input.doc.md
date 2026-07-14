@@ -1,6 +1,7 @@
 # Input
 
 Status: stable
+Version: 1.0.0
 Single-line text field on the container surface; `invalid` wires the error state.
 
 ## Usage

@@ -1,6 +1,7 @@
 # EmptyState
 
 Status: stable
+Version: 1.0.0
 Designed empty -- cold-start is a first-class state.
 
 ## Usage

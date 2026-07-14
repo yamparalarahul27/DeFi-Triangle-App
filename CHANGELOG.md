@@ -26,7 +26,24 @@ a synthetic version number until v1.0.
 
 ---
 
+## Design-system versioning (policy)
+
+Components under `src/design-system/` carry their own SemVer in the
+doc header (`Version:`), independent of this date-based file. Rules
+live in `src/design-system/CONVENTIONS.md → Lifecycle`; the short
+form: patch = fix · minor = additive **or visual** (noted here) ·
+major = breaking, stable-only, with a migration note; `deprecated`
+precedes removal by one release. Per-component changes get their own
+bullets under the release's buckets, prefixed with the component name.
+
 ## [Unreleased]
+
+### Added
+
+- **Design system v1.0.0 baseline** — all 35 stable components set to
+  `Version: 1.0.0` (drafts at 0.9.0: CommentThread, Onboarding);
+  lifecycle ladder + versioning policy adopted; registry item
+  descriptions surface versions. (Phase 7b)
 
 > Currently on `stage`, not yet released to `main`.
 

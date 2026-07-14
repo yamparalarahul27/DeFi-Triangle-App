@@ -1,6 +1,7 @@
 # DataTable
 
 Status: stable
+Version: 1.0.0
 Terminal-grade table: real table semantics, sticky header, aria-sort client sorting, density-token row grid.
 
 ## Usage

@@ -71,12 +71,18 @@ npx shadcn add @cids/button @cids/data-table @cids/tx-status
 Every item ships its `.doc.md` beside the code; cross-deps resolve
 automatically; `check:registry` keeps `public/r/` generated-from-source.
 
+**Agents:** `scripts/cids-mcp.mjs` is a zero-dep MCP server over the
+registry — `list_components` / `get_component` / `get_quickstart`;
+spec + source in one call. Contributing: [docs/cids-contributing.md](docs/cids-contributing.md).
+
 ## Roadmap
 
-The end-to-end evolution plan — foundations, API contract, light theme,
-core atoms, terminal-grade density, registry distribution — lives in
-[docs/cids-roadmap.md](docs/cids-roadmap.md) with per-phase gates and an
-M0→M4 maturity scorecard.
+The end-to-end evolution plan lives in
+[docs/cids-roadmap.md](docs/cids-roadmap.md). **All seven phases and
+their gates are complete — maturity M4 "Adoptable"** (2026-07-13):
+foundations → API contract + axe×themes → 4 themes + Theme Studio →
+27 atoms → density + the terminal layer → patterns + templates →
+registry + governance.
 
 ## Develop
 

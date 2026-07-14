@@ -1,6 +1,7 @@
 # CommentThread
 
 Status: draft
+Version: 0.9.0
 Comment bottom-sheet: threaded rows + a pinned composer. Built on `Sheet`.
 
 ## Usage

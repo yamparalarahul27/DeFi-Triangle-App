@@ -1,6 +1,7 @@
 # AmountInput
 
 Status: stable
+Version: 1.0.0
 Token amount entry: decimal string (never floats), symbol anchored, fiat echo + Max -- the undocumented fiat/token pattern, componentized.
 
 ## Usage

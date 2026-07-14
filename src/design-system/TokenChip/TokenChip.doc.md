@@ -1,6 +1,7 @@
 # TokenChip
 
 Status: stable
+Version: 1.0.0
 Compact inline token reference — icon, symbol, live price, signed 24h change.
 
 ## Usage

@@ -1,6 +1,7 @@
 # AddressChip
 
 Status: stable
+Version: 1.0.0
 Truncated address with one-tap copy + optional explorer link; the full address is always the accessible name.
 
 ## Usage

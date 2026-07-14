@@ -1,6 +1,7 @@
 # Switch
 
 Status: stable
+Version: 1.0.0
 On/off toggle on Radix Switch.
 
 ## Usage

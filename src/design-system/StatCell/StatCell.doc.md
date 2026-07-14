@@ -1,6 +1,7 @@
 # StatCell
 
 Status: stable
+Version: 1.0.0
 Label-over-value stat block; padding and type ride the density tokens.
 
 ## Usage

@@ -1,6 +1,7 @@
 # Menu
 
 Status: stable
+Version: 1.0.0
 Dropdown action menu on Radix DropdownMenu — items as data, behavior (keyboard, typeahead, dismiss) from the primitive.
 
 ## Usage

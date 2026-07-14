@@ -102,16 +102,15 @@ for (const name of folders) {
     });
   }
 
-  const status =
-    doc && /^Status: stable$/m.test(readFileSync(join(dir, doc), "utf8"))
-      ? "stable"
-      : "draft";
+  const docSrc = doc ? readFileSync(join(dir, doc), "utf8") : "";
+  const status = /^Status: stable$/m.test(docSrc) ? "stable" : "draft";
+  const version = docSrc.match(/^Version: (\d+\.\d+\.\d+)$/m)?.[1] ?? "0.0.0";
 
   items.push({
     name: kebab(name),
     type: "registry:ui",
     title: name,
-    description: `CIDS ${name} (${status}) — docs ship with the code (${name}.doc.md).`,
+    description: `CIDS ${name} v${version} (${status}) — docs ship with the code (${name}.doc.md).`,
     dependencies: [...dependencies],
     registryDependencies: [...registryDependencies],
     files: outFiles,

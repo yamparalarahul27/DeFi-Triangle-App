@@ -1,6 +1,7 @@
 # Select
 
 Status: stable
+Version: 1.0.0
 Single-value select on Radix Select; trigger matches Input's md height.
 
 ## Usage

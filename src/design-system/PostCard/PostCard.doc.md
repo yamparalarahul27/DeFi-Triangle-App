@@ -1,6 +1,7 @@
 # PostCard
 
 Status: stable
+Version: 1.0.0
 The feed unit. Composes Avatar + TokenChip + ReactionBar; has a milestone variant.
 
 ## Usage

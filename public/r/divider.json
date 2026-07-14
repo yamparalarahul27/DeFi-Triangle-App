@@ -3,7 +3,7 @@
   "name": "divider",
   "type": "registry:ui",
   "title": "Divider",
-  "description": "CIDS Divider (stable) — docs ship with the code (Divider.doc.md).",
+  "description": "CIDS Divider v1.0.0 (stable) — docs ship with the code (Divider.doc.md).",
   "dependencies": [],
   "registryDependencies": [
     "@cids/tokens"
@@ -19,7 +19,7 @@
       "path": "cids/Divider/Divider.doc.md",
       "type": "registry:file",
       "target": "components/cids/Divider/Divider.doc.md",
-      "content": "# Divider\n\nStatus: stable\nHairline rule on the outline-variant token.\n\n## Usage\n\n```tsx\nimport { Divider } from \"@/design-system\";\n\n<Divider />\n<Divider orientation=\"vertical\" className=\"mx-2\" />\n```\n\n## Anatomy\n\n```\n-----------  horizontal (h-px)\n|  vertical (w-px, self-stretch)\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `orientation` | `\"horizontal\" \\| \"vertical\"` | `\"horizontal\"` | Sets `aria-orientation`. |\n| `className` | `string` | -- | cn-merged. |\n\n## Tokens\n\n- `--outline-variant`\n\n## States\n\nStatic.\n\n## Motion\n\nNone.\n\n## A11y\n\n- `role=\"separator\"` + `aria-orientation` -- announced as a boundary, not content.\n"
+      "content": "# Divider\n\nStatus: stable\nVersion: 1.0.0\nHairline rule on the outline-variant token.\n\n## Usage\n\n```tsx\nimport { Divider } from \"@/design-system\";\n\n<Divider />\n<Divider orientation=\"vertical\" className=\"mx-2\" />\n```\n\n## Anatomy\n\n```\n-----------  horizontal (h-px)\n|  vertical (w-px, self-stretch)\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `orientation` | `\"horizontal\" \\| \"vertical\"` | `\"horizontal\"` | Sets `aria-orientation`. |\n| `className` | `string` | -- | cn-merged. |\n\n## Tokens\n\n- `--outline-variant`\n\n## States\n\nStatic.\n\n## Motion\n\nNone.\n\n## A11y\n\n- `role=\"separator\"` + `aria-orientation` -- announced as a boundary, not content.\n"
     }
   ]
 }

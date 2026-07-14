@@ -1,6 +1,7 @@
 # FollowButton
 
 Status: stable
+Version: 1.0.0
 Follow / Following toggle. Fill→outline morph; unfollow needs no confirm.
 
 ## Usage

@@ -1,6 +1,7 @@
 # Toast
 
 Status: stable
+Version: 1.0.0
 App-level notifications: ToastProvider + useToast(), on Radix Toast.
 
 ## Usage

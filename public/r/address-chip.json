@@ -3,7 +3,7 @@
   "name": "address-chip",
   "type": "registry:ui",
   "title": "AddressChip",
-  "description": "CIDS AddressChip (stable) — docs ship with the code (AddressChip.doc.md).",
+  "description": "CIDS AddressChip v1.0.0 (stable) — docs ship with the code (AddressChip.doc.md).",
   "dependencies": [],
   "registryDependencies": [
     "@cids/tokens"
@@ -19,7 +19,7 @@
       "path": "cids/AddressChip/AddressChip.doc.md",
       "type": "registry:file",
       "target": "components/cids/AddressChip/AddressChip.doc.md",
-      "content": "# AddressChip\n\nStatus: stable\nTruncated address with one-tap copy + optional explorer link; the full address is always the accessible name.\n\n## Usage\n\n```tsx\nimport { AddressChip } from \"@/design-system\";\n\n<AddressChip address={mint} href={`https://solscan.io/token/${mint}`} />\n```\n\n## Anatomy\n\n```\n[ 7xKt...9fQ2  ⧉  ↗ ]  <- mono truncate - copy (✓ on success) - explorer\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `address` | `string` | -- | Full address; truncated visually (4...4). |\n| `href` | `string` | -- | Explorer URL; renders the link when present. |\n| `className` | `string` | -- | cn-merged. |\n\n## Tokens\n\n- `--surface-container` + `--outline-variant` - `--radius-chip/control` - `--buy` (copied tick) - `font-mono`\n\n## States\n\nrest - copy hover - copied (1.5s ✓ confirmation) - with/without explorer.\n\n## Motion\n\nColor transition 150ms on the affordances; nothing else.\n\n## A11y\n\n- Truncation is visual only: the text span carries the full address as `aria-label`, and the copy button names it (\"Copy address <full>\").\n- Copy confirmation is a label change (\"Copied\"), not color alone.\n"
+      "content": "# AddressChip\n\nStatus: stable\nVersion: 1.0.0\nTruncated address with one-tap copy + optional explorer link; the full address is always the accessible name.\n\n## Usage\n\n```tsx\nimport { AddressChip } from \"@/design-system\";\n\n<AddressChip address={mint} href={`https://solscan.io/token/${mint}`} />\n```\n\n## Anatomy\n\n```\n[ 7xKt...9fQ2  ⧉  ↗ ]  <- mono truncate - copy (✓ on success) - explorer\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `address` | `string` | -- | Full address; truncated visually (4...4). |\n| `href` | `string` | -- | Explorer URL; renders the link when present. |\n| `className` | `string` | -- | cn-merged. |\n\n## Tokens\n\n- `--surface-container` + `--outline-variant` - `--radius-chip/control` - `--buy` (copied tick) - `font-mono`\n\n## States\n\nrest - copy hover - copied (1.5s ✓ confirmation) - with/without explorer.\n\n## Motion\n\nColor transition 150ms on the affordances; nothing else.\n\n## A11y\n\n- Truncation is visual only: the text span carries the full address as `aria-label`, and the copy button names it (\"Copy address <full>\").\n- Copy confirmation is a label change (\"Copied\"), not color alone.\n"
     }
   ]
 }

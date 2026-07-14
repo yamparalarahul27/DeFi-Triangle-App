@@ -56,6 +56,7 @@ walk(DS);
 
 // P2 — component-folder completeness + doc shape (CONVENTIONS.md sections)
 const DOC_SECTIONS = ["## Usage", "## Anatomy", "## Props", "## Tokens", "## States", "## Motion", "## A11y"];
+const DOC_HEADERS = [/^Status: (draft|stable|deprecated)$/m, /^Version: \d+\.\d+\.\d+$/m];
 for (const e of entries) {
   if (!e.isDirectory()) continue;
   const name = e.name;
@@ -68,6 +69,11 @@ for (const e of entries) {
   const docPath = join(dir, `${name}.doc.md`);
   if (existsSync(docPath)) {
     const doc = readFileSync(docPath, "utf8");
+    for (const header of DOC_HEADERS) {
+      if (!header.test(doc)) {
+        failures.push(`src/design-system/${name}/${name}.doc.md: missing header matching ${header} (lifecycle contract)`);
+      }
+    }
     for (const section of DOC_SECTIONS) {
       if (!doc.includes(section)) {
         failures.push(`src/design-system/${name}/${name}.doc.md: missing "${section}" section`);

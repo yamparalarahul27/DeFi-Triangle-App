@@ -1,6 +1,7 @@
 # Button
 
 Status: stable
+Version: 1.0.0
 The action primitive — four variants on the semantic tokens, three heights on the shared scale.
 
 ## Usage

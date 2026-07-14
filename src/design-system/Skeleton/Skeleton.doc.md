@@ -1,6 +1,7 @@
 # Skeleton
 
 Status: stable
+Version: 1.0.0
 Shimmering placeholder for content that is still loading — a block (`Skeleton`) and a labelled card-shaped region (`SectionSkeleton`).
 
 ## Usage

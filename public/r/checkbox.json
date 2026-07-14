@@ -3,7 +3,7 @@
   "name": "checkbox",
   "type": "registry:ui",
   "title": "Checkbox",
-  "description": "CIDS Checkbox (stable) — docs ship with the code (Checkbox.doc.md).",
+  "description": "CIDS Checkbox v1.0.0 (stable) — docs ship with the code (Checkbox.doc.md).",
   "dependencies": [
     "radix-ui"
   ],
@@ -21,7 +21,7 @@
       "path": "cids/Checkbox/Checkbox.doc.md",
       "type": "registry:file",
       "target": "components/cids/Checkbox/Checkbox.doc.md",
-      "content": "# Checkbox\n\nStatus: stable\nCheckbox on Radix -- brand fill when checked.\n\n## Usage\n\n```tsx\nimport { Checkbox } from \"@/design-system\";\n\n<Checkbox checked={agreed} onCheckedChange={setAgreed} aria-label=\"Agree\" />\n```\n\n## Anatomy\n\n```\n[ ]  unchecked: container bg, outline border\n[x]  checked: brand fill, on-brand check\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `checked` / `onCheckedChange` | controlled pair | -- | Indeterminate not supported in v1. |\n| `disabled` | `boolean` | -- | |\n| `className` | `string` | -- | cn-merged. |\n| ...rest | Radix Checkbox props | -- | `aria-label`, `name`... |\n\n## Tokens\n\n- `--brand` / `--on-brand` (checked) - `--outline` + `--surface-container` (unchecked) - `--radius-control`\n\n## States\n\nunchecked - checked - focus-visible - disabled.\n\n## Motion\n\nFill/border 150ms targeted; no check-draw animation (data surfaces stay calm).\n\n## A11y\n\n- Radix Checkbox: `role=\"checkbox\"`, `aria-checked`, Space toggles.\n- 16px visual -- pair with a clickable label for the 40px hit-area rule.\n"
+      "content": "# Checkbox\n\nStatus: stable\nVersion: 1.0.0\nCheckbox on Radix -- brand fill when checked.\n\n## Usage\n\n```tsx\nimport { Checkbox } from \"@/design-system\";\n\n<Checkbox checked={agreed} onCheckedChange={setAgreed} aria-label=\"Agree\" />\n```\n\n## Anatomy\n\n```\n[ ]  unchecked: container bg, outline border\n[x]  checked: brand fill, on-brand check\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `checked` / `onCheckedChange` | controlled pair | -- | Indeterminate not supported in v1. |\n| `disabled` | `boolean` | -- | |\n| `className` | `string` | -- | cn-merged. |\n| ...rest | Radix Checkbox props | -- | `aria-label`, `name`... |\n\n## Tokens\n\n- `--brand` / `--on-brand` (checked) - `--outline` + `--surface-container` (unchecked) - `--radius-control`\n\n## States\n\nunchecked - checked - focus-visible - disabled.\n\n## Motion\n\nFill/border 150ms targeted; no check-draw animation (data surfaces stay calm).\n\n## A11y\n\n- Radix Checkbox: `role=\"checkbox\"`, `aria-checked`, Space toggles.\n- 16px visual -- pair with a clickable label for the 40px hit-area rule.\n"
     }
   ]
 }

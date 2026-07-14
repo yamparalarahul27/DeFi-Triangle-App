@@ -1,6 +1,7 @@
 # Onboarding
 
 Status: draft
+Version: 0.9.0
 Identity-gate sheet: connect wallet → pick a handle (live avatar) → join. Built on `Sheet`.
 
 ## Usage

@@ -3,7 +3,7 @@
   "name": "select",
   "type": "registry:ui",
   "title": "Select",
-  "description": "CIDS Select (stable) — docs ship with the code (Select.doc.md).",
+  "description": "CIDS Select v1.0.0 (stable) — docs ship with the code (Select.doc.md).",
   "dependencies": [
     "radix-ui"
   ],
@@ -21,7 +21,7 @@
       "path": "cids/Select/Select.doc.md",
       "type": "registry:file",
       "target": "components/cids/Select/Select.doc.md",
-      "content": "# Select\n\nStatus: stable\nSingle-value select on Radix Select; trigger matches Input's md height.\n\n## Usage\n\n```tsx\nimport { Select } from \"@/design-system\";\n\n<Select aria-label=\"Network\" options={[{value:\"sol\",label:\"Solana\"}]} value={net} onValueChange={setNet} />\n```\n\n## Anatomy\n\n```\n+ value            v +  <- trigger (h-9, container)\n| Solana          ok |  <- popper panel, surface-bright\n| Ethereum           |     highlight: container-high\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `options` | `SelectOption<T>[]` | -- | `{value,label,disabled?}`. |\n| `value` / `onValueChange` | controlled pair | -- | |\n| `placeholder` | `string` | `\"Select...\"` | Shown via `data-placeholder`. |\n| `disabled` | `boolean` | -- | |\n| `className` | `string` | -- | cn-merged onto the trigger. |\n| `aria-label` | `string` | -- | Name the control when no visible label. |\n\n## Tokens\n\n- `--surface-container` trigger - `--surface-bright` panel - `--surface-container-high` highlight - `--radius-control/chip` - `--elevation-2` - `--z-raised`\n\n## States\n\nclosed - open - item highlighted - item selected (brand check) - disabled (control or item).\n\n## Motion\n\nPanel fade via Radix presets; highlight moves instantly.\n\n## A11y\n\n- Radix Select: full listbox semantics, arrow keys, typeahead, Escape.\n- Label via `aria-label` or an external `<label>`.\n"
+      "content": "# Select\n\nStatus: stable\nVersion: 1.0.0\nSingle-value select on Radix Select; trigger matches Input's md height.\n\n## Usage\n\n```tsx\nimport { Select } from \"@/design-system\";\n\n<Select aria-label=\"Network\" options={[{value:\"sol\",label:\"Solana\"}]} value={net} onValueChange={setNet} />\n```\n\n## Anatomy\n\n```\n+ value            v +  <- trigger (h-9, container)\n| Solana          ok |  <- popper panel, surface-bright\n| Ethereum           |     highlight: container-high\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `options` | `SelectOption<T>[]` | -- | `{value,label,disabled?}`. |\n| `value` / `onValueChange` | controlled pair | -- | |\n| `placeholder` | `string` | `\"Select...\"` | Shown via `data-placeholder`. |\n| `disabled` | `boolean` | -- | |\n| `className` | `string` | -- | cn-merged onto the trigger. |\n| `aria-label` | `string` | -- | Name the control when no visible label. |\n\n## Tokens\n\n- `--surface-container` trigger - `--surface-bright` panel - `--surface-container-high` highlight - `--radius-control/chip` - `--elevation-2` - `--z-raised`\n\n## States\n\nclosed - open - item highlighted - item selected (brand check) - disabled (control or item).\n\n## Motion\n\nPanel fade via Radix presets; highlight moves instantly.\n\n## A11y\n\n- Radix Select: full listbox semantics, arrow keys, typeahead, Escape.\n- Label via `aria-label` or an external `<label>`.\n"
     }
   ]
 }

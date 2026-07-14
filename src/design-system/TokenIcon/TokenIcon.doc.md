@@ -1,6 +1,7 @@
 # TokenIcon
 
 Status: stable
+Version: 1.0.0
 Token logo disc with a graceful initials fallback — the base identity mark for assets (as Avatar is for people).
 
 ## Usage

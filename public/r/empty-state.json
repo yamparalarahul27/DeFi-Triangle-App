@@ -3,7 +3,7 @@
   "name": "empty-state",
   "type": "registry:ui",
   "title": "EmptyState",
-  "description": "CIDS EmptyState (stable) — docs ship with the code (EmptyState.doc.md).",
+  "description": "CIDS EmptyState v1.0.0 (stable) — docs ship with the code (EmptyState.doc.md).",
   "dependencies": [],
   "registryDependencies": [
     "@cids/tokens"
@@ -19,7 +19,7 @@
       "path": "cids/EmptyState/EmptyState.doc.md",
       "type": "registry:file",
       "target": "components/cids/EmptyState/EmptyState.doc.md",
-      "content": "# EmptyState\n\nStatus: stable\nDesigned empty -- cold-start is a first-class state.\n\n## Usage\n\n```tsx\nimport { EmptyState, Button } from \"@/design-system\";\n\n<EmptyState\n  title=\"No watchers yet\"\n  hint=\"Quiet tide. First one in sets the current.\"\n  action={<Button variant=\"primary\">Watch JUP</Button>}\n/>\n```\n\n## Anatomy\n\n```\n+ ~ dashed outline card ~ +\n|          @              |\n|    No watchers yet      |\n|  one playful hint line  |\n|      [ action ]         |\n+-------------------------+\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `glyph` | `string` | `\"@\"`-like marker | Decorative, aria-hidden. |\n| `title` | `string` | -- | The factual line. |\n| `hint` | `string` | -- | One line -- the playful budget lives here. |\n| `action` | `ReactNode` | -- | Usually a Button. |\n| `className` | `string` | -- | cn-merged. |\n\n## Tokens\n\n- `--surface-container` - `--outline` (dashed) - `--radius-card` - fg ramp\n\n## States\n\nStatic composition; the action carries the interactive states.\n\n## Motion\n\nNone of its own.\n\n## A11y\n\n- Title is real text; glyph is `aria-hidden`.\n- Keep hints human, not hype (voice rules).\n"
+      "content": "# EmptyState\n\nStatus: stable\nVersion: 1.0.0\nDesigned empty -- cold-start is a first-class state.\n\n## Usage\n\n```tsx\nimport { EmptyState, Button } from \"@/design-system\";\n\n<EmptyState\n  title=\"No watchers yet\"\n  hint=\"Quiet tide. First one in sets the current.\"\n  action={<Button variant=\"primary\">Watch JUP</Button>}\n/>\n```\n\n## Anatomy\n\n```\n+ ~ dashed outline card ~ +\n|          @              |\n|    No watchers yet      |\n|  one playful hint line  |\n|      [ action ]         |\n+-------------------------+\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `glyph` | `string` | `\"@\"`-like marker | Decorative, aria-hidden. |\n| `title` | `string` | -- | The factual line. |\n| `hint` | `string` | -- | One line -- the playful budget lives here. |\n| `action` | `ReactNode` | -- | Usually a Button. |\n| `className` | `string` | -- | cn-merged. |\n\n## Tokens\n\n- `--surface-container` - `--outline` (dashed) - `--radius-card` - fg ramp\n\n## States\n\nStatic composition; the action carries the interactive states.\n\n## Motion\n\nNone of its own.\n\n## A11y\n\n- Title is real text; glyph is `aria-hidden`.\n- Keep hints human, not hype (voice rules).\n"
     }
   ]
 }

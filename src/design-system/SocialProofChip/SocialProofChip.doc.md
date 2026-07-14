@@ -1,6 +1,7 @@
 # SocialProofChip
 
 Status: stable
+Version: 1.0.0
 "◔ 41 watching" — quiet social-proof count. Never louder than the price it sits by.
 
 ## Usage
