@@ -1,6 +1,6 @@
 # Tabs
 
-Status: draft
+Status: stable
 Lane generalized: the same segmented control, with Radix Tabs panels + keyboard.
 
 ## Usage

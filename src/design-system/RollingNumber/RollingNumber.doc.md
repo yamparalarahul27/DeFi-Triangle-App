@@ -1,6 +1,6 @@
 # RollingNumber
 
-Status: draft
+Status: stable
 Streaming numeral: only the characters that change roll in -- zero layout shift, calm by design.
 
 ## Usage

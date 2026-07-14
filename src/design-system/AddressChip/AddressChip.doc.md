@@ -1,6 +1,6 @@
 # AddressChip
 
-Status: draft
+Status: stable
 Truncated address with one-tap copy + optional explorer link; the full address is always the accessible name.
 
 ## Usage

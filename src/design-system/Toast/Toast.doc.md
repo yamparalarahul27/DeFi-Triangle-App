@@ -1,6 +1,6 @@
 # Toast
 
-Status: draft
+Status: stable
 App-level notifications: ToastProvider + useToast(), on Radix Toast.
 
 ## Usage

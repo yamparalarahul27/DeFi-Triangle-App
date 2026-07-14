@@ -1,6 +1,6 @@
 # Checkbox
 
-Status: draft
+Status: stable
 Checkbox on Radix -- brand fill when checked.
 
 ## Usage

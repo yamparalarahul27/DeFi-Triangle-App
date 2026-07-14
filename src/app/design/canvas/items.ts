@@ -83,6 +83,10 @@ export const CANVAS_ITEMS: CanvasItemDef[] = [
   { kind: "demo", id: "PatternFormRow", title: "P3 · Form row", x: CX + COL * 2 + 160, y: CY + 3620, w: 380 },
   { kind: "demo", id: "PatternMarketList", title: "P4 · Market list", x: CX, y: CY + 4040, w: 520 },
 
+  // Templates (Phase 6b) — the range claim, framed live
+  { kind: "iframe", id: "tpl-dapp", title: "Template — simple dApp", x: CX + COL * 2 + 160, y: CY + 4040, w: 400, h: 640, src: "/design/templates/simple-dapp" },
+  { kind: "iframe", id: "tpl-exchange", title: "Template — exchange (compact)", x: CX + COL * 3 + 240, y: CY + 4040, w: 560, h: 640, src: "/design/templates/exchange" },
+
   // ── Zone: Screens (live build vs HTML mock, side by side) ────
   { kind: "label", id: "z-screens", title: "Screens — mock vs build", x: 1780, y: 60 },
   {

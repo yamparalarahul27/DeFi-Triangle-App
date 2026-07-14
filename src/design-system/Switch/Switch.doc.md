@@ -1,6 +1,6 @@
 # Switch
 
-Status: draft
+Status: stable
 On/off toggle on Radix Switch.
 
 ## Usage

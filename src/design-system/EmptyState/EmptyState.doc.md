@@ -1,6 +1,6 @@
 # EmptyState
 
-Status: draft
+Status: stable
 Designed empty -- cold-start is a first-class state.
 
 ## Usage

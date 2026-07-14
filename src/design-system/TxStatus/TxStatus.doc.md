@@ -1,6 +1,6 @@
 # TxStatus
 
-Status: draft
+Status: stable
 The transaction lifecycle, always visible (heuristic #1) -- the component no reference library ships.
 
 ## Usage

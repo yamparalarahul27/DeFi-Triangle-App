@@ -16,6 +16,8 @@ const LINKS = [
   },
   { href: "/design", label: "Component gallery", note: "mobile-friendly", primary: false },
   { href: "/design/feed", label: "Live demo screen", note: "the system as an app", primary: false },
+  { href: "/design/templates/simple-dapp", label: "Template: simple dApp", note: "the consumer end", primary: false },
+  { href: "/design/templates/exchange", label: "Template: exchange", note: "compact density terminal", primary: false },
 ] as const;
 
 export default function Home() {
