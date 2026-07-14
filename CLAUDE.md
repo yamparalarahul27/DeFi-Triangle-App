@@ -331,6 +331,18 @@ Rules:
 
 **CIDS (active product):**
 
+- **🔴 Production is not public (blocks M4 live verification).**
+  `defi-triangle-app.vercel.app` 307-redirects to `defistage.vercel.app`,
+  which sits behind Vercel SSO Deployment Protection — the landing,
+  canvas, templates, AND the `/r/*` registry are invisible to anyone
+  not logged into the Vercel team. Fix is dashboard-only:
+  Settings → Deployment Protection → "Only Preview Deployments";
+  Settings → Domains → stop the `defistage` redirect (stale from the
+  app-era stage branch; consider `cids.defitriangle.xyz`). Once public:
+  run the fresh-app quickstart against the live URL (the literal M4
+  gate) and replace the `<your-cids-deployment>` placeholder in
+  `docs/cids-quickstart.md`.
+
 - **Iframe theme bridge.** Canvas iframe frames (live feed, HTML mocks) don't inherit the parent's `data-theme` — flipping dark/mono leaves them dark. Fix via a URL param or postMessage the embedded pages honor. (Known limitation since the mono-theme PR #68.)
 - **Mobile canvas gestures.** The canvas is desktop-first by decision. Pinch-zoom + touch pan tuning for mobile Safari is deferred to a local-desktop session (needs fast iteration).
 - **More themes.** The `mono` pattern makes each theme one `[data-theme]` block + `check:contrast` pass. Candidates when wanted: light-terminal, high-contrast.
