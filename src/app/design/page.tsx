@@ -1,3 +1,6 @@
+import { readdirSync, statSync } from "node:fs";
+import { join } from "node:path";
+import Link from "next/link";
 import type { Metadata } from "next";
 import {
   Avatar,
@@ -63,18 +66,18 @@ export default function DesignGalleryPage() {
         </p>
         <div className="mt-3"><ThemeToggle /></div>
         <div className="mt-3 flex flex-wrap gap-2">
-          <a
+          <Link
             href="/design/feed"
             className="inline-flex items-center gap-1 rounded-sm border border-outline bg-surface-container px-3 py-1.5 text-xs font-semibold text-fg"
           >
             See it as a screen → /design/feed
-          </a>
-          <a
+          </Link>
+          <Link
             href="/design/canvas"
             className="inline-flex items-center gap-1 rounded-sm border border-outline bg-surface-container px-3 py-1.5 text-xs font-semibold text-fg"
           >
             Open canvas → /design/canvas <span className="text-fg-subtle">(desktop)</span>
-          </a>
+          </Link>
         </div>
       </header>
 
@@ -181,7 +184,38 @@ export default function DesignGalleryPage() {
             tap ♥ = spring-pop · Follow morphs 200ms · Lane fill = state
           </p>
         </section>
+
+        <section>
+          <SectionLabel>All components — pages</SectionLabel>
+          <div className="flex flex-wrap gap-x-3 gap-y-1.5">
+            {componentNames().map((n) => (
+              <Link
+                key={n}
+                href={`/design/${n}`}
+                className="font-mono text-xs text-fg-muted underline-offset-2 hover:text-fg hover:underline"
+              >
+                {n}
+              </Link>
+            ))}
+          </div>
+          <p className="mt-2 text-[11px] text-fg-subtle">
+            one page per component — live demo · doc · source, rendered
+            from the same files as the canvas inspector
+          </p>
+        </section>
       </div>
     </main>
   );
+}
+
+function componentNames(): string[] {
+  return readdirSync(join(process.cwd(), "src/design-system"))
+    .filter((n) => {
+      try {
+        return statSync(join(process.cwd(), "src/design-system", n, `${n}.doc.md`)).isFile();
+      } catch {
+        return false;
+      }
+    })
+    .sort();
 }
