@@ -309,11 +309,10 @@ Current accepted state:
   `@solana/spl-token` → `@solana/buffer-layout-utils` — the **dormant
   engine's** chain, unused by CIDS at runtime. Accepted pending a
   wallet-adapter major upgrade (or engine retirement decision).
-- **1 high — `next@16.2.4`** (multiple advisories incl. middleware bypass
-  GHSA-26hh-7cqf-hhc6, cache poisoning GHSA-3g8h-86w9-wvmq). Fix requires a
-  framework version bump (`npm audit fix --force` → next 16.3.x) — tracked
-  as its own follow-up PR with full build/CI verification, not mixed into
-  feature PRs.
+- ~~1 high — `next@16.2.4`~~ **RESOLVED 2026-07-13**: upgraded to
+  `next@16.2.10` (the grouped advisories were fixed across 16.2.x
+  patches; audit no longer reports next). Verified per this section's
+  re-baseline rule.
 - **6 moderate** — transitive via the dormant engine's Solana chain and the
   `shadcn` CLI's `@modelcontextprotocol/sdk` (dev-only, not shipped).
   Accepted pending upstream releases.
