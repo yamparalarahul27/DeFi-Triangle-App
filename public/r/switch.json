@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "switch",
+  "type": "registry:ui",
+  "title": "Switch",
+  "description": "CIDS Switch (stable) — docs ship with the code (Switch.doc.md).",
+  "dependencies": [
+    "radix-ui"
+  ],
+  "registryDependencies": [
+    "@cids/tokens"
+  ],
+  "files": [
+    {
+      "path": "cids/Switch/Switch.tsx",
+      "type": "registry:ui",
+      "target": "components/cids/Switch/Switch.tsx",
+      "content": "\"use client\";\n\nimport { Switch as RadixSwitch } from \"radix-ui\";\nimport { cn } from \"@/lib/utils\";\n\n/** On/off toggle on Radix Switch — label it from the caller. */\nexport function Switch({\n  checked,\n  onCheckedChange,\n  disabled,\n  className,\n  ...rest\n}: {\n  checked: boolean;\n  onCheckedChange: (checked: boolean) => void;\n  disabled?: boolean;\n  className?: string;\n} & Omit<React.ComponentProps<typeof RadixSwitch.Root>, \"checked\" | \"onCheckedChange\">) {\n  return (\n    <RadixSwitch.Root\n      checked={checked}\n      onCheckedChange={onCheckedChange}\n      disabled={disabled}\n      className={cn(\n        \"relative h-5 w-9 rounded-full border border-outline-variant\",\n        \"transition-[background-color] duration-150\",\n        \"data-[state=checked]:bg-brand data-[state=unchecked]:bg-surface-bright\",\n        \"disabled:pointer-events-none disabled:opacity-40\",\n        className,\n      )}\n      {...rest}\n    >\n      <RadixSwitch.Thumb\n        className={cn(\n          \"block h-4 w-4 rounded-full bg-fg shadow-card\",\n          \"transition-transform duration-150\",\n          \"data-[state=checked]:translate-x-[18px] data-[state=unchecked]:translate-x-0.5\",\n          \"data-[state=checked]:bg-on-brand\",\n        )}\n      />\n    </RadixSwitch.Root>\n  );\n}\n"
+    },
+    {
+      "path": "cids/Switch/Switch.doc.md",
+      "type": "registry:file",
+      "target": "components/cids/Switch/Switch.doc.md",
+      "content": "# Switch\n\nStatus: stable\nOn/off toggle on Radix Switch.\n\n## Usage\n\n```tsx\nimport { Switch } from \"@/design-system\";\n\n<Switch checked={on} onCheckedChange={setOn} aria-label=\"Public watchlist\" />\n```\n\n## Anatomy\n\n```\n(o---)  off: surface-bright track\n(---o)  on: brand track, on-brand thumb\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `checked` / `onCheckedChange` | controlled pair | -- | Caller owns state. |\n| `disabled` | `boolean` | -- | Native semantics via Radix. |\n| `className` | `string` | -- | cn-merged onto the track. |\n| ...rest | Radix Switch props | -- | e.g. `aria-label`, `name`. |\n\n## Tokens\n\n- `--brand` / `--on-brand` (on) - `--surface-bright` + `--outline-variant` (off) - `--elevation-1` thumb\n\n## States\n\noff - on - focus-visible (global ring) - disabled.\n\n## Motion\n\nTrack color + thumb translate, 150ms targeted; reduced-motion via global reset.\n\n## A11y\n\n- Radix Switch: `role=\"switch\"`, `aria-checked`, Space/Enter toggle.\n- Label from the caller (`aria-label` or an associated `<label>`).\n"
+    }
+  ]
+}

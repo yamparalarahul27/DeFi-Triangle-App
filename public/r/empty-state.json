@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "empty-state",
+  "type": "registry:ui",
+  "title": "EmptyState",
+  "description": "CIDS EmptyState (stable) — docs ship with the code (EmptyState.doc.md).",
+  "dependencies": [],
+  "registryDependencies": [
+    "@cids/tokens"
+  ],
+  "files": [
+    {
+      "path": "cids/EmptyState/EmptyState.tsx",
+      "type": "registry:ui",
+      "target": "components/cids/EmptyState/EmptyState.tsx",
+      "content": "import { cn } from \"@/lib/utils\";\nimport type { ReactNode } from \"react\";\n\n/**\n * Designed empty — cold-start is a first-class state (tide DS spec).\n * One quiet glyph, a title, one playful-budget hint line, optional action.\n */\nexport function EmptyState({\n  glyph = \"◍\",\n  title,\n  hint,\n  action,\n  className,\n}: {\n  /** Decorative marker (emoji/char); aria-hidden. */\n  glyph?: string;\n  title: string;\n  /** One line; this is where the playful budget lives. */\n  hint?: string;\n  /** Usually a Button. */\n  action?: ReactNode;\n  className?: string;\n}) {\n  return (\n    <div\n      className={cn(\n        \"flex flex-col items-center justify-center gap-1 rounded-card border border-dashed border-outline bg-surface-container px-6 py-10 text-center\",\n        className,\n      )}\n    >\n      <span aria-hidden=\"true\" className=\"mb-1 text-2xl text-fg-subtle\">\n        {glyph}\n      </span>\n      <p className=\"text-sm font-medium text-fg\">{title}</p>\n      {hint && <p className=\"text-xs text-fg-muted\">{hint}</p>}\n      {action && <div className=\"mt-3\">{action}</div>}\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "cids/EmptyState/EmptyState.doc.md",
+      "type": "registry:file",
+      "target": "components/cids/EmptyState/EmptyState.doc.md",
+      "content": "# EmptyState\n\nStatus: stable\nDesigned empty -- cold-start is a first-class state.\n\n## Usage\n\n```tsx\nimport { EmptyState, Button } from \"@/design-system\";\n\n<EmptyState\n  title=\"No watchers yet\"\n  hint=\"Quiet tide. First one in sets the current.\"\n  action={<Button variant=\"primary\">Watch JUP</Button>}\n/>\n```\n\n## Anatomy\n\n```\n+ ~ dashed outline card ~ +\n|          @              |\n|    No watchers yet      |\n|  one playful hint line  |\n|      [ action ]         |\n+-------------------------+\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `glyph` | `string` | `\"@\"`-like marker | Decorative, aria-hidden. |\n| `title` | `string` | -- | The factual line. |\n| `hint` | `string` | -- | One line -- the playful budget lives here. |\n| `action` | `ReactNode` | -- | Usually a Button. |\n| `className` | `string` | -- | cn-merged. |\n\n## Tokens\n\n- `--surface-container` - `--outline` (dashed) - `--radius-card` - fg ramp\n\n## States\n\nStatic composition; the action carries the interactive states.\n\n## Motion\n\nNone of its own.\n\n## A11y\n\n- Title is real text; glyph is `aria-hidden`.\n- Keep hints human, not hype (voice rules).\n"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "toast",
+  "type": "registry:ui",
+  "title": "Toast",
+  "description": "CIDS Toast (stable) — docs ship with the code (Toast.doc.md).",
+  "dependencies": [
+    "radix-ui"
+  ],
+  "registryDependencies": [
+    "@cids/tokens"
+  ],
+  "files": [
+    {
+      "path": "cids/Toast/Toast.tsx",
+      "type": "registry:ui",
+      "target": "components/cids/Toast/Toast.tsx",
+      "content": "\"use client\";\n\nimport { Toast as RadixToast } from \"radix-ui\";\nimport {\n  createContext,\n  useCallback,\n  useContext,\n  useState,\n  type ReactNode,\n} from \"react\";\nimport { cn } from \"@/lib/utils\";\n\nexport type ToastTone = \"neutral\" | \"buy\" | \"sell\" | \"warning\";\n\ntype ToastInput = { title: string; description?: string; tone?: ToastTone };\ntype ToastRecord = ToastInput & { id: number };\n\nconst ToastContext = createContext<((t: ToastInput) => void) | null>(null);\n\n/** Imperative toast trigger — must be used under <ToastProvider>. */\nexport function useToast() {\n  const push = useContext(ToastContext);\n  if (!push) throw new Error(\"useToast must be used within <ToastProvider>\");\n  return push;\n}\n\nconst TONE_BAR: Record<ToastTone, string> = {\n  neutral: \"bg-fg-subtle\",\n  buy: \"bg-buy\",\n  sell: \"bg-sell\",\n  warning: \"bg-warning\",\n};\n\n/**\n * App-level provider + viewport (bottom-center, --z-toast). Behavior is\n * Radix Toast: auto-dismiss (5s), swipe-down to dismiss, F8 hotkey to\n * reach the viewport, polite announcements.\n */\nexport function ToastProvider({ children }: { children: ReactNode }) {\n  const [toasts, setToasts] = useState<ToastRecord[]>([]);\n\n  const push = useCallback((t: ToastInput) => {\n    setToasts((all) => [...all, { ...t, id: Date.now() + Math.random() }]);\n  }, []);\n\n  return (\n    <ToastContext.Provider value={push}>\n      <RadixToast.Provider swipeDirection=\"down\" duration={5000}>\n        {children}\n        {toasts.map((t) => (\n          <RadixToast.Root\n            key={t.id}\n            onOpenChange={(open) => {\n              if (!open) setToasts((all) => all.filter((x) => x.id !== t.id));\n            }}\n            className={cn(\n              \"flex items-start gap-3 rounded-card border border-outline-variant bg-surface-bright p-3 shadow-raised\",\n              \"data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:slide-in-from-bottom-2\",\n              \"data-[state=closed]:animate-out data-[state=closed]:fade-out-0\",\n              \"data-[swipe=end]:animate-out data-[swipe=end]:fade-out-0\",\n            )}\n          >\n            <span\n              aria-hidden=\"true\"\n              className={cn(\"mt-0.5 h-8 w-0.5 flex-none rounded-full\", TONE_BAR[t.tone ?? \"neutral\"])}\n            />\n            <div className=\"min-w-0\">\n              <RadixToast.Title className=\"text-sm font-medium text-fg\">\n                {t.title}\n              </RadixToast.Title>\n              {t.description && (\n                <RadixToast.Description className=\"mt-0.5 text-xs text-fg-muted\">\n                  {t.description}\n                </RadixToast.Description>\n              )}\n            </div>\n            <RadixToast.Close\n              aria-label=\"Dismiss\"\n              className=\"ml-auto inline-flex h-6 w-6 flex-none items-center justify-center rounded-control text-fg-muted hover:text-fg\"\n            >\n              ×\n            </RadixToast.Close>\n          </RadixToast.Root>\n        ))}\n        <RadixToast.Viewport className=\"fixed bottom-4 left-1/2 z-[var(--z-toast)] flex w-[min(92vw,22rem)] -translate-x-1/2 flex-col gap-2 outline-none\" />\n      </RadixToast.Provider>\n    </ToastContext.Provider>\n  );\n}\n"
+    },
+    {
+      "path": "cids/Toast/Toast.doc.md",
+      "type": "registry:file",
+      "target": "components/cids/Toast/Toast.doc.md",
+      "content": "# Toast\n\nStatus: stable\nApp-level notifications: ToastProvider + useToast(), on Radix Toast.\n\n## Usage\n\n```tsx\nimport { ToastProvider, useToast } from \"@/design-system\";\n\n// app root: <ToastProvider>{children}</ToastProvider>\nconst toast = useToast();\ntoast({ title: \"Watchlist updated\", tone: \"buy\" });\n```\n\n## Anatomy\n\n```\n+| Title                x +  <- tone bar (buy/sell/warning/neutral)\n|  description            |     surface-bright, shadow-raised\n+-------------------------+     viewport: bottom-center, z-toast\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `ToastProvider` | wraps the app | -- | Renders the Radix provider + viewport. |\n| `useToast()` | `(t) => void` | -- | `{title, description?, tone?}`; throws outside the provider. |\n| `tone` | `\"neutral\" \\| \"buy\" \\| \"sell\" \\| \"warning\"` | `\"neutral\"` | Tone bar only -- text stays fg. |\n\n## Tokens\n\n- `--surface-bright` - `--elevation-2` - `--z-toast` (the ladder's top, first consumer) - tone tokens for the bar\n\n## States\n\nenter - visible (5s) - dismiss (auto / x / swipe-down).\n\n## Motion\n\nslide-in-from-bottom + fade on enter, fade on exit (Radix presets); reduced-motion collapses.\n\n## A11y\n\n- Radix Toast: polite live-region announcements, F8 reaches the viewport, swipe + Escape dismiss.\n- Tone is reinforced by the title text, never color alone.\n"
+    }
+  ]
+}

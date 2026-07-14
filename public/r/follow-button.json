@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "follow-button",
+  "type": "registry:ui",
+  "title": "FollowButton",
+  "description": "CIDS FollowButton (stable) — docs ship with the code (FollowButton.doc.md).",
+  "dependencies": [],
+  "registryDependencies": [
+    "@cids/tokens"
+  ],
+  "files": [
+    {
+      "path": "cids/FollowButton/FollowButton.tsx",
+      "type": "registry:ui",
+      "target": "components/cids/FollowButton/FollowButton.tsx",
+      "content": "\"use client\";\n\nimport { cn } from \"@/lib/utils\";\n\n// fill→outline morph on the reversible properties, plus a fast press scale.\nconst MORPH =\n  \"background-color var(--motion-settle), color var(--motion-settle), border-color var(--motion-settle), transform var(--motion-fast)\";\n\nexport function FollowButton({\n  following,\n  onToggle,\n  className,\n}: {\n  /** Controlled state. Callers flip optimistically and roll back on failure. */\n  following: boolean;\n  onToggle: () => void;\n  className?: string;\n}) {\n  return (\n    <button\n      type=\"button\"\n      onClick={onToggle}\n      aria-pressed={following}\n      style={{ transition: MORPH }}\n      className={cn(\n        \"inline-flex h-7 items-center rounded-control border px-3 text-xs font-semibold active:scale-[0.96]\",\n        following\n          ? \"border-outline bg-transparent text-fg-muted\"\n          : \"border-transparent bg-brand text-on-brand\",\n        className,\n      )}\n    >\n      {following ? \"Following\" : \"Follow\"}\n    </button>\n  );\n}\n"
+    },
+    {
+      "path": "cids/FollowButton/FollowButton.doc.md",
+      "type": "registry:file",
+      "target": "components/cids/FollowButton/FollowButton.doc.md",
+      "content": "# FollowButton\n\nStatus: stable\nFollow / Following toggle. Fill→outline morph; unfollow needs no confirm.\n\n## Usage\n\n```tsx\nimport { FollowButton } from \"@/design-system\";\n\nconst [following, setFollowing] = useState(false);\n\n<FollowButton\n  following={following}\n  onToggle={() => setFollowing((v) => !v)}  // flip optimistically; roll back on error\n/>\n```\n\n## Anatomy\n\n```\n  Follow        →  tap  →   Following\n┌──────────┐             ┌──────────────┐\n│ bg-brand │             │ transparent  │\n│ on-brand │             │ outline·muted│\n└──────────┘             └──────────────┘\n  filled                   morphs 200ms\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `following` | `boolean` | — | Controlled state. Flip optimistically at the call site; roll back on failure. |\n| `onToggle` | `() => void` | — | Fired on tap. |\n| `className` | `string` | — | Merged via `cn`. |\n\n## Tokens\n\n- `--color-brand`, `--color-on-brand` — the Follow (filled) state.\n- `--color-outline`, `--color-fg-muted` — the Following (outline) state.\n- `--motion-settle` — the fill→outline morph; `--motion-fast` — press scale.\n- `--radius-control` (`rounded-control`) — button corner.\n\n## States\n\n- **Follow** (`following=false`) — filled brand, dark on-brand text.\n- **Following** (`following=true`) — transparent, outline border, muted text.\n- **Press** — `scale(0.96)`.\n- **Optimistic/pending** — caller's concern: set `following` immediately, revert on error.\n\n## Motion\n\n`--motion-settle` (200ms) morphs background / border / color between the two states. Label swaps at the state change (no separate crossfade in v1). Reduced-motion: neutralized globally.\n\n## A11y\n\n- `aria-pressed={following}` communicates toggle state to AT.\n- Height 28px per the tide sm-button spec; pair with adequate spacing in dense rows.\n"
+    }
+  ]
+}

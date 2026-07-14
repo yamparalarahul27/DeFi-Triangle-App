@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "rolling-number",
+  "type": "registry:ui",
+  "title": "RollingNumber",
+  "description": "CIDS RollingNumber (stable) — docs ship with the code (RollingNumber.doc.md).",
+  "dependencies": [],
+  "registryDependencies": [
+    "@cids/tokens"
+  ],
+  "files": [
+    {
+      "path": "cids/RollingNumber/RollingNumber.tsx",
+      "type": "registry:ui",
+      "target": "components/cids/RollingNumber/RollingNumber.tsx",
+      "content": "\"use client\";\n\nimport { cn } from \"@/lib/utils\";\n\n/**\n * Streaming numeral (CDS RollingNumber's role): each character that\n * CHANGES rolls in on --motion-settle; unchanged characters keep their\n * DOM nodes still — so a last digit ticking doesn't animate the whole\n * figure. Pixel font + tabular-nums; zero layout shift by design.\n */\nexport function RollingNumber({\n  value,\n  className,\n}: {\n  /** Pre-formatted string (\"$184.26\") — formatting is the caller's. */\n  value: string;\n  className?: string;\n}) {\n  const chars = value.split(\"\");\n  return (\n    <span\n      className={cn(\"data-md inline-flex text-fg\", className)}\n      // One accessible label for the whole figure; per-char spans hidden.\n      role=\"text\"\n      aria-label={value}\n    >\n      {chars.map((ch, i) => (\n        <span\n          // Position + character in the key: a char re-mounts (and rolls)\n          // only when the character AT ITS SLOT changes.\n          key={`${i}-${ch}`}\n          aria-hidden=\"true\"\n          className=\"animate-roll-in inline-block\"\n        >\n          {ch === \" \" ? \" \" : ch}\n        </span>\n      ))}\n    </span>\n  );\n}\n"
+    },
+    {
+      "path": "cids/RollingNumber/RollingNumber.doc.md",
+      "type": "registry:file",
+      "target": "components/cids/RollingNumber/RollingNumber.doc.md",
+      "content": "# RollingNumber\n\nStatus: stable\nStreaming numeral: only the characters that change roll in -- zero layout shift, calm by design.\n\n## Usage\n\n```tsx\nimport { RollingNumber } from \"@/design-system\";\n\n<RollingNumber value={fmtUsd(price)} className=\"data-lg\" />\n```\n\n## Anatomy\n\n```\n$ 1 8 4 . 2 6\n          ^-^-- changed slots re-mount and roll in\n(unchanged slots keep their DOM nodes still)\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `value` | `string` | -- | Pre-formatted figure -- formatting is the caller's (keep unrounded terminal DNA). |\n| `className` | `string` | -- | cn-merged; defaults to `data-md`, override with `data-lg` etc. |\n\n## Tokens\n\n- `--motion-settle` (the roll) - financial ramp via `.data-*`\n\n## States\n\nsteady - per-slot roll on change. No hover/press (display only).\n\n## Motion\n\n`roll-in` keyframe (0.45em rise + fade) on changed slots only; discrete, never looping; reduced-motion collapses globally.\n\n## A11y\n\n- One `aria-label` with the full figure; per-character spans are `aria-hidden` so screen readers hear \"184.26\", not spelled-out chaos.\n- `tabular-nums` via the data ramp -- zero layout shift on ticks.\n"
+    }
+  ]
+}

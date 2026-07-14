@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "avatar-group",
+  "type": "registry:ui",
+  "title": "AvatarGroup",
+  "description": "CIDS AvatarGroup (stable) — docs ship with the code (AvatarGroup.doc.md).",
+  "dependencies": [],
+  "registryDependencies": [
+    "@cids/tokens",
+    "@cids/avatar",
+    "@cids/identity"
+  ],
+  "files": [
+    {
+      "path": "cids/AvatarGroup/AvatarGroup.tsx",
+      "type": "registry:ui",
+      "target": "components/cids/AvatarGroup/AvatarGroup.tsx",
+      "content": "import { cn } from \"@/lib/utils\";\nimport { Avatar } from \"../Avatar\";\nimport type { IdHue } from \"../identity\";\n\nexport type AvatarGroupMember = {\n  name: string;\n  seed?: string;\n  hue?: IdHue;\n  you?: boolean;\n};\n\n// -8px overlap + 2px ring in surface-container, per DESIGN.md AvatarGroup spec.\nconst OVERLAP = \"-ml-2 first:ml-0\";\nconst RING = \"ring-2 ring-surface-container\";\n\nexport function AvatarGroup({\n  members,\n  max = 3,\n  size = \"xs\",\n  className,\n}: {\n  /** Render order is the caller's concern (spec: followed-by-you first). */\n  members: AvatarGroupMember[];\n  /** Max avatars before collapsing to a +N disc. */\n  max?: number;\n  /** xs 20px · sm 28px (shared scale — see CONVENTIONS API contract). */\n  size?: \"xs\" | \"sm\";\n  className?: string;\n}) {\n  const shown = members.slice(0, max);\n  const extra = members.length - shown.length;\n  const discSize = size === \"xs\" ? \"w-5 h-5 text-[9px]\" : \"w-7 h-7 text-[10px]\";\n\n  return (\n    <span\n      className={cn(\"inline-flex items-center\", className)}\n      aria-label={`${members.length} ${members.length === 1 ? \"person\" : \"people\"}`}\n    >\n      {shown.map((m, i) => (\n        <Avatar key={i} {...m} size={size} className={cn(OVERLAP, RING)} />\n      ))}\n      {extra > 0 && (\n        <span\n          aria-hidden=\"true\"\n          className={cn(\n            \"inline-flex flex-none items-center justify-center rounded-full bg-surface-bright font-mono text-fg-muted\",\n            discSize,\n            OVERLAP,\n            RING,\n          )}\n        >\n          +{extra}\n        </span>\n      )}\n    </span>\n  );\n}\n"
+    },
+    {
+      "path": "cids/AvatarGroup/AvatarGroup.doc.md",
+      "type": "registry:file",
+      "target": "components/cids/AvatarGroup/AvatarGroup.doc.md",
+      "content": "# AvatarGroup\n\nStatus: stable\nOverlapping row of Avatars with a `+N` overflow disc — \"who's here\" at a glance.\n\n## Usage\n\n```tsx\nimport { AvatarGroup } from \"@/design-system\";\n\n<AvatarGroup\n  members={watchers.map((w) => ({ name: w.handle, seed: w.wallet }))}\n  max={3}\n/>\n```\n\n## Anatomy\n\n```\n ◐◐◐ +38          ← up to `max` avatars, then a +N disc\n └┬┘ └┬┘\n  │   └ surface-bright disc, fg-muted, \"+N\"\n  └ Avatars, -8px overlap, 2px surface-container ring\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `members` | `AvatarGroupMember[]` | — | `{ name, seed?, hue?, you? }`. Render order is the caller's concern — spec wants followed-by-you first. |\n| `max` | `number` | `3` | Avatars shown before collapsing to `+N`. |\n| `size` | `\"xs\" \\| \"sm\"` | `\"xs\"` | Avatar diameter (xs 20 · sm 28 px). |\n| `className` | `string` | — | Merged via `cn`. |\n\n## Tokens\n\n- Inherits `--id-*` through `Avatar`.\n- `--color-surface-container` (`ring-surface-container`) — the 2px separating ring.\n- `--color-surface-bright` + `--color-fg-muted` — the `+N` overflow disc.\n\n## States\n\n- **Overflow** — `members.length > max` renders the `+N` disc; otherwise omitted.\n- **Single member** — `aria-label` uses \"person\"; plural otherwise.\n\n## Motion\n\nNone — inherits Avatar's static nature.\n\n## A11y\n\n- Group carries an `aria-label` count (\"41 people\"); the `+N` disc is `aria-hidden` (it's a count glyph, already covered by the label).\n- Ring is a `box-shadow` ring (no layout shift), so overlap stays pixel-stable.\n"
+    }
+  ]
+}

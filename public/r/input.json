@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "input",
+  "type": "registry:ui",
+  "title": "Input",
+  "description": "CIDS Input (stable) — docs ship with the code (Input.doc.md).",
+  "dependencies": [],
+  "registryDependencies": [
+    "@cids/tokens"
+  ],
+  "files": [
+    {
+      "path": "cids/Input/Input.tsx",
+      "type": "registry:ui",
+      "target": "components/cids/Input/Input.tsx",
+      "content": "import { cn } from \"@/lib/utils\";\n\nexport type InputSize = \"sm\" | \"md\" | \"lg\";\n\nconst SIZE: Record<InputSize, string> = {\n  sm: \"h-7 px-2.5 text-xs\",\n  md: \"h-9 px-3 text-sm\",\n  lg: \"h-11 px-3.5 text-sm\",\n};\n\nexport function Input({\n  size = \"md\",\n  invalid = false,\n  className,\n  ...rest\n}: Omit<React.InputHTMLAttributes<HTMLInputElement>, \"size\"> & {\n  /** sm 28 · md 36 · lg 44 px height (shared scale). */\n  size?: InputSize;\n  /** Error state — sets aria-invalid + sell border. Pair with visible error text near the field. */\n  invalid?: boolean;\n}) {\n  return (\n    <input\n      aria-invalid={invalid || undefined}\n      className={cn(\n        \"w-full rounded-control border bg-surface-container text-fg placeholder:text-fg-subtle\",\n        \"transition-[border-color,background-color] duration-150\",\n        \"disabled:pointer-events-none disabled:opacity-40\",\n        invalid\n          ? \"border-sell\"\n          : \"border-outline-variant focus:border-outline\",\n        SIZE[size],\n        className,\n      )}\n      {...rest}\n    />\n  );\n}\n"
+    },
+    {
+      "path": "cids/Input/Input.doc.md",
+      "type": "registry:file",
+      "target": "components/cids/Input/Input.doc.md",
+      "content": "# Input\n\nStatus: stable\nSingle-line text field on the container surface; `invalid` wires the error state.\n\n## Usage\n\n```tsx\nimport { Input } from \"@/design-system\";\n\n<Input placeholder=\"Search tokens…\" />\n<Input invalid value={handle} onChange={…} aria-describedby=\"handle-err\" />\n```\n\n## Anatomy\n\n```\n┌ placeholder / value ────────┐\n└─────────────────────────────┘ ← container bg, hairline border,\n                                  sell border when invalid\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `size` | `\"sm\" \\| \"md\" \\| \"lg\"` | `\"md\"` | Heights 28 / 36 / 44 px (shared scale). |\n| `invalid` | `boolean` | `false` | Sets `aria-invalid` + sell border. Put the error text next to the field and link via `aria-describedby`. |\n| `className` | `string` | — | cn-merged. |\n| …rest | `InputHTMLAttributes` | — | Native pass-through (value, onChange, type…). |\n\n## Tokens\n\n- `--surface-container` · `--outline-variant`/`--outline` (rest/focus border) · `--sell` (invalid) · `--fg-subtle` (placeholder) · `--radius-control`\n\n## States\n\nrest · focus (border lifts to `--outline` + global focus-visible ring) · invalid · disabled (`opacity-40`).\n\n## Motion\n\nBorder/background transition 150ms, targeted properties only.\n\n## A11y\n\n- Always label it: visible `<label htmlFor>` or `aria-label` from the caller.\n- `invalid` sets `aria-invalid`; pair with a visible message via `aria-describedby` — errors appear next to where the action happens.\n- Paste is never blocked.\n"
+    }
+  ]
+}

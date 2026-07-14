@@ -11,7 +11,9 @@
     "check:theme": "node scripts/check-theme.mjs",
     "check:contrast": "node scripts/check-contrast.mjs",
     "check:portable": "node scripts/check-portable.mjs",
-    "test": "vitest run"
+    "test": "vitest run",
+    "build:registry": "node scripts/build-registry.mjs",
+    "check:registry": "node scripts/check-registry.mjs"
   },
   "dependencies": {
     "@jup-ag/wallet-adapter": "^0.2.6",

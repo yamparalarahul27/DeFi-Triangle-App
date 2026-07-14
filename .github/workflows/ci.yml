@@ -40,5 +40,8 @@ jobs:
       - name: Guard — portable (DS imports + doc completeness)
         run: npm run check:portable
 
+      - name: Guard — registry (public/r in sync with source)
+        run: npm run check:registry
+
       - name: Tests
         run: npm test

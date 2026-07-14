@@ -58,6 +58,19 @@ npx tsc --noEmit && npm run lint
 
 All of the above run in CI on every PR (`.github/workflows/ci.yml`).
 
+## Install (copy-in, shadcn-style)
+
+Point the shadcn CLI at the registry and the code lands in your repo —
+you own it. Full walkthrough: [docs/cids-quickstart.md](docs/cids-quickstart.md).
+
+```bash
+npx shadcn add @cids/tokens     # the token layer + 4 themes + density
+npx shadcn add @cids/button @cids/data-table @cids/tx-status
+```
+
+Every item ships its `.doc.md` beside the code; cross-deps resolve
+automatically; `check:registry` keeps `public/r/` generated-from-source.
+
 ## Roadmap
 
 The end-to-end evolution plan — foundations, API contract, light theme,

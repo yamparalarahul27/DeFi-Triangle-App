@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "price-change",
+  "type": "registry:ui",
+  "title": "PriceChange",
+  "description": "CIDS PriceChange (stable) — docs ship with the code (PriceChange.doc.md).",
+  "dependencies": [],
+  "registryDependencies": [
+    "@cids/tokens"
+  ],
+  "files": [
+    {
+      "path": "cids/PriceChange/PriceChange.tsx",
+      "type": "registry:ui",
+      "target": "components/cids/PriceChange/PriceChange.tsx",
+      "content": "import { cn } from \"@/lib/utils\";\n\n/**\n * Signed change readout — the sign-discipline primitive (DESIGN.md\n * guideline #5, hard-coded): direction comes from the SIGNED value\n * (▲/▼ + +/−, buy/sell tone), magnitude is always Math.abs. Callers\n * can never render \"-−4.2%\" or a green loss.\n */\nexport function PriceChange({\n  value,\n  suffix = \"%\",\n  precision = 2,\n  className,\n}: {\n  /** Signed change (e.g. -4.2 for −4.2%). */\n  value: number;\n  /** Unit appended to the magnitude. */\n  suffix?: string;\n  precision?: number;\n  className?: string;\n}) {\n  const up = value >= 0;\n  const magnitude = Math.abs(value).toFixed(precision);\n  return (\n    <span\n      className={cn(\n        \"data-sm inline-flex items-center gap-1 tabular-nums\",\n        up ? \"text-buy\" : \"text-sell\",\n        className,\n      )}\n    >\n      <span aria-hidden=\"true\">{up ? \"▲\" : \"▼\"}</span>\n      <span>\n        {up ? \"+\" : \"−\"}\n        {magnitude}\n        {suffix}\n      </span>\n    </span>\n  );\n}\n"
+    },
+    {
+      "path": "cids/PriceChange/PriceChange.doc.md",
+      "type": "registry:file",
+      "target": "components/cids/PriceChange/PriceChange.doc.md",
+      "content": "# PriceChange\n\nStatus: stable\nThe sign-discipline primitive: direction from the signed value, magnitude always Math.abs -- a green loss is impossible.\n\n## Usage\n\n```tsx\nimport { PriceChange } from \"@/design-system\";\n\n<PriceChange value={-4.2} />        // ▼ −4.20%  (sell tone)\n<PriceChange value={9.4} suffix=\"%\" /> // ▲ +9.40%  (buy tone)\n```\n\n## Anatomy\n\n```\n▲ +4.20%   value >= 0: buy tone\n▼ −4.20%   value <  0: sell tone, magnitude via Math.abs\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `value` | `number` | -- | SIGNED change. The component derives everything else. |\n| `suffix` | `string` | `\"%\"` | Unit after the magnitude. |\n| `precision` | `number` | `2` | toFixed digits. |\n| `className` | `string` | -- | cn-merged. |\n\n## Tokens\n\n- `--buy` / `--sell` - data ramp (`.data-sm`) + `tabular-nums`\n\n## States\n\nup - down. That is the whole state space, on purpose.\n\n## Motion\n\nNone of its own (flash-on-change belongs to the row/cell, not the number).\n\n## A11y\n\n- Direction is conveyed by BOTH the glyph and the +/− sign, never color alone.\n- Glyph is `aria-hidden`; the signed text reads naturally.\n"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "badge",
+  "type": "registry:ui",
+  "title": "Badge",
+  "description": "CIDS Badge (stable) — docs ship with the code (Badge.doc.md).",
+  "dependencies": [],
+  "registryDependencies": [
+    "@cids/tokens"
+  ],
+  "files": [
+    {
+      "path": "cids/Badge/Badge.tsx",
+      "type": "registry:ui",
+      "target": "components/cids/Badge/Badge.tsx",
+      "content": "import { cn } from \"@/lib/utils\";\n\nexport type BadgeTone =\n  | \"neutral\"\n  | \"brand\"\n  | \"buy\"\n  | \"sell\"\n  | \"warning\"\n  | \"info\";\n\n// Tinted-surface + tone-text pairs from the semantic token table. Never\n// used for price direction alone — pair with the signed value (sign\n// discipline lives with the data, not the badge).\nconst TONE: Record<BadgeTone, string> = {\n  neutral: \"bg-surface-container-high text-fg-muted\",\n  brand: \"bg-brand-subtle/20 text-brand\",\n  buy: \"bg-buy-surface text-buy\",\n  sell: \"bg-sell-surface text-sell\",\n  warning: \"bg-warning-surface text-warning\",\n  info: \"bg-info-surface text-info\",\n};\n\nexport function Badge({\n  tone = \"neutral\",\n  className,\n  ...rest\n}: React.HTMLAttributes<HTMLSpanElement> & {\n  tone?: BadgeTone;\n}) {\n  return (\n    <span\n      className={cn(\n        \"inline-flex items-center gap-1 rounded-chip px-1.5 py-0.5 text-[11px] font-medium\",\n        TONE[tone],\n        className,\n      )}\n      {...rest}\n    />\n  );\n}\n"
+    },
+    {
+      "path": "cids/Badge/Badge.doc.md",
+      "type": "registry:file",
+      "target": "components/cids/Badge/Badge.doc.md",
+      "content": "# Badge\n\nStatus: stable\nSmall status label on the tinted-surface pairs — tone conveys state category, never price direction on its own.\n\n## Usage\n\n```tsx\nimport { Badge } from \"@/design-system\";\n\n<Badge tone=\"buy\">on peg</Badge>\n<Badge tone=\"warning\">pending</Badge>\n```\n\n## Anatomy\n\n```\n( label )  ← rounded-chip, 11px medium, tint bg + tone text\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `tone` | `\"neutral\" \\| \"brand\" \\| \"buy\" \\| \"sell\" \\| \"warning\" \\| \"info\"` | `\"neutral\"` | Maps to the tinted state-surface pairs. |\n| `className` | `string` | — | cn-merged. |\n| …rest | `HTMLAttributes<span>` | — | Pass-through. |\n\n## Tokens\n\n- `--{buy,sell,warning,info}-surface` + tone text tokens · `--surface-container-high` (neutral) · `--radius-chip`\n\n## States\n\nStatic — no interactive states. Tone is the only variant axis.\n\n## Motion\n\nNone (static label).\n\n## A11y\n\n- Real text = accessible name; no ARIA needed.\n- State is conveyed by text + tint together, not color alone (the label says \"pending\", the tint reinforces).\n- Sign discipline: direction belongs to the signed value beside the badge, not the badge tone.\n"
+    }
+  ]
+}

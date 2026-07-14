@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "token-icon",
+  "type": "registry:ui",
+  "title": "TokenIcon",
+  "description": "CIDS TokenIcon (stable) — docs ship with the code (TokenIcon.doc.md).",
+  "dependencies": [],
+  "registryDependencies": [
+    "@cids/tokens"
+  ],
+  "files": [
+    {
+      "path": "cids/TokenIcon/TokenIcon.tsx",
+      "type": "registry:ui",
+      "target": "components/cids/TokenIcon/TokenIcon.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { cn } from \"@/lib/utils\";\n\ntype Size = \"sm\" | \"md\" | \"lg\";\n\nconst SIZE_CLS: Record<Size, string> = {\n  sm: \"w-5 h-5\",\n  md: \"w-6 h-6\",\n  lg: \"w-8 h-8\",\n};\n\nconst TEXT_CLS: Record<Size, string> = {\n  sm: \"text-[9px]\",\n  md: \"text-[10px]\",\n  lg: \"text-xs\",\n};\n\nexport function TokenIcon({\n  src,\n  symbol,\n  size = \"md\",\n  className,\n}: {\n  src?: string;\n  symbol?: string;\n  size?: Size;\n  className?: string;\n}) {\n  // Track WHICH src errored — a new src is automatically un-errored,\n  // no reset-on-prop-change effect needed.\n  const [erroredSrc, setErroredSrc] = useState<string | null>(null);\n  const errored = erroredSrc === src;\n\n  const initials = (symbol ?? \"?\").slice(0, 2).toUpperCase();\n\n  if (!src || errored) {\n    return (\n      <div\n        className={cn(\n          SIZE_CLS[size],\n          TEXT_CLS[size],\n          \"flex shrink-0 items-center justify-center rounded-full bg-surface-bright font-semibold text-fg\",\n          className,\n        )}\n        aria-label={symbol ?? \"token\"}\n      >\n        {initials}\n      </div>\n    );\n  }\n\n  return (\n    /* eslint-disable-next-line @next/next/no-img-element */\n    <img\n      src={src}\n      alt={symbol ?? \"token\"}\n      onError={() => setErroredSrc(src ?? null)}\n      className={cn(SIZE_CLS[size], \"shrink-0 rounded-full object-cover\", className)}\n    />\n  );\n}\n"
+    },
+    {
+      "path": "cids/TokenIcon/TokenIcon.doc.md",
+      "type": "registry:file",
+      "target": "components/cids/TokenIcon/TokenIcon.doc.md",
+      "content": "# TokenIcon\n\nStatus: stable\nToken logo disc with a graceful initials fallback — the base identity mark for assets (as Avatar is for people).\n\n## Usage\n\n```tsx\nimport { TokenIcon } from \"@/design-system\";\n\n<TokenIcon src={logoUrl} symbol=\"JUP\" size=\"md\" />\n<TokenIcon symbol=\"SOL\" />  {/* no src -> initials disc */}\n```\n\n## Anatomy\n\n```\n ┌────┐          ┌────┐\n │ ◍  │   or     │ JU │\n └────┘          └────┘\n  img,            fallback disc:\n  rounded-full,   surface-bright,\n  object-cover    first 2 letters\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `src` | `string?` | — | Logo URL. Missing or failing → initials disc. An icon-CDN default (resolve by symbol) is a planned follow-up; today the caller supplies the URL. |\n| `symbol` | `string?` | `\"?\"` | First 2 chars uppercase → fallback initials; also the `alt`/`aria-label`. |\n| `size` | `\"sm\" \\| \"md\" \\| \"lg\"` | `\"md\"` | 20 / 24 / 32 px. |\n| `className` | `string` | — | Appended (e.g. ring, border). |\n\n## Tokens\n\n- `--color-surface-bright` — fallback disc fill.\n- `--color-fg` — fallback initials.\n\n## States\n\n- **Loaded** — the image, round, `object-cover`.\n- **Fallback** — no `src`, or the image errored (`onError` resets per-`src`): initials disc.\n\n## Motion\n\nNone.\n\n## A11y\n\n- `alt`/`aria-label` from `symbol`; fallback disc keeps the label so AT reads the asset either way.\n- Purely decorative next to a visible symbol? Pass context at the call site — the component always labels itself.\n"
+    }
+  ]
+}

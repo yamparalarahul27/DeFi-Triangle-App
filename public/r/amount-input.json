@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "amount-input",
+  "type": "registry:ui",
+  "title": "AmountInput",
+  "description": "CIDS AmountInput (stable) — docs ship with the code (AmountInput.doc.md).",
+  "dependencies": [],
+  "registryDependencies": [
+    "@cids/tokens"
+  ],
+  "files": [
+    {
+      "path": "cids/AmountInput/AmountInput.tsx",
+      "type": "registry:ui",
+      "target": "components/cids/AmountInput/AmountInput.tsx",
+      "content": "import { cn } from \"@/lib/utils\";\n\n/**\n * Token amount entry: decimal-only string value (never floats — the\n * caller parses with the mint's decimals), symbol anchored right,\n * optional fiat echo + Max. The fiat ⇄ token display pattern nobody\n * documents, componentized.\n */\nexport function AmountInput({\n  value,\n  onValueChange,\n  symbol,\n  fiatValue,\n  onMax,\n  invalid = false,\n  disabled,\n  \"aria-label\": ariaLabel,\n  className,\n}: {\n  /** Decimal string (\"1.25\"); sanitized to [0-9.] with a single dot. */\n  value: string;\n  onValueChange: (value: string) => void;\n  /** Token symbol shown at the right edge. */\n  symbol: string;\n  /** Pre-formatted fiat echo (\"≈ $231.40\"). */\n  fiatValue?: string;\n  /** Renders a Max affordance when provided. */\n  onMax?: () => void;\n  invalid?: boolean;\n  disabled?: boolean;\n  \"aria-label\"?: string;\n  className?: string;\n}) {\n  const sanitize = (raw: string) => {\n    const cleaned = raw.replace(/[^0-9.]/g, \"\");\n    const [head, ...rest] = cleaned.split(\".\");\n    return rest.length ? `${head}.${rest.join(\"\")}` : cleaned;\n  };\n\n  return (\n    <div className={cn(\"min-w-0\", className)}>\n      <div\n        className={cn(\n          \"flex items-center gap-2 rounded-control border bg-surface-container px-3\",\n          \"transition-[border-color] duration-150\",\n          invalid ? \"border-sell\" : \"border-outline-variant focus-within:border-outline\",\n          disabled && \"pointer-events-none opacity-40\",\n        )}\n      >\n        <input\n          value={value}\n          onChange={(e) => onValueChange(sanitize(e.target.value))}\n          inputMode=\"decimal\"\n          placeholder=\"0\"\n          disabled={disabled}\n          aria-label={ariaLabel ?? `Amount in ${symbol}`}\n          aria-invalid={invalid || undefined}\n          className=\"data-md h-11 w-full min-w-0 bg-transparent text-fg placeholder:text-fg-subtle focus:outline-none\"\n        />\n        {onMax && (\n          <button\n            type=\"button\"\n            onClick={onMax}\n            className=\"rounded-control px-1.5 py-0.5 text-[11px] font-semibold text-brand transition-colors duration-150 hover:bg-surface-container-high\"\n          >\n            Max\n          </button>\n        )}\n        <span className=\"font-mono text-sm text-fg-muted\">{symbol}</span>\n      </div>\n      {fiatValue && (\n        <div className=\"data-sm mt-1 px-3 text-fg-subtle\">{fiatValue}</div>\n      )}\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "cids/AmountInput/AmountInput.doc.md",
+      "type": "registry:file",
+      "target": "components/cids/AmountInput/AmountInput.doc.md",
+      "content": "# AmountInput\n\nStatus: stable\nToken amount entry: decimal string (never floats), symbol anchored, fiat echo + Max -- the undocumented fiat/token pattern, componentized.\n\n## Usage\n\n```tsx\nimport { AmountInput } from \"@/design-system\";\n\n<AmountInput value={amt} onValueChange={setAmt} symbol=\"SOL\" fiatValue=\"≈ $231.40\" onMax={fillMax} />\n```\n\n## Anatomy\n\n```\n+ 1.25          Max  SOL +  <- data-md input - Max - symbol\n  ≈ $231.40                <- fiat echo (data-sm, subtle)\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `value` / `onValueChange` | `string` pair | -- | Decimal STRING; sanitized to digits + one dot. Parse with mint decimals downstream. |\n| `symbol` | `string` | -- | Right-anchored token symbol. |\n| `fiatValue` | `string` | -- | Pre-formatted echo line. |\n| `onMax` | `() => void` | -- | Renders the Max affordance. |\n| `invalid` | `boolean` | `false` | aria-invalid + sell border. |\n| `disabled` | `boolean` | -- | |\n| `aria-label` | `string` | `\"Amount in <symbol>\"` | |\n| `className` | `string` | -- | cn-merged. |\n\n## Tokens\n\n- `--surface-container` + `--outline(-variant)` - `--sell` invalid - `--brand` Max - `--radius-control` - data ramp\n\n## States\n\nrest - focus-within - invalid - disabled - with/without Max + fiat.\n\n## Motion\n\nBorder transition 150ms.\n\n## A11y\n\n- `inputMode=\"decimal\"` for the right mobile keyboard; sanitization never blocks paste (it filters).\n- Labelled by default from the symbol; `aria-invalid` on error -- put the message next to the field.\n"
+    }
+  ]
+}

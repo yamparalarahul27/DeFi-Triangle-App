@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "checkbox",
+  "type": "registry:ui",
+  "title": "Checkbox",
+  "description": "CIDS Checkbox (stable) — docs ship with the code (Checkbox.doc.md).",
+  "dependencies": [
+    "radix-ui"
+  ],
+  "registryDependencies": [
+    "@cids/tokens"
+  ],
+  "files": [
+    {
+      "path": "cids/Checkbox/Checkbox.tsx",
+      "type": "registry:ui",
+      "target": "components/cids/Checkbox/Checkbox.tsx",
+      "content": "\"use client\";\n\nimport { Checkbox as RadixCheckbox } from \"radix-ui\";\nimport { cn } from \"@/lib/utils\";\n\n/** Checkbox on Radix — label it from the caller (htmlFor / aria-label). */\nexport function Checkbox({\n  checked,\n  onCheckedChange,\n  disabled,\n  className,\n  ...rest\n}: {\n  checked: boolean;\n  onCheckedChange: (checked: boolean) => void;\n  disabled?: boolean;\n  className?: string;\n} & Omit<React.ComponentProps<typeof RadixCheckbox.Root>, \"checked\" | \"onCheckedChange\">) {\n  return (\n    <RadixCheckbox.Root\n      checked={checked}\n      onCheckedChange={(v) => onCheckedChange(v === true)}\n      disabled={disabled}\n      className={cn(\n        \"flex h-4 w-4 items-center justify-center rounded-control border\",\n        \"transition-[background-color,border-color] duration-150\",\n        \"data-[state=checked]:border-brand data-[state=checked]:bg-brand\",\n        \"data-[state=unchecked]:border-outline data-[state=unchecked]:bg-surface-container\",\n        \"disabled:pointer-events-none disabled:opacity-40\",\n        className,\n      )}\n      {...rest}\n    >\n      <RadixCheckbox.Indicator className=\"text-[10px] font-bold leading-none text-on-brand\">\n        ✓\n      </RadixCheckbox.Indicator>\n    </RadixCheckbox.Root>\n  );\n}\n"
+    },
+    {
+      "path": "cids/Checkbox/Checkbox.doc.md",
+      "type": "registry:file",
+      "target": "components/cids/Checkbox/Checkbox.doc.md",
+      "content": "# Checkbox\n\nStatus: stable\nCheckbox on Radix -- brand fill when checked.\n\n## Usage\n\n```tsx\nimport { Checkbox } from \"@/design-system\";\n\n<Checkbox checked={agreed} onCheckedChange={setAgreed} aria-label=\"Agree\" />\n```\n\n## Anatomy\n\n```\n[ ]  unchecked: container bg, outline border\n[x]  checked: brand fill, on-brand check\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `checked` / `onCheckedChange` | controlled pair | -- | Indeterminate not supported in v1. |\n| `disabled` | `boolean` | -- | |\n| `className` | `string` | -- | cn-merged. |\n| ...rest | Radix Checkbox props | -- | `aria-label`, `name`... |\n\n## Tokens\n\n- `--brand` / `--on-brand` (checked) - `--outline` + `--surface-container` (unchecked) - `--radius-control`\n\n## States\n\nunchecked - checked - focus-visible - disabled.\n\n## Motion\n\nFill/border 150ms targeted; no check-draw animation (data surfaces stay calm).\n\n## A11y\n\n- Radix Checkbox: `role=\"checkbox\"`, `aria-checked`, Space toggles.\n- 16px visual -- pair with a clickable label for the 40px hit-area rule.\n"
+    }
+  ]
+}
