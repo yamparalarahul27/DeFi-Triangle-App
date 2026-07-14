@@ -410,7 +410,10 @@ function OrderBookDemo() {
   );
 }
 
+import { PATTERN_DEMOS } from "./patternDemos";
+
 export const DEMOS: Record<string, () => ReactNode> = {
+  ...PATTERN_DEMOS,
   surfaces: () => (
     <div className="grid grid-cols-3 gap-2">
       {SURFACES.map(([label, cls]) => (

@@ -317,16 +317,16 @@ is guard-pinned; all five verticals pass the axe×4-themes matrix
 
 ### Phase 6 — Patterns & templates <sub>(W3/W4/R4 · composition)</sub>
 
-- [ ] **Patterns docs** (HIG-style): states catalog (loading/empty/
-      error — the tide `states.html` mock formalized), forms,
-      list→detail, tx-flow (review → sign → pending → result).
-- [ ] **Do/Don't pairs** per pattern (the single most-copied HIG
-      device), rendered on canvas frames.
-- [ ] **Content guidelines** (Polaris's signature, crypto-critical):
-      exact vocabulary per action — "Sign" vs "Approve" vs "Confirm"
-      is a **security surface**, plus ethereum.org's heuristics
-      (tx status always visible; show the chain; design the
-      UI↔wallet seam) encoded as pattern rules.
+- [x] **Patterns shipped** — `src/design-system/PATTERNS.md` (contract:
+      Problem·Composition·States·Do/Don't·Code) with four entries:
+      states catalog, tx flow (heuristics #1/#2 encoded), form row,
+      market list — each a live canvas frame in the Patterns zone.
+- [x] **Do/Don't pairs** rendered inside every pattern frame
+      (✓ buy / ✗ sell, glyph + word — never color alone).
+- [x] **Content guidelines** in PATTERNS.md: the action-verb table
+      (Connect/Sign/Approve/Confirm/Cancel-vs-Reject — one verb per
+      meaning) + voice rules; the ethereum.org heuristics live inside
+      the tx-flow pattern's rules.
 - [ ] **Two starter templates**: `simple-dapp` (wallet connect +
       balances + send) and `exchange-shell` (markets table + order
       book + trade form) — both built *only* from the DS.
