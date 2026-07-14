@@ -76,6 +76,13 @@ export const CANVAS_ITEMS: CanvasItemDef[] = [
   { kind: "demo", id: "AmountInput", title: "AmountInput", x: CX, y: CY + 3200, w: 340 },
   { kind: "demo", id: "OrderBook", title: "Order book — exchange density (demo)", x: CX + COL, y: CY + 3200, w: 460 },
 
+  // ── Zone: Patterns (PATTERNS.md — composition recipes, live) ─
+  { kind: "label", id: "z-patterns", title: "Patterns — composition recipes", x: CX, y: CY + 3560 },
+  { kind: "demo", id: "PatternStates", title: "P1 · States catalog", x: CX, y: CY + 3620, w: 420 },
+  { kind: "demo", id: "PatternTxFlow", title: "P2 · Transaction flow", x: CX + COL + 80, y: CY + 3620, w: 420 },
+  { kind: "demo", id: "PatternFormRow", title: "P3 · Form row", x: CX + COL * 2 + 160, y: CY + 3620, w: 380 },
+  { kind: "demo", id: "PatternMarketList", title: "P4 · Market list", x: CX, y: CY + 4040, w: 520 },
+
   // ── Zone: Screens (live build vs HTML mock, side by side) ────
   { kind: "label", id: "z-screens", title: "Screens — mock vs build", x: 1780, y: 60 },
   {
