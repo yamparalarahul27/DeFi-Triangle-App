@@ -54,6 +54,13 @@ import {
   Progress,
   RadioGroup,
   Textarea,
+  AppBar,
+  BottomNav,
+  Breadcrumbs,
+  Combobox,
+  Drawer,
+  Pagination,
+  Popover,
 } from "@/design-system";
 
 const SURFACES = [
@@ -263,6 +270,73 @@ function ProgressDemo() {
       </div>
     </div>
   );
+}
+
+function BottomNavDemo() {
+  const [tab, setTab] = useState<"feed" | "markets" | "portfolio">("feed");
+  return (
+    <BottomNav
+      value={tab}
+      onValueChange={setTab}
+      items={[
+        { value: "feed", label: "Feed", icon: "≋" },
+        { value: "markets", label: "Markets", icon: "▤" },
+        { value: "portfolio", label: "Portfolio", icon: "◎" },
+      ]}
+    />
+  );
+}
+
+function ComboboxDemo() {
+  const [token, setToken] = useState<string | undefined>("sol");
+  return (
+    <Combobox
+      aria-label="Search tokens"
+      placeholder="Search tokens…"
+      value={token}
+      onValueChange={setToken}
+      options={[
+        { value: "sol", label: "SOL", hint: "$184.26" },
+        { value: "jup", label: "JUP", hint: "$0.8123" },
+        { value: "bonk", label: "BONK", hint: "$0.00002314" },
+        { value: "jto", label: "JTO", hint: "$2.448" },
+        { value: "wif", label: "WIF", hint: "$1.852" },
+      ]}
+    />
+  );
+}
+
+function DrawerDemo() {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <Button variant="secondary" size="sm" onClick={() => setOpen(true)}>
+        Open order details
+      </Button>
+      <Drawer
+        open={open}
+        onOpenChange={setOpen}
+        title="Order details"
+        description="Filled 2m ago"
+        footer={
+          <Button variant="primary" size="sm" onClick={() => setOpen(false)}>
+            Done
+          </Button>
+        }
+      >
+        <div className="space-y-2 text-xs text-fg-muted">
+          <p>Pair — SOL / USDC</p>
+          <p>Side — buy · 1.25 SOL</p>
+          <p>Route — Jupiter (best route)</p>
+        </div>
+      </Drawer>
+    </>
+  );
+}
+
+function PaginationDemo() {
+  const [page, setPage] = useState(7);
+  return <Pagination page={page} count={24} onPageChange={setPage} />;
 }
 
 function CheckboxDemo() {
@@ -627,6 +701,36 @@ export const DEMOS: Record<string, () => ReactNode> = {
   ),
   RadioGroup: RadioGroupDemo,
   Progress: ProgressDemo,
+  AppBar: () => (
+    <AppBar
+      title="Markets"
+      leading={<IconButton aria-label="Back" variant="ghost">‹</IconButton>}
+      actions={<IconButton aria-label="Settings" variant="ghost">⚙</IconButton>}
+    />
+  ),
+  BottomNav: BottomNavDemo,
+  Breadcrumbs: () => (
+    <Breadcrumbs
+      items={[
+        { label: "Design", href: "#" },
+        { label: "Components", href: "#" },
+        { label: "Accordion" },
+      ]}
+    />
+  ),
+  Combobox: ComboboxDemo,
+  Drawer: DrawerDemo,
+  Pagination: PaginationDemo,
+  Popover: () => (
+    <Popover trigger={<Button variant="secondary" size="sm">Filters</Button>}>
+      <p className="mb-2 text-xs font-medium text-fg">Show</p>
+      <div className="space-y-1 text-xs text-fg-muted">
+        <p>◉ All markets</p>
+        <p>○ Watchlist only</p>
+        <p>○ Depegged only</p>
+      </div>
+    </Popover>
+  ),
   Tooltip: () => (
     <div className="flex items-center gap-2 text-sm text-fg-muted">
       Organic score

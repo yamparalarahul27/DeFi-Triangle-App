@@ -96,6 +96,16 @@ export const CANVAS_ITEMS: CanvasItemDef[] = [
   { kind: "demo", id: "RadioGroup", title: "RadioGroup", x: CX, y: CY + 5120, w: 340 },
   { kind: "demo", id: "Progress", title: "Progress", x: CX + COL, y: CY + 5120, w: 340 },
 
+  // ── Zone: Navigation & overlays (component-gaps batch 2) ─────
+  { kind: "label", id: "z-nav-overlays", title: "Navigation & overlays", x: CX, y: CY + 5460 },
+  { kind: "demo", id: "AppBar", title: "AppBar", x: CX, y: CY + 5520, w: 420 },
+  { kind: "demo", id: "BottomNav", title: "BottomNav", x: CX + COL + 80, y: CY + 5520, w: 380 },
+  { kind: "demo", id: "Breadcrumbs", title: "Breadcrumbs", x: CX + COL * 2 + 120, y: CY + 5520, w: 340 },
+  { kind: "demo", id: "Combobox", title: "Combobox", x: CX, y: CY + 5760, w: 340 },
+  { kind: "demo", id: "Popover", title: "Popover", x: CX + COL, y: CY + 5760, w: 340 },
+  { kind: "demo", id: "Drawer", title: "Drawer", x: CX + COL * 2, y: CY + 5760, w: 340 },
+  { kind: "demo", id: "Pagination", title: "Pagination", x: CX, y: CY + 6000, w: 420 },
+
   // ── Zone: Screens (live build vs HTML mock, side by side) ────
   { kind: "label", id: "z-screens", title: "Screens — mock vs build", x: 1780, y: 60 },
   {

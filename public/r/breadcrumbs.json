@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "breadcrumbs",
+  "type": "registry:ui",
+  "title": "Breadcrumbs",
+  "description": "CIDS Breadcrumbs v0.9.0 (draft) — docs ship with the code (Breadcrumbs.doc.md).",
+  "dependencies": [],
+  "registryDependencies": [
+    "@cids/tokens"
+  ],
+  "files": [
+    {
+      "path": "cids/Breadcrumbs/Breadcrumbs.tsx",
+      "type": "registry:ui",
+      "target": "components/cids/Breadcrumbs/Breadcrumbs.tsx",
+      "content": "import { cn } from \"@/lib/utils\";\n\nexport type Crumb = {\n  label: string;\n  /** Omit on the last item (current page) — it renders as text, not a link. */\n  href?: string;\n};\n\n/**\n * Path navigation for docs/console surfaces. Renders plain anchors to\n * stay portable; in a Next.js app, client-side navigation still works\n * for internal paths via the browser (or wrap the page in a route\n * group that prefetches). Last item is the current page.\n */\nexport function Breadcrumbs({\n  items,\n  className,\n}: {\n  items: Crumb[];\n  className?: string;\n}) {\n  return (\n    <nav aria-label=\"Breadcrumb\" className={className}>\n      <ol className=\"flex flex-wrap items-center gap-1.5 text-xs\">\n        {items.map((item, i) => {\n          const last = i === items.length - 1;\n          return (\n            <li key={i} className=\"flex min-w-0 items-center gap-1.5\">\n              {last || !item.href ? (\n                <span\n                  aria-current={last ? \"page\" : undefined}\n                  className={cn(\"truncate\", last ? \"font-medium text-fg\" : \"text-fg-muted\")}\n                >\n                  {item.label}\n                </span>\n              ) : (\n                <a\n                  href={item.href}\n                  className=\"truncate text-fg-muted transition-colors duration-150 hover:text-fg\"\n                >\n                  {item.label}\n                </a>\n              )}\n              {!last && (\n                <span aria-hidden=\"true\" className=\"text-fg-subtle\">\n                  /\n                </span>\n              )}\n            </li>\n          );\n        })}\n      </ol>\n    </nav>\n  );\n}\n"
+    },
+    {
+      "path": "cids/Breadcrumbs/Breadcrumbs.doc.md",
+      "type": "registry:file",
+      "target": "components/cids/Breadcrumbs/Breadcrumbs.doc.md",
+      "content": "# Breadcrumbs\n\nStatus: draft\nVersion: 0.9.0\nPath navigation — where am I, with links back up the tree.\n\n## Usage\n\n```tsx\nimport { Breadcrumbs } from \"@/design-system\";\n\n<Breadcrumbs\n  items={[\n    { label: \"Design\", href: \"/design\" },\n    { label: \"Components\", href: \"/design#components\" },\n    { label: \"Accordion\" }, // current page — no href\n  ]}\n/>\n```\n\nBest for: hierarchical surfaces ≥3 levels deep — docs, console/settings\ntrees, registry browsers. A two-level app doesn't need breadcrumbs; a\nback button in the AppBar is clearer.\n\n## Anatomy\n\n```\nDesign / Components / Accordion\n└link────┘└link─────┘ └current (aria-current,\n     └ \"/\" separators     text-fg, no link)\n        (aria-hidden)\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `items` | `Crumb[]` | — | `{ label, href? }`; last item is the current page. |\n| `className` | `string` | — | cn-merged onto the nav. |\n\n## Tokens\n\n`--fg` (current) · `--fg-muted` (links) · `--fg-subtle` (separators)\n\n## States\n\n- **Link crumbs**: `fg-muted`, hover raises to `fg`.\n- **Current page** (last item): `fg` + medium weight +\n  `aria-current=\"page\"`, not a link.\n- Long labels truncate; the list wraps on narrow screens.\n\n## Motion\n\n150ms color on link hover only.\n\n## A11y\n\n`<nav aria-label=\"Breadcrumb\">` wrapping an ordered list — order is the\nhierarchy. Separators are `aria-hidden` (screen readers read the list\nstructure, not the slashes). Renders plain anchors for portability —\ndocument-level navigation works in any framework.\n"
+    }
+  ]
+}

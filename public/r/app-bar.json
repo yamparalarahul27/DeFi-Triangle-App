@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "app-bar",
+  "type": "registry:ui",
+  "title": "AppBar",
+  "description": "CIDS AppBar v0.9.0 (draft) — docs ship with the code (AppBar.doc.md).",
+  "dependencies": [],
+  "registryDependencies": [
+    "@cids/tokens"
+  ],
+  "files": [
+    {
+      "path": "cids/AppBar/AppBar.tsx",
+      "type": "registry:ui",
+      "target": "components/cids/AppBar/AppBar.tsx",
+      "content": "import type { ReactNode } from \"react\";\nimport { cn } from \"@/lib/utils\";\n\n/**\n * Page header — the three-slot row (leading · title · actions) every\n * screen was hand-rolling. Pure composition: put an IconButton back\n * arrow in `leading`, IconButtons/Menu in `actions`. `sticky` pins it\n * on the --z-sticky rung.\n */\nexport function AppBar({\n  title,\n  leading,\n  actions,\n  sticky = false,\n  className,\n}: {\n  title: string;\n  /** Left slot — back button, logo. */\n  leading?: ReactNode;\n  /** Right slot — IconButtons, Menu triggers. */\n  actions?: ReactNode;\n  /** Pin to the top of the scroll container. */\n  sticky?: boolean;\n  className?: string;\n}) {\n  return (\n    <header\n      className={cn(\n        \"flex h-14 items-center gap-3 border-b border-outline-variant bg-surface-page px-4\",\n        sticky && \"sticky top-0 z-[var(--z-sticky)]\",\n        className,\n      )}\n    >\n      {leading && <div className=\"flex flex-none items-center\">{leading}</div>}\n      <h1 className=\"min-w-0 flex-1 truncate text-sm font-semibold text-fg\">\n        {title}\n      </h1>\n      {actions && <div className=\"flex flex-none items-center gap-1\">{actions}</div>}\n    </header>\n  );\n}\n"
+    },
+    {
+      "path": "cids/AppBar/AppBar.doc.md",
+      "type": "registry:file",
+      "target": "components/cids/AppBar/AppBar.doc.md",
+      "content": "# AppBar\n\nStatus: draft\nVersion: 0.9.0\nPage header — leading · title · actions, optionally sticky.\n\n## Usage\n\n```tsx\nimport { AppBar, IconButton, Menu } from \"@/design-system\";\n\n<AppBar\n  title=\"Markets\"\n  leading={<IconButton aria-label=\"Back\" variant=\"ghost\">‹</IconButton>}\n  actions={<IconButton aria-label=\"Settings\" variant=\"ghost\">⚙</IconButton>}\n  sticky\n/>\n```\n\nBest for: the top row of any screen — every template was hand-rolling\nthis composition. Pure layout: the slots take real components\n(IconButton, Menu, ThemeToggle); AppBar owns only the row, the border,\nand the sticky rung.\n\n## Anatomy\n\n```\n┌──────────────────────────────────┐\n│ [‹]  Markets              [⚙][⋯] │ ← h-14, border-b,\n└──────────────────────────────────┘   bg-surface-page\n  └leading └title (truncates) └actions\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `title` | `string` | — | Required; renders as the page `<h1>`, truncates. |\n| `leading` | `ReactNode` | — | Back button / logo slot. |\n| `actions` | `ReactNode` | — | Right slot; gap-1 between items. |\n| `sticky` | `boolean` | `false` | `sticky top-0` on the `--z-sticky` rung. |\n| `className` | `string` | — | cn-merged. |\n\n## Tokens\n\n`--surface-page` · `--outline-variant` · `--z-sticky`\n\n## States\n\nStatic composition — interaction lives in the slotted components. When\n`sticky`, the bar stays above scrolling content (below overlays/modals\non the z ladder).\n\n## Motion\n\nNone. Headers don't animate; the content scrolls under them.\n\n## A11y\n\nRenders a `<header>` landmark with the title as `<h1>` — one AppBar per\npage. Slot buttons must carry their own labels (IconButton enforces\n`aria-label`). Sticky bars must not trap focus or obscure focused\nelements — keep the bar h-14 and let the browser's scroll-into-view do\nits job.\n"
+    }
+  ]
+}

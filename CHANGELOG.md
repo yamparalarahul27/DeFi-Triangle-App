@@ -40,6 +40,17 @@ bullets under the release's buckets, prefixed with the component name.
 
 ### Added
 
+- **Navigation & overlays batch (component-gaps Batch 2)** — seven new
+  components, all entering as `draft @ 0.9.0`: **AppBar** (leading ·
+  title · actions header row, optional sticky), **BottomNav** (mobile
+  tab bar, labels always visible, safe-area built in), **Combobox**
+  (typeahead select, pick-from-list only — hand-rolled ARIA 1.2 on
+  Radix Popover, no cmdk dependency, registry-portable), **Popover**
+  (the Radix primitive, now public — Menu's free-form sibling),
+  **Drawer** (side sheet right/left on Radix Dialog — Sheet's desktop
+  sibling), **Breadcrumbs** (path navigation), **Pagination** (windowed
+  page controls with ellipses). ContextMenu deferred (tracker).
+
 - **Containment & forms batch (component-gaps Batch 1)** — six new
   components, all entering as `draft @ 0.9.0`: **Accordion**
   (single/multiple, Radix, height-animated), **Card** (the generic
