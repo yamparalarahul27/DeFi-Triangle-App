@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "alert",
+  "type": "registry:ui",
+  "title": "Alert",
+  "description": "CIDS Alert v0.9.0 (draft) — docs ship with the code (Alert.doc.md).",
+  "dependencies": [],
+  "registryDependencies": [
+    "@cids/tokens"
+  ],
+  "files": [
+    {
+      "path": "cids/Alert/Alert.tsx",
+      "type": "registry:ui",
+      "target": "components/cids/Alert/Alert.tsx",
+      "content": "import { cn } from \"@/lib/utils\";\nimport type { ReactNode } from \"react\";\n\nexport type AlertTone = \"info\" | \"success\" | \"warning\" | \"error\";\n\n// Inline callout on the tinted-surface pairs — the states-catalog\n// pattern's hand-rolled error row / offline strip, made canonical.\n// Word + tint together (never color alone); in-flow, next to what it\n// describes — Toast is for events, Alert is for conditions.\nconst TONE = {\n  info: { box: \"bg-info-surface\", text: \"text-info\", word: \"note\" },\n  success: { box: \"bg-success-surface\", text: \"text-success\", word: \"ok\" },\n  warning: { box: \"bg-warning-surface\", text: \"text-warning\", word: \"warning\" },\n  error: { box: \"bg-error-surface\", text: \"text-error\", word: \"error\" },\n} as const;\n\nexport function Alert({\n  tone = \"info\",\n  title,\n  children,\n  action,\n  className,\n}: {\n  tone?: AlertTone;\n  title: string;\n  /** Supporting line(s). */\n  children?: ReactNode;\n  /** Right-aligned affordance — typically a small Button (e.g. Retry). */\n  action?: ReactNode;\n  className?: string;\n}) {\n  const t = TONE[tone];\n  return (\n    <div\n      // Conditions the user is looking at: assertive only for errors.\n      role={tone === \"error\" ? \"alert\" : \"status\"}\n      className={cn(\n        \"flex items-start justify-between gap-3 rounded-card p-3\",\n        t.box,\n        className,\n      )}\n    >\n      <div className=\"min-w-0\">\n        <p className={cn(\"text-sm font-medium\", t.text)}>\n          <span className=\"mr-1.5 font-mono text-[10px] uppercase tracking-wider opacity-70\">\n            {t.word}\n          </span>\n          {title}\n        </p>\n        {children && <div className=\"mt-1 text-xs text-fg-muted\">{children}</div>}\n      </div>\n      {action && <div className=\"flex-none\">{action}</div>}\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "cids/Alert/Alert.doc.md",
+      "type": "registry:file",
+      "target": "components/cids/Alert/Alert.doc.md",
+      "content": "# Alert\n\nStatus: draft\nVersion: 0.9.0\nInline callout for conditions — info, success, warning, error — on the tinted state surfaces.\n\n## Usage\n\n```tsx\nimport { Alert, Button } from \"@/design-system\";\n\n<Alert tone=\"warning\" title=\"High price impact\">\n  This trade moves the pool price by 4.2%.\n</Alert>\n\n<Alert tone=\"error\" title=\"Feed unavailable\" action={<Button size=\"sm\" variant=\"ghost\">Retry</Button>}>\n  Prices may be stale.\n</Alert>\n```\n\nBest for: a *condition* the user should read in place — degraded data,\nrisky input, a success confirmation that must persist. Toast is for\n*events* (fire-and-forget); Alert stays in the flow next to what it\ndescribes. One Alert per condition; stacking three banners means the\nscreen has a different problem.\n\n## Anatomy\n\n```\n┌────────────────────────────────┐\n│ NOTE Title            [Action] │ ← tone word + title (tone ink)\n│ supporting line                │ ← children (fg-muted)\n└────────────────────────────────┘ ← tinted state surface, rounded-card\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `tone` | `\"info\" \\| \"success\" \\| \"warning\" \\| \"error\"` | `\"info\"` | Picks surface tint + ink + tone word. |\n| `title` | `string` | — | Required — the condition, stated plainly. |\n| `children` | `ReactNode` | — | Optional supporting line(s). |\n| `action` | `ReactNode` | — | Right-aligned affordance (small Button). |\n| `className` | `string` | — | cn-merged. |\n\n## Tokens\n\n`--info-surface`/`--info` · `--success-surface`/`--success` ·\n`--warning-surface`/`--warning` · `--error-surface`/`--error` ·\n`--radius-card`\n\n## States\n\nThe four tones are the states. Each pairs a tinted surface with its ink\n**and a tone word** (NOTE/OK/WARNING/ERROR) — direction never rides on\ncolor alone (mono theme collapses hue).\n\n## Motion\n\nNone. Alerts appear with their content; a condition arriving *after*\nrender is usually a Toast's job first, then an Alert if it persists.\n\n## A11y\n\n`role=\"alert\"` (assertive) only for `tone=\"error\"`; the rest use\n`role=\"status\"` (polite) so screen readers aren't interrupted for\nnotes. The tone word doubles as a non-color state cue. Keep `title`\nmeaningful without the body — it's what gets announced first.\n"
+    }
+  ]
+}

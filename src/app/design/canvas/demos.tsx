@@ -48,6 +48,12 @@ import {
   TxStatus,
   AmountInput,
   type TxState,
+  Accordion,
+  Alert,
+  Card,
+  Progress,
+  RadioGroup,
+  Textarea,
 } from "@/design-system";
 
 const SURFACES = [
@@ -220,6 +226,42 @@ function SwitchDemo() {
       <Switch checked={on} onCheckedChange={setOn} aria-label="Public watchlist" />
       Public watchlist
     </label>
+  );
+}
+
+function RadioGroupDemo() {
+  const [slippage, setSlippage] = useState<"0.1" | "0.5" | "1.0" | undefined>("0.5");
+  return (
+    <RadioGroup
+      aria-label="Slippage tolerance"
+      value={slippage}
+      onValueChange={setSlippage}
+      options={[
+        { value: "0.1", label: "0.1%", description: "May fail on volatile pairs" },
+        { value: "0.5", label: "0.5%", description: "Recommended" },
+        { value: "1.0", label: "1.0%" },
+      ]}
+    />
+  );
+}
+
+function ProgressDemo() {
+  const [value, setValue] = useState(15);
+  useEffect(() => {
+    const id = setInterval(() => setValue((v) => (v >= 100 ? 0 : v + 17)), 1200);
+    return () => clearInterval(id);
+  }, []);
+  return (
+    <div className="space-y-4">
+      <div className="space-y-1.5">
+        <p className="text-xs text-fg-muted">Determinate — value {Math.min(value, 100)}%</p>
+        <Progress aria-label="Upload progress" value={value} />
+      </div>
+      <div className="space-y-1.5">
+        <p className="text-xs text-fg-muted">Indeterminate — unknown duration</p>
+        <Progress aria-label="Syncing" />
+      </div>
+    </div>
   );
 }
 
@@ -542,6 +584,49 @@ export const DEMOS: Record<string, () => ReactNode> = {
       <SectionSkeleton height={96} label="Stats" />
     </div>
   ),
+  Card: () => (
+    <div className="space-y-3">
+      <Card>
+        <p className="text-sm font-medium text-fg">Portfolio</p>
+        <p className="text-xs text-fg-muted">3 positions · $12,480</p>
+      </Card>
+      <Card interactive>
+        <p className="text-sm font-medium text-fg">Interactive card</p>
+        <p className="text-xs text-fg-muted">hover lifts · press scales 0.98</p>
+      </Card>
+    </div>
+  ),
+  Accordion: () => (
+    <Accordion
+      items={[
+        { value: "fees", title: "Fees", content: <p>0.25% taker · 0.10% maker</p> },
+        { value: "route", title: "Route details", content: <p>SOL → USDC via Jupiter</p> },
+        { value: "risk", title: "Risk", content: <p>Price impact 0.4% · slippage 0.5%</p> },
+      ]}
+    />
+  ),
+  Alert: () => (
+    <div className="space-y-3">
+      <Alert tone="warning" title="High price impact">
+        This trade moves the pool price by 4.2%.
+      </Alert>
+      <Alert
+        tone="error"
+        title="Feed unavailable"
+        action={<Button size="sm" variant="ghost">Retry</Button>}
+      >
+        Prices may be stale.
+      </Alert>
+    </div>
+  ),
+  Textarea: () => (
+    <div className="space-y-3">
+      <Textarea aria-label="Note" placeholder="Add a note to this transaction…" />
+      <Textarea aria-label="Invalid note" invalid defaultValue="Too long for a memo field" rows={2} />
+    </div>
+  ),
+  RadioGroup: RadioGroupDemo,
+  Progress: ProgressDemo,
   Tooltip: () => (
     <div className="flex items-center gap-2 text-sm text-fg-muted">
       Organic score

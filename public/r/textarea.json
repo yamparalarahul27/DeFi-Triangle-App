@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "textarea",
+  "type": "registry:ui",
+  "title": "Textarea",
+  "description": "CIDS Textarea v0.9.0 (draft) — docs ship with the code (Textarea.doc.md).",
+  "dependencies": [],
+  "registryDependencies": [
+    "@cids/tokens"
+  ],
+  "files": [
+    {
+      "path": "cids/Textarea/Textarea.tsx",
+      "type": "registry:ui",
+      "target": "components/cids/Textarea/Textarea.tsx",
+      "content": "import { cn } from \"@/lib/utils\";\n\n/**\n * Multi-line text entry — Input's sibling, same border/focus/invalid\n * grammar, vertical resize only (horizontal resize breaks layouts).\n * Height via `rows` (default 3).\n */\nexport function Textarea({\n  invalid = false,\n  rows = 3,\n  className,\n  ...rest\n}: React.TextareaHTMLAttributes<HTMLTextAreaElement> & {\n  /** Error state — sets aria-invalid + sell border. Pair with visible error text near the field. */\n  invalid?: boolean;\n}) {\n  return (\n    <textarea\n      rows={rows}\n      aria-invalid={invalid || undefined}\n      className={cn(\n        \"w-full resize-y rounded-control border bg-surface-container px-3 py-2 text-sm text-fg placeholder:text-fg-subtle\",\n        \"transition-[border-color,background-color] duration-150\",\n        \"disabled:pointer-events-none disabled:opacity-40\",\n        invalid\n          ? \"border-sell\"\n          : \"border-outline-variant focus:border-outline\",\n        className,\n      )}\n      {...rest}\n    />\n  );\n}\n"
+    },
+    {
+      "path": "cids/Textarea/Textarea.doc.md",
+      "type": "registry:file",
+      "target": "components/cids/Textarea/Textarea.doc.md",
+      "content": "# Textarea\n\nStatus: draft\nVersion: 0.9.0\nMulti-line text entry — Input's sibling, same border/focus/invalid grammar.\n\n## Usage\n\n```tsx\nimport { Textarea } from \"@/design-system\";\n\n<Textarea placeholder=\"Describe the issue…\" />\n<Textarea rows={5} invalid aria-label=\"Note\" />\n```\n\nBest for: free-form text longer than a line — notes, memos, feedback,\ntransaction messages. For single-line values use Input; for amounts use\nAmountInput. Label it from the caller (visible `<label>` preferred,\n`aria-label` otherwise).\n\n## Anatomy\n\n```\n┌─────────────────────────────┐ ← border-outline-variant,\n│ placeholder / typed text    │   rounded-control, px-3 py-2\n│                             │ ← rows controls initial height\n│                            ↕│ ← resize-y only (never horizontal)\n└─────────────────────────────┘\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `invalid` | `boolean` | `false` | Sets `aria-invalid` + sell border. Pair with visible error text. |\n| `rows` | `number` | `3` | Initial height in text lines. |\n| `className` | `string` | — | cn-merged. |\n| …rest | `TextareaHTMLAttributes` | — | `value`, `onChange`, `placeholder`, `disabled`, etc. |\n\n## Tokens\n\n`--surface-container` · `--outline-variant` · `--outline` (focus) ·\n`--sell` (invalid) · `--radius-control`\n\n## States\n\n- **Rest**: outline-variant border.\n- **Focus**: border raises to outline (no ring — matches Input).\n- **Invalid**: sell border + `aria-invalid` — always with adjacent\n  error text; the border alone is not the message.\n- **Disabled**: 40% opacity, no pointer.\n\n## Motion\n\n150ms on border-color/background-color only. User resize (`resize-y`)\nis native and unanimated.\n\n## A11y\n\nReal `<textarea>` — native semantics, form participation, IME support.\n`invalid` sets `aria-invalid` for screen readers; the visible error text\nnext to the field is the actual message. Don't cap length silently —\nshow a counter if a max matters.\n"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "progress",
+  "type": "registry:ui",
+  "title": "Progress",
+  "description": "CIDS Progress v0.9.0 (draft) — docs ship with the code (Progress.doc.md).",
+  "dependencies": [
+    "radix-ui"
+  ],
+  "registryDependencies": [
+    "@cids/tokens"
+  ],
+  "files": [
+    {
+      "path": "cids/Progress/Progress.tsx",
+      "type": "registry:ui",
+      "target": "components/cids/Progress/Progress.tsx",
+      "content": "\"use client\";\n\nimport { Progress as RadixProgress } from \"radix-ui\";\nimport { cn } from \"@/lib/utils\";\n\n/**\n * Determinate progress bar on Radix Progress (ARIA progressbar wiring).\n * Pass `value` as 0–100; omit it for indeterminate (unknown duration —\n * the bar shimmers). For content placeholders use Skeleton; for\n * transaction stages use TxStatus.\n */\nexport function Progress({\n  value,\n  \"aria-label\": ariaLabel,\n  className,\n}: {\n  /** 0–100. Omit for indeterminate. */\n  value?: number;\n  /** Names the bar for screen readers (e.g. \"Upload progress\"). */\n  \"aria-label\": string;\n  className?: string;\n}) {\n  const indeterminate = value === undefined;\n  return (\n    <RadixProgress.Root\n      value={indeterminate ? null : value}\n      aria-label={ariaLabel}\n      className={cn(\n        \"relative h-1.5 w-full overflow-hidden rounded-full bg-surface-bright\",\n        className,\n      )}\n    >\n      <RadixProgress.Indicator\n        className={cn(\n          \"h-full rounded-full bg-brand transition-[width] duration-300 ease-out\",\n          indeterminate && \"w-1/3 animate-progress-slide\",\n        )}\n        style={indeterminate ? undefined : { width: `${Math.min(100, Math.max(0, value))}%` }}\n      />\n    </RadixProgress.Root>\n  );\n}\n"
+    },
+    {
+      "path": "cids/Progress/Progress.doc.md",
+      "type": "registry:file",
+      "target": "components/cids/Progress/Progress.doc.md",
+      "content": "# Progress\n\nStatus: draft\nVersion: 0.9.0\nProgress bar on Radix Progress — determinate (0–100) or indeterminate shimmer.\n\n## Usage\n\n```tsx\nimport { Progress } from \"@/design-system\";\n\n<Progress aria-label=\"Upload progress\" value={64} />\n<Progress aria-label=\"Syncing\" />  {/* no value → indeterminate */}\n```\n\nBest for: an operation with a lifecycle the user is waiting on —\nuploads, sync, multi-step submission. Loading *content*? Use Skeleton\n(placeholder shapes). Tracking a *transaction*? Use TxStatus (discrete\nstages beat a percentage for chain confirmations).\n\n## Anatomy\n\n```\n━━━━━━━━━━━━░░░░░░░░  ← track: surface-bright, h-1.5, pill\n└─ indicator: brand fill, width = value%\n   (indeterminate: ⅓-width segment sliding on loop)\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `value` | `number` | — | 0–100, clamped. **Omit for indeterminate.** |\n| `aria-label` | `string` | — | Required — names the bar for screen readers. |\n| `className` | `string` | — | cn-merged onto the track (e.g. `h-2`, width). |\n\n## Tokens\n\n`--surface-bright` (track) · `--brand` (indicator) · `--ease-settle`\n\n## States\n\n- **Determinate**: indicator width tracks `value`; `aria-valuenow` set.\n- **Indeterminate**: no `value` — shimmer loop, `aria-valuenow` absent\n  (announced as busy, not a percentage).\n- Progress has no error state — a failed operation is an Alert or\n  Toast, not a red bar.\n\n## Motion\n\nDeterminate width eases 300ms per update (values arrive in steps; the\nease smooths them). Indeterminate is the system's one sanctioned\nlooping animation — 1.2s slide, settle curve, quiet by design. Both\nneutralized by `prefers-reduced-motion`.\n\n## A11y\n\nRadix renders `role=\"progressbar\"` with `aria-valuemin/max/now` wired\n(`aria-valuenow` omitted when indeterminate). `aria-label` is a required\nprop — an unnamed progress bar announces as \"progress bar, 64%\" of\nnothing. Never convey completion by color alone; pair with text\n(\"64%\" or \"Uploading…\") when the number matters.\n"
+    }
+  ]
+}

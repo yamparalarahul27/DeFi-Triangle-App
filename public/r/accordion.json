@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accordion",
+  "type": "registry:ui",
+  "title": "Accordion",
+  "description": "CIDS Accordion v0.9.0 (draft) — docs ship with the code (Accordion.doc.md).",
+  "dependencies": [
+    "radix-ui"
+  ],
+  "registryDependencies": [
+    "@cids/tokens"
+  ],
+  "files": [
+    {
+      "path": "cids/Accordion/Accordion.tsx",
+      "type": "registry:ui",
+      "target": "components/cids/Accordion/Accordion.tsx",
+      "content": "\"use client\";\n\nimport { Accordion as RadixAccordion } from \"radix-ui\";\nimport type { ReactNode } from \"react\";\nimport { cn } from \"@/lib/utils\";\n\nexport type AccordionItem = {\n  value: string;\n  title: string;\n  content: ReactNode;\n};\n\n/**\n * Collapsible sections on Radix Accordion — keyboard (arrows/Home/End),\n * ARIA wiring, and height animation for free. `type=\"single\"` (default,\n * collapsible) is the FAQ shape; `type=\"multiple\"` lets panels coexist\n * (transaction breakdowns, advanced settings).\n */\nexport function Accordion({\n  items,\n  type = \"single\",\n  className,\n}: {\n  items: AccordionItem[];\n  type?: \"single\" | \"multiple\";\n  /** Merged onto the root. */\n  className?: string;\n}) {\n  const shared = {\n    className: cn(\n      \"divide-y divide-outline-variant rounded-card border border-outline-variant bg-surface-container\",\n      className,\n    ),\n  };\n  const children = items.map((item) => (\n    <RadixAccordion.Item key={item.value} value={item.value}>\n      <RadixAccordion.Header>\n        <RadixAccordion.Trigger\n          className={cn(\n            \"group flex w-full items-center justify-between px-4 py-3 text-left text-sm font-medium text-fg\",\n            \"transition-[background-color] duration-150 hover:bg-surface-container-high\",\n          )}\n        >\n          {item.title}\n          <span\n            aria-hidden=\"true\"\n            className=\"text-fg-subtle transition-transform duration-150 group-data-[state=open]:rotate-180\"\n          >\n            ▾\n          </span>\n        </RadixAccordion.Trigger>\n      </RadixAccordion.Header>\n      <RadixAccordion.Content\n        className={cn(\n          \"overflow-hidden text-sm text-fg-muted\",\n          \"data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up\",\n        )}\n      >\n        <div className=\"px-4 pb-4 pt-1\">{item.content}</div>\n      </RadixAccordion.Content>\n    </RadixAccordion.Item>\n  ));\n\n  return type === \"single\" ? (\n    <RadixAccordion.Root type=\"single\" collapsible {...shared}>\n      {children}\n    </RadixAccordion.Root>\n  ) : (\n    <RadixAccordion.Root type=\"multiple\" {...shared}>\n      {children}\n    </RadixAccordion.Root>\n  );\n}\n"
+    },
+    {
+      "path": "cids/Accordion/Accordion.doc.md",
+      "type": "registry:file",
+      "target": "components/cids/Accordion/Accordion.doc.md",
+      "content": "# Accordion\n\nStatus: draft\nVersion: 0.9.0\nCollapsible sections on Radix Accordion — one open (default) or many.\n\n## Usage\n\n```tsx\nimport { Accordion } from \"@/design-system\";\n\n<Accordion\n  items={[\n    { value: \"fees\", title: \"Fees\", content: <p>0.25% taker · 0.10% maker</p> },\n    { value: \"route\", title: \"Route details\", content: <p>SOL → USDC via Jupiter</p> },\n  ]}\n/>\n\n<Accordion type=\"multiple\" items={items} />\n```\n\nBest for: progressive disclosure of secondary detail — FAQ blocks, fee\nbreakdowns, advanced settings, transaction route details. `single`\n(default, collapsible) keeps the reading focused; `multiple` when\nsections are independent and users compare across them. Don't bury\nprimary content in an accordion — if users always open it, it shouldn't\ncollapse.\n\n## Anatomy\n\n```\n┌─ Fees ────────────────── ▾ ┐ ← Trigger (h-min 44px, chevron\n├────────────────────────────┤    rotates 180° when open)\n│ 0.25% taker · 0.10% maker  │ ← Content (height-animated)\n├─ Route details ────────  ▾ ┤\n└────────────────────────────┘ ← items divided by outline-variant\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `items` | `AccordionItem[]` | — | `{ value, title, content }` per section. |\n| `type` | `\"single\" \\| \"multiple\"` | `\"single\"` | Single is collapsible (all can close). |\n| `className` | `string` | — | cn-merged onto the root. |\n\n## Tokens\n\n`--surface-container` · `--surface-container-high` (trigger hover) ·\n`--outline-variant` · `--radius-card` · `--motion-settle`\n\n## States\n\n- **Closed** (default): title row only, chevron down.\n- **Open**: `data-state=\"open\"` — content revealed, chevron rotated 180°.\n- **Hover** (trigger): surface raises to `surface-container-high`.\n\n## Motion\n\nOpen/close animates height via `--radix-accordion-content-height`\n(settle curve, ~180ms); the chevron rotates over 150ms. Neutralized by\n`prefers-reduced-motion`.\n\n## A11y\n\nRadix wiring: triggers are real buttons with `aria-expanded` +\n`aria-controls`; panels are regions labelled by their trigger. Keyboard:\n↑/↓ move between triggers, Home/End jump, Enter/Space toggle. The\nchevron is `aria-hidden` — state is conveyed by `aria-expanded`, not the\nglyph.\n"
+    }
+  ]
+}

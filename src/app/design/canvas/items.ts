@@ -87,6 +87,15 @@ export const CANVAS_ITEMS: CanvasItemDef[] = [
   { kind: "iframe", id: "tpl-dapp", title: "Template — simple dApp", x: CX + COL * 2 + 160, y: CY + 4040, w: 400, h: 640, src: "/design/templates/simple-dapp" },
   { kind: "iframe", id: "tpl-exchange", title: "Template — exchange (compact)", x: CX + COL * 3 + 240, y: CY + 4040, w: 560, h: 640, src: "/design/templates/exchange" },
 
+  // ── Zone: Primitives batch 2 (component-gaps pass) ───────────
+  { kind: "label", id: "z-primitives-2", title: "Primitives — containment & forms", x: CX, y: CY + 4760 },
+  { kind: "demo", id: "Card", title: "Card", x: CX, y: CY + 4820, w: 340 },
+  { kind: "demo", id: "Accordion", title: "Accordion", x: CX + COL, y: CY + 4820, w: 380 },
+  { kind: "demo", id: "Alert", title: "Alert", x: CX + COL * 2 + 40, y: CY + 4820, w: 420 },
+  { kind: "demo", id: "Textarea", title: "Textarea", x: CX + COL * 3 + 120, y: CY + 4820, w: 340 },
+  { kind: "demo", id: "RadioGroup", title: "RadioGroup", x: CX, y: CY + 5120, w: 340 },
+  { kind: "demo", id: "Progress", title: "Progress", x: CX + COL, y: CY + 5120, w: 340 },
+
   // ── Zone: Screens (live build vs HTML mock, side by side) ────
   { kind: "label", id: "z-screens", title: "Screens — mock vs build", x: 1780, y: 60 },
   {
