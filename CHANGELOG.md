@@ -40,6 +40,18 @@ bullets under the release's buckets, prefixed with the component name.
 
 ### Added
 
+- **PriceChart** — the interactive price chart (component-gaps tracker,
+  the CDS-signature surface): line + hover/touch crosshair + tooltip
+  from the vendored **EvilCharts** (`EvilLineChart`), composed with a
+  CIDS Lane range switcher (1D/1W/1M/1Y) and a PriceChange header. Line
+  colour flows through `--buy`/`--sell` tokens, so it's theme-aware
+  across all four themes. **Deliberately outside the portable core**:
+  it pulls recharts via EvilCharts, so it lives in
+  `src/components/PriceChart/` (not `src/design-system/`), isn't in the
+  copy-in registry, and doesn't carry the `check:portable` guarantee —
+  the first resident of the "compositions" tier. Credited to
+  [legions-developer/evilcharts](https://github.com/legions-developer/evilcharts).
+
 - **Crypto round 2 batch (component-gaps Batch 3)** — four new
   components, all entering as `draft @ 0.9.0`, closing the crypto
   whitespace no generic system ships: **WalletButton** (the connect

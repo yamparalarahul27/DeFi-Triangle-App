@@ -55,11 +55,24 @@ Same argument as Phase 5b: the whitespace no generic system covers.
       reference system ships this; pure whitespace). Word + tint, mono-safe
 - [x] **Amount** — read-only formatted token amount (AmountInput's
       display sibling: magnitude-aware decimals, dust handling, sign discipline)
-- [ ] **PriceChart** — scrubber chart (CDS's signature; Sparkline is a
-      trendline, evilcharts is vendored outside the system). **Own PR** —
-      biggest single component in the tracker
+- [x] **PriceChart** — interactive price chart (CDS's signature). Decision
+      2026-07-15: **use EvilCharts directly** rather than reimplement in
+      portable SVG. Consequence — it lives in `src/components/PriceChart/`,
+      NOT `src/design-system/` (it pulls recharts via the vendored
+      `EvilLineChart`, so it can't pass `check:portable` and isn't in the
+      registry). Composes EvilLineChart (line · crosshair · tooltip) +
+      CIDS Lane (range switch) + PriceChange (header). Credited to
+      [legions-developer/evilcharts](https://github.com/legions-developer/evilcharts).
 - [ ] QRCode — receive-address display (needs a dependency decision)
 - [ ] SeedPhrase — reveal/confirm grid (only if onboarding flows land)
+
+> **Note — the portable core vs. compositions.** PriceChart is the first
+> intentional resident of a second tier: *compositions* that build on
+> non-portable deps (here, recharts via vendored EvilCharts). They're real
+> and shown on the canvas, but they're not copy-in registry primitives and
+> don't carry the `check:portable` guarantee. Keep them under
+> `src/components/`, credit upstream, and never let them import back into
+> the design-system barrel.
 
 ## Deliberate non-goals (recorded, not forgotten)
 
@@ -75,4 +88,5 @@ Same argument as Phase 5b: the whitespace no generic system covers.
 |---|---|
 | 2026-07-15 | File created; Batch 1 shipped as `feat/components-batch-1` (PR #97, merged). |
 | 2026-07-15 | Batch 2 shipped as `feat/components-batch-2` (PR #98, merged; ContextMenu deferred). |
-| 2026-07-15 | Batch 3 shipped as `feat/components-batch-3` (4 components; PriceChart split to its own PR). |
+| 2026-07-15 | Batch 3 shipped as `feat/components-batch-3` (PR #99, merged; PriceChart split to its own PR). |
+| 2026-07-15 | PriceChart shipped as `feat/price-chart` — EvilCharts-backed composition, outside the portable core. |

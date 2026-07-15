@@ -112,6 +112,7 @@ export const CANVAS_ITEMS: CanvasItemDef[] = [
   { kind: "demo", id: "ChainSwitcher", title: "ChainSwitcher", x: CX + COL, y: CY + 6360, w: 340 },
   { kind: "demo", id: "Amount", title: "Amount", x: CX + COL * 2, y: CY + 6360, w: 300 },
   { kind: "demo", id: "GasFee", title: "GasFee", x: CX + COL * 3, y: CY + 6360, w: 380 },
+  { kind: "demo", id: "PriceChart", title: "PriceChart — via EvilCharts", x: CX, y: CY + 6660, w: 520 },
 
   // ── Zone: Screens (live build vs HTML mock, side by side) ────
   { kind: "label", id: "z-screens", title: "Screens — mock vs build", x: 1780, y: 60 },
