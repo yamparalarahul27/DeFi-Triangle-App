@@ -50,4 +50,8 @@ export { Combobox, type ComboboxOption } from "./Combobox";
 export { Drawer } from "./Drawer";
 export { Pagination } from "./Pagination";
 export { Popover } from "./Popover";
+export { Amount, type AmountSize } from "./Amount";
+export { ChainSwitcher, type Network } from "./ChainSwitcher";
+export { GasFee, type FeeLevel } from "./GasFee";
+export { WalletButton, type WalletStatus } from "./WalletButton";
 export { ID_HUES, hueFor, hueGradient, type IdHue } from "./identity";

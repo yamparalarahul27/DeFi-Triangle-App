@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "gas-fee",
+  "type": "registry:ui",
+  "title": "GasFee",
+  "description": "CIDS GasFee v0.9.0 (draft) — docs ship with the code (GasFee.doc.md).",
+  "dependencies": [],
+  "registryDependencies": [
+    "@cids/tokens"
+  ],
+  "files": [
+    {
+      "path": "cids/GasFee/GasFee.tsx",
+      "type": "registry:ui",
+      "target": "components/cids/GasFee/GasFee.tsx",
+      "content": "import { cn } from \"@/lib/utils\";\n\nexport type FeeLevel = \"low\" | \"normal\" | \"elevated\" | \"high\";\n\n// Word + tint together (mono-safe, same rule as Alert/PegBadge). Fee\n// severity is congestion pricing, not danger — warning tones only at\n// the top of the scale.\nconst LEVEL: Record<FeeLevel, { word: string; text: string }> = {\n  low: { word: \"low\", text: \"text-success\" },\n  normal: { word: \"normal\", text: \"text-fg-muted\" },\n  elevated: { word: \"elevated\", text: \"text-warning\" },\n  high: { word: \"high\", text: \"text-error\" },\n};\n\n/**\n * Network-fee row — the gas/fee communication component no generic\n * system ships. Label left; amount (financial ramp) + optional\n * congestion level right. Put it directly above the confirm button —\n * fees users discover after signing are the #1 web3 trust killer.\n */\nexport function GasFee({\n  amount,\n  usd,\n  level,\n  label = \"Network fee\",\n  className,\n}: {\n  /** Fee in native units, preformatted (e.g. \"0.000005 SOL\"). */\n  amount: string;\n  /** Fiat approximation (e.g. \"≈ $0.0009\"). */\n  usd?: string;\n  /** Congestion level — omit when the chain has flat fees. */\n  level?: FeeLevel;\n  label?: string;\n  className?: string;\n}) {\n  return (\n    <div className={cn(\"flex items-baseline justify-between gap-3 text-xs\", className)}>\n      <span className=\"text-fg-muted\">{label}</span>\n      <span className=\"flex items-baseline gap-2 text-right\">\n        <span className=\"data-sm text-fg\">{amount}</span>\n        {usd && <span className=\"text-fg-subtle\">{usd}</span>}\n        {level && (\n          <span className={cn(\"font-medium uppercase tracking-wider text-[10px]\", LEVEL[level].text)}>\n            {LEVEL[level].word}\n          </span>\n        )}\n      </span>\n    </div>\n  );\n}\n"
+    },
+    {
+      "path": "cids/GasFee/GasFee.doc.md",
+      "type": "registry:file",
+      "target": "components/cids/GasFee/GasFee.doc.md",
+      "content": "# GasFee\n\nStatus: draft\nVersion: 0.9.0\nNetwork-fee row — amount + optional congestion level, mono-safe.\n\n## Usage\n\n```tsx\nimport { GasFee } from \"@/design-system\";\n\n<GasFee amount=\"0.000005 SOL\" usd=\"≈ $0.0009\" level=\"low\" />\n<GasFee amount=\"0.0021 SOL\" usd=\"≈ $0.39\" level=\"elevated\" label=\"Priority fee\" />\n```\n\nBest for: directly above the confirm button in any transaction flow —\nfees users discover *after* signing are the #1 web3 trust killer\n(ethereum.org heuristic: show costs up front). No generic design\nsystem ships this; it's pure crypto whitespace. Omit `level` on\nflat-fee chains — a permanent \"low\" is noise.\n\n## Anatomy\n\n```\nNetwork fee     0.000005 SOL ≈ $0.0009 LOW\n└ label (muted)  └ amount     └ fiat    └ level word\n                  (data ramp)   (subtle)  (tone ink, uppercase)\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `amount` | `string` | — | Preformatted native units (\"0.000005 SOL\"). |\n| `usd` | `string` | — | Fiat approximation (\"≈ $0.0009\"). |\n| `level` | `\"low\" \\| \"normal\" \\| \"elevated\" \\| \"high\"` | — | Congestion; omit for flat-fee chains. |\n| `label` | `string` | `\"Network fee\"` | E.g. \"Priority fee\", \"Bridge fee\". |\n| `className` | `string` | — | cn-merged. |\n\n## Tokens\n\n`--text-data-sm` (amount) · `--success` (low) · `--warning` (elevated) ·\n`--error` (high) · `--fg-muted`/`--fg-subtle`\n\n## States\n\nThe four levels are the states — each pairs an ink with its **word**\n(LOW/NORMAL/ELEVATED/HIGH), never color alone (mono theme). Severity\nmaps to congestion pricing, not danger: success ink only at \"low\",\nerror ink only at \"high\".\n\n## Motion\n\nNone. Fee updates swap text in place — if fees refresh live, debounce\nupstream; a flickering fee row reads as instability.\n\n## A11y\n\nPlain text row — label, amount, fiat, and level word are all readable\nin order. The level word doubles as the non-color cue. Keep `amount`\npreformatted with its unit so screen readers say \"0.000005 SOL\", not\na bare float.\n"
+    }
+  ]
+}

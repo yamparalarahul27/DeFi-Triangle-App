@@ -34,6 +34,12 @@
       "description": "CIDS Alert v0.9.0 (draft) — docs ship with the code (Alert.doc.md)."
     },
     {
+      "name": "amount",
+      "type": "registry:ui",
+      "title": "Amount",
+      "description": "CIDS Amount v0.9.0 (draft) — docs ship with the code (Amount.doc.md)."
+    },
+    {
       "name": "amount-input",
       "type": "registry:ui",
       "title": "AmountInput",
@@ -88,6 +94,12 @@
       "description": "CIDS Card v0.9.0 (draft) — docs ship with the code (Card.doc.md)."
     },
     {
+      "name": "chain-switcher",
+      "type": "registry:ui",
+      "title": "ChainSwitcher",
+      "description": "CIDS ChainSwitcher v0.9.0 (draft) — docs ship with the code (ChainSwitcher.doc.md)."
+    },
+    {
       "name": "checkbox",
       "type": "registry:ui",
       "title": "Checkbox",
@@ -140,6 +152,12 @@
       "type": "registry:ui",
       "title": "FollowButton",
       "description": "CIDS FollowButton v1.0.0 (stable) — docs ship with the code (FollowButton.doc.md)."
+    },
+    {
+      "name": "gas-fee",
+      "type": "registry:ui",
+      "title": "GasFee",
+      "description": "CIDS GasFee v0.9.0 (draft) — docs ship with the code (GasFee.doc.md)."
     },
     {
       "name": "icon-button",
@@ -314,6 +332,12 @@
       "type": "registry:ui",
       "title": "TxStatus",
       "description": "CIDS TxStatus v1.0.0 (stable) — docs ship with the code (TxStatus.doc.md)."
+    },
+    {
+      "name": "wallet-button",
+      "type": "registry:ui",
+      "title": "WalletButton",
+      "description": "CIDS WalletButton v0.9.0 (draft) — docs ship with the code (WalletButton.doc.md)."
     }
   ]
 }

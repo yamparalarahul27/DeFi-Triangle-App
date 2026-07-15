@@ -42,20 +42,22 @@ repeated composition begging to be components.
 - [x] **Pagination** — page controls for long tables
 - [ ] ContextMenu — right-click menu (Radix; low urgency)
 
-## Batch 3 — crypto vertical, round 2 (open)
+## Batch 3 — crypto vertical, round 2 (PR in flight)
 
 Same argument as Phase 5b: the whitespace no generic system covers.
 
-- [ ] **WalletButton** — connect → connecting → connected account pill
-      (Reown's atom; templates hand-roll it from Button + AddressChip)
-- [ ] **ChainSwitcher** — active network + switch menu (NetworkBadge
-      is display-only)
-- [ ] **GasFee** — fee/priority display with severity (no reference
-      system has this; pure whitespace)
-- [ ] **Amount** — read-only formatted token amount (AmountInput's
-      display sibling: decimals, dust rounding, sub-cent handling)
+- [x] **WalletButton** — connect → connecting → connected account pill
+      (Reown's atom; templates hand-rolled it from Button + AddressChip).
+      Presentational; disconnect lives in the account UI, never on the button
+- [x] **ChainSwitcher** — active network + switch menu (NetworkBadge
+      stays display-only). Radix DropdownMenu radio semantics
+- [x] **GasFee** — fee/priority display with congestion severity (no
+      reference system ships this; pure whitespace). Word + tint, mono-safe
+- [x] **Amount** — read-only formatted token amount (AmountInput's
+      display sibling: magnitude-aware decimals, dust handling, sign discipline)
 - [ ] **PriceChart** — scrubber chart (CDS's signature; Sparkline is a
-      trendline, evilcharts is vendored outside the system)
+      trendline, evilcharts is vendored outside the system). **Own PR** —
+      biggest single component in the tracker
 - [ ] QRCode — receive-address display (needs a dependency decision)
 - [ ] SeedPhrase — reveal/confirm grid (only if onboarding flows land)
 
@@ -72,4 +74,5 @@ Same argument as Phase 5b: the whitespace no generic system covers.
 | Date | Change |
 |---|---|
 | 2026-07-15 | File created; Batch 1 shipped as `feat/components-batch-1` (PR #97, merged). |
-| 2026-07-15 | Batch 2 shipped as `feat/components-batch-2` (7 components; ContextMenu deferred). |
+| 2026-07-15 | Batch 2 shipped as `feat/components-batch-2` (PR #98, merged; ContextMenu deferred). |
+| 2026-07-15 | Batch 3 shipped as `feat/components-batch-3` (4 components; PriceChart split to its own PR). |

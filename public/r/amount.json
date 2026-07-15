@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "amount",
+  "type": "registry:ui",
+  "title": "Amount",
+  "description": "CIDS Amount v0.9.0 (draft) — docs ship with the code (Amount.doc.md).",
+  "dependencies": [],
+  "registryDependencies": [
+    "@cids/tokens"
+  ],
+  "files": [
+    {
+      "path": "cids/Amount/Amount.tsx",
+      "type": "registry:ui",
+      "target": "components/cids/Amount/Amount.tsx",
+      "content": "import { cn } from \"@/lib/utils\";\n\nexport type AmountSize = \"sm\" | \"md\" | \"lg\";\n\nconst SIZE: Record<AmountSize, string> = {\n  sm: \"data-sm\",\n  md: \"data-md\",\n  lg: \"data-lg\",\n};\n\n// Magnitude-aware defaults: ≥1 gets 2dp + thousands separators; <1 gets\n// 4 significant digits (dust like 0.00002314 stays readable). Explicit\n// `decimals` overrides. Locale pinned to en-US — server and client must\n// format identically (hydration).\nfunction format(abs: number, decimals?: number): string {\n  if (decimals !== undefined) {\n    return abs.toLocaleString(\"en-US\", {\n      minimumFractionDigits: decimals,\n      maximumFractionDigits: decimals,\n    });\n  }\n  if (abs >= 1) {\n    return abs.toLocaleString(\"en-US\", {\n      minimumFractionDigits: 2,\n      maximumFractionDigits: 2,\n    });\n  }\n  return abs.toLocaleString(\"en-US\", { maximumSignificantDigits: 4 });\n}\n\n/**\n * Read-only formatted token amount — AmountInput's display sibling.\n * Renders in the financial type ramp (Geist Pixel Square via data-*).\n * Sign discipline (guideline #5): direction from the signed value\n * (− prefix), magnitude formatted from Math.abs. For signed *changes*\n * with color, use PriceChange — Amount is a fact, not a movement.\n */\nexport function Amount({\n  value,\n  symbol,\n  size = \"md\",\n  decimals,\n  className,\n}: {\n  value: number;\n  /** Token symbol rendered after the number (e.g. \"SOL\"). */\n  symbol?: string;\n  /** data-sm · data-md · data-lg type ramp. */\n  size?: AmountSize;\n  /** Fixed fraction digits — overrides the magnitude-aware default. */\n  decimals?: number;\n  className?: string;\n}) {\n  const negative = value < 0;\n  const formatted = format(Math.abs(value), decimals);\n  return (\n    <span\n      title={`${value}${symbol ? ` ${symbol}` : \"\"}`}\n      className={cn(SIZE[size], \"text-fg\", className)}\n    >\n      {negative && \"−\"}\n      {formatted}\n      {symbol && <span className=\"ml-1 text-fg-muted\">{symbol}</span>}\n    </span>\n  );\n}\n"
+    },
+    {
+      "path": "cids/Amount/Amount.doc.md",
+      "type": "registry:file",
+      "target": "components/cids/Amount/Amount.doc.md",
+      "content": "# Amount\n\nStatus: draft\nVersion: 0.9.0\nRead-only formatted token amount — AmountInput's display sibling, financial type ramp.\n\n## Usage\n\n```tsx\nimport { Amount } from \"@/design-system\";\n\n<Amount value={1234.5678} symbol=\"SOL\" />        {/* 1,234.57 SOL */}\n<Amount value={0.00002314} symbol=\"BONK\" />       {/* 0.00002314 BONK */}\n<Amount value={-12.5} symbol=\"USDC\" size=\"lg\" />  {/* −12.50 USDC */}\n<Amount value={184.26} decimals={4} />            {/* 184.2600 */}\n```\n\nBest for: any token quantity the user reads — balances, positions,\ntotals. Formatting is magnitude-aware so BONK dust and SOL balances\nboth stay readable. For *entering* amounts use AmountInput; for signed\n*changes* with buy/sell color use PriceChange — Amount is a fact, not\na movement, so it never colors by sign.\n\n## Anatomy\n\n```\n−1,234.57 SOL\n│└───┬───┘ └─ symbol (fg-muted)\n│    └ magnitude — Math.abs, formatted\n└ direction — from the signed value\n  (guideline #5: two concerns, two computations)\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `value` | `number` | — | Signed; full precision kept in `title`. |\n| `symbol` | `string` | — | Rendered after the number, muted. |\n| `size` | `\"sm\" \\| \"md\" \\| \"lg\"` | `\"md\"` | The `data-*` financial type ramp. |\n| `decimals` | `number` | — | Fixed fraction digits; overrides the magnitude default. |\n| `className` | `string` | — | cn-merged. |\n\nDefault formatting: `≥ 1` → 2 decimals + thousands separators;\n`< 1` → 4 significant digits. Locale pinned to `en-US` (deterministic\nserver/client render).\n\n## Tokens\n\n`--text-data-*` sizes + `--font-pixel-stack` (via `data-sm/md/lg`) ·\n`--fg` · `--fg-muted`\n\n## States\n\nStateless display. Negative values render a true minus (−) prefix;\nmagnitude is always formatted from `Math.abs`.\n\n## Motion\n\nNone. For values that change live, wrap in RollingNumber — Amount\nitself never animates.\n\n## A11y\n\nPlain text — screen readers read the formatted number and symbol\nnaturally. The `title` attribute carries the unrounded value for\nprecision on hover. Never encode meaning in color here; sign is the\n− character.\n"
+    }
+  ]
+}
