@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "bottom-nav",
+  "type": "registry:ui",
+  "title": "BottomNav",
+  "description": "CIDS BottomNav v0.9.0 (draft) — docs ship with the code (BottomNav.doc.md).",
+  "dependencies": [],
+  "registryDependencies": [
+    "@cids/tokens"
+  ],
+  "files": [
+    {
+      "path": "cids/BottomNav/BottomNav.tsx",
+      "type": "registry:ui",
+      "target": "components/cids/BottomNav/BottomNav.tsx",
+      "content": "\"use client\";\n\nimport type { ReactNode } from \"react\";\nimport { cn } from \"@/lib/utils\";\n\nexport type BottomNavItem<T extends string> = {\n  value: T;\n  label: string;\n  /** Glyph above the label — decorative (aria-hidden); the label names the tab. */\n  icon?: ReactNode;\n};\n\n/**\n * Mobile tab bar — 3–5 top-level destinations, labels always visible.\n * Positioning is the caller's (typically `fixed inset-x-0 bottom-0`\n * via className); safe-area padding is built in.\n */\nexport function BottomNav<T extends string>({\n  items,\n  value,\n  onValueChange,\n  className,\n}: {\n  items: BottomNavItem<T>[];\n  value: T;\n  onValueChange: (value: T) => void;\n  /** Merged onto the nav (e.g. `fixed inset-x-0 bottom-0`). */\n  className?: string;\n}) {\n  return (\n    <nav\n      className={cn(\n        \"grid border-t border-outline-variant bg-surface-page pb-[env(safe-area-inset-bottom)]\",\n        className,\n      )}\n      style={{ gridTemplateColumns: `repeat(${items.length}, 1fr)` }}\n    >\n      {items.map((item) => {\n        const active = item.value === value;\n        return (\n          <button\n            key={item.value}\n            type=\"button\"\n            aria-current={active ? \"page\" : undefined}\n            onClick={() => onValueChange(item.value)}\n            className={cn(\n              \"flex h-12 flex-col items-center justify-center gap-0.5\",\n              \"transition-[color] duration-150\",\n              active ? \"text-brand\" : \"text-fg-muted hover:text-fg\",\n            )}\n          >\n            {item.icon && (\n              <span aria-hidden=\"true\" className=\"text-base leading-none\">\n                {item.icon}\n              </span>\n            )}\n            <span className={cn(\"text-[10px] leading-none\", active && \"font-semibold\")}>\n              {item.label}\n            </span>\n          </button>\n        );\n      })}\n    </nav>\n  );\n}\n"
+    },
+    {
+      "path": "cids/BottomNav/BottomNav.doc.md",
+      "type": "registry:file",
+      "target": "components/cids/BottomNav/BottomNav.doc.md",
+      "content": "# BottomNav\n\nStatus: draft\nVersion: 0.9.0\nMobile tab bar — 3–5 top-level destinations, labels always visible.\n\n## Usage\n\n```tsx\nimport { BottomNav } from \"@/design-system\";\n\nconst [tab, setTab] = useState<\"feed\" | \"markets\" | \"portfolio\">(\"feed\");\n\n<BottomNav\n  className=\"fixed inset-x-0 bottom-0\"\n  value={tab}\n  onValueChange={setTab}\n  items={[\n    { value: \"feed\", label: \"Feed\", icon: \"≋\" },\n    { value: \"markets\", label: \"Markets\", icon: \"▤\" },\n    { value: \"portfolio\", label: \"Portfolio\", icon: \"◎\" },\n  ]}\n/>\n```\n\nBest for: the phone-width shell's primary navigation (the feed demo\nhand-rolled exactly this). 3–5 items; more belongs in a Menu or a\ndedicated screen. Positioning is the caller's — pass\n`fixed inset-x-0 bottom-0` (safe-area padding is built in). For\nswitching content *within* a screen use Tabs or Lane.\n\n## Anatomy\n\n```\n┌────────┬────────┬────────┐\n│   ≋    │   ▤    │   ◎    │ ← icon (aria-hidden)\n│  Feed  │Markets │Portfol.│ ← label (always visible)\n└────────┴────────┴────────┘ ← border-t, safe-area pb\n   active: brand ink + semibold\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `items` | `BottomNavItem<T>[]` | — | `{ value, label, icon? }`; equal-width columns. |\n| `value` | `T` | — | Controlled active tab. |\n| `onValueChange` | `(value: T) => void` | — | |\n| `className` | `string` | — | cn-merged (positioning lives here). |\n\n## Tokens\n\n`--surface-page` · `--outline-variant` · `--brand` (active ink)\n\n## States\n\n- **Inactive**: `fg-muted`, hover raises to `fg`.\n- **Active**: brand ink + semibold label + `aria-current=\"page\"` —\n  weight change keeps the cue non-color (mono theme).\n\n## Motion\n\n150ms on color only. No indicator slide in v1 — tab switches are\ninstant context changes, not transitions.\n\n## A11y\n\n`<nav>` landmark; items are real buttons ≥48px tall; the active item\ncarries `aria-current=\"page\"`. Icons are decorative (`aria-hidden`) —\nthe visible label names the tab, so there are no icon-only mystery\ntabs.\n"
+    }
+  ]
+}

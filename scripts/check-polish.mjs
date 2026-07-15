@@ -139,6 +139,33 @@ const checks = [
       [/group-data-\[state=open\]:rotate-180/, "chevron rotates with state (aria-expanded carries meaning)"],
     ],
   },
+  {
+    file: "src/design-system/BottomNav/BottomNav.tsx",
+    expect: [
+      [/h-12/, "48px tab hit area"],
+      [/env\(safe-area-inset-bottom\)/, "safe-area padding built in"],
+    ],
+  },
+  {
+    file: "src/design-system/Pagination/Pagination.tsx",
+    expect: [
+      [/h-10 min-w-10/, "40px page-button hit targets"],
+    ],
+  },
+  {
+    file: "src/design-system/Drawer/Drawer.tsx",
+    expect: [
+      [/slide-in-from-right/, "edge slide via the animate presets"],
+      [/env\(safe-area-inset-bottom\)/, "footer safe-area padding"],
+    ],
+  },
+  {
+    file: "src/design-system/Combobox/Combobox.tsx",
+    expect: [
+      [/aria-activedescendant/, "ARIA 1.2 combobox — focus stays in the input"],
+      [/onMouseDown=\{\(e\) => e\.preventDefault\(\)\}/, "option mousedown never blurs the input"],
+    ],
+  },
 ];
 
 for (const c of checks) {
@@ -185,6 +212,9 @@ const NO_SPECIFIC_RULES = new Set([
   "Textarea", // border transition only, Input's grammar; native resize
   "Progress", // width ease + the one sanctioned loop; global reduced-motion resets it
   "RadioGroup", // ring color 150ms targeted; behavior via Radix roving tabindex
+  "AppBar", // static layout row — interaction lives in the slotted components
+  "Breadcrumbs", // link color 150ms only; structure is the feature
+  "Popover", // behavior via Radix Popover; panel fade via presets (Menu's pattern)
 ]);
 const covered = new Set(
   checks.map((c) => c.file.split("/")[2]) // src/design-system/<Name>/…

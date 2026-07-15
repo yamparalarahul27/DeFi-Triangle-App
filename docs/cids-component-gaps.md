@@ -25,20 +25,21 @@ The "every generic system has this" tier. All Radix-backed or trivial.
 - [x] **Textarea** — Input's multi-line sibling, same grammar
 - [x] **Progress** — determinate bar + indeterminate shimmer
 
-## Batch 2 — navigation & overlays (open)
+## Batch 2 — navigation & overlays (PR in flight)
 
 Every template/demo hand-rolls its header and bottom bar today —
 repeated composition begging to be components.
 
-- [ ] **AppBar** — page header (title · actions · optional back)
-- [ ] **BottomNav** — mobile tab bar (the feed demo hand-rolls one)
-- [ ] **Combobox** — typeahead search-select; any token-search UI
-      needs it (Select is closed-list)
-- [ ] **Popover** — public primitive (Radix Popover is already used
-      inside ReactionBar but isn't exported)
-- [ ] **Drawer** — side sheet (Sheet is bottom-only)
-- [ ] **Breadcrumbs** — path navigation for docs/console surfaces
-- [ ] **Pagination** — page controls for long tables
+- [x] **AppBar** — page header (title · actions · optional back)
+- [x] **BottomNav** — mobile tab bar (the feed demo hand-rolls one)
+- [x] **Combobox** — typeahead search-select; pick-from-list only
+      (decision 2026-07-15). Hand-rolled ARIA 1.2 on Radix Popover —
+      no cmdk (would break the portability import allowlist)
+- [x] **Popover** — public primitive (Radix Popover was already used
+      inside ReactionBar but wasn't exported)
+- [x] **Drawer** — side sheet, right/left (Sheet stays bottom-only)
+- [x] **Breadcrumbs** — path navigation for docs/console surfaces
+- [x] **Pagination** — page controls for long tables
 - [ ] ContextMenu — right-click menu (Radix; low urgency)
 
 ## Batch 3 — crypto vertical, round 2 (open)
@@ -70,4 +71,5 @@ Same argument as Phase 5b: the whitespace no generic system covers.
 
 | Date | Change |
 |---|---|
-| 2026-07-15 | File created; Batch 1 shipped as `feat/components-batch-1`. |
+| 2026-07-15 | File created; Batch 1 shipped as `feat/components-batch-1` (PR #97, merged). |
+| 2026-07-15 | Batch 2 shipped as `feat/components-batch-2` (7 components; ContextMenu deferred). |

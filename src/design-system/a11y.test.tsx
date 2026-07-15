@@ -56,6 +56,13 @@ import {
   Progress,
   RadioGroup,
   Textarea,
+  AppBar,
+  BottomNav,
+  Breadcrumbs,
+  Combobox,
+  Drawer,
+  Pagination,
+  Popover,
 } from "./index";
 
 const THEMES = ["dark", "mono", "light", "violet"] as const;
@@ -149,6 +156,54 @@ const CASES: Record<string, () => React.ReactElement> = {
     />
   ),
   Textarea: () => <Textarea aria-label="Note" placeholder="Describe…" />,
+  AppBar: () => (
+    <AppBar
+      title="Markets"
+      leading={<IconButton aria-label="Back" variant="ghost">‹</IconButton>}
+      actions={<IconButton aria-label="Settings" variant="ghost">⚙</IconButton>}
+    />
+  ),
+  BottomNav: () => (
+    <BottomNav
+      value="feed"
+      onValueChange={() => {}}
+      items={[
+        { value: "feed", label: "Feed", icon: "≋" },
+        { value: "markets", label: "Markets", icon: "▤" },
+      ]}
+    />
+  ),
+  Breadcrumbs: () => (
+    <Breadcrumbs
+      items={[
+        { label: "Design", href: "/gallery" },
+        { label: "Components", href: "/gallery#c" },
+        { label: "Accordion" },
+      ]}
+    />
+  ),
+  Combobox: () => (
+    <Combobox
+      aria-label="Search tokens"
+      value="sol"
+      onValueChange={() => {}}
+      options={[
+        { value: "sol", label: "SOL", hint: "$184.26" },
+        { value: "jup", label: "JUP" },
+      ]}
+    />
+  ),
+  Drawer: () => (
+    <Drawer open onOpenChange={() => {}} title="Order details" description="Filled 2m ago">
+      <p>detail body</p>
+    </Drawer>
+  ),
+  Pagination: () => <Pagination page={7} count={24} onPageChange={() => {}} />,
+  Popover: () => (
+    <Popover trigger={<Button variant="secondary" size="sm">Filters</Button>}>
+      <p>panel content</p>
+    </Popover>
+  ),
   Button: () => <Button variant="primary">Confirm</Button>,
   IconButton: () => <IconButton aria-label="Settings">⚙</IconButton>,
   Badge: () => <Badge tone="buy">on peg</Badge>,

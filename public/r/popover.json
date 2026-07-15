@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "popover",
+  "type": "registry:ui",
+  "title": "Popover",
+  "description": "CIDS Popover v0.9.0 (draft) — docs ship with the code (Popover.doc.md).",
+  "dependencies": [
+    "radix-ui"
+  ],
+  "registryDependencies": [
+    "@cids/tokens"
+  ],
+  "files": [
+    {
+      "path": "cids/Popover/Popover.tsx",
+      "type": "registry:ui",
+      "target": "components/cids/Popover/Popover.tsx",
+      "content": "\"use client\";\n\nimport { Popover as RadixPopover } from \"radix-ui\";\nimport type { ReactNode } from \"react\";\nimport { cn } from \"@/lib/utils\";\n\n/**\n * Anchored floating panel on Radix Popover — Menu's free-form sibling.\n * Menu is for lists of commands; Popover holds arbitrary content\n * (filters, mini-forms, detail cards). Trigger renders asChild — pass a\n * focusable element.\n */\nexport function Popover({\n  trigger,\n  children,\n  align = \"start\",\n  side = \"bottom\",\n  className,\n}: {\n  trigger: ReactNode;\n  children: ReactNode;\n  align?: \"start\" | \"center\" | \"end\";\n  side?: \"top\" | \"right\" | \"bottom\" | \"left\";\n  /** Merged onto the panel. */\n  className?: string;\n}) {\n  return (\n    <RadixPopover.Root>\n      <RadixPopover.Trigger asChild>{trigger}</RadixPopover.Trigger>\n      <RadixPopover.Portal>\n        <RadixPopover.Content\n          align={align}\n          side={side}\n          sideOffset={4}\n          className={cn(\n            \"z-[var(--z-raised)] w-64 rounded-chip border border-outline-variant bg-surface-bright p-3 text-sm text-fg shadow-raised\",\n            \"data-[state=open]:animate-in data-[state=open]:fade-in-0\",\n            className,\n          )}\n        >\n          {children}\n        </RadixPopover.Content>\n      </RadixPopover.Portal>\n    </RadixPopover.Root>\n  );\n}\n"
+    },
+    {
+      "path": "cids/Popover/Popover.doc.md",
+      "type": "registry:file",
+      "target": "components/cids/Popover/Popover.doc.md",
+      "content": "# Popover\n\nStatus: draft\nVersion: 0.9.0\nAnchored floating panel on Radix Popover — free-form content near its trigger.\n\n## Usage\n\n```tsx\nimport { Popover, Button, Switch } from \"@/design-system\";\n\n<Popover trigger={<Button variant=\"secondary\" size=\"sm\">Filters</Button>}>\n  <p className=\"mb-2 font-medium\">Show</p>\n  {/* any content — filters, mini-forms, detail cards */}\n</Popover>\n```\n\nBest for: light contextual UI that belongs *next to* its trigger —\nfilter panels, column pickers, inline detail cards. Menu is for lists\nof commands; Dialog/Drawer are for tasks that deserve a surface;\nTooltip is text-only. Popover is the free-form middle.\n\n## Anatomy\n\n```\n[ Filters ]        ← trigger (asChild — pass a focusable element)\n┌────────────────┐\n│ panel (w-64,   │ ← surface-bright, chip radius,\n│ children)      │   raised shadow, z-raised\n└────────────────┘\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `trigger` | `ReactNode` | — | Rendered asChild — must be focusable. |\n| `children` | `ReactNode` | — | Panel content. |\n| `align` | `\"start\" \\| \"center\" \\| \"end\"` | `\"start\"` | |\n| `side` | `\"top\" \\| \"right\" \\| \"bottom\" \\| \"left\"` | `\"bottom\"` | |\n| `className` | `string` | — | Merged onto the panel (e.g. `w-80`). |\n\n## Tokens\n\n`--surface-bright` · `--outline-variant` · `--radius-chip` ·\n`--z-raised` · `--shadow-raised`\n\n## States\n\n- **Closed** (default): trigger only.\n- **Open**: `data-state=\"open\"` on the panel; outside-click, Escape,\n  or re-clicking the trigger closes it.\n\n## Motion\n\nPanel fades in via the `animate-in fade-in-0` preset (150ms). No exit\nanimation — dismissal is instant by design (same as Menu).\n\n## A11y\n\nRadix wiring: trigger gets `aria-haspopup=\"dialog\"` + `aria-expanded`;\nfocus moves into the panel on open and returns to the trigger on close;\nEscape dismisses. Don't put critical-path actions *only* inside a\npopover — it's an enhancement surface.\n"
+    }
+  ]
+}
