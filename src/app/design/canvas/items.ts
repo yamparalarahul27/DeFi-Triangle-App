@@ -106,6 +106,13 @@ export const CANVAS_ITEMS: CanvasItemDef[] = [
   { kind: "demo", id: "Drawer", title: "Drawer", x: CX + COL * 2, y: CY + 5760, w: 340 },
   { kind: "demo", id: "Pagination", title: "Pagination", x: CX, y: CY + 6000, w: 420 },
 
+  // ── Zone: Crypto round 2 (component-gaps batch 3) ────────────
+  { kind: "label", id: "z-crypto-2", title: "Crypto — round 2", x: CX, y: CY + 6300 },
+  { kind: "demo", id: "WalletButton", title: "WalletButton", x: CX, y: CY + 6360, w: 340 },
+  { kind: "demo", id: "ChainSwitcher", title: "ChainSwitcher", x: CX + COL, y: CY + 6360, w: 340 },
+  { kind: "demo", id: "Amount", title: "Amount", x: CX + COL * 2, y: CY + 6360, w: 300 },
+  { kind: "demo", id: "GasFee", title: "GasFee", x: CX + COL * 3, y: CY + 6360, w: 380 },
+
   // ── Zone: Screens (live build vs HTML mock, side by side) ────
   { kind: "label", id: "z-screens", title: "Screens — mock vs build", x: 1780, y: 60 },
   {

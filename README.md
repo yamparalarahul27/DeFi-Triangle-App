@@ -22,7 +22,7 @@ human and an AI agent both build from, and flip themes live.
 
 ## The system
 
-- **50 components** under [`src/design-system/`](src/design-system/) —
+- **54 components** under [`src/design-system/`](src/design-system/) —
   Avatar, AvatarGroup, TokenIcon, TokenChip, ReactionBar, FollowButton,
   Lane, SocialProofChip, PostCard, Sheet, CommentThread, Onboarding,
   Skeleton, Tooltip, and the Phase-4 atoms — Button, IconButton, Badge,
@@ -31,9 +31,10 @@ human and an AI agent both build from, and flip themes live.
   RollingNumber, PriceChange, StatCell, Sparkline — the crypto
   verticals nobody else ships: AddressChip, PegBadge, NetworkBadge,
   TxStatus, AmountInput — the containment & forms batch: Accordion,
-  Alert, Card, Progress, RadioGroup, Textarea — and the navigation &
+  Alert, Card, Progress, RadioGroup, Textarea — the navigation &
   overlays batch: AppBar, BottomNav, Breadcrumbs, Combobox, Drawer,
-  Pagination, Popover (**35 stable · 15 draft**,
+  Pagination, Popover — and crypto round 2: Amount, ChainSwitcher,
+  GasFee, WalletButton (**35 stable · 19 draft**,
   per each doc's `Status:` header; gap tracker in
   [`docs/cids-component-gaps.md`](docs/cids-component-gaps.md)). Every one
   ships a colocated `.doc.md` in the fixed shape defined by

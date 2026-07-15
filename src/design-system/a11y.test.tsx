@@ -63,6 +63,10 @@ import {
   Drawer,
   Pagination,
   Popover,
+  Amount,
+  ChainSwitcher,
+  GasFee,
+  WalletButton,
 } from "./index";
 
 const THEMES = ["dark", "mono", "light", "violet"] as const;
@@ -199,6 +203,25 @@ const CASES: Record<string, () => React.ReactElement> = {
     </Drawer>
   ),
   Pagination: () => <Pagination page={7} count={24} onPageChange={() => {}} />,
+  Amount: () => <Amount value={1234.5678} symbol="SOL" />,
+  ChainSwitcher: () => (
+    <ChainSwitcher
+      value="solana"
+      onValueChange={() => {}}
+      networks={[
+        { id: "solana", label: "Solana" },
+        { id: "eclipse", label: "Eclipse" },
+      ]}
+    />
+  ),
+  GasFee: () => <GasFee amount="0.000005 SOL" usd="≈ $0.0009" level="low" />,
+  WalletButton: () => (
+    <WalletButton
+      status="connected"
+      address="7xKtF2mPqR8vN3wLbJd5cYhT6gAeS4uZ1oXnE9fQ2rM"
+      onClick={() => {}}
+    />
+  ),
   Popover: () => (
     <Popover trigger={<Button variant="secondary" size="sm">Filters</Button>}>
       <p>panel content</p>

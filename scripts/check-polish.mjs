@@ -166,6 +166,19 @@ const checks = [
       [/onMouseDown=\{\(e\) => e\.preventDefault\(\)\}/, "option mousedown never blurs the input"],
     ],
   },
+  {
+    file: "src/design-system/Amount/Amount.tsx",
+    expect: [
+      [/Math\.abs\(value\)/, "magnitude via Math.abs (sign discipline)"],
+      [/value < 0/, "direction from the signed value"],
+    ],
+  },
+  {
+    file: "src/design-system/WalletButton/WalletButton.tsx",
+    expect: [
+      [/aria-label=\{`Wallet \$\{address\}/, "full address in the accessible name (truncation is visual only)"],
+    ],
+  },
 ];
 
 for (const c of checks) {
@@ -215,6 +228,8 @@ const NO_SPECIFIC_RULES = new Set([
   "AppBar", // static layout row — interaction lives in the slotted components
   "Breadcrumbs", // link color 150ms only; structure is the feature
   "Popover", // behavior via Radix Popover; panel fade via presets (Menu's pattern)
+  "ChainSwitcher", // Radix DropdownMenu radio; panel fade via presets (Menu's pattern)
+  "GasFee", // static fact row — fee updates swap text, never animate
 ]);
 const covered = new Set(
   checks.map((c) => c.file.split("/")[2]) // src/design-system/<Name>/…

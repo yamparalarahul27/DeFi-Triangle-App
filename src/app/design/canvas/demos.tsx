@@ -61,6 +61,11 @@ import {
   Drawer,
   Pagination,
   Popover,
+  Amount,
+  ChainSwitcher,
+  GasFee,
+  WalletButton,
+  type WalletStatus,
 } from "@/design-system";
 
 const SURFACES = [
@@ -337,6 +342,41 @@ function DrawerDemo() {
 function PaginationDemo() {
   const [page, setPage] = useState(7);
   return <Pagination page={page} count={24} onPageChange={setPage} />;
+}
+
+function WalletButtonDemo() {
+  const [status, setStatus] = useState<WalletStatus>("disconnected");
+  const connect = () => {
+    setStatus("connecting");
+    setTimeout(() => setStatus("connected"), 1400);
+  };
+  return (
+    <div className="flex flex-col items-start gap-3">
+      <WalletButton
+        status={status}
+        address="7xKtF2mPqR8vN3wLbJd5cYhT6gAeS4uZ1oXnE9fQ2rM"
+        onClick={status === "disconnected" ? connect : () => setStatus("disconnected")}
+      />
+      <p className="text-[11px] text-fg-subtle">
+        {status === "connected" ? "click to reset the demo" : "click to walk the states"}
+      </p>
+    </div>
+  );
+}
+
+function ChainSwitcherDemo() {
+  const [chain, setChain] = useState("solana");
+  return (
+    <ChainSwitcher
+      value={chain}
+      onValueChange={setChain}
+      networks={[
+        { id: "solana", label: "Solana" },
+        { id: "eclipse", label: "Eclipse" },
+        { id: "sonic", label: "Sonic" },
+      ]}
+    />
+  );
 }
 
 function CheckboxDemo() {
@@ -721,6 +761,22 @@ export const DEMOS: Record<string, () => ReactNode> = {
   Combobox: ComboboxDemo,
   Drawer: DrawerDemo,
   Pagination: PaginationDemo,
+  Amount: () => (
+    <div className="flex flex-col gap-2">
+      <Amount value={1234.5678} symbol="SOL" size="lg" />
+      <Amount value={0.00002314} symbol="BONK" />
+      <Amount value={-12.5} symbol="USDC" />
+    </div>
+  ),
+  ChainSwitcher: ChainSwitcherDemo,
+  GasFee: () => (
+    <div className="space-y-2">
+      <GasFee amount="0.000005 SOL" usd="≈ $0.0009" level="low" />
+      <GasFee amount="0.0021 SOL" usd="≈ $0.39" level="elevated" label="Priority fee" />
+      <GasFee amount="0.000005 SOL" usd="≈ $0.0009" />
+    </div>
+  ),
+  WalletButton: WalletButtonDemo,
   Popover: () => (
     <Popover trigger={<Button variant="secondary" size="sm">Filters</Button>}>
       <p className="mb-2 text-xs font-medium text-fg">Show</p>

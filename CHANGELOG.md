@@ -40,6 +40,19 @@ bullets under the release's buckets, prefixed with the component name.
 
 ### Added
 
+- **Crypto round 2 batch (component-gaps Batch 3)** — four new
+  components, all entering as `draft @ 0.9.0`, closing the crypto
+  whitespace no generic system ships: **WalletButton** (the connect
+  atom — disconnected/connecting/connected states; presentational, wire
+  to your adapter; disconnect lives in the account UI, never the
+  button), **ChainSwitcher** (active network + switch menu on Radix
+  DropdownMenu radio; NetworkBadge stays display-only), **GasFee**
+  (network-fee row with congestion severity — word + tint, mono-safe;
+  put it above the confirm button), **Amount** (read-only formatted
+  token amount — AmountInput's display sibling, magnitude-aware decimals
+  + dust handling + sign discipline). PriceChart split to its own PR
+  (biggest single component in the tracker).
+
 - **Navigation & overlays batch (component-gaps Batch 2)** — seven new
   components, all entering as `draft @ 0.9.0`: **AppBar** (leading ·
   title · actions header row, optional sticky), **BottomNav** (mobile

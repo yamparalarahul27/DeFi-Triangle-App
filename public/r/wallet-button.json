@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "wallet-button",
+  "type": "registry:ui",
+  "title": "WalletButton",
+  "description": "CIDS WalletButton v0.9.0 (draft) — docs ship with the code (WalletButton.doc.md).",
+  "dependencies": [],
+  "registryDependencies": [
+    "@cids/tokens",
+    "@cids/button"
+  ],
+  "files": [
+    {
+      "path": "cids/WalletButton/WalletButton.tsx",
+      "type": "registry:ui",
+      "target": "components/cids/WalletButton/WalletButton.tsx",
+      "content": "import { Button } from \"../Button\";\nimport { cn } from \"@/lib/utils\";\n\nexport type WalletStatus = \"disconnected\" | \"connecting\" | \"connected\";\n\nconst truncate = (addr: string) =>\n  addr.length <= 10 ? addr : `${addr.slice(0, 4)}…${addr.slice(-4)}`;\n\n/**\n * The connect-wallet atom (Reown's territory, tokens-native): one\n * button, three states. Presentational — wire `onClick` to your wallet\n * adapter's connect when disconnected, and to your account UI (Drawer,\n * Menu) when connected. Disconnect lives in that account UI, never on\n * this button — accidental disconnects are hostile.\n */\nexport function WalletButton({\n  status,\n  address,\n  onClick,\n  className,\n}: {\n  status: WalletStatus;\n  /** Connected wallet address — required when status=\"connected\". */\n  address?: string;\n  /** disconnected → connect; connected → open account UI. */\n  onClick?: () => void;\n  className?: string;\n}) {\n  if (status === \"connected\" && address) {\n    return (\n      <Button\n        variant=\"secondary\"\n        onClick={onClick}\n        aria-label={`Wallet ${address} — open account`}\n        className={cn(\"font-mono\", className)}\n      >\n        <span aria-hidden=\"true\" className=\"h-1.5 w-1.5 rounded-full bg-buy\" />\n        {truncate(address)}\n      </Button>\n    );\n  }\n  if (status === \"connecting\") {\n    return (\n      <Button variant=\"secondary\" disabled className={className}>\n        <span aria-hidden=\"true\" className=\"h-1.5 w-1.5 animate-pulse rounded-full bg-warning\" />\n        Connecting…\n      </Button>\n    );\n  }\n  return (\n    <Button variant=\"primary\" onClick={onClick} className={className}>\n      Connect wallet\n    </Button>\n  );\n}\n"
+    },
+    {
+      "path": "cids/WalletButton/WalletButton.doc.md",
+      "type": "registry:file",
+      "target": "components/cids/WalletButton/WalletButton.doc.md",
+      "content": "# WalletButton\n\nStatus: draft\nVersion: 0.9.0\nThe connect-wallet atom — one button, three states (disconnected · connecting · connected).\n\n## Usage\n\n```tsx\nimport { WalletButton } from \"@/design-system\";\n\n<WalletButton status=\"disconnected\" onClick={connect} />\n<WalletButton status=\"connecting\" />\n<WalletButton\n  status=\"connected\"\n  address=\"7xKtF2mPqR8vN3wLbJd5cYhT6gAeS4uZ1oXnE9fQ2rM\"\n  onClick={openAccountDrawer}\n/>\n```\n\nBest for: the header of any web3 surface — the templates hand-rolled\nthis from Button + AddressChip until now. Presentational by design:\nwire `onClick` to your wallet adapter when disconnected, and to your\naccount UI (Drawer/Menu with balance, copy, disconnect) when connected.\n**Disconnect never lives on this button** — accidental disconnects are\nhostile; it belongs inside the account UI a click opens.\n\n## Anatomy\n\n```\ndisconnected   [ Connect wallet ]   ← primary Button\nconnecting     [ ● Connecting… ]    ← disabled, warning dot pulses\nconnected      [ ● 7xKt…9fQ2 ]      ← secondary, buy dot, mono\n                 └ truncated 4…4 (full address in aria-label)\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `status` | `\"disconnected\" \\| \"connecting\" \\| \"connected\"` | — | Drives the whole rendering. |\n| `address` | `string` | — | Required when connected; truncated 4…4 visually. |\n| `onClick` | `() => void` | — | Connect (disconnected) / open account (connected). |\n| `className` | `string` | — | cn-merged onto the Button. |\n\n## Tokens\n\nInherits Button's tokens (`--brand`/`--on-brand`, surfaces, outline) ·\n`--buy` (connected dot) · `--warning` (connecting dot)\n\n## States\n\n- **Disconnected**: primary emphasis — connecting is the on-ramp CTA.\n- **Connecting**: disabled + pulsing warning dot; the wallet popup owns\n  the interaction now.\n- **Connected**: quiet secondary pill — a status, not a call to action.\n  Dot + mono address are the dual cue (color + glyph).\n\n## Motion\n\nThe connecting dot pulses (status, not data — TxStatus's rule). Press\nand hover ride Button's 150ms/0.96 contract.\n\n## A11y\n\nComposes Button (real `<button>`, focusable, 0.96 press). Connected\nstate's `aria-label` carries the **full** address — truncation is\nvisual only (AddressChip's rule). Dots are `aria-hidden`; the visible\ntext names each state.\n"
+    }
+  ]
+}
