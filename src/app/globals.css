@@ -491,6 +491,47 @@ html {
   animation: pop var(--motion-spring);
 }
 
+/* Accordion open/close — Radix measures the panel into
+   --radix-accordion-content-height; animating height needs the padding
+   on an inner element. Neutralized by the reduced-motion reset below. */
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+.animate-accordion-down {
+  animation: accordion-down var(--motion-settle);
+}
+.animate-accordion-up {
+  animation: accordion-up var(--motion-settle);
+}
+
+/* Indeterminate Progress — the one sanctioned looping animation:
+   unknown-duration waits only, quiet by design. Neutralized by the
+   reduced-motion reset below. */
+@keyframes progress-slide {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(300%);
+  }
+}
+.animate-progress-slide {
+  animation: progress-slide 1.2s var(--ease-settle) infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

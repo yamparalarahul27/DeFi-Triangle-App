@@ -50,6 +50,12 @@ import {
   Skeleton,
   SectionSkeleton,
   Tooltip,
+  Accordion,
+  Alert,
+  Card,
+  Progress,
+  RadioGroup,
+  Textarea,
 } from "./index";
 
 const THEMES = ["dark", "mono", "light", "violet"] as const;
@@ -112,6 +118,37 @@ const CASES: Record<string, () => React.ReactElement> = {
       <button type="button">info</button>
     </Tooltip>
   ),
+  Accordion: () => (
+    <Accordion
+      items={[
+        { value: "fees", title: "Fees", content: <p>0.25% taker</p> },
+        { value: "route", title: "Route", content: <p>via Jupiter</p> },
+      ]}
+    />
+  ),
+  Alert: () => (
+    <Alert tone="warning" title="High price impact" action={<Button size="sm">Retry</Button>}>
+      This trade moves the pool price by 4.2%.
+    </Alert>
+  ),
+  Card: () => (
+    <Card>
+      <p>Portfolio · 3 positions</p>
+    </Card>
+  ),
+  Progress: () => <Progress aria-label="Upload progress" value={64} />,
+  RadioGroup: () => (
+    <RadioGroup
+      aria-label="Slippage tolerance"
+      value="0.5"
+      onValueChange={() => {}}
+      options={[
+        { value: "0.1", label: "0.1%", description: "May fail" },
+        { value: "0.5", label: "0.5%" },
+      ]}
+    />
+  ),
+  Textarea: () => <Textarea aria-label="Note" placeholder="Describe…" />,
   Button: () => <Button variant="primary">Confirm</Button>,
   IconButton: () => <IconButton aria-label="Settings">⚙</IconButton>,
   Badge: () => <Badge tone="buy">on peg</Badge>,

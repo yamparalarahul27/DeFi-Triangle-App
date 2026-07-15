@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "card",
+  "type": "registry:ui",
+  "title": "Card",
+  "description": "CIDS Card v0.9.0 (draft) — docs ship with the code (Card.doc.md).",
+  "dependencies": [],
+  "registryDependencies": [
+    "@cids/tokens"
+  ],
+  "files": [
+    {
+      "path": "cids/Card/Card.tsx",
+      "type": "registry:ui",
+      "target": "components/cids/Card/Card.tsx",
+      "content": "import { cn } from \"@/lib/utils\";\n\n/**\n * The generic container primitive — the `rounded-card border\n * bg-surface-container` recipe that templates and patterns were\n * hand-rolling, made canonical. `interactive` adds the hover lift +\n * card-grade press (0.98 — cards press softer than controls).\n */\nexport function Card({\n  interactive = false,\n  className,\n  ...rest\n}: React.HTMLAttributes<HTMLDivElement> & {\n  /** Hover lift + press feedback for clickable cards. */\n  interactive?: boolean;\n}) {\n  return (\n    <div\n      className={cn(\n        \"rounded-card border border-outline-variant bg-surface-container p-4\",\n        interactive &&\n          \"cursor-pointer transition-[background-color,transform] duration-150 hover:bg-surface-container-high active:scale-[0.98]\",\n        className,\n      )}\n      {...rest}\n    />\n  );\n}\n"
+    },
+    {
+      "path": "cids/Card/Card.doc.md",
+      "type": "registry:file",
+      "target": "components/cids/Card/Card.doc.md",
+      "content": "# Card\n\nStatus: draft\nVersion: 0.9.0\nThe generic container primitive — outlined surface, card radius, base padding.\n\n## Usage\n\n```tsx\nimport { Card } from \"@/design-system\";\n\n<Card>\n  <h3 className=\"text-sm font-medium\">Portfolio</h3>\n  <p className=\"text-xs text-fg-muted\">3 positions · $12,480</p>\n</Card>\n\n<Card interactive onClick={open}>…</Card>\n```\n\nBest for: grouping related content on the page surface — settings\nsections, summary tiles, list containers. This is the canonical form of\nthe `rounded-card border bg-surface-container` recipe; reach for Card\nbefore hand-rolling that class string. For specialized cards the system\nalready ships PostCard (social) and StatCell (data) — Card is what you\ncompose when neither fits.\n\n## Anatomy\n\n```\n┌───────────────────────────┐  ← border-outline-variant,\n│  p-4 padding              │    rounded-card, bg-surface-container\n│  (children — caller owns  │\n│   the internal layout)    │\n└───────────────────────────┘\n```\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `interactive` | `boolean` | `false` | Hover surface lift + `scale(0.98)` press. Set on clickable cards only. |\n| `className` | `string` | — | cn-merged; override padding with `p-*` when needed. |\n| …rest | `HTMLAttributes<HTMLDivElement>` | — | `onClick`, `role`, etc. pass through. |\n\n## Tokens\n\n`--surface-container` · `--surface-container-high` (interactive hover) ·\n`--outline-variant` · `--radius-card`\n\n## States\n\n- **Static** (default): no hover response — content container only.\n- **Interactive**: hover raises to `surface-container-high`, press\n  scales to 0.98 (card-grade press — softer than the 0.96 of controls).\n- Card has no disabled state; disable the controls inside it.\n\n## Motion\n\n150ms on `background-color` + `transform` only (no `transition-all`),\nand only when `interactive`. Static cards are motionless.\n\n## A11y\n\nRenders a plain `div` — semantics come from the caller. If the whole\ncard is clickable, prefer wrapping it in a link/button or pass\n`role=\"button\"` + `tabIndex={0}` + key handlers; don't leave a bare\n`onClick` on a div for keyboard users. Interactive cards must contain a\nvisible affordance (the hover lift alone is not discoverable).\n"
+    }
+  ]
+}

@@ -125,6 +125,20 @@ const checks = [
       [/change24h >= 0/, "direction from the signed value"],
     ],
   },
+  {
+    file: "src/design-system/Card/Card.tsx",
+    expect: [
+      [/active:scale-\[0\.98\]/, "card-grade press (.98 — softer than controls)"],
+      [/transition-\[background-color,transform\]/, "targeted transition (never transition-all)"],
+    ],
+  },
+  {
+    file: "src/design-system/Accordion/Accordion.tsx",
+    expect: [
+      [/animate-accordion-down/, "height animation via --radix-accordion-content-height"],
+      [/group-data-\[state=open\]:rotate-180/, "chevron rotates with state (aria-expanded carries meaning)"],
+    ],
+  },
 ];
 
 for (const c of checks) {
@@ -167,6 +181,10 @@ const NO_SPECIFIC_RULES = new Set([
   "NetworkBadge", // static fact chip
   "AmountInput", // border transition only; Max is a text affordance
   "TxStatus", // pulse on in-flight dot only (status, not data); terminal states still
+  "Alert", // static in-flow callout — conditions don't animate in
+  "Textarea", // border transition only, Input's grammar; native resize
+  "Progress", // width ease + the one sanctioned loop; global reduced-motion resets it
+  "RadioGroup", // ring color 150ms targeted; behavior via Radix roving tabindex
 ]);
 const covered = new Set(
   checks.map((c) => c.file.split("/")[2]) // src/design-system/<Name>/…

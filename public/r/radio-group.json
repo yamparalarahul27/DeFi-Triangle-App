@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "radio-group",
+  "type": "registry:ui",
+  "title": "RadioGroup",
+  "description": "CIDS RadioGroup v0.9.0 (draft) — docs ship with the code (RadioGroup.doc.md).",
+  "dependencies": [
+    "radix-ui"
+  ],
+  "registryDependencies": [
+    "@cids/tokens"
+  ],
+  "files": [
+    {
+      "path": "cids/RadioGroup/RadioGroup.tsx",
+      "type": "registry:ui",
+      "target": "components/cids/RadioGroup/RadioGroup.tsx",
+      "content": "\"use client\";\n\nimport { RadioGroup as RadixRadioGroup } from \"radix-ui\";\nimport { cn } from \"@/lib/utils\";\n\nexport type RadioOption<T extends string> = {\n  value: T;\n  label: string;\n  /** Optional supporting line under the label. */\n  description?: string;\n  disabled?: boolean;\n};\n\n/**\n * Single-choice list on Radix RadioGroup — roving tabindex, arrow-key\n * movement, form-safe. Use when all options should be visible at once\n * (≤5, e.g. slippage presets, network selection); past that reach for\n * Select.\n */\nexport function RadioGroup<T extends string>({\n  options,\n  value,\n  onValueChange,\n  disabled,\n  className,\n  \"aria-label\": ariaLabel,\n}: {\n  options: RadioOption<T>[];\n  value: T | undefined;\n  onValueChange: (value: T) => void;\n  disabled?: boolean;\n  /** Merged onto the root. */\n  className?: string;\n  \"aria-label\"?: string;\n}) {\n  return (\n    <RadixRadioGroup.Root\n      value={value}\n      onValueChange={onValueChange}\n      disabled={disabled}\n      aria-label={ariaLabel}\n      className={cn(\"flex flex-col gap-1\", className)}\n    >\n      {options.map((opt) => (\n        <label\n          key={opt.value}\n          className={cn(\n            \"flex min-h-10 cursor-pointer items-start gap-3 rounded-control px-2 py-2\",\n            \"transition-[background-color] duration-150 hover:bg-surface-container-high\",\n            \"has-[[data-disabled]]:pointer-events-none has-[[data-disabled]]:opacity-40\",\n          )}\n        >\n          <RadixRadioGroup.Item\n            value={opt.value}\n            disabled={opt.disabled}\n            className={cn(\n              \"mt-0.5 h-4 w-4 flex-none rounded-full border border-outline\",\n              \"transition-[border-color,background-color] duration-150\",\n              \"data-[state=checked]:border-brand\",\n            )}\n          >\n            <RadixRadioGroup.Indicator className=\"flex h-full w-full items-center justify-center\">\n              <span className=\"h-2 w-2 rounded-full bg-brand\" />\n            </RadixRadioGroup.Indicator>\n          </RadixRadioGroup.Item>\n          <span className=\"min-w-0\">\n            <span className=\"block text-sm text-fg\">{opt.label}</span>\n            {opt.description && (\n              <span className=\"block text-xs text-fg-muted\">{opt.description}</span>\n            )}\n          </span>\n        </label>\n      ))}\n    </RadixRadioGroup.Root>\n  );\n}\n"
+    },
+    {
+      "path": "cids/RadioGroup/RadioGroup.doc.md",
+      "type": "registry:file",
+      "target": "components/cids/RadioGroup/RadioGroup.doc.md",
+      "content": "# RadioGroup\n\nStatus: draft\nVersion: 0.9.0\nSingle-choice option list on Radix RadioGroup — all options visible.\n\n## Usage\n\n```tsx\nimport { RadioGroup } from \"@/design-system\";\n\nconst [slippage, setSlippage] = useState<\"0.1\" | \"0.5\" | \"1.0\">();\n\n<RadioGroup\n  aria-label=\"Slippage tolerance\"\n  value={slippage}\n  onValueChange={setSlippage}\n  options={[\n    { value: \"0.1\", label: \"0.1%\", description: \"May fail on volatile pairs\" },\n    { value: \"0.5\", label: \"0.5%\", description: \"Recommended\" },\n    { value: \"1.0\", label: \"1.0%\" },\n  ]}\n/>\n```\n\nBest for: one-of-N choices where seeing every option matters — slippage\npresets, network selection, order type. Rule of thumb: ≤5 options →\nRadioGroup; more → Select. For on/off use Switch; for many-of-N use\nCheckbox.\n\n## Anatomy\n\n```\n◉  0.5%                    ← Item (16px ring, brand dot when\n   Recommended             ← description (fg-muted, optional)\n○  1.0%                    ← unchecked ring (outline)\n```\n\nEach row is a ≥40px-tall label — the whole row is the hit area.\n\n## Props\n\n| Prop | Type | Default | Notes |\n|---|---|---|---|\n| `options` | `RadioOption<T>[]` | — | `{ value, label, description?, disabled? }`. |\n| `value` | `T \\| undefined` | — | Controlled. |\n| `onValueChange` | `(value: T) => void` | — | |\n| `disabled` | `boolean` | — | Disables the whole group. |\n| `aria-label` | `string` | — | Name the group when no visible label precedes it. |\n| `className` | `string` | — | cn-merged onto the root. |\n\n## Tokens\n\n`--outline` · `--brand` (checked ring + dot) ·\n`--surface-container-high` (row hover) · `--radius-control`\n\n## States\n\n- **Unchecked**: outline ring, empty.\n- **Checked**: `data-state=\"checked\"` — brand ring + brand dot.\n- **Hover** (row): surface raises to `surface-container-high`.\n- **Disabled** (item or group): 40% opacity, no pointer.\n\n## Motion\n\n150ms on ring border-color; the dot appears without animation (selection\nis instant feedback, not a transition).\n\n## A11y\n\nRadix wiring: `role=\"radiogroup\"`, roving tabindex — Tab enters the\ngroup once, ↑/↓/←/→ move selection. Rows are real `<label>`s so\nclicking text selects. Always name the group (`aria-label` or a\npreceding heading); descriptions are part of the label's text content.\n"
+    }
+  ]
+}

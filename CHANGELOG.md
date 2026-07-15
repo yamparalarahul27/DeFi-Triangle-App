@@ -40,6 +40,18 @@ bullets under the release's buckets, prefixed with the component name.
 
 ### Added
 
+- **Containment & forms batch (component-gaps Batch 1)** — six new
+  components, all entering as `draft @ 0.9.0`: **Accordion**
+  (single/multiple, Radix, height-animated), **Card** (the generic
+  container primitive; `interactive` adds hover lift + 0.98 press),
+  **Alert** (inline callout on the tinted state surfaces, tone word +
+  tint, `role=alert` only for errors), **RadioGroup** (Radix, visible
+  one-of-N with descriptions), **Textarea** (Input's multi-line
+  sibling), **Progress** (Radix bar, determinate + indeterminate
+  shimmer — the system's one sanctioned looping animation). Plus
+  `docs/cids-component-gaps.md`, the tracked next-ring gap list
+  (batches 2–3: navigation/overlays, crypto round 2).
+
 - **Design system v1.0.0 baseline** — all 35 stable components set to
   `Version: 1.0.0` (drafts at 0.9.0: CommentThread, Onboarding);
   lifecycle ladder + versioning policy adopted; registry item

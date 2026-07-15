@@ -22,16 +22,18 @@ human and an AI agent both build from, and flip themes live.
 
 ## The system
 
-- **37 components** under [`src/design-system/`](src/design-system/) —
+- **43 components** under [`src/design-system/`](src/design-system/) —
   Avatar, AvatarGroup, TokenIcon, TokenChip, ReactionBar, FollowButton,
   Lane, SocialProofChip, PostCard, Sheet, CommentThread, Onboarding,
   Skeleton, Tooltip, and the Phase-4 atoms — Button, IconButton, Badge,
   Input, Dialog, Menu (now stable), Switch, Checkbox, Select, Tabs,
   Toast, Divider, EmptyState, the Phase-5 data layer — DataTable,
-  RollingNumber, PriceChange, StatCell, Sparkline — and the crypto
+  RollingNumber, PriceChange, StatCell, Sparkline — the crypto
   verticals nobody else ships: AddressChip, PegBadge, NetworkBadge,
-  TxStatus, AmountInput (**35 stable · 2 draft**, per each doc's
-  `Status:` header). Every one
+  TxStatus, AmountInput — and the containment & forms batch: Accordion,
+  Alert, Card, Progress, RadioGroup, Textarea (**35 stable · 8 draft**,
+  per each doc's `Status:` header; gap tracker in
+  [`docs/cids-component-gaps.md`](docs/cids-component-gaps.md)). Every one
   ships a colocated `.doc.md` in the fixed shape defined by
   [`CONVENTIONS.md`](src/design-system/CONVENTIONS.md) (Anatomy · Props ·
   Tokens · States · Motion · A11y). The canvas inspector renders those
