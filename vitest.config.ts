@@ -8,7 +8,10 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     globals: true,
-    include: ["src/design-system/**/*.test.{ts,tsx}"],
+    include: [
+      "src/design-system/**/*.test.{ts,tsx}",
+      "src/components/**/*.test.{ts,tsx}", // PriceChart (evilcharts-backed, outside the portable core)
+    ],
     setupFiles: ["./vitest.setup.ts"],
   },
 });

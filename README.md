@@ -96,6 +96,15 @@ npm install
 npm run dev              # http://localhost:3000
 ```
 
+## Credits
+
+- **[EvilCharts](https://github.com/legions-developer/evilcharts)** by
+  legions-developer — vendored under `src/components/evilcharts/` and the
+  charting engine behind **PriceChart** (`src/components/PriceChart/`).
+  PriceChart is a *composition* on recharts, deliberately outside the
+  portable design-system core (see
+  [docs/cids-component-gaps.md](docs/cids-component-gaps.md)).
+
 ## Repo history
 
 This repo began as a DeFi trading app (DeFi Triangle / tide); the engine

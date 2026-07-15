@@ -3,6 +3,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { PATTERN_DEMOS } from "./patternDemos";
 import { OrderBookPanel } from "../templates/exchange/OrderBookPanel";
+import { PriceChart, type PricePoint } from "@/components/PriceChart/PriceChart";
 import {
   Avatar,
   TokenIcon,
@@ -375,6 +376,35 @@ function ChainSwitcherDemo() {
         { id: "eclipse", label: "Eclipse" },
         { id: "sonic", label: "Sonic" },
       ]}
+    />
+  );
+}
+
+// Deterministic synthetic series (no Math.random — the canvas SSRs, so
+// random data would hydrate-mismatch). Shape varies by range via a seed.
+function series(points: number, seed: number, base: number, amp: number): PricePoint[] {
+  return Array.from({ length: points }, (_, i) => {
+    const wobble = Math.sin((i + seed) * 0.7) + Math.sin((i + seed) * 0.23) * 0.6;
+    return { label: `${i + 1}`, price: +(base + wobble * amp + i * (amp * 0.05)).toFixed(2) };
+  });
+}
+const PRICE_RANGES: Record<string, PricePoint[]> = {
+  "1D": series(24, 1, 182, 2.2),
+  "1W": series(28, 5, 176, 5.5),
+  "1M": series(30, 9, 168, 9),
+  "1Y": series(36, 3, 120, 26),
+};
+
+function PriceChartDemo() {
+  const [range, setRange] = useState("1W");
+  return (
+    <PriceChart
+      symbol="SOL / USDC"
+      data={PRICE_RANGES[range]}
+      range={range}
+      ranges={Object.keys(PRICE_RANGES)}
+      onRangeChange={setRange}
+      aria-label="SOL / USDC price chart"
     />
   );
 }
@@ -769,6 +799,7 @@ export const DEMOS: Record<string, () => ReactNode> = {
     </div>
   ),
   ChainSwitcher: ChainSwitcherDemo,
+  PriceChart: PriceChartDemo,
   GasFee: () => (
     <div className="space-y-2">
       <GasFee amount="0.000005 SOL" usd="≈ $0.0009" level="low" />
